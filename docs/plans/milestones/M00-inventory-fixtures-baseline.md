@@ -126,7 +126,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Measured: instrumentation cost per writer, coverage gaps when any writer is missed, commit-order behavior under the harness, redaction/visibility filter feasibility.
     - Honest coverage extrapolation to full writer set, grounded in M00-T07/T08 percentages.
 
-- [ ] **M00-T17** — Change-feed spike arm B: WAL logical decoding prototype
+- [x] **M00-T17** — Change-feed spike arm B: WAL logical decoding prototype (PR #12)
   - Depends on: M00-T15 · Output: prototype + `docs/reports/M00/spike-arm-wal.md`
   - Scope: logical decoding (pgoutput or equivalent) end-to-end in the harness: commit-ordered stream, filtered visibility, Neon compatibility, slot retention risk.
   - Acceptance:
