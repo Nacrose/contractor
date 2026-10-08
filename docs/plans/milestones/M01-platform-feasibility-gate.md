@@ -37,7 +37,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Renders a M00 CAD fixture (blocks/text/hatches/curves mix) with pan/zoom/selection/snap basics; frame-time p95/p99 and input latency recorded per §7 methodology on the declared minimum hardware.
     - Browser path exercised through the web rendering route, not a desktop-only code path (v3 §4 cross-platform rules).
 
-- [ ] **M01-T06** — Representative PDF measurement interaction prototype (desktop + web)
+- [x] **M01-T06** — Representative PDF measurement interaction prototype (desktop + web) (PR #22)
   - Depends on: M01-T02, M00-T11 · Output: prototype + `docs/reports/M01/proto-pdf.md`
   - Acceptance:
     - Tiled viewport, bounded decoded-page cache, cancellation and explicit disposal demonstrated on the 100+ page / 200 MB fixture and a dense single page (v3 §6 M01 + §7).

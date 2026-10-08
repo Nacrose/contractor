@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'storage/browser_storage_adapter.dart';
 import 'worksheet/worksheet_viewport.dart';
 import 'cad/cad_viewport.dart';
+import 'pdf/pdf_viewport.dart';
 
 void main() {
   runApp(const ContractorPrototypeApp());
@@ -314,28 +315,7 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
 
   // TAB 4: PDF Blueprint Viewport Prototype Test Bed
   Widget _buildPdfTakeoffPrototypeTab() {
-    return Center(
-      child: Card(
-        child: Container(
-          width: 500,
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.picture_as_pdf, size: 48, color: Color(0xFF06B6D4)),
-              SizedBox(height: 16),
-              Text('PDF Blueprint Takeoff Test Bed (M01-T06)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Text(
-                'Will be exercised with the 120-page adversarial architectural blueprint fixture from M00-T11 with bounded memory caching.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return const PdfViewport();
   }
 
   // TAB 5: Storage & Sync Engine Status
