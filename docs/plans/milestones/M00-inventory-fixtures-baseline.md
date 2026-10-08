@@ -81,7 +81,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Each workflow row carries: status class (implemented/partial/missing/unverified), central engine, current tests, target platforms, README-vs-reality discrepancy notes (v3 §3 risk: README describes online-first while offline code exists — resolve here).
     - Existing-product parity kept separate from requested additions and from full third-party compatibility claims (v3 §6 M00).
 
-- [ ] **M00-T11** — Capture and sanitize behavior fixtures (CAD, worksheet, PDF, CPM)
+- [x] **M00-T11** — Capture and sanitize behavior fixtures (CAD, worksheet, PDF, CPM) (PR #6)
   - Depends on: M00-T06 · Output: `fixtures/platform-parity/` index + `docs/reports/M00/fixture-register.md`
   - Scope: representative inputs incl. adverse/degenerate cases: DXF/DWG generations covered by `src/lib/dwg/`; workbook files at 50k/100k rows; 100+ page / 200 MB PDF plus dense single pages and scanned blueprints; CPM graphs at 10k tasks / 50k dependencies with Nepal calendar and constraint variants.
   - Acceptance:

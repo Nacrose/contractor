@@ -1,0 +1,31 @@
+{
+  "revision": "nepal-std-2026.1",
+  "timezone": "Asia/Kathmandu",
+  "provenance": "nepal_standard",
+  "hoursPerDay": 8,
+  "workingDays": [0, 1, 2, 3, 4, 5],
+  "exceptions": [
+    { "date": "2026-01-11", "isWorkingDay": false, "name": "Prithvi Jayanti" },
+    { "date": "2026-01-30", "isWorkingDay": false, "name": "Martyr's Day" },
+    { "date": "2026-02-15", "isWorkingDay": false, "name": "Maha Shivaratri" },
+    { "date": "2026-02-18", "isWorkingDay": false, "name": "Gyalpo Lhosar" },
+    { "date": "2026-03-08", "isWorkingDay": false, "name": "International Women's Day" },
+    { "date": "2026-03-12", "isWorkingDay": false, "name": "Phagu Purnima (Holi)" },
+    { "date": "2026-04-14", "isWorkingDay": false, "name": "Nepali New Year (Baisakh 1, 2083 BS)" },
+    { "date": "2026-05-01", "isWorkingDay": false, "name": "International Workers' Day" },
+    { "date": "2026-05-31", "isWorkingDay": false, "name": "Buddha Jayanti" },
+    { "date": "2026-07-15", "isWorkingDay": false, "name": "Monsoon Peak Site Flood Suspension Day 1" },
+    { "date": "2026-07-16", "isWorkingDay": false, "name": "Monsoon Peak Site Flood Suspension Day 2" },
+    { "date": "2026-07-17", "isWorkingDay": false, "name": "Monsoon Peak Site Flood Suspension Day 3" },
+    { "date": "2026-09-19", "isWorkingDay": false, "name": "Constitution Day (Sambidhan Diwas)" },
+    { "date": "2026-10-18", "isWorkingDay": false, "name": "Dashain (Phulpati)" },
+    { "date": "2026-10-19", "isWorkingDay": false, "name": "Dashain (Maha Ashtami)" },
+    { "date": "2026-10-20", "isWorkingDay": false, "name": "Dashain (Maha Navami)" },
+    { "date": "2026-10-21", "isWorkingDay": false, "name": "Dashain (Vijaya Dashami)" },
+    { "date": "2026-10-22", "isWorkingDay": false, "name": "Dashain (Ekadashi)" },
+    { "date": "2026-10-23", "isWorkingDay": false, "name": "Dashain (Dwadashi)" },
+    { "date": "2026-11-08", "isWorkingDay": false, "name": "Tihar (Laxmi Puja)" },
+    { "date": "2026-11-09", "isWorkingDay": false, "name": "Tihar (Govardhan Puja)" },
+    { "date": "2026-11-10", "isWorkingDay": false, "name": "Tihar (Bhai Tika)" }
+  ]
+}
