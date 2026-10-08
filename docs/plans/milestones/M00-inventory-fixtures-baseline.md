@@ -156,7 +156,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Lint passes on the current register (exit 0) and fails on a deliberately corrupted fixture copy (negative test).
     - CI workflow runs the lint on PRs touching `docs/plans/**`; failures block merge guidance recorded in the protocol (link added by a `[PROTOCOL-AMEND]` if needed).
 
-- [ ] **M00-T21** — 👤 GATE — M00 exit evidence and owner sign-off
+- [x] **M00-T21** — 👤 GATE — M00 exit evidence and owner sign-off (PR #16)
   - Depends on: M00-T07…T20 (all) · Output: gate PR `[M00-GATE]` aggregating: inventory set, behavior matrix, fixture register, baseline reports, spike decision record, capacity ratification.
   - Acceptance:
     - Every M00 task ticked with evidence; rollup shows 21/21 before the gate PR (except the gate task itself).
