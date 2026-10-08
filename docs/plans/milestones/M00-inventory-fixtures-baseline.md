@@ -6,7 +6,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
 
 ---
 
-- [x] **M00-T01** — Verify the `contractor` repository and record repository identities (PR:bootstrap)
+- [x] **M00-T01** — Verify the `contractor` repository and record repository identities (PR #1)
   - Depends on: none · Owner role: repository/domain architecture agent
   - Scope (v3 §1.1): read charter text, commits, working tree; confirm or rewrite the charter; record repository identities for the §4 cross-repository execution contract.
   - Output: findings recorded in ADR-0010; identities in this repo's records.
@@ -16,32 +16,32 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Deviations flagged to owner — **found: repo visibility is PUBLIC at verification time; flagged for owner decision (recommend private until deliberate open).**
     - Scaffold cruft (duplicate ADR copies at `docs/0001–0009.md`) removed; canonical set remains `docs/adr/0001–0009`.
 
-- [x] **M00-T02** — Adopt the AI-Agent Execution Protocol (PR:bootstrap)
+- [x] **M00-T02** — Adopt the AI-Agent Execution Protocol (PR #1)
   - Depends on: M00-T01 · Owner role: process/architecture agent
   - Output: `docs/rules/AI-AGENT-EXECUTION-PROTOCOL.md`.
   - Acceptance:
     - Protocol covers: plan-as-only-backlog, one-task-one-PR with in-PR tick, naming, PR body contract, Definition of Done, plan amendments, dependencies, owner-only gates, refinement-before-gate, evidence rule, repo-as-memory, secrets rule, rollup upkeep.
     - Protocol explicitly subordinates to v3 §2 instructions and §9 rejection criteria.
 
-- [x] **M00-T03** — Import platform plan v3 as the normative program reference (PR:bootstrap)
+- [x] **M00-T03** — Import platform plan v3 as the normative program reference (PR #1)
   - Depends on: M00-T02 · Output: `docs/plans/native-web-platform-plan-v3.md` (verbatim copy of the reviewed plan).
   - Acceptance:
     - File content identical to the reviewed v3 deliverable (572-line plan, revisions v2/v3 markers intact).
     - Referenced by the protocol and this register as the authority for scope, contracts, and exit gates.
 
-- [x] **M00-T04** — Record ADR-0010: evolve in place over greenfield rewrite (PR:bootstrap)
+- [x] **M00-T04** — Record ADR-0010: evolve in place over greenfield rewrite (PR #1)
   - Depends on: M00-T01, M00-T03 · Output: `docs/adr/0010-progressive-extension-over-greenfield-rewrite.md`.
   - Acceptance:
     - Decision, charter supersession, carry-over rules, verification findings, and consequences recorded per ADR conventions.
     - Status Accepted with owner direction cited; supersedes conflicting charter commitments only.
 
-- [x] **M00-T05** — Amend the `contractor` README charter to reference this program (PR:bootstrap)
+- [x] **M00-T05** — Amend the `contractor` README charter to reference this program (PR #1)
   - Depends on: M00-T04 · Output: updated `README.md`.
   - Acceptance:
     - Charter marked superseded-in-part by ADR-0010 with a pointer to the v3 plan and this register.
     - "Suggested first milestones" replaced by the register pointer; non-negotiables retained and mapped to where they now bind.
 
-- [x] **M00-T06** — Establish the master execution register and milestone files (PR:bootstrap)
+- [x] **M00-T06** — Establish the master execution register and milestone files (PR #1)
   - Depends on: M00-T02, M00-T03 · Output: `docs/plans/EXECUTION-PLAN.md` + 12 milestone files.
   - Acceptance:
     - M00/M01 decomposed to task level with acceptance criteria; M02–M11 at WP level with refinement-before-gate contracts (protocol R9).

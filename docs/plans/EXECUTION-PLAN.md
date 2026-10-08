@@ -60,7 +60,7 @@ Exact dependencies per task are declared inside each milestone file; the v3 plan
 
 ## Bootstrap record (founding PR)
 
-The bootstrap PR on branch `bootstrap/agent-governance` completed the governance layer and the v3 §1.1 repository verification, ticking:
+The bootstrap PR (#1) on branch `bootstrap/agent-governance` completed the governance layer and the v3 §1.1 repository verification, ticking:
 
 - `M00-T01` — contractor repository verified; identities recorded; stray `docs/0001–0009` duplicates removed (findings in [ADR-0010](../adr/0010-progressive-extension-over-greenfield-rewrite.md))
 - `M00-T02` — AI-Agent Execution Protocol adopted ([docs/rules/](../rules/AI-AGENT-EXECUTION-PROTOCOL.md))
