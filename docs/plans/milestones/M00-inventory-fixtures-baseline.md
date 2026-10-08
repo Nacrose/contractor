@@ -141,7 +141,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - If neither mechanism survives: explicit finding that M03's sync design must be revisited before any protocol freeze (v3 §6 M00) — escalated to owner, M03 marked at-risk in the rollup.
     - Ratification deadline respected: decision consumed by M03 start.
 
-- [ ] **M00-T19** — Ratify the capacity envelope, maintenance posture and performance budgets
+- [x] **M00-T19** — Ratify the capacity envelope, maintenance posture and performance budgets (PR #14)
   - Depends on: M00-T07, M00-T10, M00-T13 · Output: `docs/reports/M00/capacity-ratification.md` (+ plan amendment if bands change)
   - Scope: confirm or correct v3 §6.0 effort bands against the completed inventory; freeze the maintenance-posture table; ratify §7 initial budgets against declared hardware.
   - Acceptance:
