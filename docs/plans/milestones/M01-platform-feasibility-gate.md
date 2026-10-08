@@ -6,7 +6,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
 
 ---
 
-- [ ] **M01-T01** — Pin toolchains and license-reviewed binding strategy; stand up cross-platform CI
+- [x] **M01-T01** — Pin toolchains and license-reviewed binding strategy; stand up cross-platform CI (PR #17)
   - Depends on: M00-T21 (gate) · Output: `docs/reports/M01/toolchain.md` + CI workflow files
   - Acceptance:
     - Flutter/Dart (+ Rust if adopted later) versions pinned with license review; pinning rationale recorded.
