@@ -90,9 +90,9 @@ class RustCadGeometryBridgeSimulatedKernel implements CadGeometryKernel {
     final byteData = ByteData(bufferSize);
     // Warm up the measured closures so JIT compilation and one-off runtime
     // initialization do not dominate this very short microbenchmark.
-    final batchTransfer = () =>
+    double batchTransfer() =>
         Float32List.view(byteData.buffer).length.toDouble();
-    final perVertexTransfer = () {
+    double perVertexTransfer() {
       double dummy = 0.0;
       for (int i = 0; i < primitiveCount; i++) {
         dummy += i * 0.5; // Represents per-vertex FFI stub call
