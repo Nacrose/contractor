@@ -19,7 +19,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Shell boots on all available targets; screenshots/logs per target recorded in the PR.
     - Clearly labeled disposable (v3 M01 scope discipline); no domain formulas in widgets; no production feature code.
 
-- [ ] **M01-T03** — Browser target proof: startup and data access without native plugins or local server
+- [x] **M01-T03** — Browser target proof: startup and data access without native plugins or local server (PR #19)
   - Depends on: M01-T02 · Output: `docs/reports/M01/browser-proof.md`
   - Acceptance:
     - Flutter web build starts from static hosting with no local server and no native plugin dependency (v3 §6 M01).
