@@ -31,7 +31,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Virtualized grid subset driven by engine viewport/layout output handles a 50k-row fixture from M00.
     - Text input/IME, selection, clipboard, fonts, keyboard shortcuts exercised on desktop and web; gaps listed per platform (v3 §6 M01).
 
-- [ ] **M01-T05** — Representative CAD viewport prototype (desktop + web)
+- [x] **M01-T05** — Representative CAD viewport prototype (desktop + web) (PR #21)
   - Depends on: M01-T02, M00-T11 · Output: prototype + `docs/reports/M01/proto-cad.md`
   - Acceptance:
     - Renders a M00 CAD fixture (blocks/text/hatches/curves mix) with pan/zoom/selection/snap basics; frame-time p95/p99 and input latency recorded per §7 methodology on the declared minimum hardware.

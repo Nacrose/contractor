@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'storage/browser_storage_adapter.dart';
 import 'worksheet/worksheet_viewport.dart';
+import 'cad/cad_viewport.dart';
 
 void main() {
   runApp(const ContractorPrototypeApp());
@@ -48,11 +49,6 @@ class PrototypeShellHomePage extends StatefulWidget {
 
 class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
   int _selectedTabIndex = 0;
-
-  // CAD interactive viewport state
-  Offset _cadOffset = Offset.zero;
-  double _cadScale = 1.0;
-  Offset _mousePos = Offset.zero;
 
   // In-browser storage benchmark state (M01-T03)
   StorageBenchmarkResult? _storageBenchmarkResult;
@@ -313,43 +309,7 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
 
   // TAB 3: CAD Canvas Prototype Test Bed
   Widget _buildCadViewportPrototypeTab() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Text('CAD 2D Topology Viewport Prototype', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const Spacer(),
-              Text('Zoom: ${(_cadScale * 100).toInt()}%  Coords: (${_mousePos.dx.toInt()}, ${_mousePos.dy.toInt()})',
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: MouseRegion(
-                onHover: (e) => setState(() => _mousePos = e.localPosition),
-                child: GestureDetector(
-                  onScaleUpdate: (details) {
-                    setState(() {
-                      _cadScale = (_cadScale * details.scale).clamp(0.2, 5.0);
-                      _cadOffset += details.focalPointDelta;
-                    });
-                  },
-                  child: CustomPaint(
-                    size: Size.infinite,
-                    painter: CadViewportPainter(offset: _cadOffset, scale: _cadScale, mousePos: _mousePos),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return const CadViewport();
   }
 
   // TAB 4: PDF Blueprint Viewport Prototype Test Bed
@@ -608,67 +568,4 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
   }
 }
 
-// 2D Interactive CAD Viewport Painter (Pan, Zoom, Grid, Crosshairs)
-class CadViewportPainter extends CustomPainter {
-  final Offset offset;
-  final double scale;
-  final Offset mousePos;
 
-  CadViewportPainter({required this.offset, required this.scale, required this.mousePos});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final backgroundPaint = Paint()..color = const Color(0xFF0B132B);
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
-
-    final gridPaint = Paint()
-      ..color = const Color(0xFF1C2541)
-      ..strokeWidth = 0.5;
-
-    final gridSize = 40.0 * scale;
-    if (gridSize > 5) {
-      for (double x = (offset.dx % gridSize); x < size.width; x += gridSize) {
-        canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
-      }
-      for (double y = (offset.dy % gridSize); y < size.height; y += gridSize) {
-        canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
-      }
-    }
-
-    // Draw prototype test geometry (Building Foundation footprint)
-    canvas.save();
-    canvas.translate(offset.dx + size.width / 2, offset.dy + size.height / 2);
-    canvas.scale(scale);
-
-    final wallPaint = Paint()
-      ..color = const Color(0xFF06B6D4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0 / scale;
-
-    // Outer foundation perimeter
-    canvas.drawRect(const Rect.fromLTWH(-120, -80, 240, 160), wallPaint);
-
-    // Inner columns
-    final columnPaint = Paint()..color = const Color(0xFFF59E0B);
-    canvas.drawRect(const Rect.fromLTWH(-110, -70, 16, 16), columnPaint);
-    canvas.drawRect(const Rect.fromLTWH(94, -70, 16, 16), columnPaint);
-    canvas.drawRect(const Rect.fromLTWH(-110, 54, 16, 16), columnPaint);
-    canvas.drawRect(const Rect.fromLTWH(94, 54, 16, 16), columnPaint);
-
-    canvas.restore();
-
-    // Crosshairs following mouse pointer
-    if (mousePos != Offset.zero) {
-      final crosshairPaint = Paint()
-        ..color = const Color(0xFFEF4444).withValues(alpha: 0.6)
-        ..strokeWidth = 0.8;
-      canvas.drawLine(Offset(mousePos.dx, 0), Offset(mousePos.dx, size.height), crosshairPaint);
-      canvas.drawLine(Offset(0, mousePos.dy), Offset(size.width, mousePos.dy), crosshairPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CadViewportPainter oldDelegate) {
-    return oldDelegate.offset != offset || oldDelegate.scale != scale || oldDelegate.mousePos != mousePos;
-  }
-}
