@@ -98,7 +98,7 @@ class RustCadGeometryBridgeSimulatedKernel implements CadGeometryKernel {
         dummy += i * 0.5; // Represents per-vertex FFI stub call
       }
       return dummy;
-    };
+    }
     batchTransfer();
     perVertexTransfer();
 
