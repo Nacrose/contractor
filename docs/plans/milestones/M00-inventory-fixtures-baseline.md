@@ -112,7 +112,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Explicit "unsupported/best-effort" rows where coverage cannot be committed; no silent omissions.
     - Draft budgets for per-device memory/startup/download recorded as proposals for M01 to finalize (v3 §7).
 
-- [ ] **M00-T15** — Change-feed spike: build the evaluation harness
+- [x] **M00-T15** — Change-feed spike: build the evaluation harness (PR #10)
   - Depends on: M00-T07, M00-T08 · Output: `spike/change-feed/` harness + `docs/reports/M00/spike-harness.md`
   - Scope: disposable PostgreSQL (Neon-compatible) test rig with: late-commit scenario generator, crash/restart injection (kill -9 + restart), replication-slot retention monitoring, consumer-checkpoint store, duplicate-delivery injector.
   - Acceptance:
