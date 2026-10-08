@@ -75,7 +75,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Version coverage and **GPLv3** licensing implications of the libredwg-based converter recorded; out-of-process isolation and commercial alternatives evaluated as mitigations.
     - DWG carried as its own capability-matrix line (not a footnote beside PDF/XLSX); per-platform read/write coverage recorded.
 
-- [ ] **M01-T12** — PDF/DWG/XLSX dependency evaluation against the capability matrix
+- [x] **M01-T12** — PDF/DWG/XLSX dependency evaluation against the capability matrix (PR #6)
   - Depends on: M01-T06, M01-T11 · Output: `docs/reports/M01/dependency-matrix.md`
   - Acceptance:
     - Per dependency: platform support, licensing, fidelity, offline behavior (v3 §4 rule) — gaps, costs and platform constraints recorded instead of name-picking.
