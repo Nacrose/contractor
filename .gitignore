@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Builds
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Environment & secrets — NEVER commit
+.env
+.env.*
+!.env.example
+
+# Prisma
+prisma/*.db
+
+# Logs & misc
+*.log
+npm-debug.log*
+.DS_Store
+.idea/
+.vscode/
+*.swp
