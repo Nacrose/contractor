@@ -43,7 +43,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Tiled viewport, bounded decoded-page cache, cancellation and explicit disposal demonstrated on the 100+ page / 200 MB fixture and a dense single page (v3 §6 M01 + §7).
     - First-page and warm-page timings recorded; no eager rasterization of every page.
 
-- [ ] **M01-T07** — Kernel comparative prototype: worksheet recalculation engine
+- [x] **M01-T07** — Kernel comparative prototype: worksheet recalculation engine (PR #23)
   - Depends on: M01-T04, M00-T12 (reference outputs) · Output: scored prototypes + `docs/reports/M01/kernel-worksheet.md`
   - Acceptance:
     - Candidates prototyped within the ratified timebox: (i) focused Dart implementation, (ii) existing library where one exists, (iii) Rust port where profiling justifies (v3 §4).

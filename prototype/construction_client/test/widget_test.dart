@@ -15,6 +15,7 @@ void main() {
     expect(find.text('CAD View (M05)'), findsOneWidget);
     expect(find.text('PDF (M06)'), findsOneWidget);
     expect(find.text('Storage/Sync'), findsOneWidget);
+    expect(find.text('Kernel (M07)'), findsOneWidget);
 
     // Verify platform feasibility cards
     expect(find.text('Platform Feasibility Shell'), findsOneWidget);

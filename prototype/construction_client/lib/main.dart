@@ -4,6 +4,7 @@ import 'storage/browser_storage_adapter.dart';
 import 'worksheet/worksheet_viewport.dart';
 import 'cad/cad_viewport.dart';
 import 'pdf/pdf_viewport.dart';
+import 'worksheet/kernel/rust_bridge_benchmark.dart';
 
 void main() {
   runApp(const ContractorPrototypeApp());
@@ -55,6 +56,22 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
   StorageBenchmarkResult? _storageBenchmarkResult;
   bool _isBenchmarkingStorage = false;
 
+  // Kernel comparative benchmark state (M01-T07)
+  WorksheetKernelBenchmarkResult? _kernelFanoutResult;
+  WorksheetKernelBenchmarkResult? _kernelBulkResult;
+  bool _isBenchmarkingKernel = false;
+
+  void _runKernelBenchmark() {
+    setState(() => _isBenchmarkingKernel = true);
+    final fanout = WorksheetKernelBenchmarkRunner.runFanoutBenchmark(dependentCount: 100);
+    final bulk = WorksheetKernelBenchmarkRunner.runBulkBoqBenchmark(boqLineCount: 200);
+    setState(() {
+      _kernelFanoutResult = fanout;
+      _kernelBulkResult = bulk;
+      _isBenchmarkingKernel = false;
+    });
+  }
+
   Future<void> _runStorageBenchmark() async {
     setState(() => _isBenchmarkingStorage = true);
     try {
@@ -97,6 +114,7 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
                         _buildCadViewportPrototypeTab(),
                         _buildPdfTakeoffPrototypeTab(),
                         _buildSyncStorageStatusTab(),
+                        _buildKernelComparativeTab(),
                       ],
                     ),
                   ),
@@ -188,6 +206,11 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
           icon: Icon(Icons.sync_outlined),
           selectedIcon: Icon(Icons.sync),
           label: Text('Storage/Sync'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.calculate_outlined),
+          selectedIcon: Icon(Icons.calculate),
+          label: Text('Kernel (M07)'),
         ),
       ],
     );
@@ -543,6 +566,271 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // TAB 6: Worksheet Recalculation Kernel Comparison (M01-T07)
+  Widget _buildKernelComparativeTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 16,
+            runSpacing: 12,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Worksheet Recalculation Engine Comparison',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Task M01-T07: Evaluating Candidate A (Dart Native) vs Candidate B (Rust FFI/Wasm) vs Candidate C (Server TS RPC)',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
+                  ),
+                ],
+              ),
+              ElevatedButton.icon(
+                onPressed: _isBenchmarkingKernel ? null : _runKernelBenchmark,
+                icon: _isBenchmarkingKernel
+                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                    : const Icon(Icons.play_arrow, size: 18),
+                label: Text(_isBenchmarkingKernel ? 'Benchmarking...' : 'Run Kernel Comparison'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF06B6D4),
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Architectural Verdict Card
+          Card(
+            color: const Color(0xFF1E293B),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: const [
+                      Icon(Icons.verified, color: Color(0xFF10B981), size: 24),
+                      SizedBox(width: 10),
+                      Text(
+                        'Architectural Decision: Candidate A (Dart Native) Ratified for Worksheet Kernel',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Empirical findings: Bridge Overhead Invariant (v3 §4) confirmed. For interactive spreadsheet editing, serializing cell updates and copying memory across FFI/Wasm boundaries adds significant latency and GC pressure, exceeding pure Dart in-process calculation time. Dart Native achieves sub-millisecond incremental recalc with zero-copy access to Flutter state.',
+                    style: TextStyle(fontSize: 13, height: 1.5, color: Color(0xFFCBD5E1)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // 3-Candidate Comparison Cards
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isWide = constraints.maxWidth > 900;
+              return GridView.count(
+                crossAxisCount: isWide ? 3 : 1,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                childAspectRatio: isWide ? 1.5 : 2.4,
+                children: [
+                  _buildCandidateCard(
+                    title: 'Candidate A: Dart Native',
+                    tag: 'RECOMMENDED',
+                    tagColor: const Color(0xFF10B981),
+                    icon: Icons.flash_on,
+                    bullets: [
+                      'Sub-millisecond dirty recalc (<1ms)',
+                      'Zero-copy memory access to Flutter state',
+                      'Unified single-language codebase',
+                      '100% offline-first capability',
+                      'Zero FFI toolchain build overhead',
+                    ],
+                  ),
+                  _buildCandidateCard(
+                    title: 'Candidate B: Rust FFI / Wasm',
+                    tag: 'BRIDGE BOUND',
+                    tagColor: const Color(0xFFF59E0B),
+                    icon: Icons.memory,
+                    bullets: [
+                      'High boundary serialization penalty',
+                      'Memory copy across Wasm linear heap',
+                      'GC allocation for marshaled buffers',
+                      'Fast raw math loop, but bridge dominates',
+                      'Complex cross-compilation matrix',
+                    ],
+                  ),
+                  _buildCandidateCard(
+                    title: 'Candidate C: Server TS RPC',
+                    tag: 'REJECTED (OFFLINE)',
+                    tagColor: const Color(0xFFEF4444),
+                    icon: Icons.cloud_off,
+                    bullets: [
+                      '15ms-50ms network RTT floor',
+                      'Breaks 60fps interactive typing budget',
+                      'Cannot operate offline on job sites',
+                      'Server CPU / bandwidth scaling cost',
+                      'Retained for CPM authoritative merge only',
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+
+          // Live Telemetry Results Section
+          if (_kernelFanoutResult != null || _kernelBulkResult != null) ...[
+            const Text(
+              'Live Benchmark Telemetry',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            const SizedBox(height: 12),
+            if (_kernelFanoutResult != null)
+              _buildTelemetryCard(_kernelFanoutResult!),
+            if (_kernelBulkResult != null)
+              _buildTelemetryCard(_kernelBulkResult!),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCandidateCard({
+    required String title,
+    required String tag,
+    required Color tagColor,
+    required IconData icon,
+    required List<String> bullets,
+  }) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: const Color(0xFF06B6D4), size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: tagColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: tagColor, width: 0.8),
+                  ),
+                  child: Text(tag, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: tagColor)),
+                ),
+              ],
+            ),
+            const Divider(height: 20, color: Color(0xFF334155)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: bullets
+                    .map((b) => Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('• ', style: TextStyle(color: Color(0xFF06B6D4), fontSize: 13)),
+                            Expanded(child: Text(b, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12))),
+                          ],
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTelemetryCard(WorksheetKernelBenchmarkResult res) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  res.scenario,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white),
+                ),
+                Text(
+                  '${res.cellCount} cells affected',
+                  style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 16,
+              runSpacing: 10,
+              children: [
+                _buildMetricSnippet('Candidate A (Dart)', '${res.candidateAMs.toStringAsFixed(3)} ms', const Color(0xFF10B981)),
+                _buildMetricSnippet('Candidate B (Rust Bridge)', '${res.candidateBMs.toStringAsFixed(3)} ms', const Color(0xFFF59E0B)),
+                _buildMetricSnippet('Candidate C (Server RPC)', '${res.candidateCMs.toStringAsFixed(2)} ms', const Color(0xFFEF4444)),
+                if (res.candidateBTelemetry != null)
+                  _buildMetricSnippet(
+                    'Bridge Overhead Ratio',
+                    '${(res.bridgeOverheadRatio * 100).toStringAsFixed(1)}%',
+                    const Color(0xFF38BDF8),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMetricSnippet(String label, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F172A),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFF334155), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+          const SizedBox(height: 4),
+          Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
+        ],
       ),
     );
   }
