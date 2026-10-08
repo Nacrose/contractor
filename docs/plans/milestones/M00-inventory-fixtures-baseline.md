@@ -97,7 +97,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Reference outputs derived from existing tests PLUS independently reviewed domain expectations; known bugs are recorded as bugs, not preserved as expected behavior.
     - Skipped/unavailable checks recorded as skipped (never passed — protocol R10).
 
-- [ ] **M00-T13** — Performance baseline profile on recorded hardware
+- [x] **M00-T13** — Performance baseline profile on recorded hardware (PR #8)
   - Depends on: M00-T11 · Output: `docs/reports/M00/baseline-perf.md`
   - Scope: current worksheet recalculation (fresh evaluator/cache scan behavior, real formula graphs), CAD viewport render/selection, PDF decode, CPM calculation — measured, not estimated.
   - Acceptance:

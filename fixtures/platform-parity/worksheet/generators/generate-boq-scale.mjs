@@ -50,15 +50,15 @@ export function generateBoqWorkbook(rowCount = 50000, seed = 20261008) {
     const hgt = Number((item.hRange[0] + rand() * (item.hRange[1] - item.hRange[0])).toFixed(2));
     const rowIdx = r + 1; // 1-based row index for A1 notation
 
-    cells[`${r}:0`] = { value: r };
+    cells[`${r}:0`] = { value: String(r) };
     cells[`${r}:1`] = { value: item.code };
     cells[`${r}:2`] = { value: `${item.desc} (Segment ${r})` };
-    cells[`${r}:3`] = { value: nos };
-    cells[`${r}:4`] = { value: len };
-    cells[`${r}:5`] = { value: brd };
-    cells[`${r}:6`] = { value: hgt };
+    cells[`${r}:3`] = { value: String(nos) };
+    cells[`${r}:4`] = { value: String(len) };
+    cells[`${r}:5`] = { value: String(brd) };
+    cells[`${r}:6`] = { value: String(hgt) };
     cells[`${r}:7`] = { value: `=D${rowIdx}*E${rowIdx}*F${rowIdx}*G${rowIdx}`, formula: `=D${rowIdx}*E${rowIdx}*F${rowIdx}*G${rowIdx}` };
-    cells[`${r}:8`] = { value: item.rate };
+    cells[`${r}:8`] = { value: String(item.rate) };
     cells[`${r}:9`] = { value: `=H${rowIdx}*I${rowIdx}`, formula: `=H${rowIdx}*I${rowIdx}` };
   }
 
@@ -74,6 +74,7 @@ export function generateBoqWorkbook(rowCount = 50000, seed = 20261008) {
     sheets: [
       {
         id: "scale-boq-1",
+        name: `Scale BoQ ${rowCount} Rows`,
         title: `Scale BoQ ${rowCount} Rows`,
         rowCount: rowCount + 5,
         colCount: 10,

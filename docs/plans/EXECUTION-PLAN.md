@@ -22,7 +22,7 @@
 
 | Milestone | File | State | Done/Total | Gate |
 |---|---|---|---|---|
-| M00 Inventory, fixtures & baseline | [M00-inventory-fixtures-baseline.md](milestones/M00-inventory-fixtures-baseline.md) | **In progress** | 12/21 | M00-T21 `👤 GATE` — not reached |
+| M00 Inventory, fixtures & baseline | [M00-inventory-fixtures-baseline.md](milestones/M00-inventory-fixtures-baseline.md) | **In progress** | 13/21 | M00-T21 `👤 GATE` — not reached |
 | M01 Platform feasibility & performance gate | [M01-platform-feasibility-gate.md](milestones/M01-platform-feasibility-gate.md) | Blocked by M00 | 0/17 | M01-T17 `👤 GATE` — not reached |
 | M02 Central contracts & shared UX | [M02-contracts-shared-ux.md](milestones/M02-contracts-shared-ux.md) | Blocked by M01 (WP level; refine before M01 gate) | 0/8 | M02-T08 `👤 GATE` — not reached |
 | M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | Blocked by M02 (WP level) | 0/10 | M03-T10 `👤 GATE` — not reached |
@@ -34,7 +34,7 @@
 | M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/7 | M09-T07 `👤 GATE` — not reached |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
-| **Program total** | | | **12/118** | |
+| **Program total** | | | **13/118** | |
 
 ## Dependency graph
 
