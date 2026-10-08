@@ -58,7 +58,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Every writer relevant to the future change feed flagged (feeds M00-T15–T18).
     - Findings reconciled against the v3 §3 reuse-map rows (policy/lifecycle/finance, retry/events) — agreements and mismatches listed.
 
-- [ ] **M00-T08** — Inventory: background jobs, imports, admin tools and scripts (non-router writers)
+- [x] **M00-T08** — Inventory: background jobs, imports, admin tools and scripts (non-router writers) (PR #3)
   - Depends on: M00-T06 · Output: `docs/reports/M00/inventory-jobs-imports.md`
   - Scope: cron/background jobs, importers (XER/MSP/Excel), admin tooling, `scripts/`, seeds, reconciliation services — everything that writes domain data outside tRPC.
   - Acceptance:
