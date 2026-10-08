@@ -1,0 +1,669 @@
+{
+  "metadata": {
+    "generatedAt": "2026-10-08T16:34:41.362Z",
+    "sourceRepo": "Construction_Manager",
+    "totalWorkflows": 41,
+    "implementedCount": 39,
+    "partialCount": 2,
+    "missingCount": 0,
+    "unverifiedCount": 0
+  },
+  "workflows": [
+    {
+      "domain": "Field Operations",
+      "workflow": "Daily Site Log & Diary",
+      "description": "Capture daily site logs, weather conditions, hindrances, site notes, and general site progress from mobile/tablet.",
+      "status": "implemented",
+      "engine": "src/lib/field-entry-builders.ts, daily-report-sync.ts, field-submission.ts",
+      "tests": "src/server/routers/__tests__/field-submission.test.ts, daily-report.test.ts, field-entry-builders.test.ts",
+      "platforms": {
+        "webDesktop": "Partial (Office review)",
+        "webMobile": "Implemented (/m/log)",
+        "nativeMobile": "Target (M04)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "README claims \"online-first by design (no mobile app builds, no offline write replay)\". Reality: full offline mobile PWA (/m) with IndexedDB drafts, outbox queue, and server daily-report-sync exists and is heavily tested."
+    },
+    {
+      "domain": "Field Operations",
+      "workflow": "Field Photo Snap & Geotagging",
+      "description": "Site photo capture via device camera, automatic canvas compression (<=1280px JPEG q0.75), GPS stamping, and outbox sync.",
+      "status": "implemented",
+      "engine": "src/lib/field-photo.ts, src/server/routers/field-photos.ts, StoredFile",
+      "tests": "src/server/routers/__tests__/field-photos.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/photos)",
+        "nativeMobile": "Target (M04)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "README omits mobile photo compression and GPS tagging capability."
+    },
+    {
+      "domain": "Field Operations",
+      "workflow": "Site Petty Cash & Expense Logging",
+      "description": "Site engineer petty cash expense logging, receipt photo attachment, office verification gate.",
+      "status": "implemented",
+      "engine": "src/server/routers/site-expense.ts (createDomainRouter, financialGuard), field-submission.ts",
+      "tests": "src/server/routers/__tests__/site-expense.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/log)",
+        "nativeMobile": "Target (M05)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "Aligned with office review rule: expenses require office verification before financial posting."
+    },
+    {
+      "domain": "Field Operations",
+      "workflow": "Direct Site Material Delivery",
+      "description": "Receive materials directly at jobsite, record delivery note/challan, update site stock ledger with clientUuid idempotency.",
+      "status": "implemented",
+      "engine": "src/server/routers/material-transaction.ts (logDirectDelivery), field-outbox.ts",
+      "tests": "src/server/routers/__tests__/material-transaction.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/log)",
+        "nativeMobile": "Target (M05)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "Works offline via field-outbox despite README claiming no offline write replay."
+    },
+    {
+      "domain": "Field Operations",
+      "workflow": "Field Offline Query Persistence & Sync",
+      "description": "Read query caching in IndexedDB for offline viewing of projects, tasks, daily reports, and chat channels.",
+      "status": "implemented",
+      "engine": "src/lib/field-query-persist.ts, field-db.ts (store queries), public/sw.js",
+      "tests": "src/lib/__tests__/field-query-persist.test.ts, offline-resilience.test.ts",
+      "platforms": {
+        "webDesktop": "Not applicable",
+        "webMobile": "Implemented (/m)",
+        "nativeMobile": "Target (M03 SQLite)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "Contradicts README statement that authenticated state is never stored in browser storage."
+    },
+    {
+      "domain": "Contractual BoQ & Rate Analysis",
+      "workflow": "BoQ Item Hierarchy & Quantities",
+      "description": "Multi-level contractual BoQ tree structure (Bill, Sub-bill, Item) with contract rates, quantities, and amounts.",
+      "status": "implemented",
+      "engine": "src/server/routers/boq.ts, src/server/utils/boq-calc.ts",
+      "tests": "src/server/routers/__tests__/boq.test.ts, boq-calc.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target (M06)",
+        "nativeDesktop": "Target (M06)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None — core desktop engine as documented in README."
+    },
+    {
+      "domain": "Contractual BoQ & Rate Analysis",
+      "workflow": "Government Rate Analysis (DoR/DUDBC Norms)",
+      "description": "Detailed unit rate breakdown into labor, material, equipment, and contractor overhead/profit per Nepal public procurement standards.",
+      "status": "implemented",
+      "engine": "src/server/routers/rate-analysis.ts, src/server/utils/boq-calc.ts",
+      "tests": "src/server/routers/__tests__/rate-analysis.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target (M06)",
+        "nativeDesktop": "Target (M06)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Contractual BoQ & Rate Analysis",
+      "workflow": "Rate Profiles & Market Rate Revisions",
+      "description": "Tenant-wide and project-specific material/labor rate profiles with market rate adjustment logs.",
+      "status": "implemented",
+      "engine": "src/server/routers/rate-profile.ts, rate-profile-refresh.ts",
+      "tests": "src/server/routers/__tests__/rate-profile.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Contractual BoQ & Rate Analysis",
+      "workflow": "BoQ Versioning & Change Comparison",
+      "description": "Snapshot contractual BoQ versions (As-Awarded, Revision 1, Variation Order) and compare delta.",
+      "status": "implemented",
+      "engine": "src/server/routers/boq-version.ts, boq-snapshot.ts",
+      "tests": "src/server/routers/__tests__/boq-version.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Billing, IPC & Invoicing",
+      "workflow": "Interim Payment Certificate (IPC) Preparation",
+      "description": "Running bill generation from BoQ items, previous/this bill cumulative quantities, and deduction schedules.",
+      "status": "implemented",
+      "engine": "src/server/routers/ipc.ts, recalculate-ipc.ts, sync-ipc-workbook.ts",
+      "tests": "src/server/routers/__tests__/ipc.test.ts, recalculate-ipc.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Billing, IPC & Invoicing",
+      "workflow": "Contract Deductions & Advance Recovery",
+      "description": "Automated retention money deduction (typically 5%), mobilization advance recovery amortized across bills, and tax withholding.",
+      "status": "implemented",
+      "engine": "src/server/routers/ipc.ts, src/server/utils/retention.ts",
+      "tests": "src/server/routers/__tests__/ipc.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Billing, IPC & Invoicing",
+      "workflow": "Price Escalation Billing (FIDIC / Standard Formula)",
+      "description": "Labor, fuel, and material price index adjustment formula calculations for public infrastructure contracts.",
+      "status": "partial",
+      "engine": "src/server/routers/ipc.ts (formula helpers in lib/money)",
+      "tests": "src/server/routers/__tests__/ipc.test.ts",
+      "platforms": {
+        "webDesktop": "Partial",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "Index formula entry is partially implemented; manual input required for monthly published DoR price indices."
+    },
+    {
+      "domain": "Billing, IPC & Invoicing",
+      "workflow": "VAT Register & Tax Invoicing",
+      "description": "Annex-5/Annex-7 standard sales & purchase VAT register for Nepal Inland Revenue Department (IRD).",
+      "status": "implemented",
+      "engine": "src/server/routers/vat-register.ts, src/server/utils/vat-registers.ts",
+      "tests": "src/server/routers/__tests__/vat-register.test.ts, vat-registers.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Procurement & Supply Chain",
+      "workflow": "Site Purchase Requisitions & Approval",
+      "description": "Site engineer material demand requisition, multi-level capability approval, item quote comparison.",
+      "status": "implemented",
+      "engine": "src/server/routers/requisition.ts, state-machine.ts",
+      "tests": "src/server/routers/__tests__/requisition.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m)",
+        "nativeMobile": "Target (M05)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Procurement & Supply Chain",
+      "workflow": "Purchase Orders (PO) Generation & Tracking",
+      "description": "Official PO generation with sequence numbering, delivery schedules, payment terms, and vendor dispatch.",
+      "status": "implemented",
+      "engine": "src/server/routers/purchase-order.ts, sequence-generator.ts",
+      "tests": "src/server/routers/__tests__/purchase-order.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Procurement & Supply Chain",
+      "workflow": "Warehouse Inventory & Stock Ledgers",
+      "description": "Multi-store material receipt, stock issues, bin cards, moving average valuation, and physical reconciliation.",
+      "status": "implemented",
+      "engine": "src/server/routers/material.ts, inventory-valuation.ts, stock-count.ts",
+      "tests": "src/server/routers/__tests__/material.test.ts, inventory-valuation.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Procurement & Supply Chain",
+      "workflow": "Inter-Site Material Transfers",
+      "description": "Transfer material between projects/stores with dispatch challan, transit tracking, and gate receipt acknowledgment.",
+      "status": "implemented",
+      "engine": "src/server/routers/inter-site-transfer.ts",
+      "tests": "src/server/routers/__tests__/inter-site-transfer.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Equipment Management & Fuel",
+      "workflow": "Fleet Registry & Rental Contracts",
+      "description": "Internal & vendor equipment asset tracking, hourly/monthly rental contracts, billing runs, and maintenance logs.",
+      "status": "implemented",
+      "engine": "src/server/routers/equipment.ts, equipment-rental.ts, equipment-core.ts",
+      "tests": "src/server/routers/__tests__/equipment.test.ts, equipment-rental.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Equipment Management & Fuel",
+      "workflow": "Daily Fuel Dispensing & Dip-Reading Reconciliation",
+      "description": "Fuel bowser / storage tank dip-readings, per-machine fuel issue logs, operating hours, and loss variance audit.",
+      "status": "implemented",
+      "engine": "src/server/routers/equipment-fuel.ts, src/server/services/equipment-fuel.ts",
+      "tests": "src/server/routers/__tests__/equipment-fuel.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/log)",
+        "nativeMobile": "Target (M05)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Equipment Management & Fuel",
+      "workflow": "Spot-Hire Equipment Work Orders",
+      "description": "Emergency local machine spot-hire with automated verification and hourly rate reconciliation.",
+      "status": "implemented",
+      "engine": "src/server/routers/equipment-spot-hire.ts, src/server/utils/equipment-spot-hire.test.ts",
+      "tests": "src/server/routers/__tests__/equipment-spot-hire.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Workforce, HR & Payroll",
+      "workflow": "Person-Grain Identity & Employment Contracts",
+      "description": "Physical person identity separated from login accounts (ADR-0005); multi-project staff assignments.",
+      "status": "implemented",
+      "engine": "src/server/services/workforce.ts, src/server/routers/hr.ts, people-access.ts",
+      "tests": "src/server/routers/__tests__/hr.test.ts, people-access.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Workforce, HR & Payroll",
+      "workflow": "Staff Attendance & Leave Management",
+      "description": "Daily muster roll attendance, leave balance tracking, public holiday calendar integration (Nepal BS calendar).",
+      "status": "implemented",
+      "engine": "src/server/routers/leave.ts, src/server/utils/holiday-db.ts",
+      "tests": "src/server/routers/__tests__/leave.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m)",
+        "nativeMobile": "Target (M05)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Workforce, HR & Payroll",
+      "workflow": "Payroll Calculation & Person Allocations (ADR-0007)",
+      "description": "Monthly payroll runs, gross salary, tax withholding, provident fund / citizen investment trust deductions, and project cost allocations.",
+      "status": "implemented",
+      "engine": "src/server/routers/payroll.ts, src/server/utils/payroll-calc.ts, payroll-allocation.ts",
+      "tests": "src/server/routers/__tests__/payroll.test.ts, payroll-calc.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Accounting & Bahi Khata",
+      "workflow": "Day Book (Bahi Khata) & Project Ledgers",
+      "description": "Lightweight Tally / Swastik-compatible single and double-entry day book statements, cash/bank accounts, and journal vouchers.",
+      "status": "implemented",
+      "engine": "src/server/routers/accounting.ts, src/lib/journal-entry.ts, ledger-entry.ts",
+      "tests": "src/server/routers/__tests__/accounting.test.ts, ledger-entry.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Accounting & Bahi Khata",
+      "workflow": "Bank Guarantee Expiration & Release",
+      "description": "Performance bonds, bid bonds, and advance payment guarantees with bank tracking, counter-guarantees, and automated expiry sweeps.",
+      "status": "implemented",
+      "engine": "src/server/routers/bank-guarantee.ts, background-jobs.ts (sweepExpiredBankGuarantees)",
+      "tests": "src/server/routers/__tests__/bank-guarantee.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Accounting & Bahi Khata",
+      "workflow": "Fiscal Year Boundary Locks (ADR-0001)",
+      "description": "Strict fiscal period freezing preventing back-dated postings or edits to financial records in closed periods.",
+      "status": "implemented",
+      "engine": "src/server/routers/fiscal-year.ts, src/lib/fiscal-year-lock.ts",
+      "tests": "src/server/routers/__tests__/fiscal-year.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Enforced by API",
+        "nativeMobile": "Enforced by API",
+        "nativeDesktop": "Enforced by API"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "CAD Drawings & Geometry",
+      "workflow": "AutoCAD DXF / DWG Viewer",
+      "description": "Vector CAD viewer supporting AutoCAD DXF and binary DWG files, layer toggling, zoom/pan, coordinate display.",
+      "status": "implemented",
+      "engine": "src/lib/dxf/dxf-parser.ts, dxf-render.ts, src/lib/dwg/dwg-native.ts, src/components/cad/",
+      "tests": "src/lib/dxf/dxf-parser.test.ts, dxf-render.test.ts, src/lib/dwg/dwg-native.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented (WebGL/Canvas)",
+        "webMobile": "Partial (View only)",
+        "nativeMobile": "Target (M07)",
+        "nativeDesktop": "Target (M07)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "CAD engine recently expanded in PR #162 (feat/autocad-parity-engine-v2). Web performance limited on 100k+ entity models."
+    },
+    {
+      "domain": "CAD Drawings & Geometry",
+      "workflow": "Interactive CAD Command Engine",
+      "description": "AutoCAD-style command bar (LINE, PLINE, CIRCLE, ARC, DIST, AREA, ERASE, UNDO/REDO) and entity snapping.",
+      "status": "implemented",
+      "engine": "src/lib/cad/command-registry.ts, entity-ops.ts, geom.ts",
+      "tests": "src/lib/cad/__tests__/command-registry.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Not feasible (touch)",
+        "nativeMobile": "Tablet only",
+        "nativeDesktop": "Target (M07)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "CAD Drawings & Geometry",
+      "workflow": "CAD Plotting & Vector Export",
+      "description": "Export CAD viewport and layouts to vector PDF and SVG with scale bar, north arrow, and border templates.",
+      "status": "implemented",
+      "engine": "src/lib/cad/plot-engine.ts, src/lib/dxf/dxf-to-svg.ts",
+      "tests": "src/lib/cad/__tests__/plot-engine.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Takeoff & Document Engine",
+      "workflow": "PDF Blueprint Viewer & Calibration",
+      "description": "Multi-page PDF drawing viewer with arbitrary line scale calibration (known dimension setting) in metric/imperial.",
+      "status": "implemented",
+      "engine": "src/lib/document-engine/measurement.ts, pdfjs-dist, src/components/pdf-canvas/",
+      "tests": "src/lib/document-engine/__tests__/measurement.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Partial",
+        "nativeMobile": "Target (M08)",
+        "nativeDesktop": "Target (M08)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Takeoff & Document Engine",
+      "workflow": "Measurement Takeoff & BoQ Linking",
+      "description": "Polygon area takeoff, linear polyline measurement, and count stamps linked to specific BoQ item quantities.",
+      "status": "implemented",
+      "engine": "src/lib/pdf-canvas/, src/server/routers/document.ts (saveMarkups)",
+      "tests": "src/components/pdf-canvas/__tests__/storage-db.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target (M08)",
+        "nativeDesktop": "Target (M08)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "Markup persistence uses 1-based page indices while PDF document APIs use 0-based index. Documented as risk in v3 §3."
+    },
+    {
+      "domain": "CPM Scheduling & Gantt",
+      "workflow": "Interactive Gantt Chart Timeline",
+      "description": "Interactive task bar dragging, progress tracking, milestone rendering, and WBS outline levels.",
+      "status": "implemented",
+      "engine": "src/server/routers/gantt.ts, src/server/services/scheduler/progress.ts",
+      "tests": "src/server/routers/__tests__/gantt.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only",
+        "nativeMobile": "Target (M09)",
+        "nativeDesktop": "Target (M09)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "CPM Scheduling & Gantt",
+      "workflow": "Critical Path Method (CPM) Engine",
+      "description": "Forward pass / backward pass early/late date calculation, total float, free float, and critical path identification.",
+      "status": "implemented",
+      "engine": "src/lib/cpm-engine.ts, src/server/utils/gantt-cpm-engine.ts",
+      "tests": "src/server/utils/__tests__/gantt-cpm.test.ts, cpm-engine.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Server-side",
+        "nativeMobile": "Target (M09 Shared Kernel)",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "Calculation currently duplicated across TypeScript client and server. Plan v3 §3 targets a single portable core."
+    },
+    {
+      "domain": "CPM Scheduling & Gantt",
+      "workflow": "Bikram Sambat (BS) & Working Calendar",
+      "description": "Official Nepal Bikram Sambat calendar conversions, Saturday weekend rules, and government holiday schedules.",
+      "status": "implemented",
+      "engine": "src/lib/nepali-calendar.ts, date-miti.ts, src/lib/calendar-snapshot.ts",
+      "tests": "src/lib/__tests__/nepal-calendar.test.ts, date-miti.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented",
+        "nativeMobile": "Target (M09)",
+        "nativeDesktop": "Target (M09)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "CPM Scheduling & Gantt",
+      "workflow": "Primavera P6 & MS Project Schedule Import",
+      "description": "Import enterprise Primavera .xer and Microsoft Project .xml schedules into native Gantt task hierarchy.",
+      "status": "implemented",
+      "engine": "src/server/utils/xer-import.ts, msp-import.ts, msp-export.ts",
+      "tests": "src/server/utils/__tests__/xer-import.test.ts, msp-import-security.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Worksheets & Virtual Grid",
+      "workflow": "Excel-Compatible Virtual Grid Spreadsheet",
+      "description": "High-performance virtual scrolling grid with formula evaluation, cell formatting, merging, and formulas.",
+      "status": "implemented",
+      "engine": "src/lib/worksheet/spreadsheet-engine.ts, virtual-grid.ts, formula-engine.ts",
+      "tests": "src/lib/worksheet/__tests__/spreadsheet-engine.test.ts, formula-engine.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Not feasible (touch grid)",
+        "nativeMobile": "Tablet only",
+        "nativeDesktop": "Target (M06)"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "Recalculation currently re-scans workbook cells without an incremental dependency DAG. Target M06 optimizes this."
+    },
+    {
+      "domain": "Worksheets & Virtual Grid",
+      "workflow": "Excel (.xlsx) Round-Trip Import / Export",
+      "description": "Import and export complex multi-sheet Excel files preserving formula text, numbers, and basic formatting.",
+      "status": "implemented",
+      "engine": "src/lib/worksheet/workbook-excel.ts (@e965/xlsx)",
+      "tests": "src/lib/worksheet/__tests__/workbook-excel.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Joint Ventures & Governance",
+      "workflow": "Joint Venture (JV) Partner Agreements & Profit Sharing",
+      "description": "Multi-party contractor JV agreements, equity share ratios, capital contributions, and dividend payouts.",
+      "status": "implemented",
+      "engine": "src/server/routers/jv-partner.ts (createDomainRouter, financialGuard)",
+      "tests": "src/server/routers/__tests__/jv-partner.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Joint Ventures & Governance",
+      "workflow": "RFI & Submittal Workflow Lifecycles",
+      "description": "Formal Request for Information (RFI) and Material Submittal workflows with PDF export and approval states.",
+      "status": "implemented",
+      "engine": "src/server/routers/workflow.ts, rfi.ts, submittal.ts, state-machine.ts",
+      "tests": "src/server/routers/__tests__/rfi.test.ts, submittal.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m)",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Joint Ventures & Governance",
+      "workflow": "Responsibility Handover & Delegation Rules",
+      "description": "Formal site handover protocol reassigning pending approvals and role scopes upon engineer transfer.",
+      "status": "implemented",
+      "engine": "src/server/routers/responsibility-handover.ts, src/server/services/responsibility-handover.ts",
+      "tests": "src/server/routers/__tests__/responsibility-handover.test.ts",
+      "platforms": {
+        "webDesktop": "Implemented",
+        "webMobile": "None",
+        "nativeMobile": "Target",
+        "nativeDesktop": "Target"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "None."
+    },
+    {
+      "domain": "Joint Ventures & Governance",
+      "workflow": "Analytical Dashboard & Management KPIs",
+      "description": "Executive project summaries, cash flow graphs, and cross-project performance gauges.",
+      "status": "partial",
+      "engine": "src/server/routers/dashboard.ts, financial-reporting.ts",
+      "tests": "src/server/routers/__tests__/dashboard.test.ts",
+      "platforms": {
+        "webDesktop": "Partial (Deferred Policy)",
+        "webMobile": "None",
+        "nativeMobile": "Deferred",
+        "nativeDesktop": "Deferred"
+      },
+      "parityType": "existing-product",
+      "readmeDiscrepancy": "README explicitly mandates \"Dashboard Deferred Policy: analytical dashboard is built last\". Maintenance posture confirms Defer / Do Not Start."
+    }
+  ]
+}

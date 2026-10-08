@@ -74,7 +74,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Existing offline workflows enumerated with their current submission/replay semantics.
     - Document formats listed with producing/consuming engine and compatibility status.
 
-- [ ] **M00-T10** — Feature matrix as implemented (implemented / partial / missing / unverified)
+- [x] **M00-T10** — Feature matrix as implemented (implemented / partial / missing / unverified) (PR #5)
   - Depends on: M00-T07, M00-T08, M00-T09 · Output: `docs/reports/M00/feature-matrix.md`
   - Scope: all user-visible workflows (field ops, billing/IPC, procurement, workforce/HR, accounting, documents/CAD, worksheets/BoQ, scheduling, JV, admin).
   - Acceptance:
