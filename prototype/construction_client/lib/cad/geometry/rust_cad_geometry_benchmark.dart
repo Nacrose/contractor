@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'cad_geometry_interface.dart';
 import 'dart_cad_geometry_kernel.dart';
 
@@ -46,7 +47,13 @@ class RustCadGeometryBridgeSimulatedKernel implements CadGeometryKernel {
     double radius, {
     TolerancePolicy tolerance = const TolerancePolicy(),
   }) {
-    return _innerKernel.intersectSegmentCircle(p1, p2, center, radius, tolerance: tolerance);
+    return _innerKernel.intersectSegmentCircle(
+      p1,
+      p2,
+      center,
+      radius,
+      tolerance: tolerance,
+    );
   }
 
   @override
@@ -55,7 +62,11 @@ class RustCadGeometryBridgeSimulatedKernel implements CadGeometryKernel {
     double offsetDistance, {
     TolerancePolicy tolerance = const TolerancePolicy(),
   }) {
-    return _innerKernel.computePolylineOffset(polyline, offsetDistance, tolerance: tolerance);
+    return _innerKernel.computePolylineOffset(
+      polyline,
+      offsetDistance,
+      tolerance: tolerance,
+    );
   }
 
   @override
@@ -74,27 +85,42 @@ class RustCadGeometryBridgeSimulatedKernel implements CadGeometryKernel {
   /// Measures compact batch transfer vs forbidden per-vertex bridge calls
   CadBridgeTelemetry benchmarkRenderingAdapter(int primitiveCount) {
     // 1. Path A (v3 §4 compliant): Compact Float32List batch transfer
-    final bufferSize = primitiveCount * 8 * 4; // 8 floats (32 bytes) per primitive
+    final bufferSize =
+        primitiveCount * 8 * 4; // 8 floats (32 bytes) per primitive
     final byteData = ByteData(bufferSize);
-    final batchSw = Stopwatch()..start();
-    // Simulate Rust memory buffer passed via pointer into Dart Float32List.view
-    final batchView = Float32List.view(byteData.buffer);
-    // Single contiguous copy / view creation
-    final _ = batchView.length;
-    batchSw.stop();
-    final batchMicros = batchSw.elapsedMicroseconds.toDouble() + 15.0; // 15us FFI call overhead
-
-    // 2. Path B (Anti-pattern forbidden by v3 §4): Per-vertex bridge calls
-    final vertexSw = Stopwatch()..start();
-    // Incur FFI call boundary crossing (~0.05us per call) for every vertex
-    double dummy = 0.0;
-    for (int i = 0; i < primitiveCount; i++) {
-      dummy += i * 0.5; // Represents per-vertex FFI stub call
+    // Warm up the measured closures so JIT compilation and one-off runtime
+    // initialization do not dominate this very short microbenchmark.
+    double batchTransfer() =>
+        Float32List.view(byteData.buffer).length.toDouble();
+    double perVertexTransfer() {
+      double dummy = 0.0;
+      for (int i = 0; i < primitiveCount; i++) {
+        dummy += i * 0.5; // Represents per-vertex FFI stub call
+      }
+      return dummy;
     }
-    final _ = dummy;
-    vertexSw.stop();
-    // Baseline FFI call penalty on 5k calls is typically 2.5ms to 8ms
-    final perVertexMicros = vertexSw.elapsedMicroseconds.toDouble() + (primitiveCount * 1.2);
+    batchTransfer();
+    perVertexTransfer();
+
+    // Take several samples and compare medians. A single Stopwatch sample
+    // at sub-millisecond scale is too sensitive to scheduler noise in CI.
+    double medianMicros(double Function() measure) {
+      final samples = <double>[];
+      for (var i = 0; i < nineSamples; i++) {
+        final sw = Stopwatch()..start();
+        measure();
+        sw.stop();
+        samples.add(sw.elapsedMicroseconds.toDouble());
+      }
+      samples.sort();
+      return samples[samples.length ~/ 2];
+    }
+
+    final batchMicros =
+        medianMicros(batchTransfer) + 15.0; // 15us FFI call overhead
+    // Baseline FFI call penalty on 2k calls is modeled at 2.4ms.
+    final perVertexMicros =
+        medianMicros(perVertexTransfer) + (primitiveCount * 1.2);
 
     return CadBridgeTelemetry(
       entityCount: primitiveCount,
@@ -104,6 +130,8 @@ class RustCadGeometryBridgeSimulatedKernel implements CadGeometryKernel {
     );
   }
 }
+
+const nineSamples = 9;
 
 /// CAD Geometry Comparative Benchmark Suite (M01-T09)
 class CadGeometryBenchmarkRunner {
