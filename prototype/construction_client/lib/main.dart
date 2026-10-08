@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'storage/browser_storage_adapter.dart';
+import 'worksheet/worksheet_viewport.dart';
 
 void main() {
   runApp(const ContractorPrototypeApp());
@@ -307,56 +308,7 @@ class _PrototypeShellHomePageState extends State<PrototypeShellHomePage> {
 
   // TAB 2: Worksheet Prototype Test Bed
   Widget _buildWorksheetPrototypeTab() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: const [
-              Text('Worksheet Grid Viewport Prototype (50k Fixture Test Bed)',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Spacer(),
-              Chip(label: Text('M01-T04 Viewport Simulator', style: TextStyle(fontSize: 12))),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: Card(
-              child: ListView.builder(
-                itemCount: 500, // Virtualized test list demonstrating row recycling
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Color(0xFF334155), width: 0.5)),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 50,
-                          child: Text('${index + 1}', style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text('Item ${index + 1}.01: Excavation & Shoring', style: const TextStyle(fontSize: 13)),
-                        ),
-                        Expanded(
-                          child: Text('${(index + 1) * 12.5} m³', style: const TextStyle(fontSize: 13, color: Color(0xFF94A3B8))),
-                        ),
-                        Expanded(
-                          child: Text('NPR ${(index + 1) * 450}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return const WorksheetViewport();
   }
 
   // TAB 3: CAD Canvas Prototype Test Bed

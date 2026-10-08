@@ -25,7 +25,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Flutter web build starts from static hosting with no local server and no native plugin dependency (v3 §6 M01).
     - Data access path exercised in-browser ( IndexedDB/OPFS or equivalent adapter) with results recorded; cache-durability dependency explicitly avoided (v3 §4 rule).
 
-- [ ] **M01-T04** — Representative worksheet interaction prototype (desktop + web)
+- [x] **M01-T04** — Representative worksheet interaction prototype (desktop + web) (PR #20)
   - Depends on: M01-T02, M00-T11 (fixtures) · Output: prototype + `docs/reports/M01/proto-worksheet.md`
   - Acceptance:
     - Virtualized grid subset driven by engine viewport/layout output handles a 50k-row fixture from M00.
