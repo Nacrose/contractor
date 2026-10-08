@@ -89,7 +89,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Degenerate/adverse inputs included per engine (near-coincident geometry, cyclic dependencies, volatile functions, mixed page sizes).
     - Fixture manifest versioned; generation seeds recorded where synthetic.
 
-- [ ] **M00-T12** — Establish reference outputs and the honest test baseline
+- [x] **M00-T12** — Establish reference outputs and the honest test baseline (PR #7)
   - Depends on: M00-T11 · Output: `docs/reports/M00/baseline-tests.md`
   - Scope: run the preserved command set — `npm run ci:verify`, `npm run test:integration`, `npx vitest run src/lib/worksheet`, scoped CAD/document/CPM suites — and record results as-is.
   - Acceptance:
