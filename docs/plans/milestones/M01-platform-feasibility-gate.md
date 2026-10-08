@@ -50,7 +50,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Each scored on: performance vs ratified budgets on minimum hardware, correctness vs shared fixtures, interoperability across native/web/server targets, maintenance/licensing cost. No fixed multiplier qualifies/disqualifies (v3 §4).
     - Worksheet expected as the strongest binding-heavy candidate for a non-Dart kernel — verdict recorded either way.
 
-- [ ] **M01-T08** — Kernel comparative prototype: CPM/scheduling
+- [x] **M01-T08** — Kernel comparative prototype: CPM/scheduling (PR #24)
   - Depends on: M01-T04 (harness reuse) · Output: scored prototypes + `docs/reports/M01/kernel-cpm.md`
   - Acceptance:
     - CPM semantics (inclusive dates, calendars, lag hours, constraints) exercised via M00 fixtures against candidates; server-authoritative TypeScript retention evaluated as the expected outcome (v3 §4).
