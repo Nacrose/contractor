@@ -68,7 +68,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Rendering/decoding candidates scored on memory bounds, cancellation, platform coverage (incl. web) and licensing.
     - Decision inputs consolidated for the M01 report; no package selected by name alone (v3 §6 M01).
 
-- [ ] **M01-T11** — DWG dependency spike (dedicated)
+- [x] **M01-T11** — DWG dependency spike (dedicated) (PR #5)
   - Depends on: M00-T09, M00-T11 · Output: `docs/reports/M01/dwg-spike.md`
   - Acceptance:
     - Existing TypeScript DWG reader (`src/lib/dwg/` incl. `dwg-native.ts`) inventoried: generations covered, gaps, extension feasibility vs external converters per platform (v3 §6 M01).
