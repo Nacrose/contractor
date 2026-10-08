@@ -149,7 +149,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Maintenance posture frozen: what is Maintained / Frozen / Continued / Deferred, named explicitly (v3 §6.0 table).
     - §7 budgets ratified or amendment-proposed; no budget silently lowered (protocol R6 if changed).
 
-- [ ] **M00-T20** — Protocol lint: enforce the register mechanically
+- [x] **M00-T20** — Protocol lint: enforce the register mechanically (PR #15)
   - Depends on: M00-T06 · Output: `scripts/lint-protocol.mjs` + `.github/workflows/lint-protocol.yml` in this repo
   - Scope: a script that validates: every task ID referenced in PR titles exists; every ticked task carries a `(PR #N)` reference; rollup counts match milestone files; checkbox syntax is well-formed.
   - Acceptance:

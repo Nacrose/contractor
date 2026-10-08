@@ -1,0 +1,38 @@
+name: Lint Protocol & Execution Register
+
+on:
+  pull_request:
+    paths:
+      - 'docs/plans/**'
+      - 'scripts/lint-protocol.mjs'
+      - '.github/workflows/lint-protocol.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/plans/**'
+      - 'scripts/lint-protocol.mjs'
+
+jobs:
+  lint-register:
+    name: Enforce Protocol & Register Rules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Protocol Register Linter
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          node scripts/lint-protocol.mjs
+
+      - name: Run Protocol Linter Negative Test Suite
+        run: |
+          node scripts/test-lint-protocol.mjs
