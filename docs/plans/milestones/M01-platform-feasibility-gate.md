@@ -56,7 +56,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - CPM semantics (inclusive dates, calendars, lag hours, constraints) exercised via M00 fixtures against candidates; server-authoritative TypeScript retention evaluated as the expected outcome (v3 §4).
     - Any client-side port classified per instruction 9 governance (temporary duplicate: owner, fixtures, removal gate).
 
-- [ ] **M01-T09** — Kernel comparative prototype: geometry/CAD primitives
+- [x] **M01-T09** — Kernel comparative prototype: geometry/CAD primitives (PR #25)
   - Depends on: M01-T05 · Output: scored prototypes + `docs/reports/M01/kernel-geometry.md`
   - Acceptance:
     - Intersections/connectivity/offsets/tolerance policy exercised via fixtures; Dart/library/Rust candidates scored per §4 criteria.
