@@ -13,7 +13,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - CI builds desktop (Linux runner), Android, iOS (via cross-platform CI if no macOS host), and browser targets; unavailable host coverage recorded honestly (v3 §6 M01).
     - `flutter analyze`, `flutter test` wired; missing checks recorded as skipped, never passed.
 
-- [ ] **M01-T02** — Scaffold the disposable prototype shell (`prototype/construction_client/`)
+- [x] **M01-T02** — Scaffold the disposable prototype shell (`prototype/construction_client/`) (PR #18)
   - Depends on: M01-T01 · Output: prototype app shell + platform runners (desktop/Android/iOS/web)
   - Acceptance:
     - Shell boots on all available targets; screenshots/logs per target recorded in the PR.
