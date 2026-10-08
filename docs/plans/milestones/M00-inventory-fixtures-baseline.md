@@ -47,7 +47,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - M00/M01 decomposed to task level with acceptance criteria; M02–M11 at WP level with refinement-before-gate contracts (protocol R9).
     - Rollup counts match the milestone files (verified at creation: 6/118).
 
-- [ ] **M00-T07** — Inventory: tRPC routers and every server mutation
+- [x] **M00-T07** — Inventory: tRPC routers and every server mutation (PR #2)
   - Depends on: M00-T06 · Owner role: repository/domain architecture agent
   - Output: `docs/reports/M00/inventory-routers.md` (+ companion `.json`/`.csv` table if useful)
   - Scope: every file under `Construction_Manager/src/server/routers/` (~60 routers) in the upstream repo.
