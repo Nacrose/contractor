@@ -66,7 +66,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Change-feed writer-coverage risk (v3 §3) quantified: % of writes flowing through services vs direct writes.
     - This inventory feeds the M00 spike writer-coverage analysis (cross-referenced).
 
-- [ ] **M00-T09** — Inventory: client local stores, offline surfaces and document formats
+- [x] **M00-T09** — Inventory: client local stores, offline surfaces and document formats (PR #4)
   - Depends on: M00-T06 · Output: `docs/reports/M00/inventory-local-stores.md`
   - Scope: `field-db.ts` (IndexedDB), `field-outbox.ts`, `field-drafts.ts`, `field-photo.ts`, service worker, drafts/queues, local settings; document formats produced/consumed (worksheet workbook, CAD DXF/DWG, PDF, images).
   - Acceptance:
