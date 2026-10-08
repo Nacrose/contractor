@@ -104,7 +104,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Hardware, build mode, OS, dataset (fixture refs) recorded per measurement (v3 §6 M00).
     - Baseline failures recorded without silently weakening tests; gaps vs §7 budgets listed as input to M00-T19 ratification.
 
-- [ ] **M00-T14** — Draft the platform support matrix (OS/browser/hardware/disk/retention)
+- [x] **M00-T14** — Draft the platform support matrix (OS/browser/hardware/disk/retention) (PR #9)
   - Depends on: M00-T10 · Output: `docs/reports/M00/platform-support-matrix.md`
   - Scope: target OS/browser versions, Intel macOS coverage, declared minimum hardware, disk budgets, offline retention expectations — the release-commitment prerequisites (v3 §6 M00).
   - Acceptance:
