@@ -104,6 +104,18 @@ class CpmCalendar {
     int step = days > 0 ? 1 : -1;
     int remaining = days.abs();
 
+    // With no holidays, jump across whole weeks in constant time. A full
+    // week preserves the weekday and consumes exactly the configured number
+    // of working days, leaving at most one week's work for the loop below.
+    final workingDaysPerWeek = workingDaysOfWeek.length;
+    if (publicHolidays.isEmpty && workingDaysPerWeek > 0) {
+      final fullWeeks = remaining ~/ workingDaysPerWeek;
+      if (fullWeeks > 0) {
+        current = current.add(Duration(days: fullWeeks * 7 * step));
+        remaining -= fullWeeks * workingDaysPerWeek;
+      }
+    }
+
     while (remaining > 0) {
       current = current.add(Duration(days: step));
       if (isWorkDay(current)) {
@@ -115,12 +127,49 @@ class CpmCalendar {
 
   int workingDaysBetween(DateTime from, DateTime to) {
     if (from.isAfter(to)) return -workingDaysBetween(to, from);
-    DateTime current = from;
-    int count = 0;
-    while (current.isBefore(to)) {
-      current = current.add(const Duration(days: 1));
-      if (isWorkDay(current)) count++;
+
+    // Work in calendar dates so DST cannot turn an interval into 23/25 hours.
+    final startDate = DateTime.utc(from.year, from.month, from.day);
+    final endDate = DateTime.utc(to.year, to.month, to.day);
+    final elapsedDays = endDate.difference(startDate).inDays;
+    if (elapsedDays == 0) return 0;
+
+    final fullWeeks = elapsedDays ~/ 7;
+    final remainderDays = elapsedDays % 7;
+    var count = fullWeeks * workingDaysOfWeek.length;
+
+    // The interval is (from, to]: count weekdays after whole weeks, then
+    // subtract public holidays within the range.
+    final startWeekday = startDate.weekday;
+    for (var offset = 1; offset <= remainderDays; offset++) {
+      final weekday = ((startWeekday - 1 + offset) % 7) + 1;
+      if (workingDaysOfWeek.contains(weekday)) count++;
     }
+
+    if (publicHolidays.isNotEmpty) {
+      final epoch = DateTime.utc(1970, 1, 1);
+      final startOrdinal = startDate.difference(epoch).inDays;
+      final endOrdinal = endDate.difference(epoch).inDays;
+      for (final holiday in publicHolidays) {
+        final holidayDate = DateTime.tryParse(holiday);
+        if (holidayDate == null ||
+            holiday != holidayDate.toIso8601String().split('T')[0]) {
+          continue;
+        }
+        final holidayUtc = DateTime.utc(
+          holidayDate.year,
+          holidayDate.month,
+          holidayDate.day,
+        );
+        final ordinal = holidayUtc.difference(epoch).inDays;
+        if (ordinal > startOrdinal &&
+            ordinal <= endOrdinal &&
+            workingDaysOfWeek.contains(holidayUtc.weekday)) {
+          count--;
+        }
+      }
+    }
+
     return count;
   }
 }
