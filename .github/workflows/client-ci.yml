@@ -32,6 +32,9 @@ jobs:
       - name: Run Protocol Register Linter
         run: node scripts/lint-protocol.mjs
 
+      - name: Run Server Semantic Parity Fixtures
+        run: node scripts/test-semantic-parity.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 
