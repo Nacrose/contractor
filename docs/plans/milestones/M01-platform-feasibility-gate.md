@@ -81,7 +81,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Per dependency: platform support, licensing, fidelity, offline behavior (v3 §4 rule) — gaps, costs and platform constraints recorded instead of name-picking.
     - Cloud-only converter candidates marked unacceptable for native offline editing where applicable (v3 §4).
 
-- [ ] **M01-T13** — Native SQLite durability proof
+- [x] **M01-T13** — Native SQLite durability proof (PR #7)
   - Depends on: M01-T02 · Output: test rig + `docs/reports/M01/sqlite-durability.md`
   - Acceptance:
     - Proofs on real devices/runners: process termination mid-transaction, journaling/synchronization configuration, busy handling, migrations, interruption recovery, disk-full behavior (v3 §6 M01, §5.2).

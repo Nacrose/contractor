@@ -68,7 +68,7 @@ A critical architectural pitfall in web applications is assuming browser storage
 - Writing to IndexedDB is **not** durable across device wipes or browser storage evictions.
 
 ### Enforced Contract:
-1. **Desktop & Mobile Apps (Native)**: Use ACID-compliant native SQLite (`sqflite_common_ffi`). Outbox mutations and private drafts survive process termination, OS restarts, and app updates (tested in M01-T13).
+1. **Desktop & Mobile Apps (Native)**: The planned local store is SQLite. The M01-T13 engine-level crash rig verifies SQLite transaction recovery, but does not verify a Flutter SQLite adapter or physical-device behavior; those remain rollout gates.
 2. **Browser Web App**: 
    - Treats local storage as an **ephemeral synchronized read cache**.
    - Offline edits are kept in a local outbox with explicit `SYNC_PENDING` flags.
