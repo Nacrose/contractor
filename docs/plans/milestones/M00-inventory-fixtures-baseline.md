@@ -119,7 +119,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Harness reproduces: transaction committing after a later-allocated event id (commit-order hazard), crash replay re-delivering batches, concurrent writers.
     - Harness runs headless with an exit code; scenario list documented. Spike is timeboxed — harness kept minimal (v3 §6 M00 timebox 1–2 weeks).
 
-- [ ] **M00-T16** — Change-feed spike arm A: writer instrumentation prototype
+- [x] **M00-T16** — Change-feed spike arm A: writer instrumentation prototype (PR #11)
   - Depends on: M00-T15 · Output: prototype branch + `docs/reports/M00/spike-arm-writers.md`
   - Scope: explicit writer instrumentation across a representative router/jobs subset (not all ~60 routers) using the existing outbox/idempotency patterns.
   - Acceptance:
