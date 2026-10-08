@@ -133,7 +133,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Demonstrated on the harness: commit-order correctness under late commits; **durable consumer checkpoints surviving crash; idempotent re-application of re-delivered batches** (v3 §6 M00 requirement — checkpoint durability is part of the decision, not a downstream detail).
     - Neon slot-retention/failure story recorded; monitoring approach named.
 
-- [ ] **M00-T18** — Change-feed mechanism decision record
+- [x] **M00-T18** — Change-feed mechanism decision record (PR #13)
   - Depends on: M00-T16, M00-T17 · Output: decision record `docs/adr/0011-change-feed-mechanism.md` (or DR file per repo convention — number assigned at creation)
   - Scope: select mechanism (writer instrumentation / WAL logical decoding / hybrid) per v3 §5.3 + M00 spike.
   - Acceptance:
