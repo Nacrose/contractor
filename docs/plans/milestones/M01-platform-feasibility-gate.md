@@ -62,7 +62,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Intersections/connectivity/offsets/tolerance policy exercised via fixtures; Dart/library/Rust candidates scored per §4 criteria.
     - Rendering separately measured as an adapter consuming compact geometry batches — no per-vertex bridge calls (v3 §4 rule).
 
-- [ ] **M01-T10** — Kernel comparative prototype: PDF/document primitives
+- [x] **M01-T10** — Kernel comparative prototype: PDF/document primitives (PR #2)
   - Depends on: M01-T06 · Output: scored prototypes + `docs/reports/M01/kernel-pdf.md`
   - Acceptance:
     - Rendering/decoding candidates scored on memory bounds, cancellation, platform coverage (incl. web) and licensing.
