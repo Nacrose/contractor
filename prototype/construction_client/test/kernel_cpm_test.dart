@@ -6,6 +6,30 @@ import 'package:construction_client/cpm/dart_cpm_kernel.dart';
 import 'package:construction_client/cpm/server_cpm_benchmark.dart';
 
 void main() {
+  group('CPM construction calendar (M01-T08)', () {
+    test('counts workdays and excludes holidays in a date range', () {
+      final from = DateTime(2026, 6, 5); // Friday
+      final to = DateTime(2026, 6, 8); // Monday
+      const standardCalendar = CpmCalendar();
+      const holidayCalendar = CpmCalendar(publicHolidays: {'2026-06-07'});
+
+      expect(standardCalendar.workingDaysBetween(from, to), equals(2));
+      expect(standardCalendar.workingDaysBetween(to, from), equals(-2));
+      expect(holidayCalendar.workingDaysBetween(from, to), equals(1));
+    });
+
+    test('jumps full working weeks in both directions', () {
+      const calendar = CpmCalendar();
+      expect(
+        calendar.addWorkingDays(DateTime(2026, 6, 1), 6),
+        equals(DateTime(2026, 6, 8)),
+      );
+      expect(
+        calendar.addWorkingDays(DateTime(2026, 6, 8), -6),
+        equals(DateTime(2026, 6, 1)),
+      );
+    });
+  });
   group('CPM Scheduling Kernel (Candidate A: Dart) Unit Tests (M01-T08)', () {
     late DartCpmKernel kernel;
 

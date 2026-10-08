@@ -71,8 +71,11 @@ class DartCpmKernel implements CpmKernel {
     });
 
     final topologicalOrder = <String>[];
-    while (queue.isNotEmpty) {
-      final u = queue.removeAt(0);
+    var queueHead = 0;
+    while (queueHead < queue.length) {
+      // Advancing a head index keeps dequeue O(1); removeAt(0) shifts the
+      // remaining queue and makes wide project networks quadratic.
+      final u = queue[queueHead++];
       topologicalOrder.add(u);
 
       for (final edge in _outgoingEdges[u] ?? <CpmDependency>[]) {
@@ -86,7 +89,8 @@ class DartCpmKernel implements CpmKernel {
 
     // Check for cycles
     if (topologicalOrder.length < _tasks.length) {
-      final cyclicNodes = _tasks.keys.where((id) => !topologicalOrder.contains(id)).toList();
+      final scheduledIds = topologicalOrder.toSet();
+      final cyclicNodes = _tasks.keys.where((id) => !scheduledIds.contains(id)).toList();
       sw.stop();
       return CpmScheduleResult(
         success: false,
