@@ -6,7 +6,7 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
 
 ---
 
-- [ ] **M02-T01** — Scaffold the canonical platform contracts package
+- [x] **M02-T01** — Scaffold the canonical platform contracts package (PR #14)
   - Depends on: M01-GATE approved · Output: `packages/platform_contracts/` skeleton, schema source, release/changelog conventions
   - Acceptance:
     - Uses Protobuf proto3 and Buf v2 only if ADR-0012 remains approved at M01-GATE; otherwise follow the owner-ratified replacement.
