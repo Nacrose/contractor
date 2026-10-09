@@ -35,7 +35,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Pending operations, attachments, and private drafts are never evicted as cache data. Retention and deletion require explicit, tested policy.
     - Repository commands preserve the domain service as authority. Any new server-side domain feature names its change-feed integration and Flutter-parity path.
 
-- [ ] **M03-T04** — Implement the selected authorized change feed for the pilot domain
+- [x] **M03-T04** — Implement the selected authorized change feed for the pilot domain (PR #35)
   - Depends on: M00 change-feed decision record, M03-T01, M03-T03 · Output: server feed, migrated pilot-domain writers, durable consumer checkpoint/replay design, and operational rollback runbook.
   - Scope: implement the M00-selected mechanism for one explicitly named pilot domain and migrate every inventoried writer for that domain in the same release.
   - Acceptance:
