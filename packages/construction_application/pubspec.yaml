@@ -1,0 +1,13 @@
+name: construction_application
+description: Shared application contracts for Construction Manager.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
