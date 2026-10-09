@@ -25,7 +25,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Logout or account switching surfaces unsynchronized work before it can become inaccessible; no pending work is silently uploaded or deleted.
     - Identity/device operations do not add domain writers. Any server-side domain feature added later must name its change-feed integration and Flutter-parity path.
 
-- [ ] **M03-T03** — Build the SQLite transaction and outbox repository
+- [x] **M03-T03** — Build the SQLite transaction and outbox repository (PR #34)
   - Depends on: M03-T01, M03-T02 · Output: versioned SQLite schema/migrations, repository API, and recovery report.
   - Scope: make local mutations and pending sync operations durable together, with account isolation and private-draft handling.
   - Acceptance:

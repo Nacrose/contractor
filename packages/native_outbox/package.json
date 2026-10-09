@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-outbox",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SQLite transaction and outbox repository contract: one-transaction saves (domain write + pending op), versioned migrations with interrupted-migration recovery, account isolation, private drafts, attachment staging state, and explicit-only retention. Durability evidence runs against real SQLite (node:sqlite).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}

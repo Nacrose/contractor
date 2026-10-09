@@ -44,6 +44,14 @@ jobs:
       - name: Run Native Identity Contract Tests
         run: node packages/native_identity/tool/check.mjs
 
+      - name: Setup Node 24 (node:sqlite for outbox tests)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Run Native Outbox Repository Tests
+        run: node packages/native_outbox/tool/check.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 
