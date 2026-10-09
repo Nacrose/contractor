@@ -99,7 +99,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Format chosen against: TS/Dart/Rust codegen quality, drift-check tooling, versioning story; alternatives scored.
     - Generated-bindings-as-committed-artifacts + generation-drift check approach ratified in the record (v3 §4).
 
-- [ ] **M01-T16** — Execute the fallback matrix and record every row's outcome
+- [x] **M01-T16** — Execute the fallback matrix and record every row's outcome (PR #10)
   - Depends on: M01-T03…T14 evidence · Output: `docs/reports/M01/fallback-matrix-outcomes.md`
   - Acceptance:
     - All seven matrix rows (v3 §6 M01) resolved with the measured outcome: taken (gate failed) or not triggered (gate passed).
