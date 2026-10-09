@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-faultmatrix",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Transaction and network fault-boundary matrix (M03-T09): automated scenarios across local commit, server acceptance, feed delivery, checkpoint persistence, attachment transfer, and device recovery. Durability evidence runs against REAL SQLite (node:sqlite, incl. SIGKILL child processes and max_page_count disk-full) and DISPOSABLE PostgreSQL (CI services: postgres:16, pinned pg client); mocks may supplement but never substitute. Emits a reproducible markdown matrix report with sanitized identifiers and deterministic recovery actions.",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}

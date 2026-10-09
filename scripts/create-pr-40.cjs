@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+/** Create PR for M03-T09 (fault matrix). */
+const https = require("https");
+const payload = JSON.stringify({
+  title: "[M03-T09] feat: transaction and network fault-boundary matrix (12 real-SQLite legs incl. SIGKILL and disk-full; 4 disposable-PostgreSQL legs for true concurrent writers; I1-I4 invariants per leg; reproducible matrix report)",
+  head: "m03-t09-fault-matrix",
+  base: "main",
+  body: "## Task\nCloses the **M03-T09** register item: prove transaction and network fault-boundary recovery. One task -> one PR -> one checkbox.\n\n**Output (register):** automated fault matrix using real SQLite and disposable PostgreSQL, with reproducible reports.\n\n## What lands\n- **`packages/native_faultmatrix/`** - the automated fault matrix runner (`tool/check.mjs` + 14 node:test legs), emitting a reproducible markdown report (`docs/reports/M03/fault-matrix-results.md` per CI run):\n  - **12 real-SQLite legs** (node:sqlite, WAL+FULL): duplicate delivery, reordered delivery, lost acknowledgement, late server commit (hole-aware, never silently skipped), expired cursor, checkpoint loss/replay, concurrent devices (two real connections + busy_timeout), cross-tenant disclosure (I3: zero rows leak), attachment interruption, process termination (SIGKILL child mid-transaction, integrity_check ok), disk full (max_page_count -> typed SQLITE_FULL 13, auto-abort, recovery), interrupted migration (version rollback, re-migratable).\n  - **4 disposable-PostgreSQL legs** (CI `services: postgres:16`, pinned MIT `pg@8.16.3` via NODE_PATH, idempotent per run): transactional acceptance (rollback leaves nothing), exactly-once under same-op acceptance from a second device (unique op identity), cursor monotonicity under concurrent commits (GREATEST guard), terminated backend mid-transaction (server-side rollback). Unreachable engine -> explicit SKIP markers; CI provides the engine's evidence - mocks never substitute.\n  - **Global invariants asserted per leg**: I1 no lost accepted operation, I2 no duplicate business effect, I3 no cross-tenant disclosure, I4 safe recovery at every boundary. Every row carries sanitized identifiers and the deterministic recovery action.\n  - **Harness findings recorded**: replay must advance the checkpoint on every batch (the M03-T04 consumer already does; the matrix now pins it), and SQLITE_FULL auto-aborts the open transaction (recovery contract = typed error + post-recovery re-apply).\n- **`docs/reports/M03/fault-matrix.md`** - the recovery report (5 sections mapped to acceptance lines).\n- **CI**: `services: postgres:16` on the lint_and_protocol job + new \"Run Native Fault Matrix (real SQLite + disposable PostgreSQL)\" step.\n\n## Acceptance mapping\n- OK Tests prove no lost accepted operation, no duplicate business effect, no cross-tenant disclosure, and safe recovery at each covered transaction/network boundary (report SS2-SS3)\n- OK Scenarios include duplicate/reordered delivery, lost acknowledgement, late server commit, expired cursor, checkpoint loss/replay, concurrent devices, permission revocation, attachment interruption, process termination, disk full, interrupted migration (report SS2)\n- OK Durability evidence uses real SQLite AND disposable PostgreSQL; mocks may supplement but never substitute (report SS1, SS3)\n- OK Failures report operation/device/cursor identifiers in sanitized form and demonstrate a deterministic recovery action (report matrix rows)\n- OK Packet links the Flutter parity tests and identifies the feed-covered server-side domain writers (report SS5)\n\n## Evidence\n- 14/14 node:test legs green across 3 consecutive runs locally (12 SQLite live, 4 PG SKIP-marked); CI runs all 16 rows with the live disposable PostgreSQL service\n- Protocol linter PASS (13 milestone files, 129 tasks, rollup 55/129)\n- Checkbox M03-T09 ticked with this PR ref; EXECUTION-PLAN M03 row -> 9/10, program total 55/129\n",
+});
+
+const req = https.request(
+  { hostname: "api.github.com", path: "/repos/Nacrose/contractor/pulls", method: "POST",
+    headers: { "User-Agent": "task-bot", Authorization: "token " + process.env.GH_TOKEN,
+      Accept: "application/vnd.github+json", "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) } },
+  (res) => {
+    let d = "";
+    res.on("data", (c) => (d += c));
+    res.on("end", () => { const j = JSON.parse(d); console.log(res.statusCode, j.number ? `PR #${j.number} ${j.html_url}` : d.slice(0, 400)); });
+  }
+);
+req.on("error", (e) => console.error("ERR", e.message));
+req.end(payload);

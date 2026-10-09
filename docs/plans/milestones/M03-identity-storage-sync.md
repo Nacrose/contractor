@@ -86,7 +86,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - A staged rejection/retry scenario is visible from device state through server telemetry; tests or recorded fixture evidence verify each transition and data redaction.
     - The Flutter parity surface and any server-side event/change-feed mapping are documented in the implementation packet.
 
-- [ ] **M03-T09** — Prove transaction and network fault-boundary recovery
+- [x] **M03-T09** — Prove transaction and network fault-boundary recovery (PR #40)
   - Depends on: M03-T03…T08 · Output: automated fault matrix using real SQLite and disposable PostgreSQL, with reproducible reports.
   - Scope: exercise failures across local commit, server acceptance, feed delivery, checkpoint persistence, attachment transfer, and device recovery.
   - Acceptance:

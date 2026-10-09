@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+/** Create PR for M03-T08 (observability). */
+const https = require("https");
+const payload = JSON.stringify({
+  title: "[M03-T08] feat: sync and native crash observability (fail-safe sanitized crash reports for dart/native/rust, tenant-safe server sync metrics, honest device sync-health surface over real SQLite, staged transition evidence)",
+  head: "m03-t08-observability",
+  base: "main",
+  body: "## Task\nCloses the **M03-T08** register item: wire sync and native crash observability. One task -> one PR -> one checkbox.\n\n**Output (register):** Dart/native/Rust crash reporting, server sync metrics, and a device sync-health surface.\n\n## What lands\n- **`packages/native_observability/`** - new zero-dep TS contract package `@contractor/native-observability`:\n  - **Fail-safe crash redaction** for every runtime: `scrubCrashReport` reduces ANY dart/native/rust panic context to the safe shape - drop-first allow-listed attribute keys only, secret-like substrings (GitHub tokens, JWTs, Bearer headers, hex runs) and payload-like content (JSON bodies) redacted THEN capped (order tested - a test caught cap-before-redact), stack frames never export (count only), malformed contexts still reduce safely, typed `unreportable` fallback.\n  - **Tenant-safe server metrics**: `SyncMetrics` records one observation per sync request labeled with the M03-T07 outcome table + feed lag + checkpoint age + M03-T06 attachment retry/error counters. The GLOBAL snapshot structurally carries NO tenant identifiers (tested with secret tenant ids); per-tenant breakdown requires the explicit authorized `snapshotTenant` surface; observations without a tenant scope are misconfigured.\n  - **Honest device surface**: `buildDeviceSyncHealth` derives from durable state (SyncHealthSource port; REAL SQLite in evidence) - pending count, oldest pending age, per-scope last accepted cursors, conflict/blocked counts, sanitized rejection reasons. `synced:true` ONLY when nothing is pending/in-flight/conflicted/blocked and no fresh rejection is unsurfaced - the no-false-success guarantee is pinned by test; rejections stay visible in history after the freshness window.\n  - **Staged transition evidence**: retryable -> retryable -> accepted and conflict -> resolved walk REAL rows + REAL observations through the mount boundary composition point; device health and server metrics AGREE at every stage; payload sentinels never reach either surface.\n- **`docs/reports/M03/sync-observability.md`** - recovery report (6 sections mapped to acceptance lines).\n- **CI**: new \"Run Native Observability Tests\" step in `lint_and_protocol` (`tool/check.mjs`, pinned `typescript@5.9.3`).\n\n## Acceptance mapping\n- OK Dart, native, and Rust panic/crash paths report sanitized diagnostics without credentials, private drafts, or sensitive payloads (report SS2)\n- OK Server metrics expose sync requests, accepted/replayed/rejected/conflicted outcomes, feed lag, checkpoint age, attachment retry/error counts with tenant-safe aggregation (report SS3)\n- OK Device surface exposes pending-operation count, oldest pending age, last accepted cursor per scope, rejection reasons without presenting a false success state (report SS4)\n- OK A staged rejection/retry scenario is visible from device state through server telemetry; tests verify each transition and data redaction (report SS5)\n- OK Flutter parity surface and server-side event/change-feed mapping documented in the packet (report SS6)\n\n## Evidence\n- 18/18 node:test cases green across 3 consecutive runs - REAL SQLite (WAL + synchronous=FULL) for the device read model; staged scenarios drive real rows + real observations\n- Protocol linter PASS (13 milestone files, 129 tasks, rollup 54/129)\n- Checkbox M03-T08 ticked with this PR ref; EXECUTION-PLAN M03 row -> 8/10, program total 54/129\n",
+});
+
+const req = https.request(
+  { hostname: "api.github.com", path: "/repos/Nacrose/contractor/pulls", method: "POST",
+    headers: { "User-Agent": "task-bot", Authorization: "token " + process.env.GH_TOKEN,
+      Accept: "application/vnd.github+json", "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) } },
+  (res) => {
+    let d = "";
+    res.on("data", (c) => (d += c));
+    res.on("end", () => { const j = JSON.parse(d); console.log(res.statusCode, j.number ? `PR #${j.number} ${j.html_url}` : d.slice(0, 400)); });
+  }
+);
+req.on("error", (e) => console.error("ERR", e.message));
+req.end(payload);
