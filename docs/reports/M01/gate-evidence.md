@@ -34,7 +34,7 @@ ADR-0012 remains accepted for schema format. Its target adoption remains gated b
 
 ## Per-engine decision-record drafts
 
-These are proposed records to ratify or amend at the owner gate; they are not permission for a production dependency.
+The owner left these records as planning drafts at M01-GATE. They do not select production bindings or authorize an engine-dependent screen. Final per-engine authority, binding, fixture, and duplication decisions must be approved before any dependent screen is built.
 
 | Engine/semantics | Authority proposed | Execution targets and binding strategy | Shared fixtures | Duplication status and gate |
 |---|---|---|---|---|
