@@ -37,6 +37,18 @@ interface PgClient {
   end(): Promise<void>;
 }
 
+/** Every pg await races a hard timeout — a wedged connection FAILS the leg, never hangs CI. */
+const PG_TIMEOUT_MS = 10_000;
+function pgTimeout<T>(p: Promise<T>, what: string): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, rej) => setTimeout(() => rej(new Error(`pg timeout after ${PG_TIMEOUT_MS}ms: ${what}`)), PG_TIMEOUT_MS)),
+  ]);
+}
+async function q(c: PgClient, sql: string, params?: unknown[]): Promise<{ rows: Record<string, unknown>[] }> {
+  return pgTimeout(c.query(sql, params), sql.slice(0, 60));
+}
+
 // ---------------------------------------------------------------------------
 
 const SCHEMA_SQL = `
@@ -505,14 +517,15 @@ test("P01-P04 | disposable PostgreSQL legs (CI service provides the engine; loca
     return;
   }
   const client = new pg.Client({ connectionString: url, connectionTimeoutMillis: 4_000 });
+  (client as unknown as { on: (ev: string, cb: (e: Error) => void) => void }).on?.("error", () => { /* socket death handled by per-query timeouts */ });
   try {
-    await client.connect();
+    await pgTimeout(client.connect(), "connect");
   } catch {
     for (const id of ["P01", "P02", "P03", "P04"]) report.mark(id, "SKIP", `PostgreSQL unreachable at ${url.replace(/:[^:@/]+@/, ":***@")}`);
     return;
   }
   try {
-    await client.query(`
+    await q(client, `
       CREATE TABLE IF NOT EXISTS fm_entity_version (
         tenant_id TEXT NOT NULL, entity_id TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0,
         PRIMARY KEY (tenant_id, entity_id)
@@ -523,67 +536,75 @@ test("P01-P04 | disposable PostgreSQL legs (CI service provides the engine; loca
       CREATE TABLE IF NOT EXISTS fm_checkpoint (scope TEXT PRIMARY KEY, last_seq INTEGER NOT NULL);
     `);
     // Idempotent per run.
-    await client.query("DELETE FROM fm_op_receipt; DELETE FROM fm_entity_version; UPDATE fm_checkpoint SET last_seq = 0;");
-    await client.query("INSERT INTO fm_checkpoint (scope, last_seq) VALUES ('t1:all', 0) ON CONFLICT (scope) DO UPDATE SET last_seq = 0;");
+    await q(client, "DELETE FROM fm_op_receipt; DELETE FROM fm_entity_version; UPDATE fm_checkpoint SET last_seq = 0;");
+    await q(client, "INSERT INTO fm_checkpoint (scope, last_seq) VALUES ('t1:all', 0) ON CONFLICT (scope) DO UPDATE SET last_seq = 0;");
 
     // P01 transactional acceptance: domain bump + receipt in ONE tx; a
     // simulated crash (ROLLBACK) leaves NOTHING; the redo commits both.
-    await client.query("BEGIN");
-    await client.query("INSERT INTO fm_entity_version (tenant_id, entity_id, version) VALUES ('t1','p-e-1',1) ON CONFLICT (tenant_id, entity_id) DO UPDATE SET version = fm_entity_version.version + 1");
-    await client.query("INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-1','rcp-1',1,'dev-01')");
-    await client.query("ROLLBACK"); // simulated crash after the domain write
-    let n = Number((await client.query("SELECT COUNT(*)::int AS n FROM fm_op_receipt WHERE op_id = 'p-op-1'")).rows[0].n);
+    await q(client, "BEGIN");
+    await q(client, "INSERT INTO fm_entity_version (tenant_id, entity_id, version) VALUES ('t1','p-e-1',1) ON CONFLICT (tenant_id, entity_id) DO UPDATE SET version = fm_entity_version.version + 1");
+    await q(client, "INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-1','rcp-1',1,'dev-01')");
+    await q(client, "ROLLBACK"); // simulated crash after the domain write
+    let n = Number((await q(client, "SELECT COUNT(*)::int AS n FROM fm_op_receipt WHERE op_id = 'p-op-1'")).rows[0].n);
     assert.equal(n, 0, "rollback left nothing behind");
-    await client.query("BEGIN");
-    await client.query("INSERT INTO fm_entity_version (tenant_id, entity_id, version) VALUES ('t1','p-e-1',1) ON CONFLICT (tenant_id, entity_id) DO UPDATE SET version = fm_entity_version.version + 1");
-    await client.query("INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-1','rcp-1',1,'dev-01')");
-    await client.query("COMMIT");
-    n = Number((await client.query("SELECT COUNT(*)::int AS n FROM fm_op_receipt WHERE op_id = 'p-op-1'")).rows[0].n);
-    const v = Number((await client.query("SELECT version FROM fm_entity_version WHERE entity_id = 'p-e-1'")).rows[0].version);
+    await q(client, "BEGIN");
+    await q(client, "INSERT INTO fm_entity_version (tenant_id, entity_id, version) VALUES ('t1','p-e-1',1) ON CONFLICT (tenant_id, entity_id) DO UPDATE SET version = fm_entity_version.version + 1");
+    await q(client, "INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-1','rcp-1',1,'dev-01')");
+    await q(client, "COMMIT");
+    n = Number((await q(client, "SELECT COUNT(*)::int AS n FROM fm_op_receipt WHERE op_id = 'p-op-1'")).rows[0].n);
+    const v = Number((await q(client, "SELECT version FROM fm_entity_version WHERE entity_id = 'p-e-1'")).rows[0].version);
     assert.equal(n, 1);
     assert.equal(v, 1, "I2: exactly one business effect");
     report.mark("P01", "PASS");
 
     // P02 exactly-once under the same-op acceptance from a second device.
     const c2 = new pg.Client({ connectionString: url });
-    await c2.connect();
-    await client.query("BEGIN");
-    await client.query("INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-race','rcp-race',9,'dev-A')");
+    (c2 as unknown as { on: (ev: string, cb: (e: Error) => void) => void }).on?.("error", () => {});
+    await pgTimeout(c2.connect(), "connect c2");
+    await q(client, "BEGIN");
+    await q(client, "INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-race','rcp-race',9,'dev-A')");
     let loserFailed = false;
     try {
-      await c2.query("INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-race','rcp-race-2',10,'dev-B')");
+      await q(c2, "INSERT INTO fm_op_receipt (op_id, receipt, server_seq, device_id) VALUES ('p-op-race','rcp-race-2',10,'dev-B')");
     } catch {
       loserFailed = true; // unique violation: the second device is told "already accepted"
     }
-    await client.query("COMMIT");
+    await q(client, "COMMIT");
     assert.ok(loserFailed, "the second device's duplicate acceptance was refused");
-    const races = Number((await client.query("SELECT COUNT(*)::int AS n FROM fm_op_receipt WHERE op_id = 'p-op-race'")).rows[0].n);
+    const races = Number((await q(client, "SELECT COUNT(*)::int AS n FROM fm_op_receipt WHERE op_id = 'p-op-race'")).rows[0].n);
     assert.equal(races, 1, "I2: unique op identity -> exactly one receipt");
-    await c2.end();
+    await Promise.race([c2.end(), new Promise((r) => setTimeout(r, 2_000))]);
     report.mark("P02", "PASS");
 
     // P03 cursor monotonicity: GREATEST-guarded updates.
-    await client.query("UPDATE fm_checkpoint SET last_seq = GREATEST(last_seq, $1) WHERE scope = 't1:all'", [500]);
-    await client.query("UPDATE fm_checkpoint SET last_seq = GREATEST(last_seq, $1) WHERE scope = 't1:all'", [300]);
-    const cp = Number((await client.query("SELECT last_seq FROM fm_checkpoint WHERE scope = 't1:all'")).rows[0].last_seq);
+    await q(client, "UPDATE fm_checkpoint SET last_seq = GREATEST(last_seq, $1) WHERE scope = 't1:all'", [500]);
+    await q(client, "UPDATE fm_checkpoint SET last_seq = GREATEST(last_seq, $1) WHERE scope = 't1:all'", [300]);
+    const cp = Number((await q(client, "SELECT last_seq FROM fm_checkpoint WHERE scope = 't1:all'")).rows[0].last_seq);
     assert.equal(cp, 500, "I1: cursor never moves backwards");
     report.mark("P03", "PASS");
 
     // P04 terminated backend mid-transaction: server-side rollback, clean state.
     const c3 = new pg.Client({ connectionString: url });
-    await c3.connect();
-    const pid = Number((await c3.query("SELECT pg_backend_pid() AS pid")).rows[0].pid);
-    await c3.query("BEGIN");
-    await c3.query("INSERT INTO fm_entity_version (tenant_id, entity_id, version) VALUES ('t1','p-e-kill',5) ON CONFLICT (tenant_id, entity_id) DO UPDATE SET version = fm_entity_version.version + 1");
-    await client.query("SELECT pg_terminate_backend($1)", [pid]);
+    (c3 as unknown as { on: (ev: string, cb: (e: Error) => void) => void }).on?.("error", () => {});
+    await pgTimeout(c3.connect(), "connect c3");
+    const pid = Number((await q(c3, "SELECT pg_backend_pid() AS pid")).rows[0].pid);
+    await q(c3, "BEGIN");
+    await q(c3, "INSERT INTO fm_entity_version (tenant_id, entity_id, version) VALUES ('t1','p-e-kill',5) ON CONFLICT (tenant_id, entity_id) DO UPDATE SET version = fm_entity_version.version + 1");
+    await q(client, "SELECT pg_terminate_backend($1)", [pid]);
     await sleep(300);
-    try { await c3.query("COMMIT"); } catch { /* backend gone — expected */ }
-    try { await c3.end(); } catch { /* already dead */ }
+    try {
+      await Promise.race([
+        q(c3, "COMMIT"),
+        new Promise((_, rej) => setTimeout(() => rej(new Error("terminated backend: COMMIT never settled (expected)")), 3_000)),
+      ]);
+    } catch { /* backend gone — expected */ }
+    try { await Promise.race([c3.end(), new Promise((r) => setTimeout(r, 2_000))]); } catch { /* already dead */ }
     const c4 = new pg.Client({ connectionString: url });
-    await c4.connect();
-    const killedRows = await c4.query("SELECT version FROM fm_entity_version WHERE entity_id = 'p-e-kill'");
+    (c4 as unknown as { on: (ev: string, cb: (e: Error) => void) => void }).on?.("error", () => {});
+    await pgTimeout(c4.connect(), "connect c4");
+    const killedRows = await q(c4, "SELECT version FROM fm_entity_version WHERE entity_id = 'p-e-kill'");
     assert.equal(killedRows.rows.length, 0, "I4: terminated backend's uncommitted work rolled back");
-    await c4.end();
+    await Promise.race([c4.end(), new Promise((r) => setTimeout(r, 2_000))]);
     report.mark("P04", "PASS");
   } catch (e) {
     for (const id of ["P01", "P02", "P03", "P04"]) {
@@ -592,7 +613,7 @@ test("P01-P04 | disposable PostgreSQL legs (CI service provides the engine; loca
     }
     throw e;
   } finally {
-    try { await client.end(); } catch { /* ignore */ }
+    try { await Promise.race([client.end(), new Promise((r) => setTimeout(r, 2_000))]); } catch { /* ignore */ }
   }
 });
 
