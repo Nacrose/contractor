@@ -87,7 +87,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Proofs on real devices/runners: process termination mid-transaction, journaling/synchronization configuration, busy handling, migrations, interruption recovery, disk-full behavior (v3 §6 M01, §5.2).
     - "WAL alone" explicitly not accepted as durability proof (v3 §5.2); save-acknowledgement only after transaction commit demonstrated.
 
-- [ ] **M01-T14** — Cross-language semantics parity: decimal/geometry/date across FFI/Wasm/server
+- [x] **M01-T14** — Cross-language semantics parity evidence: gate failed; fallback required (PR #8)
   - Depends on: M01-T07…T10 (whichever candidates exist) · Output: fixture suite + `docs/reports/M01/cross-language-parity.md`
   - Acceptance:
     - Exact decimal strings/scaled integers across boundaries; geometry tolerances; date-only vs UTC-instant semantics proven identical across targets via shared fixtures (v3 §5.1, §6 M01).

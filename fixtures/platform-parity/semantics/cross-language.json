@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0.0",
+  "description": "Shared decimal, geometry-tolerance, and calendar semantics fixtures. Inputs are sanitized and deterministic.",
+  "contracts": {
+    "money": {
+      "scale": 2,
+      "representation": "exact signed scaled-integer decimal string",
+      "excessFractionDigits": "reject unless all excess digits are zero"
+    },
+    "geometry": {
+      "coordinateUnit": "mm",
+      "epsilon": 0.00001,
+      "coincidence": "absolute per-axis comparison"
+    },
+    "calendar": {
+      "timezone": "Asia/Kathmandu",
+      "utcOffsetMinutes": 345,
+      "workingDaysOfWeek": [7, 1, 2, 3, 4, 5],
+      "intervalConvention": "(from, to] for workday differences; task duration includes a working start date"
+    }
+  },
+  "decimalCases": [
+    { "id": "money-two-decimals", "input": "123456789012.34", "expectedScaled": "12345678901234" },
+    { "id": "money-leading-zeros", "input": "00012.30", "expectedScaled": "1230" },
+    { "id": "money-negative-cent", "input": "-0.01", "expectedScaled": "-1" },
+    { "id": "money-integer-with-zero-fraction", "input": "100.000", "expectedScaled": "10000" },
+    { "id": "money-reject-inexact-scale", "input": "1.001", "reject": true }
+  ],
+  "geometryCases": [
+    { "id": "same-point", "a": [0, 0], "b": [0, 0], "expectedCoincident": true },
+    { "id": "per-axis-inside", "a": [100, 100], "b": [100.000009, 100.000009], "expectedCoincident": true },
+    { "id": "x-axis-outside", "a": [0, 0], "b": [0.000011, 0], "expectedCoincident": false },
+    { "id": "large-coordinate-small-delta", "a": [85000000, 85000000], "b": [85000000.00002, 85000000], "expectedCoincident": false }
+  ],
+  "dateCases": [
+    { "id": "date-only-preserved", "kind": "date-only", "input": "2026-07-16", "expectedDate": "2026-07-16" },
+    { "id": "utc-instant-nepal-next-day", "kind": "utc-instant", "input": "2026-07-15T18:15:00Z", "expectedDate": "2026-07-16" }
+  ],
+  "calendarCases": [
+    { "id": "nepal-friday-through-sunday-inclusive-task", "from": "2026-07-17", "to": "2026-07-19", "expectedWorkingDaysBetween": 1, "expectedInclusiveTaskDuration": 2 }
+  ]
+}
