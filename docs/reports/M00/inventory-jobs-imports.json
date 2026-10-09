@@ -1,0 +1,357 @@
+{
+  "metadata": {
+    "generatedAt": "2026-10-08T16:23:59.596Z",
+    "sourceRepo": "Construction_Manager",
+    "totalNonRouterWriters": 23,
+    "categories": [
+      "Background Job",
+      "Reconciliation Service",
+      "File Importer",
+      "Operator CLI / Migration Script",
+      "Database Seeder"
+    ]
+  },
+  "writers": [
+    {
+      "category": "Background Job",
+      "name": "outbox.dispatch",
+      "entryFile": "src/server/utils/background-jobs.ts (delegates to outbox.ts)",
+      "trigger": "Scheduled (every 10 seconds)",
+      "domainEffects": "Reaps stuck outbox rows, updates OutboxEvent (attempts, status, error), dispatches notifications",
+      "modelsMutated": [
+        "OutboxEvent",
+        "Notification"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 5,
+      "directWrites": false
+    },
+    {
+      "category": "Background Job",
+      "name": "bank-guarantee.auto-expire",
+      "entryFile": "src/server/utils/background-jobs.ts (sweepExpiredBankGuarantees)",
+      "trigger": "Scheduled (hourly) + inline check on list",
+      "domainEffects": "Flips expired BankGuarantee status from active/extended to expired across all organizations using withSuperAdminScope",
+      "modelsMutated": [
+        "BankGuarantee"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 1,
+      "directWrites": true
+    },
+    {
+      "category": "Background Job",
+      "name": "session.cleanup",
+      "entryFile": "src/server/utils/background-jobs.ts (cleanupExpiredSessions)",
+      "trigger": "Scheduled (daily)",
+      "domainEffects": "Deletes expired Session (>7 days) and LoginAttempt (>30 days)",
+      "modelsMutated": [
+        "Session",
+        "LoginAttempt"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 2,
+      "directWrites": true
+    },
+    {
+      "category": "Reconciliation Service",
+      "name": "daily-report-sync",
+      "entryFile": "src/server/services/daily-report-sync.ts",
+      "trigger": "Event / Background ingestion of field submissions",
+      "domainEffects": "Normalizes raw field submissions into relational DailyReport, DailyReportProgress, DailyReportMaterial, DailyReportEquipment, DailyReportWorkforce",
+      "modelsMutated": [
+        "DailyReport",
+        "DailyReportProgress",
+        "DailyReportMaterialConsumed",
+        "DailyReportEquipment",
+        "DailyReportWorkforce",
+        "DailyReportAttachment",
+        "FieldSubmission"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 22,
+      "directWrites": false
+    },
+    {
+      "category": "Reconciliation Service",
+      "name": "stored-file-reconciliation",
+      "entryFile": "scripts/apply-stored-file-reconciliation.ts & src/server/stored-file-reconciliation-service.ts",
+      "trigger": "Scheduled / CLI operator maintenance",
+      "domainEffects": "Scans S3 storage objects, validates SHA-256 hashes, reconciles orphan and missing references, updates StoredFile status",
+      "modelsMutated": [
+        "StoredFile"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 5,
+      "directWrites": false
+    },
+    {
+      "category": "Reconciliation Service",
+      "name": "equipment-fuel-reconciliation",
+      "entryFile": "src/server/services/equipment-fuel.ts",
+      "trigger": "Transaction / Batch reconciliation",
+      "domainEffects": "Calculates dip-reading vs issue volume, updates FuelIssue and FuelStockReading balances",
+      "modelsMutated": [
+        "FuelIssue",
+        "FuelStockReading",
+        "EquipmentLog"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 15,
+      "directWrites": false
+    },
+    {
+      "category": "Reconciliation Service",
+      "name": "inventory-valuation-reconciliation",
+      "entryFile": "src/server/services/inventory-valuation.ts",
+      "trigger": "Triggered / Accounting period close",
+      "domainEffects": "Calculates FIFO/moving average inventory costs, reconciles MaterialStoreStock and MaterialTransaction",
+      "modelsMutated": [
+        "MaterialStoreStock",
+        "MaterialTransaction"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 5,
+      "directWrites": false
+    },
+    {
+      "category": "Reconciliation Service",
+      "name": "stock-count-reconciliation",
+      "entryFile": "src/server/services/stock-count.ts",
+      "trigger": "Physical audit entry",
+      "domainEffects": "Adjusts MaterialStoreStock variance via MaterialReconciliation records",
+      "modelsMutated": [
+        "MaterialStoreStock",
+        "MaterialReconciliation"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 1,
+      "directWrites": false
+    },
+    {
+      "category": "Reconciliation Service",
+      "name": "responsibility-handover",
+      "entryFile": "src/server/services/responsibility-handover.ts",
+      "trigger": "Staff departure / reassignment event",
+      "domainEffects": "Transfers active project roles, reassigns pending approvals, updates DelegationRule and PositionOccupancy",
+      "modelsMutated": [
+        "ProjectMember",
+        "DelegationRule",
+        "PositionOccupancy",
+        "ResponsibilityHandover"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 7,
+      "directWrites": false
+    },
+    {
+      "category": "Reconciliation Service",
+      "name": "workforce-service",
+      "entryFile": "src/server/services/workforce.ts",
+      "trigger": "HR management and person-access sync",
+      "domainEffects": "Synchronizes Person, OrganizationEmployment, StaffRoleAssignment, and login credentials",
+      "modelsMutated": [
+        "Person",
+        "OrganizationEmployment",
+        "StaffRoleAssignment",
+        "User"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 15,
+      "directWrites": false
+    },
+    {
+      "category": "File Importer",
+      "name": "xer-importer",
+      "entryFile": "src/server/utils/xer-import.ts",
+      "trigger": "User upload via ganttImport router",
+      "domainEffects": "Parses Primavera XER binary/text files, extracts WBS, tasks, dependencies, calendars; writes to Gantt models",
+      "modelsMutated": [
+        "GanttTask",
+        "TaskDependency",
+        "GanttCalendar",
+        "GanttCalendarException"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 4,
+      "directWrites": false
+    },
+    {
+      "category": "File Importer",
+      "name": "msp-importer",
+      "entryFile": "src/server/utils/msp-import.ts",
+      "trigger": "User upload via ganttImport router",
+      "domainEffects": "Parses Microsoft Project XML schedules, extracts tasks, predecessors, calendars, assignments",
+      "modelsMutated": [
+        "GanttTask",
+        "TaskDependency",
+        "GanttCalendar"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 4,
+      "directWrites": false
+    },
+    {
+      "category": "File Importer",
+      "name": "excel-worksheet-importer",
+      "entryFile": "src/lib/worksheet/workbook-excel.ts & csv-import.ts",
+      "trigger": "User upload via worksheet router",
+      "domainEffects": "Converts XLSX workbook into WorksheetDocument JSON grid with formulas and cell styles",
+      "modelsMutated": [
+        "WorksheetDocument"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 4,
+      "directWrites": false
+    },
+    {
+      "category": "File Importer",
+      "name": "dxf-dwg-cad-parser",
+      "entryFile": "src/lib/dxf/dxf-parser.ts & src/lib/dwg/dwg-native.ts",
+      "trigger": "User file upload via document router",
+      "domainEffects": "Decodes DXF/DWG vector geometry, creates Drawing and DrawingRevision records",
+      "modelsMutated": [
+        "Drawing",
+        "DrawingRevision"
+      ],
+      "bypassesDomainServices": false,
+      "writeOpsCount": 4,
+      "directWrites": false
+    },
+    {
+      "category": "Operator CLI / Migration Script",
+      "name": "apply-access-conversion",
+      "entryFile": "scripts/apply-access-conversion.ts",
+      "trigger": "Manual CLI operator migration",
+      "domainEffects": "Converts legacy access model to AccessGrant, GrantAuthority, Position hierarchy; writes direct PostgreSQL rows",
+      "modelsMutated": [
+        "AccessGrant",
+        "GrantAuthority",
+        "Position",
+        "PositionOccupancy"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 3,
+      "directWrites": true
+    },
+    {
+      "category": "Operator CLI / Migration Script",
+      "name": "migrate-catalog-v2",
+      "entryFile": "scripts/migrate-catalog-v2.ts",
+      "trigger": "Manual CLI migration",
+      "domainEffects": "Transforms legacy Material and Rate items into CatalogMaterial hierarchy",
+      "modelsMutated": [
+        "CatalogMaterial",
+        "Material",
+        "RateEntry"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 10,
+      "directWrites": true
+    },
+    {
+      "category": "Operator CLI / Migration Script",
+      "name": "migrate-dependencies",
+      "entryFile": "scripts/migrate-dependencies.ts",
+      "trigger": "Manual CLI migration",
+      "domainEffects": "Recalculates and re-links Gantt task predecessors/successors",
+      "modelsMutated": [
+        "TaskDependency"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 1,
+      "directWrites": true
+    },
+    {
+      "category": "Operator CLI / Migration Script",
+      "name": "migrate-partners",
+      "entryFile": "scripts/migrate-partners.ts",
+      "trigger": "Manual CLI migration",
+      "domainEffects": "Migrates legacy partner contracts into Partner and JvPartnerAgreement",
+      "modelsMutated": [
+        "Partner",
+        "JvPartnerAgreement"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 8,
+      "directWrites": true
+    },
+    {
+      "category": "Operator CLI / Migration Script",
+      "name": "fix-passwords",
+      "entryFile": "scripts/fix-passwords.ts",
+      "trigger": "Manual admin CLI",
+      "domainEffects": "Bcrypt hashes and updates User credentials",
+      "modelsMutated": [
+        "User"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 1,
+      "directWrites": true
+    },
+    {
+      "category": "Operator CLI / Migration Script",
+      "name": "setup-superadmin",
+      "entryFile": "scripts/setup-superadmin.ts",
+      "trigger": "Manual deployment bootstrap",
+      "domainEffects": "Provisions root Superadmin User, default Organization, and initial roles",
+      "modelsMutated": [
+        "User",
+        "Organization",
+        "ProjectMember"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 2,
+      "directWrites": true
+    },
+    {
+      "category": "Operator CLI / Migration Script",
+      "name": "fix-task-hierarchy",
+      "entryFile": "scripts/fix-task-hierarchy.ts",
+      "trigger": "Manual maintenance CLI",
+      "domainEffects": "Rebuilds WBS tree structure and outline levels for Gantt tasks",
+      "modelsMutated": [
+        "GanttTask"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 5,
+      "directWrites": true
+    },
+    {
+      "category": "Database Seeder",
+      "name": "prisma-seed",
+      "entryFile": "prisma/seed.ts",
+      "trigger": "CLI: npx prisma db seed",
+      "domainEffects": "Populates baseline demo tenant, admin users, dummy project, BoQ items, CPM tasks, and materials",
+      "modelsMutated": [
+        "Organization",
+        "User",
+        "Project",
+        "BoQItem",
+        "GanttTask",
+        "Material"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 15,
+      "directWrites": true
+    },
+    {
+      "category": "Database Seeder",
+      "name": "e2e-seed",
+      "entryFile": "scripts/e2e-seed.mjs",
+      "trigger": "CLI: npm run test:e2e setup",
+      "domainEffects": "Generates isolated test fixtures across all modules for automated Playwright / Vitest suites",
+      "modelsMutated": [
+        "Organization",
+        "User",
+        "Project",
+        "Ipc",
+        "DailyReport",
+        "PayrollRun"
+      ],
+      "bypassesDomainServices": true,
+      "writeOpsCount": 15,
+      "directWrites": true
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "executedAt": "2026-10-08T17:11:48.819Z",
+  "totalScenarios": 5,
+  "passedScenarios": 5,
+  "allPassed": true,
+  "results": [
+    {
+      "scenario": "S1_LATE_COMMIT_HAZARD",
+      "passed": true,
+      "details": {
+        "tx1AllocatedId": 1,
+        "tx2AllocatedId": 2,
+        "commitOrder": [
+          2,
+          1
+        ],
+        "naiveCheckpoint": 2,
+        "naivePoll1Items": [
+          2
+        ],
+        "naivePoll2Items": [],
+        "wasId1SkippedInNaiveSync": true,
+        "lsnCommit1": "1200",
+        "lsnCommit2": "1100",
+        "wasId1CapturedInLsnSync": true
+      }
+    },
+    {
+      "scenario": "S2_CRASH_RESTART_REPLAY",
+      "passed": true,
+      "details": {
+        "batchSize": 5,
+        "crashState": {
+          "restartedFrom": 0,
+          "droppedCheckpoint": 5,
+          "resumedAt": 1791479508818
+        },
+        "initialEntitiesCount": 4,
+        "finalEntitiesCount": 4,
+        "initialProjStatus": "ACTIVE",
+        "finalProjStatus": "ACTIVE",
+        "duplicatesEncountered": 5,
+        "successfulIdempotentApplies": 5,
+        "allDeduplicated": true,
+        "nonIdempotentEntriesCount": 10
+      }
+    },
+    {
+      "scenario": "S3_SLOT_RETENTION_CIRCUIT_BREAKER",
+      "passed": true,
+      "details": {
+        "clientARetainedBytes": 0,
+        "clientBInitialRetainedBytes": 41943040,
+        "clientBPeakRetainedBytes": 125829120,
+        "clientBExceededBudget": true,
+        "droppedSlots": [
+          {
+            "slotName": "slot_field_tablet",
+            "reason": "Retention quota exceeded: 125829120 bytes > 104857600"
+          }
+        ],
+        "isSlotBStillActive": false,
+        "isSlotAStillActive": true
+      }
+    },
+    {
+      "scenario": "S4_CONCURRENT_WRITERS",
+      "passed": true,
+      "details": {
+        "workerCount": 10,
+        "mutationsPerWorker": 5,
+        "totalExpectedRows": 50,
+        "actualCommittedRows": 50,
+        "commitOrderInversions": 7,
+        "inversionRatePercent": "77.8",
+        "lsnStrictlyMonotonic": true
+      }
+    },
+    {
+      "scenario": "S5_CHECKPOINT_STORE_VALIDATION",
+      "passed": true,
+      "details": {
+        "consumerId": "client-field-ipad-01",
+        "initialCursor": "5000",
+        "advancedCursor": "5200",
+        "retroactiveRejected": true,
+        "resetCursor": "1000",
+        "versionHistoryCount": 2
+      }
+    }
+  ]
+}

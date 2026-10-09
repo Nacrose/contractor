@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "metadata": {
+    "title": "Degenerate Canvas Layout Stress",
+    "description": "Tests extreme bounds, invalid dimensions, inverted coordinates, multi-page size transitions, and corrupted tables"
+  },
+  "pages": [
+    {
+      "id": "page-degenerate-a4-portrait",
+      "pageSize": "a4",
+      "orientation": "portrait",
+      "elements": [
+        {
+          "id": "negative-coordinate-shape",
+          "type": "shape",
+          "shape": "rect",
+          "x": -250,
+          "y": -150,
+          "w": 100,
+          "h": 80,
+          "stroke": "#000000"
+        },
+        {
+          "id": "zero-dimension-line",
+          "type": "shape",
+          "shape": "line",
+          "x": 50,
+          "y": 50,
+          "w": 0,
+          "h": 0,
+          "stroke": "#ff0000"
+        },
+        {
+          "id": "extreme-rotation-text",
+          "type": "text",
+          "x": 100,
+          "y": 100,
+          "w": 80,
+          "h": 20,
+          "text": "Rotated 720.5 degrees",
+          "rotation": 720.5
+        },
+        {
+          "id": "giant-overflowing-table",
+          "type": "table",
+          "x": 10,
+          "y": 150,
+          "w": 5000,
+          "h": 2000,
+          "rows": 50,
+          "cols": 25,
+          "columnWidths": [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200],
+          "cells": {
+            "0:0": { "text": "EXTREME CELL 0:0" },
+            "49:24": { "text": "EXTREME CELL 49:24" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "page-degenerate-legal-landscape",
+      "pageSize": "legal",
+      "orientation": "landscape",
+      "elements": [
+        {
+          "id": "empty-string-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "w": 50,
+          "h": 10,
+          "text": ""
+        },
+        {
+          "id": "corrupted-font-text",
+          "type": "text",
+          "x": 20,
+          "y": 40,
+          "w": 120,
+          "h": 15,
+          "text": "Fallback Font Stress Test",
+          "font": "NonExistentFontFamilyName_Sans123"
+        }
+      ]
+    }
+  ]
+}

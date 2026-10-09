@@ -1,0 +1,64 @@
+{
+  "description": "Adverse and Degenerate CPM graph scenarios: cycle loops, impossible constraints, negative float, leads, and disconnected islands",
+  "scenarios": [
+    {
+      "id": "scenario-cyclic-loop",
+      "title": "Cyclic Dependency Triangle (A -> B -> C -> A)",
+      "expectedResult": "CycleDetectedException / cycle error reporting nodes [t1, t2, t3]",
+      "tasks": [
+        { "id": "t1", "name": "Excavation Stage 1", "startDate": "2026-06-01", "endDate": "2026-06-05", "duration": 5 },
+        { "id": "t2", "name": "Shoring Installation", "startDate": "2026-06-07", "endDate": "2026-06-12", "duration": 5 },
+        { "id": "t3", "name": "Dewatering System", "startDate": "2026-06-14", "endDate": "2026-06-18", "duration": 5 }
+      ],
+      "dependencies": [
+        { "predecessorId": "t1", "successorId": "t2", "type": "FS", "lagHours": 0 },
+        { "predecessorId": "t2", "successorId": "t3", "type": "FS", "lagHours": 0 },
+        { "predecessorId": "t3", "successorId": "t1", "type": "FS", "lagHours": 0 }
+      ]
+    },
+    {
+      "id": "scenario-negative-float-constraint",
+      "title": "Impossible Deadline Constraint (Must Finish On prior to earliest finish)",
+      "expectedResult": "Constraint violation reported, negative total float = -5 days",
+      "tasks": [
+        {
+          "id": "p1",
+          "name": "Culvert Precast Casting",
+          "startDate": "2026-06-01",
+          "endDate": "2026-06-10",
+          "duration": 10,
+          "constraintType": "fnlt",
+          "constraintDate": "2026-06-05"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "scenario-negative-lag-lead",
+      "title": "Start-to-Start with Lead (SS with -16h lag across weekend)",
+      "expectedResult": "Successor starts earlier than predecessor start; snaps to valid working calendar boundary",
+      "tasks": [
+        { "id": "t-rebar", "name": "Rebar Fixing", "startDate": "2026-06-05", "endDate": "2026-06-15", "duration": 9 },
+        { "id": "t-formwork", "name": "Formwork Assembly", "startDate": "2026-06-05", "endDate": "2026-06-12", "duration": 6 }
+      ],
+      "dependencies": [
+        { "predecessorId": "t-rebar", "successorId": "t-formwork", "type": "SS", "lagHours": -16 }
+      ]
+    },
+    {
+      "id": "scenario-disconnected-islands",
+      "title": "Multiple Disconnected Graph Components",
+      "expectedResult": "Independent forward/backward pass computations without cross-contamination",
+      "tasks": [
+        { "id": "island-a1", "name": "River Training Works", "startDate": "2026-07-01", "endDate": "2026-07-10", "duration": 9 },
+        { "id": "island-a2", "name": "Gabion Wall Construction", "startDate": "2026-07-12", "endDate": "2026-07-20", "duration": 8 },
+        { "id": "island-b1", "name": "Staff Camp Electrification", "startDate": "2026-08-01", "endDate": "2026-08-05", "duration": 4 },
+        { "id": "island-b2", "name": "DG Set Commissioning", "startDate": "2026-08-06", "endDate": "2026-08-08", "duration": 3 }
+      ],
+      "dependencies": [
+        { "predecessorId": "island-a1", "successorId": "island-a2", "type": "FS", "lagHours": 0 },
+        { "predecessorId": "island-b1", "successorId": "island-b2", "type": "FS", "lagHours": 0 }
+      ]
+    }
+  ]
+}

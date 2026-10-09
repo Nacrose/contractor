@@ -1,0 +1,9 @@
+{
+  "name": "change-feed-spike",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Evaluation harness for change-feed sync mechanisms (Milestone M00-T15)",
+  "scripts": {
+    "test": "node run-harness.mjs"
+  }
+}

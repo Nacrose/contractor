@@ -1,0 +1,231 @@
+{
+  "metadata": {
+    "generatedAt": "2026-10-08T16:30:00.367Z",
+    "sourceRepo": "Construction_Manager",
+    "totalLocalStores": 5,
+    "totalOfflineWorkflows": 6,
+    "totalDocumentFormats": 6
+  },
+  "localStores": [
+    {
+      "name": "cm-field-outbox",
+      "technology": "IndexedDB (v3)",
+      "location": "Browser IndexedDB database: `cm-field-outbox`",
+      "stores": [
+        {
+          "name": "outbox",
+          "version": "v1",
+          "keyPath": "id",
+          "indexes": [
+            "userId",
+            "status",
+            "createdAt"
+          ],
+          "purpose": "Queued field mutations waiting to sync to the server (field-outbox.ts)",
+          "evictionSemantics": "Items with status=\"synced\" auto-purged after 24 hours. Failed/pending items retained indefinitely until manual discard or success.",
+          "durabilityBehavior": "Best-effort browser storage. Subject to browser storage quotas, clearing of site data, or Safari 7-day ITP eviction if web app is not visited."
+        },
+        {
+          "name": "drafts",
+          "version": "v2",
+          "keyPath": "id",
+          "indexes": [
+            "userId",
+            "updatedAt"
+          ],
+          "purpose": "Unsent field entries saved locally first (raw form state as typed by user)",
+          "evictionSemantics": "Explicit user deletion or promotion to outbox upon Send. No automatic TTL eviction.",
+          "durabilityBehavior": "Isolated per user. Persisted in IndexedDB with in-memory React state mirror."
+        },
+        {
+          "name": "queries",
+          "version": "v3",
+          "keyPath": "hash",
+          "indexes": [
+            "savedAt"
+          ],
+          "purpose": "Whitelisted React Query read snapshots for instant offline tab rendering (field-query-persist.ts)",
+          "evictionSemantics": "LRU pruning: entries older than 7 days pruned on launch; hard cap per entry to prevent storage bloat.",
+          "durabilityBehavior": "Transient offline read cache; marked as stale on hydrate to trigger background refetch when online."
+        }
+      ],
+      "schemaVersioning": "Version 3 (migrates incrementally: v1 outbox -> v2 drafts -> v3 queries). Service worker sw.js matches version 3 to prevent VersionError.",
+      "swIntegration": "Public/sw.js registers `sync` event tag `cm-field-sync` to replay outbox entries in background on Android Chrome."
+    },
+    {
+      "name": "ConstructionManager_PdfCanvas",
+      "technology": "IndexedDB (v1) + LocalStorage dual-mirror",
+      "location": "IndexedDB `ConstructionManager_PdfCanvas` (store `drafts`) + LocalStorage keys `cm_canvas_draft_*`",
+      "stores": [
+        {
+          "name": "drafts",
+          "version": "v1",
+          "keyPath": "key",
+          "indexes": [],
+          "purpose": "PDF takeoff markups, calibrations, and measurement session drafts",
+          "evictionSemantics": "LRU pruning: retains top 3 revisions per document. Evicts oldest drafts when count exceeds threshold.",
+          "durabilityBehavior": "Dual-write: writes to localStorage synchronously and IndexedDB asynchronously. Errors caught and swallowed; falls back to localStorage."
+        }
+      ],
+      "schemaVersioning": "Version 1. Document payload schema validated via `parseCanvasDoc` / `recoverCanvasDoc`.",
+      "swIntegration": "None (office desktop/tablet canvas only)."
+    },
+    {
+      "name": "Worksheet Local Store",
+      "technology": "Web Storage (LocalStorage)",
+      "location": "LocalStorage prefix `construction-manager:worksheet:<documentId>`",
+      "stores": [
+        {
+          "name": "worksheet-localStorage",
+          "version": "Unversioned stringified JSON",
+          "keyPath": "construction-manager:worksheet:<documentId>",
+          "indexes": [],
+          "purpose": "Synchronous local snapshot of unsaved grid edits to recover from browser crashes or network dropouts",
+          "evictionSemantics": "Cleared upon successful server save queue flush (`workbook-save-queue.ts`) or manual reload.",
+          "durabilityBehavior": "Fragile: 5MB browser quota limit. Large workbooks (>50k rows) fail `setItem` and throw QuotaExceededError (swallowed by try/catch)."
+        }
+      ],
+      "schemaVersioning": "Unversioned; validated by `isWorksheetDocument`.",
+      "swIntegration": "None."
+    },
+    {
+      "name": "cm-offline-v2 (Legacy)",
+      "technology": "IndexedDB (v2)",
+      "location": "IndexedDB `cm-offline-v2` (store `queue`)",
+      "stores": [
+        {
+          "name": "queue",
+          "version": "v2",
+          "keyPath": "id",
+          "indexes": [
+            "userId",
+            "status"
+          ],
+          "purpose": "Legacy request queue (pre-S2). Retained only so users can inspect and discard stranded writes.",
+          "evictionSemantics": "Manual discard only.",
+          "durabilityBehavior": "Deprecated: never auto-replayed because server lacked universal idempotency contract."
+        }
+      ],
+      "schemaVersioning": "Version 2 (deprecated/frozen).",
+      "swIntegration": "None."
+    },
+    {
+      "name": "Client App Preferences & Session Cache",
+      "technology": "Web Storage (LocalStorage)",
+      "location": "LocalStorage keys: `cf_user`, `cm_auth_token`, `cm_active_project`, `cm_theme`",
+      "stores": [
+        {
+          "name": "preferences",
+          "version": "Unversioned",
+          "keyPath": "Direct keys",
+          "indexes": [],
+          "purpose": "Cached user profile snapshot, active project selection, UI theme preference",
+          "evictionSemantics": "Cleared on explicit logout via `clearClientAuth()`.",
+          "durabilityBehavior": "Synchronous string storage."
+        }
+      ],
+      "schemaVersioning": "Unversioned.",
+      "swIntegration": "Service worker inspects session cookie or /api/auth/me."
+    }
+  ],
+  "offlineWorkflows": [
+    {
+      "workflow": "Field Daily Site Report Submission",
+      "formState": "Draft saved in IndexedDB `drafts` store via `saveFieldDraft`",
+      "submissionTrigger": "User taps \"Send\" button on mobile field interface",
+      "replayMechanism": "Queued into `outbox` with unique device-generated `clientUuid` (UUIDv4). Replayed via `fetch(\"/api/trpc/fieldSubmission.submitFieldReport\")`. Replay triggered on `window.online`, tab focus, manual \"Sync now\", or SW background sync.",
+      "idempotencyContract": "Device `clientUuid` sent in payload. Server checks `IdempotencyRecord` and returns cached result on replay.",
+      "conflictResolution": "Client-wins for draft creation; server validates project lock and permissions at ingestion time. Failures classified as 4xx \"needs attention\" vs 5xx \"transient backoff\"."
+    },
+    {
+      "workflow": "Field Photo Capture & Upload",
+      "formState": "Captured via camera input; resized on HTML5 canvas to <=1280px JPEG q0.75; stored as base64 DataURL in draft",
+      "submissionTrigger": "Included with daily report submission or sent via `fieldPhotos.create`",
+      "replayMechanism": "Embedded inside JSON payload if <20MB, or uploaded to pre-signed S3 URL with client-calculated SHA-256 checksum. Replayed sequentially with submission.",
+      "idempotencyContract": "Deduplicated via file content SHA-256 digest on server `StoredFile` registry.",
+      "conflictResolution": "Immutable photo identity; duplicate uploads reuse existing `StoredFile` record."
+    },
+    {
+      "workflow": "Site Expense & Petty Cash Logging",
+      "formState": "Saved as draft in `drafts` store (`type=\"expense\"`)",
+      "submissionTrigger": "User taps \"Send to Office\"",
+      "replayMechanism": "Queued to outbox; legacy `siteExpense.create` endpoints automatically rewritten to `fieldSubmission.create` envelope by `resolveReplayRequest()`.",
+      "idempotencyContract": "Device `clientUuid` bound to `withIdempotency` scope on server.",
+      "conflictResolution": "Office review required: expenses hit temporary `FieldSubmission` table and do not post to financial ledger until approved by project manager."
+    },
+    {
+      "workflow": "Direct Material Delivery Logging",
+      "formState": "Saved as draft (`type=\"material_delivery\"`)",
+      "submissionTrigger": "User confirms gate delivery on phone",
+      "replayMechanism": "Dispatched to `material.logDirectDelivery` with `clientUuid`.",
+      "idempotencyContract": "Enforces `clientUuid` idempotency check before adjusting `MaterialTransaction` stock.",
+      "conflictResolution": "Stock adjustments are additive; rejected if store location or project is invalid."
+    },
+    {
+      "workflow": "PDF Takeoff & Canvas Markups",
+      "formState": "Autosaved every 2 seconds to IndexedDB `ConstructionManager_PdfCanvas` + localStorage mirror",
+      "submissionTrigger": "Manual \"Save Markups\" button or periodic sync",
+      "replayMechanism": "Direct HTTP POST of `DrawingMarkup` JSON array to `document.saveMarkups`.",
+      "idempotencyContract": "None currently: whole-drawing markup array overwrite using page index.",
+      "conflictResolution": "Last-write-wins at markup layer. Known risk: concurrent annotators overwrite each other."
+    },
+    {
+      "workflow": "Worksheet Grid Cell Edits",
+      "formState": "Buffered in `workbook-save-queue.ts` with LocalStorage snapshot",
+      "submissionTrigger": "Debounced 1500ms after last cell edit, or window blur",
+      "replayMechanism": "Flushes full serialized `WorksheetDocument` JSON payload to `worksheet.saveDocument`.",
+      "idempotencyContract": "Integer revision counter (`version: number`). Server increments version on each save.",
+      "conflictResolution": "Optimistic concurrency: server rejects save if incoming version does not match current database revision."
+    }
+  ],
+  "documentFormats": [
+    {
+      "name": "Worksheet Workbook (.xlsx / JSON)",
+      "formatIdentifier": "`WorksheetDocument` JSON / Office Open XML (.xlsx)",
+      "producingEngine": "`src/lib/worksheet/spreadsheet-engine.ts`, `workbook-document.ts`, `workbook-excel.ts`",
+      "consumingEngine": "`src/components/worksheet/` (React Virtual Grid), `src/server/routers/worksheet.ts`",
+      "internalStructure": "JSON object: `{ documentId, version, sheets: [{ id, name, cells: { [coord]: { raw, value, type, formula, style } } }] }`",
+      "compatibilityStatus": "Full read/write with Microsoft Excel .xlsx via `@e965/xlsx`. Formulas evaluated via `@formulajs/formulajs` and custom AST evaluator."
+    },
+    {
+      "name": "CAD Vector Drawing (.dxf / .dwg)",
+      "formatIdentifier": "AutoCAD ASCII DXF (R12–2018) / Binary DWG",
+      "producingEngine": "`src/lib/dxf/dxf-render.ts`, `src/lib/cad/plot-engine.ts` (exports to SVG / PDF / DXF)",
+      "consumingEngine": "`src/lib/dxf/dxf-parser.ts`, `src/lib/dwg/dwg-native.ts` (native bitstream parser), `src/components/cad/`",
+      "internalStructure": "Parsed CAD entity graph: `{ layers, blocks, entities: [{ type: \"LINE\"|\"LWPOLYLINE\"|\"TEXT\"|\"ARC\"|\"CIRCLE\"|\"HATCH\", vertices, layer, color }] }`",
+      "compatibilityStatus": "DXF full ASCII compatibility; DWG native parser handles R2000–R2018 geometry. Plot engine exports to PDF / SVG."
+    },
+    {
+      "name": "Takeoff & PDF Canvas Document (.pdf / JSON)",
+      "formatIdentifier": "Adobe PDF 1.4–2.0 + `CanvasDoc` markup JSON",
+      "producingEngine": "`src/lib/document-engine/measurement.ts`, `src/lib/pdf-canvas/` annotation tools",
+      "consumingEngine": "Mozilla `pdfjs-dist` (renderer), `jspdf` / `html2canvas-pro` (export), `src/server/routers/document.ts`",
+      "internalStructure": "`DrawingMarkup`: `{ id, drawingId, pageNumber, type: \"polygon\"|\"area\"|\"length\"|\"count\", points: [[x,y]], scale, measurement }`",
+      "compatibilityStatus": "Standard PDF rendered via PDF.js worker; markup layers stored as normalized coordinate vectors independent of zoom."
+    },
+    {
+      "name": "Primavera P6 Schedule (.xer)",
+      "formatIdentifier": "Primavera Proprietary Tab-Delimited XER",
+      "producingEngine": "N/A (External enterprise export from Primavera P6)",
+      "consumingEngine": "`src/server/utils/xer-import.ts` -> `gantt-import.ts`",
+      "internalStructure": "Tabular database dump: `%T TASK`, `%T TASKPRED`, `%T CALENDAR`, `%T PROJWBS` tables",
+      "compatibilityStatus": "Full parser for Primavera P6 XER schemas 8.0–22.0. Maps to `GanttTask` and `TaskDependency`."
+    },
+    {
+      "name": "Microsoft Project Schedule (.xml / .mpp)",
+      "formatIdentifier": "MS Project XML Schema 2003–2019",
+      "consumingEngine": "`src/server/utils/msp-import.ts` -> `gantt-import.ts`",
+      "producingEngine": "`src/server/utils/msp-export.ts` (generates valid MS Project XML)",
+      "internalStructure": "XML tree: `<Project><Tasks><Task>...</Tasks><Dependencies>...</Dependencies></Project>`",
+      "compatibilityStatus": "Bidirectional round-trip: XML import and export verified against MS Project 2016/2019."
+    },
+    {
+      "name": "Field Site Media (.jpg / .png)",
+      "formatIdentifier": "JPEG (canvas-compressed <=1280px, q0.75)",
+      "producingEngine": "`src/lib/field-photo.ts` HTML5 camera / file compressor",
+      "consumingEngine": "`src/server/routers/field-photos.ts`, `StoredFile` S3 service, `sharp`",
+      "internalStructure": "EXIF-tagged binary JPEG with embedded GPS metadata (`latitude`, `longitude`, `timestamp`)",
+      "compatibilityStatus": "Standard web JPEG. Replaces heavy 8MB HEIC/RAW originals with ~250KB transmission payloads."
+    }
+  ]
+}

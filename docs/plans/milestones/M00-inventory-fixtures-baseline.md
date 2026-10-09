@@ -47,7 +47,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - M00/M01 decomposed to task level with acceptance criteria; M02–M11 at WP level with refinement-before-gate contracts (protocol R9).
     - Rollup counts match the milestone files (verified at creation: 6/118).
 
-- [ ] **M00-T07** — Inventory: tRPC routers and every server mutation
+- [x] **M00-T07** — Inventory: tRPC routers and every server mutation (PR #2)
   - Depends on: M00-T06 · Owner role: repository/domain architecture agent
   - Output: `docs/reports/M00/inventory-routers.md` (+ companion `.json`/`.csv` table if useful)
   - Scope: every file under `Construction_Manager/src/server/routers/` (~60 routers) in the upstream repo.
@@ -58,7 +58,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Every writer relevant to the future change feed flagged (feeds M00-T15–T18).
     - Findings reconciled against the v3 §3 reuse-map rows (policy/lifecycle/finance, retry/events) — agreements and mismatches listed.
 
-- [ ] **M00-T08** — Inventory: background jobs, imports, admin tools and scripts (non-router writers)
+- [x] **M00-T08** — Inventory: background jobs, imports, admin tools and scripts (non-router writers) (PR #3)
   - Depends on: M00-T06 · Output: `docs/reports/M00/inventory-jobs-imports.md`
   - Scope: cron/background jobs, importers (XER/MSP/Excel), admin tooling, `scripts/`, seeds, reconciliation services — everything that writes domain data outside tRPC.
   - Acceptance:
@@ -66,7 +66,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Change-feed writer-coverage risk (v3 §3) quantified: % of writes flowing through services vs direct writes.
     - This inventory feeds the M00 spike writer-coverage analysis (cross-referenced).
 
-- [ ] **M00-T09** — Inventory: client local stores, offline surfaces and document formats
+- [x] **M00-T09** — Inventory: client local stores, offline surfaces and document formats (PR #4)
   - Depends on: M00-T06 · Output: `docs/reports/M00/inventory-local-stores.md`
   - Scope: `field-db.ts` (IndexedDB), `field-outbox.ts`, `field-drafts.ts`, `field-photo.ts`, service worker, drafts/queues, local settings; document formats produced/consumed (worksheet workbook, CAD DXF/DWG, PDF, images).
   - Acceptance:
@@ -74,14 +74,14 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Existing offline workflows enumerated with their current submission/replay semantics.
     - Document formats listed with producing/consuming engine and compatibility status.
 
-- [ ] **M00-T10** — Feature matrix as implemented (implemented / partial / missing / unverified)
+- [x] **M00-T10** — Feature matrix as implemented (implemented / partial / missing / unverified) (PR #5)
   - Depends on: M00-T07, M00-T08, M00-T09 · Output: `docs/reports/M00/feature-matrix.md`
   - Scope: all user-visible workflows (field ops, billing/IPC, procurement, workforce/HR, accounting, documents/CAD, worksheets/BoQ, scheduling, JV, admin).
   - Acceptance:
     - Each workflow row carries: status class (implemented/partial/missing/unverified), central engine, current tests, target platforms, README-vs-reality discrepancy notes (v3 §3 risk: README describes online-first while offline code exists — resolve here).
     - Existing-product parity kept separate from requested additions and from full third-party compatibility claims (v3 §6 M00).
 
-- [ ] **M00-T11** — Capture and sanitize behavior fixtures (CAD, worksheet, PDF, CPM)
+- [x] **M00-T11** — Capture and sanitize behavior fixtures (CAD, worksheet, PDF, CPM) (PR #6)
   - Depends on: M00-T06 · Output: `fixtures/platform-parity/` index + `docs/reports/M00/fixture-register.md`
   - Scope: representative inputs incl. adverse/degenerate cases: DXF/DWG generations covered by `src/lib/dwg/`; workbook files at 50k/100k rows; 100+ page / 200 MB PDF plus dense single pages and scanned blueprints; CPM graphs at 10k tasks / 50k dependencies with Nepal calendar and constraint variants.
   - Acceptance:
@@ -89,7 +89,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Degenerate/adverse inputs included per engine (near-coincident geometry, cyclic dependencies, volatile functions, mixed page sizes).
     - Fixture manifest versioned; generation seeds recorded where synthetic.
 
-- [ ] **M00-T12** — Establish reference outputs and the honest test baseline
+- [x] **M00-T12** — Establish reference outputs and the honest test baseline (PR #7)
   - Depends on: M00-T11 · Output: `docs/reports/M00/baseline-tests.md`
   - Scope: run the preserved command set — `npm run ci:verify`, `npm run test:integration`, `npx vitest run src/lib/worksheet`, scoped CAD/document/CPM suites — and record results as-is.
   - Acceptance:
@@ -97,14 +97,14 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Reference outputs derived from existing tests PLUS independently reviewed domain expectations; known bugs are recorded as bugs, not preserved as expected behavior.
     - Skipped/unavailable checks recorded as skipped (never passed — protocol R10).
 
-- [ ] **M00-T13** — Performance baseline profile on recorded hardware
+- [x] **M00-T13** — Performance baseline profile on recorded hardware (PR #8)
   - Depends on: M00-T11 · Output: `docs/reports/M00/baseline-perf.md`
   - Scope: current worksheet recalculation (fresh evaluator/cache scan behavior, real formula graphs), CAD viewport render/selection, PDF decode, CPM calculation — measured, not estimated.
   - Acceptance:
     - Hardware, build mode, OS, dataset (fixture refs) recorded per measurement (v3 §6 M00).
     - Baseline failures recorded without silently weakening tests; gaps vs §7 budgets listed as input to M00-T19 ratification.
 
-- [ ] **M00-T14** — Draft the platform support matrix (OS/browser/hardware/disk/retention)
+- [x] **M00-T14** — Draft the platform support matrix (OS/browser/hardware/disk/retention) (PR #9)
   - Depends on: M00-T10 · Output: `docs/reports/M00/platform-support-matrix.md`
   - Scope: target OS/browser versions, Intel macOS coverage, declared minimum hardware, disk budgets, offline retention expectations — the release-commitment prerequisites (v3 §6 M00).
   - Acceptance:
@@ -112,28 +112,28 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Explicit "unsupported/best-effort" rows where coverage cannot be committed; no silent omissions.
     - Draft budgets for per-device memory/startup/download recorded as proposals for M01 to finalize (v3 §7).
 
-- [ ] **M00-T15** — Change-feed spike: build the evaluation harness
+- [x] **M00-T15** — Change-feed spike: build the evaluation harness (PR #10)
   - Depends on: M00-T07, M00-T08 · Output: `spike/change-feed/` harness + `docs/reports/M00/spike-harness.md`
   - Scope: disposable PostgreSQL (Neon-compatible) test rig with: late-commit scenario generator, crash/restart injection (kill -9 + restart), replication-slot retention monitoring, consumer-checkpoint store, duplicate-delivery injector.
   - Acceptance:
     - Harness reproduces: transaction committing after a later-allocated event id (commit-order hazard), crash replay re-delivering batches, concurrent writers.
     - Harness runs headless with an exit code; scenario list documented. Spike is timeboxed — harness kept minimal (v3 §6 M00 timebox 1–2 weeks).
 
-- [ ] **M00-T16** — Change-feed spike arm A: writer instrumentation prototype
+- [x] **M00-T16** — Change-feed spike arm A: writer instrumentation prototype (PR #11)
   - Depends on: M00-T15 · Output: prototype branch + `docs/reports/M00/spike-arm-writers.md`
   - Scope: explicit writer instrumentation across a representative router/jobs subset (not all ~60 routers) using the existing outbox/idempotency patterns.
   - Acceptance:
     - Measured: instrumentation cost per writer, coverage gaps when any writer is missed, commit-order behavior under the harness, redaction/visibility filter feasibility.
     - Honest coverage extrapolation to full writer set, grounded in M00-T07/T08 percentages.
 
-- [ ] **M00-T17** — Change-feed spike arm B: WAL logical decoding prototype
+- [x] **M00-T17** — Change-feed spike arm B: WAL logical decoding prototype (PR #12)
   - Depends on: M00-T15 · Output: prototype + `docs/reports/M00/spike-arm-wal.md`
   - Scope: logical decoding (pgoutput or equivalent) end-to-end in the harness: commit-ordered stream, filtered visibility, Neon compatibility, slot retention risk.
   - Acceptance:
     - Demonstrated on the harness: commit-order correctness under late commits; **durable consumer checkpoints surviving crash; idempotent re-application of re-delivered batches** (v3 §6 M00 requirement — checkpoint durability is part of the decision, not a downstream detail).
     - Neon slot-retention/failure story recorded; monitoring approach named.
 
-- [ ] **M00-T18** — Change-feed mechanism decision record
+- [x] **M00-T18** — Change-feed mechanism decision record (PR #13)
   - Depends on: M00-T16, M00-T17 · Output: decision record `docs/adr/0011-change-feed-mechanism.md` (or DR file per repo convention — number assigned at creation)
   - Scope: select mechanism (writer instrumentation / WAL logical decoding / hybrid) per v3 §5.3 + M00 spike.
   - Acceptance:
@@ -141,7 +141,7 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - If neither mechanism survives: explicit finding that M03's sync design must be revisited before any protocol freeze (v3 §6 M00) — escalated to owner, M03 marked at-risk in the rollup.
     - Ratification deadline respected: decision consumed by M03 start.
 
-- [ ] **M00-T19** — Ratify the capacity envelope, maintenance posture and performance budgets
+- [x] **M00-T19** — Ratify the capacity envelope, maintenance posture and performance budgets (PR #14)
   - Depends on: M00-T07, M00-T10, M00-T13 · Output: `docs/reports/M00/capacity-ratification.md` (+ plan amendment if bands change)
   - Scope: confirm or correct v3 §6.0 effort bands against the completed inventory; freeze the maintenance-posture table; ratify §7 initial budgets against declared hardware.
   - Acceptance:
@@ -149,14 +149,14 @@ Exit (v3, verbatim intent): reviewed engine/consumer inventory, behavior matrix,
     - Maintenance posture frozen: what is Maintained / Frozen / Continued / Deferred, named explicitly (v3 §6.0 table).
     - §7 budgets ratified or amendment-proposed; no budget silently lowered (protocol R6 if changed).
 
-- [ ] **M00-T20** — Protocol lint: enforce the register mechanically
+- [x] **M00-T20** — Protocol lint: enforce the register mechanically (PR #15)
   - Depends on: M00-T06 · Output: `scripts/lint-protocol.mjs` + `.github/workflows/lint-protocol.yml` in this repo
   - Scope: a script that validates: every task ID referenced in PR titles exists; every ticked task carries a `(PR #N)` reference; rollup counts match milestone files; checkbox syntax is well-formed.
   - Acceptance:
     - Lint passes on the current register (exit 0) and fails on a deliberately corrupted fixture copy (negative test).
     - CI workflow runs the lint on PRs touching `docs/plans/**`; failures block merge guidance recorded in the protocol (link added by a `[PROTOCOL-AMEND]` if needed).
 
-- [ ] **M00-T21** — 👤 GATE — M00 exit evidence and owner sign-off
+- [x] **M00-T21** — 👤 GATE — M00 exit evidence and owner sign-off (PR #16)
   - Depends on: M00-T07…T20 (all) · Output: gate PR `[M00-GATE]` aggregating: inventory set, behavior matrix, fixture register, baseline reports, spike decision record, capacity ratification.
   - Acceptance:
     - Every M00 task ticked with evidence; rollup shows 21/21 before the gate PR (except the gate task itself).

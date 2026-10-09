@@ -1,0 +1,44 @@
+{
+  "test": "M00-T17_ARM_B_WAL_LOGICAL_DECODING",
+  "timestamp": "2026-10-08T17:17:56.602Z",
+  "tests": {
+    "commitOrderTest": {
+      "passed": true,
+      "eventCount": 2,
+      "firstEventLsn": "1112",
+      "secondEventLsn": "1160",
+      "firstEntityId": "proj-early",
+      "secondEntityId": "proj-late"
+    },
+    "visibilityAndRedactionTest": {
+      "passed": true,
+      "fieldRedacted": true,
+      "tenantBEventCount": 0
+    },
+    "crashDurabilityAndIdempotencyTest": {
+      "passed": true,
+      "initialApplied": 2,
+      "crashStatus": "CRASHED",
+      "duplicateDeliveryDedupCount": 2,
+      "finalPersistedLsn": "1500",
+      "entityVerified": true
+    },
+    "neonCircuitBreakerTest": {
+      "passed": true,
+      "retainedBytesBeforeLag": 0,
+      "retainedBytesAfterLag": 629145600,
+      "quotaBreached": true,
+      "droppedSlotReason": "Retention quota exceeded: 600.0MB > 500.0MB",
+      "slotExistsAfterDrop": false
+    }
+  },
+  "metrics": {
+    "fanoutProcessingTimeMs": 7.772041999999942,
+    "fanoutThroughputEventsPerSec": 1286663,
+    "clientProcessingTimeMs": 2.599458000000027,
+    "clientThroughputEventsPerSec": 1538782,
+    "fanoutTotalEvents": 10000,
+    "clientDedupCount": 2000
+  },
+  "allPassed": true
+}

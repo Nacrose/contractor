@@ -1,0 +1,129 @@
+{
+  "environment": {
+    "node": "v26.3.0",
+    "arch": "arm64",
+    "platform": "darwin",
+    "cpu": "Apple M1 (8 Cores)",
+    "ram": "8 GB Unified Memory",
+    "os": "macOS 15.x / Darwin 27.0.0"
+  },
+  "worksheet": {
+    "standardIpc": {
+      "cellCount": 85,
+      "avgMs": 0.757
+    },
+    "scaleRecalc": [
+      {
+        "rows": 1000,
+        "cellCount": 10010,
+        "generationTimeMs": 4.5,
+        "recalcTimeMs": 64.6,
+        "throughputCellsPerSec": 154970,
+        "heapBeforeMb": 16.9,
+        "heapAfterGenMb": 19.8,
+        "heapDeltaMb": 15.3
+      },
+      {
+        "rows": 10000,
+        "cellCount": 100010,
+        "generationTimeMs": 44.5,
+        "recalcTimeMs": 626.8,
+        "throughputCellsPerSec": 159559,
+        "heapBeforeMb": 32.4,
+        "heapAfterGenMb": 44,
+        "heapDeltaMb": 77.9
+      },
+      {
+        "rows": 50000,
+        "cellCount": 500010,
+        "generationTimeMs": 297.1,
+        "recalcTimeMs": 4167.1,
+        "throughputCellsPerSec": 119989,
+        "heapBeforeMb": 111.8,
+        "heapAfterGenMb": 193.2,
+        "heapDeltaMb": 384.5
+      }
+    ]
+  },
+  "cad": {
+    "dwg": [
+      {
+        "file": "sample_r13.dwg",
+        "version": "AC1012",
+        "sizeBytes": 22001,
+        "avgMs": 0.212,
+        "minMs": 0.117,
+        "maxMs": 0.492,
+        "entities": 0,
+        "layers": 0
+      },
+      {
+        "file": "sample_r14.dwg",
+        "version": "AC1014",
+        "sizeBytes": 22095,
+        "avgMs": 0.097,
+        "minMs": 0.09,
+        "maxMs": 0.107,
+        "entities": 0,
+        "layers": 0
+      },
+      {
+        "file": "sample_2000.dwg",
+        "version": "AC1015",
+        "sizeBytes": 22027,
+        "avgMs": 0.149,
+        "minMs": 0.087,
+        "maxMs": 0.48,
+        "entities": 0,
+        "layers": 0
+      }
+    ],
+    "dxf": {
+      "standardSitePlan": {
+        "parseAvgMs": 0.141,
+        "renderSvgAvgMs": 0.238,
+        "totalAvgMs": 0.379
+      }
+    }
+  },
+  "pdfCanvas": {
+    "denseBlueprint": {
+      "elements": 11,
+      "zOrderSortAvgMs": 0.0024
+    },
+    "multipage120Pages": {
+      "pageCount": 120,
+      "generationMs": 0.49,
+      "jsonSerializationMs": 0.56,
+      "payloadBytes": 184670
+    }
+  },
+  "cpm": {
+    "scale": [
+      {
+        "tasks": 1000,
+        "dependencies": 5000,
+        "durationMs": 69.6,
+        "tasksPerSec": 14364,
+        "heapDeltaMb": 19.7,
+        "criticalPathLength": 0
+      },
+      {
+        "tasks": 5000,
+        "dependencies": 25000,
+        "durationMs": 324.4,
+        "tasksPerSec": 15412,
+        "heapDeltaMb": 7.4,
+        "criticalPathLength": 0
+      },
+      {
+        "tasks": 10000,
+        "dependencies": 50000,
+        "durationMs": 677.1,
+        "tasksPerSec": 14768,
+        "heapDeltaMb": 13.8,
+        "criticalPathLength": 0
+      }
+    ]
+  }
+}

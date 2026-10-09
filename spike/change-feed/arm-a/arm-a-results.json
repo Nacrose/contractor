@@ -1,0 +1,69 @@
+{
+  "benchmark": {
+    "iterations": 5000,
+    "baselineTotalMs": 2.73,
+    "baselineAvgMs": 0.00055,
+    "armATotalMs": 4.15,
+    "armAAvgMs": 0.00083,
+    "overheadPerWriteMs": 0.00029,
+    "overheadPercent": 52.5,
+    "writeAmplificationFactor": 2
+  },
+  "redactionValidation": {
+    "testedFields": [
+      "sensitiveWageRate",
+      "workerPan"
+    ],
+    "redactedInEvent": true
+  },
+  "coverageGaps": {
+    "testedWriters": [
+      {
+        "writer": "dailyLogRouter.create",
+        "instrumented": true,
+        "synced": true
+      },
+      {
+        "writer": "ipcRouter.submit",
+        "instrumented": true,
+        "synced": true
+      },
+      {
+        "writer": "attendanceJob.process",
+        "instrumented": true,
+        "synced": true
+      },
+      {
+        "writer": "scripts/apply-access-conversion.ts",
+        "instrumented": false,
+        "synced": false
+      },
+      {
+        "writer": "scripts/setup-superadmin.ts",
+        "instrumented": false,
+        "synced": false
+      }
+    ],
+    "missedEntities": [
+      {
+        "entity": "Project:proj-99",
+        "writer": "apply-access-conversion.ts",
+        "captured": false
+      },
+      {
+        "entity": "User:user-admin",
+        "writer": "setup-superadmin.ts",
+        "captured": false
+      }
+    ],
+    "gapDemonstrated": true
+  },
+  "inventoryExtrapolation": {
+    "totalRouterMutations": 402,
+    "nonRouterWriters": 23,
+    "totalSystemWritePaths": 425,
+    "directDbBypassPaths": 56,
+    "bypassRiskPercentage": "13.2%",
+    "manualInstrumentationCallSitesRequired": 425
+  }
+}
