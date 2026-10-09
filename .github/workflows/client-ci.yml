@@ -52,6 +52,9 @@ jobs:
       - name: Run Native Outbox Repository Tests
         run: node packages/native_outbox/tool/check.mjs
 
+      - name: Run Native Sync Feed Tests
+        run: node packages/native_sync_feed/tool/check.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 

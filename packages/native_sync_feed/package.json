@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-sync-feed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Authorized commit-safe change feed (M03-T04): server tenant change log with commit-order cursor semantics, tenant/permission authorization, fail-closed redaction, incremental byte-bounded pulls, durable consumer checkpoints with idempotent replay, and command receipts with financial retention + compaction. Built on the M00-ratified Server-Mediated Hybrid Change-Feed (ADR-0011). Pilot domain: daily report / field submission. Evidence runs against real SQLite (node:sqlite).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
