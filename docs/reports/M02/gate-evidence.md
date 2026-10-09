@@ -1,6 +1,6 @@
 # M02-GATE — Exit evidence and owner decision packet
 
-**Status: evidence packet assembled; owner decision pending (protocol R8).** This document consolidates the evidence for M02-T01…T07 and the pre-gate conditions required before the `[M02-GATE]` PR can merge. M02's exit contract is deliberately narrow: native/web component contract tests and accessibility checks pass; **no production feature cutover and no per-screen alternative primitives**. Nothing here claims production readiness beyond that contract.
+**Status: APPROVED — owner decision recorded 2026-10-09 (protocol R8, chat directive "approve") before merge; merged as PR #31. M02-T08 ticked in the same PR. M03 implementation is authorized.** This document consolidates the evidence for M02-T01…T07 and the pre-gate conditions required before the `[M02-GATE]` PR merged. M02's exit contract is deliberately narrow: native/web component contract tests and accessibility checks pass; **no production feature cutover and no per-screen alternative primitives**. Nothing here claims production readiness beyond that contract.
 
 ## 1. Task evidence (M02-T01…T07)
 
@@ -28,7 +28,7 @@
 | M07 refined before this gate merges (its dependency path) | ✅ | M07 refined T01–T10 incl. CADCraft prototype task per ADR-0015 — same stack |
 | M08 refined (contractually due before M06/M07 gates; done now per ADR-0015) | ✅ | M08 refined T01–T08 incl. PdfCraft prototype task — same stack |
 | Documents/decks capability registered (ADR-0015 follow-up) | ✅ | M12 registered at WP level (WordCraft letters/reports/specs, deckcraft presentations — owner-required 2026-10-09) — same stack |
-| Owner approval recorded under protocol R8 | ⏳ | **Pending — this packet is the approval request** |
+| Owner approval recorded under protocol R8 | ✅ | Owner approved via chat directive ("approve", 2026-10-09) before merge of PR #31; recorded in the M02 register outcome line and §5 of this packet |
 
 ## 3. What M02 establishes (and what it does not)
 
@@ -43,9 +43,9 @@
 - **M12** (documents/decks) is registered at WP level; its refinement (with WordCraft + deckcraft prototype tasks) is due before the M12 gate, following the M06/M07/M08 pattern.
 - Standing constraints 1–7 (EXECUTION-PLAN) continue to apply, including the change-feed naming duty from M03 onward.
 
-## 5. Owner decision requested
+## 5. Owner decision (recorded)
 
-Per protocol R8 the repository owner is asked to approve **M02-GATE**: accept the M02 exit evidence above, and authorize M03 task work to begin. Approval is recorded by merging the `[M02-GATE]` PR (which ticks M02-T08). No scope change, budget change, or production cutover is requested or implied by this gate.
+Per protocol R8 the repository owner **approved M02-GATE on 2026-10-09** (chat directive: "approve"): the M02 exit evidence in this packet is accepted, and **M03 task work is authorized to begin**. The approval was recorded in the M02 register and this packet in the same PR that ticks M02-T08 (PR #31) before merge. No scope change, budget change, or production cutover was requested or implied by this gate.
 
 ## Sources
 
