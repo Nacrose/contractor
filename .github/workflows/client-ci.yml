@@ -38,6 +38,9 @@ jobs:
       - name: Run Server Semantic Parity Fixtures
         run: node scripts/test-semantic-parity.mjs
 
+      - name: Run Native Adapter Contract Tests
+        run: node packages/native_adapter/tool/check.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 
