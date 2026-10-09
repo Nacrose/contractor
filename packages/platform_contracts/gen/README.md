@@ -1,5 +1,6 @@
 # Generated bindings
 
-M02-T02 owns generated output under `typescript/`, `dart/`, and `rust/`.
-Generated files are committed and must never be hand-edited. Rust output is
-created only with a real Rust target and passing fixture compilation.
+M02-T02 generates TypeScript output under `typescript/` and Dart output under
+`dart/`. Generated files are committed and must never be hand-edited. The Rust
+directory is reserved: Rust generation and fixture compilation are blocked until
+the repository has a real Rust target. No Rust stub or pass is claimed.

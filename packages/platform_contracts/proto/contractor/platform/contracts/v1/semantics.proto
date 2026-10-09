@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package contractor.platform.contracts.v1;
+
+// ExactDecimal carries a decimal value as text so consumers never parse it
+// through binary floating point.
+message ExactDecimal {
+  string value = 1;
+}
+
+// DateOnly carries a calendar date without a timezone or time-of-day.
+message DateOnly {
+  string iso_date = 1;
+}
+
+// UtcInstant carries an explicit UTC RFC 3339 instant, distinct from DateOnly.
+message UtcInstant {
+  string rfc3339_utc = 1;
+}

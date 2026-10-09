@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -eu
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+dart_project=$(CDPATH= cd -- "$script_dir/../dart" && pwd)
+flutter_bin=$(command -v flutter)
+while [ -L "$flutter_bin" ]; do
+  link_target=$(readlink "$flutter_bin")
+  case "$link_target" in
+    /*) flutter_bin=$link_target ;;
+    *) flutter_bin="$(dirname -- "$flutter_bin")/$link_target" ;;
+  esac
+done
+flutter_root=$(CDPATH= cd -- "$(dirname -- "$flutter_bin")/.." && pwd)
+dart_bin="$flutter_root/bin/cache/dart-sdk/bin/dart"
+cd "$dart_project"
+if [ "${1:-}" = "format" ]; then
+  shift
+  exec "$dart_bin" format "$@"
+fi
+exec "$dart_bin" --packages="$dart_project/.dart_tool/package_config.json" "$@"

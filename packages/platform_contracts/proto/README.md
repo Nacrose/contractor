@@ -4,5 +4,7 @@ Canonical `.proto` files belong here. Their directory path must mirror the
 declared Protobuf package and its version, such as
 `contractor/example/v1/example.proto` for `contractor.example.v1`.
 
-No domain schema is declared by the M02-T01 scaffold. Add a source file only in
-the task that establishes the corresponding contract and its semantics.
+The initial schema defines transport-neutral exact-decimal, date-only, and
+UTC-instant value wrappers for the shared semantic fixtures. It declares no
+application messages, services, or API transport. Add further source files only
+in a registered task that establishes their owner and semantics.

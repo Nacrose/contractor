@@ -1,0 +1,24 @@
+{
+  "name": "@contractor/platform-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format:check": "buf format --diff --exit-code",
+    "lint": "buf lint",
+    "breaking": "node tools/check-breaking.mjs",
+    "generate": "buf generate",
+    "check:generated": "npm run generate && git diff --exit-code -- gen/typescript gen/dart",
+    "check:typescript": "tsc --project tsconfig.json && node .test-build/test/semantics.test.js",
+    "check:dart": "tools/dart format --output=none --set-exit-if-changed test/semantics_roundtrip.dart && tools/dart test/semantics_roundtrip.dart",
+    "check:all": "npm run format:check && npm run lint && npm run breaking && npm run generate && npm run check:typescript && npm run check:dart && git diff --exit-code -- gen/typescript gen/dart"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "2.16.0"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "1.73.0",
+    "@bufbuild/protoc-gen-es": "2.16.0",
+    "typescript": "5.9.3"
+  }
+}

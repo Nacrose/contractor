@@ -1,5 +1,7 @@
 # Dependencies
 node_modules/
+.test-build/
+.dart_tool/
 .pnp
 .pnp.js
 
