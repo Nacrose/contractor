@@ -17,21 +17,26 @@ packages/platform_contracts/
 ├── gen/typescript/          # committed TypeScript bindings
 ├── gen/dart/                # committed Dart bindings
 ├── gen/rust/                # reserved until a real Rust target exists
-├── dart/                    # pinned Dart runtime and semantic fixture check
+├── dart/lib/generated/      # generated Dart package view of gen/dart
+├── dart/                    # pinned Dart runtime, package entry point, fixture check
 ├── CHANGELOG.md
 └── BUF_VERSION
 ```
 
-The initial schema defines only transport-neutral exact-decimal, date-only, and
-UTC-instant value wrappers. It adds no application-domain messages, services, or
-transport-specific definitions. Add further schemas only through a registered
-task that defines their owner, semantics, and compatibility requirements.
+The schema defines transport-neutral exact-decimal, date-only, and UTC-instant
+value wrappers plus the registered local-save and sync-status projection. The
+save/sync message separates local persistence, server acceptance, attachment
+completion, backup state, retained pending work, and the next user action. It
+does not define a transport, persistence engine, or business authorization.
 
 Generated files belong under the corresponding `gen/` target directory and are
 committed alongside their source. They are generated artifacts: do not edit them
-by hand. The checked-in `buf.gen.yaml` invokes local plugins. Exact plugin and
-runtime versions are locked in `package-lock.json` and `dart/pubspec.lock`; no
-remote plugin service or schema registry is required. Rust generator/runtime pins
+by hand. The Dart package view at `dart/lib/generated/` is generated in the same
+step so Flutter packages can consume bindings through a local package
+dependency; CI checks both Dart outputs for drift. The checked-in `buf.gen.yaml`
+invokes local plugins. Exact plugin and runtime versions are locked in
+`package-lock.json` and `dart/pubspec.lock`; no remote plugin service or schema
+registry is required. Rust generator/runtime pins
 are selected only when a real Rust target and fixture compilation are available.
 No Rust stub is generated: the Rust fixture check is blocked while this
 repository has no Rust target.
@@ -49,7 +54,7 @@ repository has no Rust target.
   and names; use exact decimal and distinct date-only/UTC-instant semantics as
   specified by ADR-0012.
 - Release compatible schema changes with a semver Git tag such as
-  `platform-contracts/v1.0.0` and a changelog entry.
+  `platform-contracts/v1.1.0` and a changelog entry.
   Breaking changes require a new major contract version and an explicit
   migration plan. Consumers pin an exact tag or commit.
 

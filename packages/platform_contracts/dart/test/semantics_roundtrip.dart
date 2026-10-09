@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../../gen/dart/contractor/platform/contracts/v1/semantics.pb.dart';
+import '../lib/generated/contractor/platform/contracts/v1/semantics.pb.dart';
+import '../lib/generated/contractor/platform/contracts/v1/save_sync.pb.dart';
 
 Never fail(String message) => throw StateError(message);
 
@@ -103,7 +104,80 @@ Future<void> main() async {
     }
   }
 
+  const localPersistenceValues = {
+    'SAVED': LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED,
+    'FAILED': LocalPersistenceState.LOCAL_PERSISTENCE_STATE_FAILED,
+  };
+  const serverAcceptanceValues = {
+    'ACCEPTED': ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_ACCEPTED,
+    'RETRYABLE_FAILURE':
+        ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_RETRYABLE_FAILURE,
+    'REJECTED': ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_REJECTED,
+    'NOT_QUEUED': ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_NOT_QUEUED,
+  };
+  const attachmentValues = {
+    'UPLOADING':
+        AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_UPLOADING,
+    'NOT_REQUIRED':
+        AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED,
+    'COMPLETE': AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_COMPLETE,
+    'RETRYABLE_FAILURE':
+        AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_RETRYABLE_FAILURE,
+  };
+  const backupValues = {
+    'STALE': BackupState.BACKUP_STATE_STALE,
+    'CURRENT': BackupState.BACKUP_STATE_CURRENT,
+  };
+  const nextActionValues = {
+    'NONE': NextUserAction.NEXT_USER_ACTION_NONE,
+    'RETRY_SYNC': NextUserAction.NEXT_USER_ACTION_RETRY_SYNC,
+    'REVIEW_SERVER_REJECTION':
+        NextUserAction.NEXT_USER_ACTION_REVIEW_SERVER_REJECTION,
+    'RETRY_ATTACHMENTS': NextUserAction.NEXT_USER_ACTION_RETRY_ATTACHMENTS,
+    'RETRY_LOCAL_SAVE': NextUserAction.NEXT_USER_ACTION_RETRY_LOCAL_SAVE,
+  };
+  final saveSyncCases = fixture['saveSyncCases'] as List<dynamic>;
+  for (final row in saveSyncCases.cast<Map<String, dynamic>>()) {
+    final id = row['id'] as String;
+    final value =
+        SaveSyncStatus()
+          ..localPersistence = localPersistenceValues[row['localPersistence']]!
+          ..serverAcceptance = serverAcceptanceValues[row['serverAcceptance']]!
+          ..attachmentCompletion =
+              attachmentValues[row['attachmentCompletion']]!
+          ..backup = backupValues[row['backup']]!
+          ..pendingWorkRetained = row['pendingWorkRetained'] as bool
+          ..nextUserAction = nextActionValues[row['nextUserAction']]!;
+    final decoded = SaveSyncStatus.fromBuffer(value.writeToBuffer());
+    expectEqual(
+      decoded.localPersistence,
+      value.localPersistence,
+      '$id local persistence',
+    );
+    expectEqual(
+      decoded.serverAcceptance,
+      value.serverAcceptance,
+      '$id server acceptance',
+    );
+    expectEqual(
+      decoded.attachmentCompletion,
+      value.attachmentCompletion,
+      '$id attachments',
+    );
+    expectEqual(decoded.backup, value.backup, '$id backup');
+    expectEqual(
+      decoded.pendingWorkRetained,
+      value.pendingWorkRetained,
+      '$id retained work',
+    );
+    expectEqual(
+      decoded.nextUserAction,
+      value.nextUserAction,
+      '$id next action',
+    );
+  }
+
   stdout.writeln(
-    'PASS Dart Protobuf semantics (${decimals.length} decimal, ${dateCases.length} date cases)',
+    'PASS Dart Protobuf semantics (${decimals.length} decimal, ${dateCases.length} date cases, ${saveSyncCases.length} save/sync cases)',
   );
 }

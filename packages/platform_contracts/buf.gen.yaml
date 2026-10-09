@@ -6,3 +6,5 @@ plugins:
     opt: target=ts
   - local: tools/protoc-gen-dart
     out: gen/dart
+  - local: tools/protoc-gen-dart
+    out: dart/lib/generated

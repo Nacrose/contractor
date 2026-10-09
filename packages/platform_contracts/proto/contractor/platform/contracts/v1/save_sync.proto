@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package contractor.platform.contracts.v1;
+
+// A presentation-safe snapshot of local persistence and independent network
+// work. It never represents business approval or permission to mutate data.
+message SaveSyncStatus {
+  LocalPersistenceState local_persistence = 1;
+  ServerAcceptanceState server_acceptance = 2;
+  AttachmentCompletionState attachment_completion = 3;
+  BackupState backup = 4;
+  // True while any unsent record or attachment remains in durable local
+  // storage. Retryable failures and server rejections must retain that work.
+  bool pending_work_retained = 5;
+  NextUserAction next_user_action = 6;
+}
+
+enum LocalPersistenceState {
+  LOCAL_PERSISTENCE_STATE_UNSPECIFIED = 0;
+  LOCAL_PERSISTENCE_STATE_NOT_STARTED = 1;
+  LOCAL_PERSISTENCE_STATE_SAVING = 2;
+  LOCAL_PERSISTENCE_STATE_SAVED = 3;
+  LOCAL_PERSISTENCE_STATE_FAILED = 4;
+}
+
+enum ServerAcceptanceState {
+  SERVER_ACCEPTANCE_STATE_UNSPECIFIED = 0;
+  SERVER_ACCEPTANCE_STATE_NOT_QUEUED = 1;
+  SERVER_ACCEPTANCE_STATE_QUEUED = 2;
+  SERVER_ACCEPTANCE_STATE_SENDING = 3;
+  SERVER_ACCEPTANCE_STATE_ACCEPTED = 4;
+  SERVER_ACCEPTANCE_STATE_RETRYABLE_FAILURE = 5;
+  SERVER_ACCEPTANCE_STATE_REJECTED = 6;
+}
+
+enum AttachmentCompletionState {
+  ATTACHMENT_COMPLETION_STATE_UNSPECIFIED = 0;
+  ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED = 1;
+  ATTACHMENT_COMPLETION_STATE_QUEUED = 2;
+  ATTACHMENT_COMPLETION_STATE_UPLOADING = 3;
+  ATTACHMENT_COMPLETION_STATE_COMPLETE = 4;
+  ATTACHMENT_COMPLETION_STATE_RETRYABLE_FAILURE = 5;
+  ATTACHMENT_COMPLETION_STATE_REJECTED = 6;
+}
+
+enum BackupState {
+  BACKUP_STATE_UNSPECIFIED = 0;
+  BACKUP_STATE_NOT_CONFIGURED = 1;
+  BACKUP_STATE_PENDING = 2;
+  BACKUP_STATE_CURRENT = 3;
+  BACKUP_STATE_STALE = 4;
+  BACKUP_STATE_FAILED = 5;
+}
+
+enum NextUserAction {
+  NEXT_USER_ACTION_UNSPECIFIED = 0;
+  NEXT_USER_ACTION_NONE = 1;
+  NEXT_USER_ACTION_RETRY_SYNC = 2;
+  NEXT_USER_ACTION_REVIEW_SERVER_REJECTION = 3;
+  NEXT_USER_ACTION_RETRY_ATTACHMENTS = 4;
+  NEXT_USER_ACTION_CHECK_BACKUP = 5;
+  NEXT_USER_ACTION_RETRY_LOCAL_SAVE = 6;
+}
