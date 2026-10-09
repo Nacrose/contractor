@@ -8,7 +8,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
 
 ---
 
-- [ ] **M04-T01** — Daily-report domain path trace through the M03 adapter + side-effect inventory
+- [x] **M04-T01** — Daily-report domain path trace through the M03 adapter + side-effect inventory (PR #44)
   - Depends on: M03-T01, M03-T04 · Output: trace + side-effect disposition report `docs/reports/M04/domain-path-trace.md`; no production code change.
   - Scope: trace the daily-report domain path (schemas, builders, permissions, side-effect services) through the M03-T01 adapter exactly as the workflow will call it, BEFORE any UI wiring; identify every side effect that would need a central transaction the adapter path cannot give it, and disposition each (in-path, deferred with reason, or requires adapter change) (v3 §6 M04 W01).
   - Acceptance:
