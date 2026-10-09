@@ -40,6 +40,21 @@ Clean-room Rust reimplementations of the four Office/CAD/PDF pillars, by the Art
 - **acadrust provenance:** MPL-2.0 and "used unmodified" per their plan/ADR and NOTICE; we independently verify coverage/fidelity on our fixtures before relying on it. crated as `acadrust = "0.6.1"` in their manifest; crates.io shows v0.6.3 (updated 2026-10-08, 22.5k downloads).
 - **egui desktop UI is irrelevant to us** (we keep React web + Flutter native); only engine/CLI/MCP/WASM surfaces matter.
 
+## Org survey (github.com/storytold, 2026-10-09)
+
+The org hosts 30 repositories. Family apps share the same shape (Rust workspace, MIT OR Apache-2.0, CLI + MCP + web). Triage:
+
+| Disposition | Repos | Reason |
+|---|---|---|
+| **Adopt-track (in ADR-0015)** | gridcraft, cadcraft, pdfcraft | Capability-area candidates for M06/M07/M08 |
+| **Font supply for adopted engines** | craft-fonts | Font assets with per-font licences + SHA-256 manifest + loader crate (`CRAFT_FONTS_DIR`, `embed` feature); includes Noto Sans Arabic/CJK, BIZ UD, Shippori. Adopted engines need shippable fonts — this repo solves licensing/provenance for them. No Devanagari yet (our Nepali UI need is separate). |
+| **Deferred — owner scope decision** | wordcraft (doc authoring), deckcraft (PowerPoint-style decks), photocraft (clean-room Photoshop; early alpha) | Not required by a registered milestone today. photocraft's codecs/raw/heif/psd/raster stack could matter later for site-photo markup, but M04's capture/compress/EXIF needs are met by lighter OSS; heavyweight for now. |
+| **Reference only, NOT consumable** | artcraft, artcraft-services | Non-OSI "ArtCraft License (WIP)"; their product hub and backend (Rust+TS monorepo). Under ADR-0014 these cannot ship in our product. Useful as reading for their release/update infrastructure. |
+| **Excluded — no licence** | cloud-worker (video-model rig) | No LICENSE file = all rights reserved; also out of domain. |
+| **Out of domain / third-party** | spark (World Labs 3DGS renderer, MIT), irsa-manager (EKS IAM, MIT, third-party), filmcraft, effectcraft, lightcraft, soundcraft, vectorcraft, designcraft, storyteller-*, bevy-mocap, vits-finetuning, xsens-packet-send, FineTrainers-Conditioning, github-media, html_test, placeholder-artcraft, photocraft-corpus | Media/art creation, ML/mocap research, infra forks, test corpora — no construction-program need today. spark is a plausible future watch for 3D site capture, not registered. |
+
+**Release cadence (update-mechanism evidence):** all four adopt-track repos carry semver release tags — gridcraft/cadcraft/wordcraft `v0.1.0`→`v0.3.0`, pdfcraft `v0.1.0`→`v0.4.0` (verified via `git ls-remote --tags`, 2026-10-09). Tags are the pin targets per ADR-0015; no pin exists until the M06/M07/M08 prototype tasks run.
+
 ## Disposition
 
 No checkbox ticked (R2). Registered strategy: ADR-0015. M06/M07/M08 refinement PRs must add one ArtCraft prototype task each (CLI/MCP over M00 fixtures, comparison against the authoritative engine). WordCraft scope decision deferred to owner.

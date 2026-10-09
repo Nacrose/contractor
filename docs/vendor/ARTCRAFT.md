@@ -11,7 +11,10 @@ Policy reminders (ADR-0015): exact tag/rev pins only, never branches; no edits t
 | GridCraft | https://github.com/storytold/gridcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | CADCraft | https://github.com/storytold/cadcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 (+ `acadrust` MPL-2.0) | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION; MPL notice for acadrust |
 | PdfCraft | https://github.com/storytold/pdfcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
+| craft-fonts | https://github.com/storytold/craft-fonts | *(with the first adopted engine)* | — | — | MIT OR Apache-2.0 (per-font licences in `fonts/`) | ATTRIBUTION.md, per-font licence dirs, manifest.txt |
 | WordCraft | https://github.com/storytold/wordcraft | *(deferred — owner scope decision, ADR-0015 §6)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
+
+Upstream release tags observed 2026-10-09 (pin targets for prototypes): gridcraft `v0.3.0`, cadcraft `v0.3.0`, pdfcraft `v0.4.0`, wordcraft `v0.3.0`.
 
 Related upstream-published dependencies:
 
