@@ -27,7 +27,7 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
     - Components are presentation and action-coordination layers; financial arithmetic, permissions, persistence, and authoritative domain rules remain in existing services.
     - No production route or screen cutover is included.
 
-- [x] **M02-T04** — Derive platform tokens from one canonical source (contractor PR #17; React companion PR Nacrose/Construction_Manager#163)
+- [x] **M02-T04** — Derive platform tokens from one canonical source (PR #17) (React companion PR #163 in Nacrose/Construction_Manager)
   - Depends on: M01-GATE approved · Output: canonical token source and generated React/Flutter token artifacts
   - Acceptance:
     - Both codebases consume generated artifacts from the same source; CI detects stale or hand-edited generated tokens.
