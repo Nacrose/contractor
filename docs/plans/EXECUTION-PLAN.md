@@ -24,7 +24,7 @@
 |---|---|---|---|---|
 | M00 Inventory, fixtures & baseline | [M00-inventory-fixtures-baseline.md](milestones/M00-inventory-fixtures-baseline.md) | **Complete** | 21/21 | M00-T21 `👤 GATE` — passed (PR #16) |
 | M01 Platform feasibility & performance gate | [M01-platform-feasibility-gate.md](milestones/M01-platform-feasibility-gate.md) | **Complete** | 17/17 | M01-T17 `👤 GATE` — passed (PR #11) |
-| M02 Central contracts & shared UX | [M02-contracts-shared-ux.md](milestones/M02-contracts-shared-ux.md) | In progress | 5/8 | M02-T08 `👤 GATE` — not reached |
+| M02 Central contracts & shared UX | [M02-contracts-shared-ux.md](milestones/M02-contracts-shared-ux.md) | In progress | 6/8 | M02-T08 `👤 GATE` — not reached |
 | M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | Blocked by M02 (WP level) | 0/10 | M03-T10 `👤 GATE` — not reached |
 | M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | Blocked by M03 (WP level) | 0/7 | M04-T07 `👤 GATE` — not reached |
 | M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | Blocked by M04 (WP level) | 0/9 | M05-T09 `👤 GATE` — not reached |
@@ -34,7 +34,7 @@
 | M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/7 | M09-T07 `👤 GATE` — not reached |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
-| **Program total** | | | **43/118** | |
+| **Program total** | | | **44/118** | |
 
 ## Dependency graph
 

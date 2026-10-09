@@ -40,7 +40,7 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
     - Background upload does not block unrelated app interaction; retry/rejection states preserve pending work and explain the next user action.
     - Changes to the design-system action contract are made centrally once; no page-specific bypass is introduced.
 
-- [ ] **M02-T06** — Define shared route, command, and capability registries
+- [x] **M02-T06** — Define shared route, command, and capability registries (PR #19)
   - Depends on: M02-T01, M02-T03 · Output: typed route/command/capability registries consumed by navigation and feature availability
   - Acceptance:
     - Each capability declares platform availability and fallback behavior explicitly; no feature is hidden behind an install prompt or implicit platform branch.
