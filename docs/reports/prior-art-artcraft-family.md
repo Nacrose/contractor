@@ -46,7 +46,7 @@ The org hosts 30 repositories. Family apps share the same shape (Rust workspace,
 
 | Disposition | Repos | Reason |
 |---|---|---|
-| **Adopt-track (in ADR-0015)** | gridcraft, cadcraft, pdfcraft, craft-fonts, wordcraft, deckcraft | Capability-area candidates: M06/M07/M08 + documents (letters/reports/specs) + presentations (both owner-required 2026-10-09; capability areas to be registered) + font supply |
+| **Adopt-track (in ADR-0015)** | gridcraft, cadcraft, pdfcraft, craft-fonts, wordcraft, deckcraft | Capability-area candidates: M06/M07/M08 + documents/presentations registered as M12 (letters/reports/specs + decks, owner-required 2026-10-09) + font supply |
 | **Rejected/deferred** | photocraft | Owner rejected for site-photo markup ("too much", 2026-10-09): M04 uses a lightweight native overlay plus PdfCraft's annotation/export path (ADR-0015 §6). Not a licence call — a fit decision. |
 | **Reference only, NOT consumable** | artcraft, artcraft-services | Non-OSI "ArtCraft License (WIP)"; their product hub and backend (Rust+TS monorepo). Under ADR-0014 these cannot ship in our product. Useful as reading for their release/update infrastructure. |
 | **Excluded — no licence** | cloud-worker (video-model rig) | No LICENSE file = all rights reserved; also out of domain. |

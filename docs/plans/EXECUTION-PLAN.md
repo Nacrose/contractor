@@ -34,7 +34,8 @@
 | M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/7 | M09-T07 `👤 GATE` — not reached |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
-| **Program total** | | | **45/118** | |
+| M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered by [PLAN-AMEND] 2026-10-09 (WP level) | 0/8 | M12-W08 `👤 GATE` — not reached |
+| **Program total** | | | **45/126** | |
 
 ## Dependency graph
 
@@ -42,7 +43,8 @@
 M00 ──► M01 ──► M02 ──► M03 ──► M04 ──► M05 ─────┐
                  │       │                       │
                  │       ├──► M06 ──► M08 ──► M10 ─┼──► M11
-                 │       └──► M07 ──────────► M10 │
+                 │       ├──► M07 ──────────► M10 │
+                 │       ├──► M12 ◄─ M06/M08 (BoQ data + PDF export)
                  │              M09 ◄─ M05/M06 ─► M10
                  └── backup/packaging groundwork starts after M01 (M11)
 ```
@@ -57,7 +59,7 @@ Exact dependencies per task are declared inside each milestone file; the v3 plan
 4. **One owner per shared contract** — schema, sync protocol, design tokens, shared bindings (v3 §9).
 5. **Dashboard work: Defer / do not start** for the duration (v3 §6.0 maintenance posture).
 6. **Start with M00 only**, then M01. No screen rewrites, no speculative dependency installs (v3 §10).
-7. **Upstream-tracked candidate engines** — ArtCraft tools (GridCraft/CADCraft/PdfCraft) are evidence-gated candidates per capability area; consume via tag-pinned CLI/MCP/Cargo-git surfaces, never forks or edited upstream code; registry `docs/vendor/ARTCRAFT.md` (ADR-0015; licenses per ADR-0014).
+7. **Upstream-tracked candidate engines** — ArtCraft tools (GridCraft/CADCraft/PdfCraft, plus owner-required WordCraft/deckcraft for M12 and craft-fonts for font supply) are evidence-gated candidates per capability area; consume via tag-pinned CLI/MCP/Cargo-git surfaces, never forks or edited upstream code; registry `docs/vendor/ARTCRAFT.md` (ADR-0015; licenses per ADR-0014).
 
 ## Bootstrap record (founding PR)
 
