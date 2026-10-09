@@ -13,8 +13,10 @@ canonical design-system rule IDs from `Construction_Manager/docs/DESIGN_SYSTEM.m
 | Query and view states | STATE-01/02, BP-01 | Loading, error, empty, and data branches; empty state distinguishes filtered results and uses a decorative shared grid. |
 | `ConstructionActionCoordinator` | BLOCK-01/02 | Coordinates one pending UI command and exposes its label; services own command behavior and errors propagate. |
 
-Colors are read from the host `ThemeData` and `ConstructionSemanticColors`.
-M02-T04 owns generated tokens and will replace the scheme-derived defaults.
+Colors, spacing, typography sizes, and radii are generated from the canonical
+source in `packages/design_tokens/tokens.json`. `ConstructionSemanticColors`
+uses the generated light or dark semantic palette based on the host theme's
+brightness. `ConstructionTokens` exposes the generated spacing and type ramp.
 No production route or screen consumes this package in M02-T03.
 
 ## Checks

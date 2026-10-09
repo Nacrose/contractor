@@ -4,6 +4,23 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('shared presentation components', () {
+    test(
+      'platform tokens use the generated semantic light and dark palettes',
+      () {
+        final light = ConstructionSemanticColors.fromBrightness(
+          Brightness.light,
+        );
+        final dark = ConstructionSemanticColors.fromBrightness(Brightness.dark);
+
+        expect(light.success, ConstructionTokens.lightSuccess);
+        expect(light.amber, ConstructionTokens.lightAmber);
+        expect(dark.info, ConstructionTokens.darkInfo);
+        expect(dark.neutral, ConstructionTokens.darkMutedForeground);
+        expect(ConstructionTokens.space4, 16);
+        expect(ConstructionTokens.fontSize2xs, 10);
+      },
+    );
+
     testWidgets('ActionBar keeps its primary action and collapses actions', (
       tester,
     ) async {

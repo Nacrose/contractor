@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'generated_tokens.dart';
+
 /// The shared command row (PAGE-03/04/05, ACT-01, BTN-06).
 ///
 /// It remains a single clipped row. Secondary actions collapse into a menu
@@ -55,7 +57,7 @@ class ActionBar extends StatelessWidget {
                   constraints: const BoxConstraints(maxWidth: 160),
                   child: leading!,
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: ConstructionTokens.space1_5),
               ],
               if (search != null)
                 Flexible(
@@ -84,7 +86,7 @@ class ActionBar extends StatelessWidget {
                           child: Row(
                             children: [
                               Icon(action.icon, size: 18),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: ConstructionTokens.space2),
                               Text(action.label),
                             ],
                           ),
@@ -92,7 +94,7 @@ class ActionBar extends StatelessWidget {
                       )
                       .toList(),
                 ),
-              const SizedBox(width: 4),
+              const SizedBox(width: ConstructionTokens.space1),
               primary,
             ],
           ),

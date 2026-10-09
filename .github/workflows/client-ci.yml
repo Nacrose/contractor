@@ -32,6 +32,9 @@ jobs:
       - name: Run Protocol Register Linter
         run: node scripts/lint-protocol.mjs
 
+      - name: Check generated platform tokens
+        run: node packages/design_tokens/tool/generate.mjs --check
+
       - name: Run Server Semantic Parity Fixtures
         run: node scripts/test-semantic-parity.mjs
 
