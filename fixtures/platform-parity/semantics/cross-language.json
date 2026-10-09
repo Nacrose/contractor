@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.0.0",
-  "description": "Shared decimal, geometry-tolerance, and calendar semantics fixtures. Inputs are sanitized and deterministic.",
+  "schemaVersion": "1.1.0",
+  "description": "Shared decimal, geometry-tolerance, calendar, and save/sync semantics fixtures. Inputs are sanitized and deterministic.",
   "contracts": {
     "money": {
       "scale": 2,
@@ -38,5 +38,52 @@
   ],
   "calendarCases": [
     { "id": "nepal-friday-through-sunday-inclusive-task", "from": "2026-07-17", "to": "2026-07-19", "expectedWorkingDaysBetween": 1, "expectedInclusiveTaskDuration": 2 }
+  ],
+  "saveSyncCases": [
+    {
+      "id": "attachment-transfer-does-not-imply-server-acceptance-or-backup",
+      "localPersistence": "SAVED",
+      "serverAcceptance": "ACCEPTED",
+      "attachmentCompletion": "UPLOADING",
+      "backup": "STALE",
+      "pendingWorkRetained": true,
+      "nextUserAction": "NONE"
+    },
+    {
+      "id": "retryable-sync-failure-retains-local-work",
+      "localPersistence": "SAVED",
+      "serverAcceptance": "RETRYABLE_FAILURE",
+      "attachmentCompletion": "NOT_REQUIRED",
+      "backup": "CURRENT",
+      "pendingWorkRetained": true,
+      "nextUserAction": "RETRY_SYNC"
+    },
+    {
+      "id": "retryable-attachment-failure-retains-local-work",
+      "localPersistence": "SAVED",
+      "serverAcceptance": "ACCEPTED",
+      "attachmentCompletion": "RETRYABLE_FAILURE",
+      "backup": "CURRENT",
+      "pendingWorkRetained": true,
+      "nextUserAction": "RETRY_ATTACHMENTS"
+    },
+    {
+      "id": "server-rejection-retains-local-work-for-review",
+      "localPersistence": "SAVED",
+      "serverAcceptance": "REJECTED",
+      "attachmentCompletion": "COMPLETE",
+      "backup": "CURRENT",
+      "pendingWorkRetained": true,
+      "nextUserAction": "REVIEW_SERVER_REJECTION"
+    },
+    {
+      "id": "local-save-failure-does-not-report-pending-work",
+      "localPersistence": "FAILED",
+      "serverAcceptance": "NOT_QUEUED",
+      "attachmentCompletion": "NOT_REQUIRED",
+      "backup": "CURRENT",
+      "pendingWorkRetained": false,
+      "nextUserAction": "RETRY_LOCAL_SAVE"
+    }
   ]
 }

@@ -68,7 +68,7 @@ jobs:
 
       - name: Fail on stale generated bindings
         working-directory: packages/platform_contracts
-        run: git diff --exit-code -- gen/typescript gen/dart
+        run: git diff --exit-code -- gen/typescript gen/dart dart/lib/generated
 
       - name: Record Rust target status
         working-directory: packages/platform_contracts

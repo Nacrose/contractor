@@ -5,6 +5,14 @@ import {
   ExactDecimalSchema,
   UtcInstantSchema,
 } from '../gen/typescript/contractor/platform/contracts/v1/semantics_pb.js';
+import {
+  AttachmentCompletionState,
+  BackupState,
+  LocalPersistenceState,
+  NextUserAction,
+  SaveSyncStatusSchema,
+  ServerAcceptanceState,
+} from '../gen/typescript/contractor/platform/contracts/v1/save_sync_pb.js';
 
 type DecimalCase = {
   id: string;
@@ -98,4 +106,34 @@ for (const row of dateCases) {
   }
 }
 
-console.log(`PASS TypeScript Protobuf semantics (${decimalCases.length} decimal, ${dateCases.length} date cases)`);
+const saveSyncCases = fixture.saveSyncCases as Array<{
+  id: string;
+  localPersistence: keyof typeof LocalPersistenceState;
+  serverAcceptance: keyof typeof ServerAcceptanceState;
+  attachmentCompletion: keyof typeof AttachmentCompletionState;
+  backup: keyof typeof BackupState;
+  pendingWorkRetained: boolean;
+  nextUserAction: keyof typeof NextUserAction;
+}>;
+for (const row of saveSyncCases) {
+  const value = {
+    localPersistence: LocalPersistenceState[row.localPersistence],
+    serverAcceptance: ServerAcceptanceState[row.serverAcceptance],
+    attachmentCompletion: AttachmentCompletionState[row.attachmentCompletion],
+    backup: BackupState[row.backup],
+    pendingWorkRetained: row.pendingWorkRetained,
+    nextUserAction: NextUserAction[row.nextUserAction],
+  };
+  const decoded = fromBinary(
+    SaveSyncStatusSchema,
+    toBinary(SaveSyncStatusSchema, create(SaveSyncStatusSchema, value)),
+  );
+  expectEqual(decoded.localPersistence, value.localPersistence, `${row.id} local persistence`);
+  expectEqual(decoded.serverAcceptance, value.serverAcceptance, `${row.id} server acceptance`);
+  expectEqual(decoded.attachmentCompletion, value.attachmentCompletion, `${row.id} attachments`);
+  expectEqual(decoded.backup, value.backup, `${row.id} backup`);
+  expectEqual(decoded.pendingWorkRetained, row.pendingWorkRetained, `${row.id} retained work`);
+  expectEqual(decoded.nextUserAction, value.nextUserAction, `${row.id} next action`);
+}
+
+console.log(`PASS TypeScript Protobuf semantics (${decimalCases.length} decimal, ${dateCases.length} date cases, ${saveSyncCases.length} save/sync cases)`);

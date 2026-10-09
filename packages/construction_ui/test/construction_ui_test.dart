@@ -4,6 +4,113 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('shared presentation components', () {
+    testWidgets('save and sync states remain independent and non-blocking', (
+      tester,
+    ) async {
+      final status = SaveSyncStatus()
+        ..localPersistence = LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED
+        ..serverAcceptance =
+            ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_ACCEPTED
+        ..attachmentCompletion =
+            AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_UPLOADING
+        ..backup = BackupState.BACKUP_STATE_STALE
+        ..pendingWorkRetained = true
+        ..nextUserAction = NextUserAction.NEXT_USER_ACTION_NONE;
+      var otherInteractionAvailable = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                SaveSyncStatusPanel(status: status),
+                TextButton(
+                  onPressed: () => otherInteractionAvailable = true,
+                  child: const Text('Open another task'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Saved locally'), findsOneWidget);
+      expect(find.text('Accepted'), findsOneWidget);
+      expect(find.text('Uploading in background'), findsOneWidget);
+      expect(find.text('Out of date'), findsOneWidget);
+      expect(
+        find.text('Pending work remains saved on this device.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Retry'), findsNothing);
+      await tester.tap(find.text('Open another task'));
+      expect(otherInteractionAvailable, isTrue);
+    });
+
+    testWidgets('retryable attachment status retains work and offers retry', (
+      tester,
+    ) async {
+      final status = SaveSyncStatus()
+        ..localPersistence = LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED
+        ..serverAcceptance =
+            ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_ACCEPTED
+        ..attachmentCompletion = AttachmentCompletionState
+            .ATTACHMENT_COMPLETION_STATE_RETRYABLE_FAILURE
+        ..backup = BackupState.BACKUP_STATE_CURRENT
+        ..pendingWorkRetained = true
+        ..nextUserAction = NextUserAction.NEXT_USER_ACTION_RETRY_ATTACHMENTS;
+      var retryRequested = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SaveSyncStatusPanel(
+              status: status,
+              onNextAction: () => retryRequested = true,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Upload delayed'), findsOneWidget);
+      expect(
+        find.text('Pending work remains saved on this device.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Retry attachment uploads'));
+      expect(retryRequested, isTrue);
+    });
+
+    testWidgets('server rejection keeps local work and names the next step', (
+      tester,
+    ) async {
+      final status = SaveSyncStatus()
+        ..localPersistence = LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED
+        ..serverAcceptance =
+            ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_REJECTED
+        ..attachmentCompletion =
+            AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_COMPLETE
+        ..backup = BackupState.BACKUP_STATE_CURRENT
+        ..pendingWorkRetained = true
+        ..nextUserAction =
+            NextUserAction.NEXT_USER_ACTION_REVIEW_SERVER_REJECTION;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: SaveSyncStatusPanel(status: status)),
+        ),
+      );
+
+      expect(find.text('Rejected'), findsOneWidget);
+      expect(
+        find.text(
+          'The server rejected this update. Pending work remains saved on this device.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Next: Review the server message'), findsOneWidget);
+    });
+
     test(
       'platform tokens use the generated semantic light and dark palettes',
       () {

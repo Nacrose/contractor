@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-/// Coordinates one user action at a time. The command and all domain work are
-/// supplied by the application/service layer; this class owns only UI state.
+/// Coordinates one foreground user action at a time. The command and all
+/// domain work are supplied by the application/service layer; this class owns
+/// only UI state. Background sync and attachment transfers must not use this
+/// coordinator: expose their progress through SaveSyncStatusPanel so unrelated
+/// app interaction stays available.
 class ConstructionActionCoordinator extends ChangeNotifier {
   String? _pendingLabel;
 

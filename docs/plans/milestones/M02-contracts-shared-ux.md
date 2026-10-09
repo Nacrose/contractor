@@ -33,7 +33,7 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
     - Both codebases consume generated artifacts from the same source; CI detects stale or hand-edited generated tokens.
     - Color, typography, spacing, state, and semantic tokens preserve existing design-system IDs and document intentional platform-specific values.
 
-- [ ] **M02-T05** — Model local-save and cloud-sync status centrally
+- [x] **M02-T05** — Model local-save and cloud-sync status centrally (PR #18)
   - Depends on: M02-T03 · Output: shared save/sync state model and component/action contract
   - Acceptance:
     - Distinguishes local persistence, server acceptance, attachment completion, and backup state.
