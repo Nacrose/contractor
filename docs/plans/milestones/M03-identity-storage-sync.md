@@ -76,7 +76,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Foreground sync works without OS background scheduling. Background attempts respect platform/network/power constraints and cannot lose pending work.
     - Native and browser tests cover matching response semantics, conflicts, revocation, expired login, duplicate delivery, lost acknowledgement, and dependency ordering. Any added server-side domain feature identifies its feed and Flutter-parity path.
 
-- [ ] **M03-T08** — Wire sync and native crash observability
+- [x] **M03-T08** — Wire sync and native crash observability (PR #39)
   - Depends on: M03-T02, M03-T04, M03-T07 · Output: Dart/native/Rust crash reporting, server sync metrics, and a device sync-health surface.
   - Scope: make sync health observable now so M04 fault evidence can be diagnosed.
   - Acceptance:

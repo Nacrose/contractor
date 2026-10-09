@@ -64,6 +64,9 @@ jobs:
       - name: Run Native Sync Orchestrator Tests
         run: node packages/native_orchestrator/tool/check.mjs
 
+      - name: Run Native Observability Tests
+        run: node packages/native_observability/tool/check.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 
