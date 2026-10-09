@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-observability",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sync and crash observability (M03-T08): fail-safe sanitized crash reporting for Dart/native/Rust panic paths (drop-first allow-list, frame-count-only, secret/payload redaction), server sync metrics with tenant-safe aggregation (outcome counters, feed lag, checkpoint age, attachment retry/error; per-tenant breakdown only via authorized scope), and the honest device sync-health surface (pending count, oldest age, per-scope cursors, rejection reasons; never a false success state). Evidence runs against real SQLite (node:sqlite).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
