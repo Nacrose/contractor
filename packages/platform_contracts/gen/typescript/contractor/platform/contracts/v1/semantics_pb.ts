@@ -69,3 +69,4 @@ export type UtcInstant = Message<"contractor.platform.contracts.v1.UtcInstant"> 
  */
 export const UtcInstantSchema: GenMessage<UtcInstant> = /*@__PURE__*/
   messageDesc(file_contractor_platform_contracts_v1_semantics, 2);
+
