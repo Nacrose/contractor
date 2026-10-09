@@ -12,6 +12,10 @@
 | [AI-Agent Execution Protocol](docs/rules/AI-AGENT-EXECUTION-PROTOCOL.md) | **Binding rule.** One task → one PR → one tick. Naming, PR body contract, Definition of Done, owner-only gates. |
 | [Platform plan v3](docs/plans/native-web-platform-plan-v3.md) | The program itself: outcome, contracts, milestones M00–M11, performance budgets, verification matrix. |
 | [ADR-0010](docs/adr/0010-progressive-extension-over-greenfield-rewrite.md) | Pivot decision: evolve in place over greenfield rewrite. |
+| [ADR-0011–0013](docs/adr/) | M00 change-feed mechanism, contract schema format (Protobuf/Buf), M01 stack decision (evidence-gated continuation). |
+| [ADR-0014](docs/adr/0014-open-source-only-dependency-posture.md) | Open-source-only dependency posture — no paid components. |
+| [ADR-0015](docs/adr/0015-artcraft-upstream-engine-strategy.md) | ArtCraft family (GridCraft/CADCraft/PdfCraft) as upstream-tracked candidate engines; tag pins, no forks. |
+| [Vendor registry](docs/vendor/ARTCRAFT.md) | Pins, licenses and attribution for upstream ArtCraft components. |
 | [ADRs 0001–0009](docs/adr/) | Inherited from Construction_Manager; remain in force for server-side work. |
 
 ## How this repository works

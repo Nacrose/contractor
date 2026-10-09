@@ -1,6 +1,7 @@
 # M08 — PDF and BoQ-linked takeoff engine
 
 > Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M08. Dependencies: M02, M03; the M06 BoQ linking contract; M07 reusable geometry primitives as needed (not the entire CAD UI). Registered at **WP level** — refine before the M06/M07 gates open.
+> Candidate engine: PdfCraft (storytold) — its `measure` crate implements ISO 32000-2 §12.9 calibrated distance/perimeter/area; evidence-gated per [ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md); family evaluation in [prior-art report](../../reports/prior-art-artcraft-family.md); licenses per [ADR-0014](../../adr/0014-open-source-only-dependency-posture.md). Refinement must add a PdfCraft prototype task (CLI/MCP over M00 fixtures vs PDF.js reference).
 
 Exit (v3): identical measurement results and linked quantities across native/web/server, preserved source provenance, conflict behavior and representative large-PDF performance.
 

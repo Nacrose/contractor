@@ -1,6 +1,7 @@
 # M06 — Worksheet/BoQ engine migration
 
 > Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M06, §3 worksheet row. Dependencies: M02, M03; M01 file/compute feasibility accepted. May develop before M05 completes; integrated rollout waits for the shared sync gate. Largest single engine (v3 §6.0: 10–20 weeks band). Registered at **WP level** — refine before the M02 gate opens.
+> Candidate engine: GridCraft (storytold) — evidence-gated per [ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md); family evaluation in [prior-art report](../../reports/prior-art-artcraft-family.md); licenses per [ADR-0014](../../adr/0014-open-source-only-dependency-posture.md). Refinement must add a GridCraft prototype task (CLI/MCP over M00 fixtures vs the TS authority).
 
 Exit (v3): agreed feature matrix, native/web/server calculation parity, concurrent edit/structure tests and 50k/100k-row workload evidence. Retire redundant production evaluators only after all consumers switch.
 
