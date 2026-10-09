@@ -1,6 +1,6 @@
 # M01-GATE — Measured evidence and owner decision packet
 
-**Status: proposed for owner review; not approved.** M01-T01…T16 evidence is assembled here for the owner gate. This document makes no claim of production readiness or feature cutover. The merge checklist and T17 checkbox remain open until the repository owner records approval.
+**Status: owner-approved at M01-GATE; merge pending.** M01-T01…T16 evidence is assembled here for the owner gate. This document makes no claim of production readiness or feature cutover.
 
 ## Gate result
 
@@ -26,13 +26,11 @@ The draft [ADR-0013](../../adr/0013-m01-platform-stack-decision.md) recommends a
 
 The proposal records candidate directions, not a general Flutter rejection: Dart remains a focused candidate for worksheet and 2D geometry; CPM stays server-TypeScript-authoritative with the existing governed Dart preview duplicate; `pdfrx`/PDFium is only a lead for a required real-PDF/native spike. ADR-0012 already accepts Protobuf/Buf as the schema format; package implementation proceeds only after the M01 gate opens, and target adoption remains subject to parity and binding evidence.
 
-### Owner decisions requested
+### Owner decisions recorded
 
-1. Accept or amend the staged architecture recommendation in ADR-0013.
-2. Decide each product-scope proposal in the T16 report, or keep the current scope and require additional proof. Until then, the relevant gates remain open.
-3. Confirm ADR-0012 remains in force for M02-T01 or amend it; its schema-format decision is already recorded as accepted, while target adoption remains gated.
+The repository owner approved ADR-0013's staged continuation and chose to retain the current §1 product scope for each of the four T16 proposals. The missing evidence remains required; no browser target, DWG capability, takeoff platform, or other product scope is removed or narrowed. No budgets are changed.
 
-No decision is inferred from a PR merge, a passing linter, or this draft. Under protocol R8, only the owner can approve the gate and product-scope decisions.
+ADR-0012 remains accepted for schema format. Its target adoption remains gated by binding and parity evidence. The per-engine records below remain planning drafts and do not authorize production bindings; each must be finalized before a dependent screen is built. No production cutover is authorized.
 
 ## Per-engine decision-record drafts
 
@@ -54,7 +52,7 @@ The [M02 task register](../../plans/milestones/M02-contracts-shared-ux.md) is re
 
 - This packet consolidates recorded evidence; it does not rerun benchmarks or upgrade prototype reports into device certification.
 - Required follow-up includes declared-minimum-device profiles, representative 100k-row and 100k/1m-entity workload coverage, M04 field-workflow performance, a real binary-PDF fixture/native matrix, and native SQLite adapter/device verification.
-- No budget has been renegotiated or lowered. No scope proposal has been accepted.
+- No budget has been renegotiated or lowered. The four scope proposals were not adopted; current §1 scope remains in force pending additional evidence.
 - No production cutover is proposed. M02 work starts only after owner approval and with the above constraints explicit.
 
 ## Sources

@@ -1,6 +1,6 @@
 # ADR-0013: M01 platform stack and staged continuation
 
-- **Status:** Proposed for owner decision at M01-GATE; not approved
+- **Status:** Accepted at M01-GATE
 - **Date:** 2026-10-09
 - **Deciders:** Repository owner (required under protocol R8)
 - **Related:** ADR-0012, ADR-0011, M01-T03…T16 evidence in `docs/reports/M01/`
@@ -39,13 +39,10 @@ Candidate directions for further evidence, not production selections:
 - Ratified §7 budgets stay unchanged. A measured failure later requires a separate documented budget decision; it cannot be resolved by lowering a target silently.
 - Each engine must have an approved authority, target/binding strategy, shared fixture set, and duplication classification before a screen depends on it.
 
-## Required owner decisions
+## Owner decision
 
-Before this ADR or M01-GATE can be marked accepted, the repository owner must:
+The repository owner approved this staged continuation and chose to retain the current §1 product scope for all four T16 proposals, requiring the missing evidence before any scope change. ADR-0012's accepted schema-format decision remains in force; target adoption remains gated by binding and parity evidence.
 
-1. Approve or amend this staged continuation decision.
-2. Resolve the four T16 product-scope proposals or explicitly keep the current scope and require the missing evidence.
-3. Confirm ADR-0012's accepted schema-format decision remains in force, or amend it before M02-T01 starts. Target adoption remains gated by binding and parity evidence.
-4. Ratify or amend the per-engine decision-record drafts in `docs/reports/M01/gate-evidence.md`.
+The per-engine records in `docs/reports/M01/gate-evidence.md` remain planning drafts. They do not authorize production bindings or screen dependencies; each engine's final authority, binding, fixtures, and duplication status must be approved before a dependent screen is built.
 
-This ADR remains **Proposed** until those decisions are recorded. An open PR, passing CI, or a task checkbox does not constitute approval.
+This decision was recorded by the repository owner on 2026-10-09 in the approval for PR #11. No production cutover is authorized.
