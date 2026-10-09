@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Versioned native-facing API adapter contract: operation envelope, guard-preserving boundary, and compatibility rules. No tRPC imports, no domain features.",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}

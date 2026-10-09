@@ -6,7 +6,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
 
 ---
 
-- [ ] **M03-T01** — Define a versioned native-facing API adapter
+- [x] **M03-T01** — Define a versioned native-facing API adapter (PR #32)
   - Depends on: M02-GATE · Output: versioned adapter contract, compatibility rules, and guard-inventory report.
   - Scope: expose existing domain services to native clients through the pinned `platform_contracts` version without binding the native interface to tRPC internals.
   - Acceptance:
