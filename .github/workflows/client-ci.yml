@@ -54,8 +54,10 @@ jobs:
             cd prototype/construction_client
             flutter pub get
             flutter analyze
+            # VM only: kernel fixture/parity tests use real file IO, which the
+            # Chrome (DDC) platform cannot provide. Browser coverage for the
+            # shared UI contracts runs in the dedicated shared_ui_contracts job.
             flutter test
-            flutter test --platform chrome
           else
             echo "Prototype pubspec.yaml not present yet; skipping Flutter unit tests."
           fi
