@@ -1,6 +1,6 @@
 # M01-GATE — Measured evidence and owner decision packet
 
-**Status: owner-approved at M01-GATE; merge pending.** M01-T01…T16 evidence is assembled here for the owner gate. This document makes no claim of production readiness or feature cutover.
+**Status: complete; M01-GATE approved and merged as PR #11.** M01-T01…T16 evidence is assembled here for the owner gate. This document makes no claim of production readiness or feature cutover.
 
 ## Gate result
 
@@ -46,7 +46,7 @@ These are proposed records to ratify or amend at the owner gate; they are not pe
 
 ## M02 refinement and sequence
 
-The [M02 task register](../../plans/milestones/M02-contracts-shared-ux.md) is refined from WPs to T01–T08 per protocol R9. M02 remains blocked until the M01 owner gate is approved. T01 uses ADR-0012's accepted schema-format direction unless the owner amends it; all tasks exclude production screen cutover. The M02 gate remains owner-approved under R8.
+The [M02 task register](../../plans/milestones/M02-contracts-shared-ux.md) is refined from WPs to T01–T08 per protocol R9. Its M01 owner-gate dependency is satisfied by PR #11. T01 uses ADR-0012's accepted schema-format direction unless the owner amends it; all tasks exclude production screen cutover. The M02 gate remains owner-approved under R8.
 
 ## Limits and follow-up gates
 
