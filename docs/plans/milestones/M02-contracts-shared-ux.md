@@ -52,9 +52,10 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
     - Core components pass keyboard/focus semantics, responsive viewport, semantic accessibility, and interaction contract checks on web and desktop.
     - Platform-specific behavior and unsupported capabilities are visible and recorded; no production feature cutover is included.
 
-- [ ] **M02-T08** — 👤 GATE — M02 exit evidence
+- [x] **M02-T08** — 👤 GATE — M02 exit evidence (PR #31)
   - Depends on: M02-T01…T07 · Output: `[M02-GATE]` evidence packet and owner decision
   - Acceptance:
     - All task evidence is linked; schema and generated artifacts are in sync; component contracts and accessibility evidence pass.
     - M03 is refined to task level before its gate opens.
     - Owner approval is recorded under protocol R8 before merge.
+  - **Outcome:** GATE PASSED. Evidence packet: [docs/reports/M02/gate-evidence.md](../reports/M02/gate-evidence.md). Owner approval recorded 2026-10-09 via chat directive ("approve", protocol R8) before merge. M03 implementation authorized to begin.
