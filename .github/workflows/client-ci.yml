@@ -20,6 +20,19 @@ jobs:
   lint_and_protocol:
     name: Protocol & Code Quality Checks
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: contractor_fault
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -66,6 +79,14 @@ jobs:
 
       - name: Run Native Observability Tests
         run: node packages/native_observability/tool/check.mjs
+
+      - name: Run Native Fault Matrix (real SQLite + disposable PostgreSQL)
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/contractor_fault
+          MATRIX_REPORT_PATH: docs/reports/M03/fault-matrix-results.md
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pgshim" --no-audit --no-fund pg@8.16.3
+          NODE_PATH="$RUNNER_TEMP/pgshim/node_modules" node packages/native_faultmatrix/tool/check.mjs
 
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
