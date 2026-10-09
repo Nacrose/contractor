@@ -47,3 +47,9 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // M04-T02 secure-credential binding: Keystore-backed encrypted storage
+    // (MainActivity binds the mount's secure_store method channel to it).
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+}
