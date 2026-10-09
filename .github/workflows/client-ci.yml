@@ -91,6 +91,12 @@ jobs:
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 
+      # M04-T02 mount binding tests drive the NativeSqliteDriver through
+      # package:sqlite3 (dart:ffi), which dlopens the system libsqlite3 on
+      # the VM (built apps bundle their own via sqlite3_flutter_libs).
+      - name: Install libsqlite3 (mount binding tests)
+        run: sudo apt-get update -y && sudo apt-get install -y libsqlite3-dev
+
       - name: Setup Flutter (Pinned 3.47.6)
         uses: subosito/flutter-action@v2
         with:

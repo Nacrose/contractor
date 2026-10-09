@@ -17,7 +17,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - Permissions for the pilot domain are enumerated against the M03-T02 scope-claims model (tenant/project/role) with the revalidation expectation stated.
     - The report names the Flutter consumer path and its parity evidence route (M10 gate).
 
-- [ ] **M04-T02** — Flutter mount wiring of the M03 engine (identity, outbox, snapshot/bootstrap, orchestrator, health)
+- [x] **M04-T02** — Flutter mount wiring of the M03 engine (identity, outbox, snapshot/bootstrap, orchestrator, health) (PR #45)
   - Depends on: M03-T02, M03-T03, M03-T05, M03-T07, M03-T08 · Output: mount adapter code in `prototype/construction_client/` binding the M03 contract packages' ports to device implementations, with tests.
   - Scope: the composition root the M03 packages were designed for: bind `SqlDriver` ports to the native SQLite driver (WAL + synchronous=FULL semantics preserved), `SecureCredentialStore` to the OS keystore, `SystemBrowserPort` to the platform browser, `ObjectStore`/`SourceReaderPort`/`DigestPort` (real SHA-256) to the device filesystem, `SyncTransportPort` to the server routes, and the `PendingOperationSource` adapter onto the outbox; wire the orchestrator drain triggers (app launch, foreground, manual, background-gated) and the sync-health read model (v3 §5.2/§5.3, §6 M04 W02 substrate).
   - Acceptance:
