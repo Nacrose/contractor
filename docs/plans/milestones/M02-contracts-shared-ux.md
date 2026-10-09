@@ -1,6 +1,6 @@
 # M02 — Central contracts and shared UX foundation
 
-> Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M02, §4 contracts, §5.1. Dependencies: M01 owner gate. This file refines the former work packages into ordered task-level work per protocol R9. No M02 task is authorized to begin until the M01 gate is approved and merged.
+> Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M02, §4 contracts, §5.1. Dependency satisfied: M01 owner gate approved and merged as PR #11. This file refines the former work packages into ordered task-level work per protocol R9. M02 task work may now begin within the listed acceptance criteria.
 
 Exit: native/web component contract tests and accessibility checks pass; no production feature cutover and no per-screen alternative primitives.
 
