@@ -25,6 +25,10 @@ if (major < 23) {
 
 run("npx", ["-y", `-p`, `typescript@${TSC_VERSION}`, "tsc", "--project", "tsconfig.json"]);
 // Hard wall-clock: a wedged leg fails the check instead of hanging CI.
+// Report path: relative MATRIX_REPORT_PATH resolves against the REPO ROOT.
+if (process.env.MATRIX_REPORT_PATH && !process.env.MATRIX_REPORT_PATH.startsWith("/")) {
+  process.env.MATRIX_REPORT_PATH = resolve(PKG, "..", "..", process.env.MATRIX_REPORT_PATH);
+}
 run("node", [resolve(PKG, ".test-build/test/matrix.test.js")], { timeout: 300_000, killSignal: "SIGKILL" });
 const pgLegs = process.env.DATABASE_URL ? "PostgreSQL legs live" : "PostgreSQL legs SKIPped (engine unreachable on this host; CI service run provides them)";
 console.log(`native_faultmatrix: fault matrix PASSED (real SQLite legs live; ${pgLegs})`);

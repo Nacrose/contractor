@@ -13,7 +13,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -626,7 +627,16 @@ test("ZZ | fault matrix report is complete and reproducible", () => {
   }
   const md = report.markdown();
   const out = process.env.MATRIX_REPORT_PATH;
-  if (out) writeFileSync(out, md);
+  if (out) {
+    try {
+      mkdirSync(dirname(out), { recursive: true });
+      writeFileSync(out, md);
+      console.log(`matrix report written: ${out}`);
+    } catch (e) {
+      // Report persistence is auxiliary; the leg results above are the evidence.
+      console.warn(`matrix report could not be written: ${String((e as Error).message)}`);
+    }
+  }
   console.log("\n" + md + "\n");
 });
 
