@@ -23,7 +23,7 @@ Candidate directions for further evidence, not production selections:
 - **CPM:** retain the existing server TypeScript engine as authority; govern the Dart preview as a temporary duplicate with shared fixtures and the M09 reconciliation/removal gate.
 - **2D geometry:** retain a focused Dart candidate and compact rendering batches for comparison; no Rust adoption or production port is approved.
 - **PDF:** retain PDF.js as current web reference and advance pdfrx/PDFium only to a representative binary-PDF/native prototype. No new renderer is selected.
-- **Contracts:** ADR-0012's Protobuf/Buf direction is a proposal. Begin package implementation only if ADR-0012 is owner-approved at M01-GATE.
+- **Contracts:** ADR-0012 already accepts Protobuf/Buf as the schema format; target adoption remains gated. Begin package implementation after M01-GATE unless the owner amends ADR-0012.
 
 ## Alternatives considered
 
@@ -34,7 +34,7 @@ Candidate directions for further evidence, not production selections:
 ## Consequences if approved
 
 - No production feature or route moves to Flutter based solely on M01 prototype results.
-- M02 task work may proceed only after this M01 gate is approved; its refined task register conditions schema implementation on the owner's ADR-0012 decision.
+- M02 task work may proceed only after this M01 gate is approved; its refined task register uses ADR-0012's accepted schema-format decision unless the owner amends it.
 - Browser performance, field workflow, DWG, PDF/takeoff, cross-language, and adapter-level SQLite gaps remain tracked gates. No target or feature is silently dropped.
 - Ratified §7 budgets stay unchanged. A measured failure later requires a separate documented budget decision; it cannot be resolved by lowering a target silently.
 - Each engine must have an approved authority, target/binding strategy, shared fixture set, and duplication classification before a screen depends on it.
@@ -45,7 +45,7 @@ Before this ADR or M01-GATE can be marked accepted, the repository owner must:
 
 1. Approve or amend this staged continuation decision.
 2. Resolve the four T16 product-scope proposals or explicitly keep the current scope and require the missing evidence.
-3. Approve, amend, or defer ADR-0012 before M02-T01 starts.
+3. Confirm ADR-0012's accepted schema-format decision remains in force, or amend it before M02-T01 starts. Target adoption remains gated by binding and parity evidence.
 4. Ratify or amend the per-engine decision-record drafts in `docs/reports/M01/gate-evidence.md`.
 
 This ADR remains **Proposed** until those decisions are recorded. An open PR, passing CI, or a task checkbox does not constitute approval.

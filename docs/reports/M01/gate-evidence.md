@@ -17,20 +17,20 @@ M01 does **not** establish acceptance of a production cross-platform stack. The 
 | Dependency/DWG matrix (T11–T12) | Inventory and feasibility assessment | DWG reader covers legacy AC1012/14/15; conditional converter path and licensing questions are recorded. PDF/XLSX fit is separated by platform. | No DWG writer, no verified modern all-target offline DWG path, and no verified native PDF dependency for the declared workload. |
 | SQLite durability (T13) | Pass at engine level | Process-kill, recovery, acknowledgement, contention, migration, and `SQLITE_FULL` cases pass on macOS SQLite and Linux CI. | No Flutter adapter/native app/device integration proof; that remains an M03 gate. |
 | Cross-language semantics (T14) | Gate failed | Dart and an independent JavaScript fixture runner pass the fixture contract. The absent Rust FFI/Wasm/server candidates and shared Dart benchmark inner kernels do not prove cross-target parity. | Multi-language kernel adoption is blocked; single authoritative server-language semantics is the precommitted fallback. |
-| Canonical contract format (T15) | Proposed format recorded | ADR-0012 selects Protobuf proto3 with Buf v2 policy, generated committed artifacts, and drift/breaking checks. | No schema package or code generation exists yet; Rust plugin/runtime quality remains unverified. |
+| Canonical contract format (T15) | Accepted for schema format; target adoption remains gated | ADR-0012 records Protobuf proto3 with Buf v2 policy, generated committed artifacts, and drift/breaking checks. | No schema package or code generation exists yet; Rust plugin/runtime quality remains unverified. |
 | Fallback matrix (T16) | All seven rows resolved | Six failed/not-demonstrated outcomes, one SQLite engine-level pass; four owner proposals remain pending; budgets unchanged. | See [fallback-matrix-outcomes.md](fallback-matrix-outcomes.md). |
 
 ## Proposed architecture decision for the owner
 
 The draft [ADR-0013](../../adr/0013-m01-platform-stack-decision.md) recommends a staged redesign: retain the existing React/TypeScript application and its current service boundaries as production behavior; keep Flutter work in disposable, bounded prototypes; do not authorize production cutover or a broad engine rewrite from the current M01 evidence. Preserve the full §1 parity target until the owner explicitly decides otherwise in ADRs. Keep the product TypeScript implementations as current semantic baselines; explicitly verify or establish server authority and binding per engine before production Flutter use. Client Dart calculations remain previews unless a per-engine decision record and parity evidence authorize more.
 
-The proposal records candidate directions, not a general Flutter rejection: Dart remains a focused candidate for worksheet and 2D geometry; CPM stays server-TypeScript-authoritative with the existing governed Dart preview duplicate; `pdfrx`/PDFium is only a lead for a required real-PDF/native spike. Canonical schema implementation proceeds only after ADR-0012 is owner-approved and the M01 gate opens.
+The proposal records candidate directions, not a general Flutter rejection: Dart remains a focused candidate for worksheet and 2D geometry; CPM stays server-TypeScript-authoritative with the existing governed Dart preview duplicate; `pdfrx`/PDFium is only a lead for a required real-PDF/native spike. ADR-0012 already accepts Protobuf/Buf as the schema format; package implementation proceeds only after the M01 gate opens, and target adoption remains subject to parity and binding evidence.
 
 ### Owner decisions requested
 
 1. Accept or amend the staged architecture recommendation in ADR-0013.
 2. Decide each product-scope proposal in the T16 report, or keep the current scope and require additional proof. Until then, the relevant gates remain open.
-3. Confirm whether the proposed T15 schema direction is accepted for M02 work.
+3. Confirm ADR-0012 remains in force for M02-T01 or amend it; its schema-format decision is already recorded as accepted, while target adoption remains gated.
 
 No decision is inferred from a PR merge, a passing linter, or this draft. Under protocol R8, only the owner can approve the gate and product-scope decisions.
 
@@ -48,7 +48,7 @@ These are proposed records to ratify or amend at the owner gate; they are not pe
 
 ## M02 refinement and sequence
 
-The [M02 task register](../../plans/milestones/M02-contracts-shared-ux.md) is refined from WPs to T01–T08 per protocol R9. M02 remains blocked until the M01 owner gate is approved. T01 conditions schema work on the owner-ratified ADR-0012; all tasks exclude production screen cutover. The M02 gate remains owner-approved under R8.
+The [M02 task register](../../plans/milestones/M02-contracts-shared-ux.md) is refined from WPs to T01–T08 per protocol R9. M02 remains blocked until the M01 owner gate is approved. T01 uses ADR-0012's accepted schema-format direction unless the owner amends it; all tasks exclude production screen cutover. The M02 gate remains owner-approved under R8.
 
 ## Limits and follow-up gates
 
