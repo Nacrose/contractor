@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -eu
+
+tool_dir=$(CDPATH= cd -- "$(dirname -- "$0")/../dart" && pwd)
+cd "$tool_dir"
+plugin_path=$(node -e 'const fs = require("node:fs"); const { fileURLToPath } = require("node:url"); const config = JSON.parse(fs.readFileSync(".dart_tool/package_config.json", "utf8")); const plugin = config.packages.find((entry) => entry.name === "protoc_plugin"); if (!plugin) process.exit(1); const root = plugin.rootUri.endsWith("/") ? plugin.rootUri : `${plugin.rootUri}/`; process.stdout.write(fileURLToPath(new URL("bin/protoc_plugin.dart", root)));')
+exec "$tool_dir/../tools/dart" "$plugin_path"

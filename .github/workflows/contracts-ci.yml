@@ -1,0 +1,75 @@
+name: Platform Contracts CI
+
+on:
+  pull_request:
+    paths:
+      - 'packages/platform_contracts/**'
+      - 'fixtures/platform-parity/semantics/**'
+      - '.github/workflows/contracts-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/platform_contracts/**'
+      - 'fixtures/platform-parity/semantics/**'
+      - '.github/workflows/contracts-ci.yml'
+
+jobs:
+  contracts:
+    name: Format, compatibility, generation, TypeScript and Dart fixtures
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository with schema baseline
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: packages/platform_contracts/package-lock.json
+
+      - name: Setup Flutter 3.47.6
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.6'
+          channel: stable
+          cache: true
+
+      - name: Install pinned TypeScript tools
+        working-directory: packages/platform_contracts
+        run: npm ci
+
+      - name: Resolve pinned Dart tools and runtime
+        working-directory: packages/platform_contracts/dart
+        run: dart pub get
+
+      - name: Check Protobuf formatting and lint
+        working-directory: packages/platform_contracts
+        run: |
+          npm run format:check
+          npm run lint
+
+      - name: Check compatibility with prior schema release
+        working-directory: packages/platform_contracts
+        run: npm run breaking
+
+      - name: Regenerate TypeScript and Dart bindings
+        working-directory: packages/platform_contracts
+        run: npm run generate
+
+      - name: Check TypeScript and Dart semantic fixtures
+        working-directory: packages/platform_contracts
+        run: |
+          npm run check:typescript
+          npm run check:dart
+
+      - name: Fail on stale generated bindings
+        working-directory: packages/platform_contracts
+        run: git diff --exit-code -- gen/typescript gen/dart
+
+      - name: Record Rust target status
+        working-directory: packages/platform_contracts
+        run: node tools/check-rust-target.mjs

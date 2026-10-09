@@ -12,30 +12,34 @@ This package does not select or change an API transport.
 packages/platform_contracts/
 ├── buf.yaml
 ├── buf.lock                 # added with the first external schema dependency
+├── buf.gen.yaml             # pinned local TypeScript and Dart generators
 ├── proto/                   # canonical .proto sources; package path mirrors package name
 ├── gen/typescript/          # committed TypeScript bindings
 ├── gen/dart/                # committed Dart bindings
-├── gen/rust/                # committed Rust bindings when a real Rust target exists
+├── gen/rust/                # reserved until a real Rust target exists
+├── dart/                    # pinned Dart runtime and semantic fixture check
 ├── CHANGELOG.md
 └── BUF_VERSION
 ```
 
-`proto/` is intentionally empty of domain declarations in this scaffold. Add
-schemas only through a registered task that defines their owner, semantics, and
-compatibility requirements. Do not add speculative messages, services, or
-transport-specific definitions.
+The initial schema defines only transport-neutral exact-decimal, date-only, and
+UTC-instant value wrappers. It adds no application-domain messages, services, or
+transport-specific definitions. Add further schemas only through a registered
+task that defines their owner, semantics, and compatibility requirements.
 
 Generated files belong under the corresponding `gen/` target directory and are
 committed alongside their source. They are generated artifacts: do not edit them
-by hand. The first generation task must add an explicit `buf.gen.yaml`, pin every
-plugin to an exact version and revision, and pin generated-code runtimes. Rust
-generator/runtime pins are selected only when a real Rust target and fixture
-compilation are available. No generator or runtime is implied by this scaffold.
+by hand. The checked-in `buf.gen.yaml` invokes local plugins. Exact plugin and
+runtime versions are locked in `package-lock.json` and `dart/pubspec.lock`; no
+remote plugin service or schema registry is required. Rust generator/runtime pins
+are selected only when a real Rust target and fixture compilation are available.
+No Rust stub is generated: the Rust fixture check is blocked while this
+repository has no Rust target.
 
 ## Toolchain and compatibility policy
 
-- The Buf CLI version is recorded exactly in `BUF_VERSION`; update it only in a
-  reviewed change that also validates the package configuration and generation.
+- The Buf CLI version is recorded exactly in `BUF_VERSION` and the local npm
+  dependency; update both only in a reviewed change that validates generation.
 - Use Buf configuration version `v2`, `STANDARD` lint rules, and `FILE` breaking
   checks. CI must compare breaking changes with the prior schema release.
 - Pin external Buf module dependencies in `buf.lock` when the first dependency is
@@ -44,20 +48,25 @@ compilation are available. No generator or runtime is implied by this scaffold.
   mirror each package name in its source directory. Reserve removed field numbers
   and names; use exact decimal and distinct date-only/UTC-instant semantics as
   specified by ADR-0012.
-- Release compatible schema changes with a semver Git tag and a changelog entry.
+- Release compatible schema changes with a semver Git tag such as
+  `platform-contracts/v1.0.0` and a changelog entry.
   Breaking changes require a new major contract version and an explicit
   migration plan. Consumers pin an exact tag or commit.
 
 ## Commands
 
-Run Buf commands from this directory using the exact CLI version in `BUF_VERSION`:
+Run package commands from this directory. Exact dependency versions and
+transitive versions are locked in the checked-in npm and Dart lockfiles:
 
 ```sh
 buf format --diff
 buf lint
-buf breaking --against <prior-schema-ref>
+npm run breaking
 buf generate
+npm run check:typescript
+npm run check:dart
 ```
 
-Generation, stale-output checks, and language fixture compilation are established
-by M02-T02. Until then, this package contains no generated bindings.
+CI runs formatting, lint, compatibility, generation/drift, and fixture checks for
+TypeScript and Dart. The shared fixture check for Rust is explicitly blocked
+until a real Rust target is added.

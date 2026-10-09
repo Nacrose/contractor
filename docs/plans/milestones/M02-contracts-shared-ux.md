@@ -13,7 +13,7 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
     - Defines versioning, package layout, pinned toolchain/plugin policy, and generated-artifact locations without adding speculative domain schemas.
     - No server/API transport change is included.
 
-- [ ] **M02-T02** — Generate and verify TypeScript, Dart, and Rust bindings
+- [x] **M02-T02** — Generate and verify TypeScript, Dart, and Rust bindings (PR #15)
   - Depends on: M02-T01 · Output: committed generated bindings, pinned plugins/runtimes, generation and drift-check CI
   - Acceptance:
     - Regeneration is deterministic; CI fails on generated diff, formatting/lint errors, or breaking changes against the prior schema release.
