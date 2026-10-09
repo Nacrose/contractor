@@ -15,7 +15,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Contract compatibility tests cover supported and rejected versions, malformed input, and authorization failures.
     - No new server-side domain feature is introduced. Any follow-up feature task must name its change-feed integration and Flutter-parity path.
 
-- [ ] **M03-T02** — Implement native identity and device lifecycle
+- [x] **M03-T02** — Implement native identity and device lifecycle (PR #33)
   - Depends on: M03-T01 · Output: native login/session/device contract and secure credential-storage adapter.
   - Scope: native login, session rotation/revocation, device registration, logout, and account switching; preserve browser authentication behavior.
   - Acceptance:

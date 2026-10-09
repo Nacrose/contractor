@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-identity",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Native identity and device lifecycle contract: system-browser sign-in (PKCE S256), session rotation/revocation outcomes, secure credential-storage adapter, and the pending-work gate. No tRPC imports, no domain writers.",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}

@@ -41,6 +41,9 @@ jobs:
       - name: Run Native Adapter Contract Tests
         run: node packages/native_adapter/tool/check.mjs
 
+      - name: Run Native Identity Contract Tests
+        run: node packages/native_identity/tool/check.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 
