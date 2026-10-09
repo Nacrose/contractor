@@ -56,6 +56,17 @@ jobs:
             echo "Prototype pubspec.yaml not present yet; skipping Flutter unit tests."
           fi
 
+      - name: Analyze & Test shared Flutter UI package
+        run: |
+          if [ -f "packages/construction_ui/pubspec.yaml" ]; then
+            cd packages/construction_ui
+            flutter pub get
+            flutter analyze
+            flutter test
+          else
+            echo "Shared Flutter UI package not present yet; skipping package checks."
+          fi
+
   build_web:
     name: Build Web Target
     needs: lint_and_protocol
