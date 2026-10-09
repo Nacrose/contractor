@@ -93,7 +93,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Exact decimal strings/scaled integers across boundaries; geometry tolerances; date-only vs UTC-instant semantics proven identical across targets via shared fixtures (v3 §5.1, §6 M01).
     - Nepal dates and inclusive scheduling conventions included in the fixture set; disagreements block adoption per the fallback matrix.
 
-- [ ] **M01-T15** — Select the canonical schema format for `packages/platform_contracts/`
+- [x] **M01-T15** — Select the canonical schema format for `packages/platform_contracts/` (PR #9)
   - Depends on: M01-T07…T10 evidence · Output: ADR/DR naming the one canonical schema format (v3 §4 contract artifact)
   - Acceptance:
     - Format chosen against: TS/Dart/Rust codegen quality, drift-check tooling, versioning story; alternatives scored.
