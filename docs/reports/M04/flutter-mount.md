@@ -90,3 +90,7 @@ The mount's binding tests drive REAL SQLite through package:sqlite3 (dart:ffi), 
 - `buildSyncEnvelope`/`envelopeFor` for dispatch; the Dart orchestrator port (drain policy over `PendingOperationSource` + the async transport) is T03's engine work — the drain triggers are already wired to take its drain callback.
 - The web outbox driver binding (C1) so the SAME workflow path renders and runs on browser.
 - The health surface (`healthSource(accountId:, tenantId:)` → `buildDeviceSyncHealth`) for the sync-status UI.
+
+## 6. Repair record
+
+- **PR #45 follow-up (Android R8)**: the release APK build's `minifyReleaseWithR8` failed with "Missing class com.google.errorprone.annotations.*" — Tink (pulled in by `androidx.security:security-crypto`) references those annotations at class level. Fixed by putting `com.google.errorprone:error_prone_annotations` on the release classpath (build.gradle.kts). No binding behavior changed; the keystore handler and its tests are untouched.

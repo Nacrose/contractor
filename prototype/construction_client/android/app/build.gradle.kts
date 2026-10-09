@@ -52,4 +52,8 @@ dependencies {
     // M04-T02 secure-credential binding: Keystore-backed encrypted storage
     // (MainActivity binds the mount's secure_store method channel to it).
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    // Tink (via security-crypto) references error-prone annotations at class
+    // level; R8 needs them on the release classpath (fixes PR #45's
+    // minifyReleaseWithR8 "Missing class" failure).
+    implementation("com.google.errorprone:error_prone_annotations:2.28.0")
 }
