@@ -1,5 +1,6 @@
 import 'package:construction_ui/construction_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -157,9 +158,52 @@ void main() {
       await tester.binding.setSurfaceSize(null);
     });
 
+    testWidgets('ActionBar exposes its landmark and compact action menu', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      var refreshed = false;
+      await tester.binding.setSurfaceSize(const Size(320, 640));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ActionBar(
+              ariaLabel: 'Project actions',
+              primary: FilledButton(
+                onPressed: () {},
+                child: const Text('New project'),
+              ),
+              actions: [
+                ActionBarAction(
+                  label: 'Refresh',
+                  icon: Icons.refresh,
+                  onPressed: () => refreshed = true,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.bySemanticsLabel('Project actions'), findsOneWidget);
+      final moreActions = find.byTooltip('More actions');
+      expect(moreActions, findsOneWidget);
+      await tester.tap(moreActions);
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(find.text('Refresh'), findsOneWidget);
+      await tester.tap(find.text('Refresh'));
+      await tester.pumpAndSettle();
+      expect(refreshed, isTrue);
+      expect(tester.takeException(), isNull);
+      semantics.dispose();
+      await tester.binding.setSurfaceSize(null);
+    });
+
     testWidgets('status labels and unknown values render neutrally', (
       tester,
     ) async {
+      final semantics = tester.ensureSemantics();
       await tester.pumpWidget(
         MaterialApp(
           home: const Scaffold(
@@ -175,11 +219,16 @@ void main() {
 
       expect(find.text('In Progress'), findsOneWidget);
       expect(find.text('Future Custom State'), findsOneWidget);
+      expect(
+        tester.getSemantics(find.byType(StatusBadge).first).label,
+        contains('Status: In Progress'),
+      );
       expect(constructionStatusTone('submitted'), ConstructionStatusTone.amber);
       expect(
         constructionStatusTone('future_custom_state'),
         ConstructionStatusTone.neutral,
       );
+      semantics.dispose();
     });
 
     test('currency formatter groups decimal strings without binary floats', () {
@@ -228,10 +277,12 @@ void main() {
     testWidgets('ConstructionTable presents supplied rows without a toolbar', (
       tester,
     ) async {
+      final semantics = tester.ensureSemantics();
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: ConstructionTable<String>(
+              entity: 'projects',
               columns: [
                 ConstructionTableColumn<String>(
                   header: const Text('Project'),
@@ -247,6 +298,44 @@ void main() {
       expect(find.text('Project'), findsOneWidget);
       expect(find.text('Bridge North'), findsOneWidget);
       expect(find.byTooltip('More actions'), findsNothing);
+      expect(
+        tester.getSemantics(find.byType(ConstructionTable<String>)).label,
+        contains('projects table'),
+      );
+      expect(find.bySemanticsLabel('Project'), findsWidgets);
+      expect(find.bySemanticsLabel('Bridge North'), findsWidgets);
+      semantics.dispose();
+    });
+
+    testWidgets('wide tables scroll horizontally at narrow viewports', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(320, 640));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ConstructionTable<String>(
+              columns: [
+                for (final title in ['Project', 'Owner', 'Budget', 'Status'])
+                  ConstructionTableColumn<String>(
+                    header: SizedBox(width: 180, child: Text(title)),
+                    cellBuilder: (row, _) =>
+                        SizedBox(width: 180, child: Text('$title $row')),
+                  ),
+              ],
+              rows: const ['Bridge North'],
+            ),
+          ),
+        ),
+      );
+
+      final scrollables = find.byType(Scrollable);
+      expect(scrollables, findsNWidgets(2));
+      expect(tester.takeException(), isNull);
+      await tester.drag(find.text('Project'), const Offset(-240, 0));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tester.binding.setSurfaceSize(null);
     });
 
     testWidgets('busy dialog disables cancel and primary actions', (
@@ -286,6 +375,45 @@ void main() {
         tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
         isNull,
       );
+    });
+
+    testWidgets('confirmation dialog exposes title and keyboard actions', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      var confirmed = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: TextButton(
+                onPressed: () => showDialog<void>(
+                  context: context,
+                  builder: (_) => ConstructionConfirmDialog(
+                    title: 'Submit variation',
+                    description: 'Submit this variation for review?',
+                    confirmLabel: 'Submit',
+                    onConfirm: () => confirmed = true,
+                  ),
+                ),
+                child: const Text('Open confirmation'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Open confirmation'));
+      await tester.pumpAndSettle();
+      expect(find.text('Submit variation'), findsOneWidget);
+      expect(find.text('Submit this variation for review?'), findsOneWidget);
+      expect(find.bySemanticsLabel('Submit'), findsOneWidget);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(confirmed, isTrue);
+      semantics.dispose();
     });
   });
 

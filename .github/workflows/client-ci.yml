@@ -55,6 +55,7 @@ jobs:
             flutter pub get
             flutter analyze
             flutter test
+            flutter test --platform chrome
           else
             echo "Prototype pubspec.yaml not present yet; skipping Flutter unit tests."
           fi
