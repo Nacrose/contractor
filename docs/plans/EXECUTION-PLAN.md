@@ -25,7 +25,7 @@
 | M00 Inventory, fixtures & baseline | [M00-inventory-fixtures-baseline.md](milestones/M00-inventory-fixtures-baseline.md) | **Complete** | 21/21 | M00-T21 `👤 GATE` — passed (PR #16) |
 | M01 Platform feasibility & performance gate | [M01-platform-feasibility-gate.md](milestones/M01-platform-feasibility-gate.md) | **Complete** | 17/17 | M01-T17 `👤 GATE` — passed (PR #11) |
 | M02 Central contracts & shared UX | [M02-contracts-shared-ux.md](milestones/M02-contracts-shared-ux.md) | **Complete** | 8/8 | M02-T08 `👤 GATE` — passed (PR #31), owner approved 2026-10-09 |
-| M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | In progress — T01 adapter (PR #32), T02 identity/device (PR #33), T03 outbox repository (PR #34), T04 change feed (PR #35), T05 snapshot bootstrap (PR #36), T06 attachment staging (PR #37) | 6/10 | M03-T10 `👤 GATE` — not reached |
+| M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | In progress — T01 adapter (PR #32), T02 identity/device (PR #33), T03 outbox repository (PR #34), T04 change feed (PR #35), T05 snapshot bootstrap (PR #36), T06 attachment staging (PR #37), T07 sync orchestration (PR #38) | 7/10 | M03-T10 `👤 GATE` — not reached |
 | M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | Blocked by M03 (WP level) | 0/7 | M04-T07 `👤 GATE` — not reached |
 | M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | Blocked by M04 (WP level) | 0/9 | M05-T09 `👤 GATE` — not reached |
 | M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | Blocked by M02/M03 (task level) | 0/11 | M06-T11 `👤 GATE` — not reached |
@@ -35,7 +35,7 @@
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered by [PLAN-AMEND] 2026-10-09 (WP level) | 0/8 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **52/129** | |
+| **Program total** | | | **53/129** | |
 
 ## Dependency graph
 
