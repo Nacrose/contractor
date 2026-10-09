@@ -66,7 +66,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Retry, rejection, revoked access, insufficient storage, and digest mismatch preserve pending data and expose a recoverable state.
     - Integration tests use real local storage and the disposable server/object fixture, and record the Flutter attachment path and parity contract.
 
-- [ ] **M03-T07** — Orchestrate foreground/background sync and typed command outcomes
+- [x] **M03-T07** — Orchestrate foreground/background sync and typed command outcomes (PR #38)
   - Depends on: M03-T02, M03-T03, M03-T04, M03-T05, M03-T06 · Output: versioned sync envelope, orchestration policy, and state-transition tests.
   - Scope: coordinate ordered pending operations, retries, dependencies, network/power conditions, and response handling across native and browser clients.
   - Acceptance:

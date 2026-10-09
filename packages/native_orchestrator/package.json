@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-orchestrator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sync orchestration (M03-T07): versioned sync envelope (protocol version, operation/device identity, scope claims, payload digest, dependency identity), server-authoritative claim revalidation, the eight typed outcomes (accepted/previously_accepted/conflict/rejected/revoked/authentication_required/dependency_blocked/retryable), bounded FULL-jitter retries with dependency ordering, single-flight drains, foreground-without-scheduler + gated background attempts, push hints as hints only. Policy layer over the M03-T03 outbox; evidence runs the REAL server service against REAL SQLite.",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
