@@ -20,7 +20,7 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
     - Shared fixtures prove exact decimal string/scaled-int and date-only/UTC-instant semantics in each available target; absent Rust targets remain an explicit blocked check rather than a stubbed pass.
     - A versioned release includes a Git tag and changelog entry; no hosted registry dependency is required.
 
-- [ ] **M02-T03** — Build the central Flutter component library core
+- [x] **M02-T03** — Build the central Flutter component library core (PR #16)
   - Depends on: M01-GATE approved · Output: `packages/construction_ui/` core component package
   - Acceptance:
     - Implements Flutter equivalents for `ConstructionTable`, `ActionBar`, `StatusBadge`, dialogs, and query/error/empty/loading states using existing design-system rule IDs.
