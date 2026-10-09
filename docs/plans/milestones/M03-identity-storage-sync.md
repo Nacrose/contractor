@@ -56,7 +56,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Expired/invalid cursors trigger a safe rebootstrap that preserves and reconciles pending local work instead of discarding it.
     - Tests cover pagination boundaries, concurrent writes during bootstrap, duplicate pages, tombstones, interrupted apply, and expired cursors. The Flutter consumer and its parity evidence are named in the implementation PR.
 
-- [ ] **M03-T06** — Stage and resume attachment transfers
+- [x] **M03-T06** — Stage and resume attachment transfers (PR #37)
   - Depends on: M03-T03, M03-T04 · Output: durable attachment staging/finalization protocol, reconciliation journal, and interruption tests.
   - Scope: transfer attachment bytes independently from domain acceptance while keeping registration and file durability consistent.
   - Acceptance:

@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-attachment",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Attachment staging and resume (M03-T06): durable staging/finalization protocol with digest compute+verify at both boundaries, chunked server registration resuming from the server's authoritative offset, append-only sanitized reconciliation journal, typed recoverable failures preserving pending data, orphan sweep, resume after app launch/foregrounding/manual sync. Evidence runs against real local storage (on-disk object store) + real SQLite (node:sqlite) + a disposable server/object fixture.",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
