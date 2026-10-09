@@ -150,9 +150,15 @@ export function lintRegister(options = {}) {
     const prTaskMatch = prTitle.match(/\[([A-Za-z0-9_-]+)\]/);
     if (prTaskMatch) {
       const claimedTaskId = prTaskMatch[1];
-      // Special allowance for protocol amendments or gate PRs
-      const allowedSpecial = ["BOOTSTRAP", "PROTOCOL-AMEND", "M00-GATE", "M01-GATE"];
-      if (!taskRegistry.has(claimedTaskId) && !allowedSpecial.includes(claimedTaskId)) {
+      // Special allowances per protocol R3: bootstrap, plan/protocol amendments,
+      // and per-milestone gate PRs (M00-GATE … M11-GATE, derived from the register).
+      const allowedSpecial = ["BOOTSTRAP", "PROTOCOL-AMEND", "PLAN-AMEND"];
+      const milestoneGateIds = [...milestoneCounts.keys()]
+        .map((f) => (f.match(/^(M\d{2})-/) || [])[1])
+        .filter(Boolean)
+        .map((id) => `${id}-GATE`);
+      const isGateTitle = milestoneGateIds.includes(claimedTaskId);
+      if (!taskRegistry.has(claimedTaskId) && !allowedSpecial.includes(claimedTaskId) && !isGateTitle) {
         errors.push(`PR title claims task ID "${claimedTaskId}", but this task ID does not exist in any milestone file`);
       }
     }
