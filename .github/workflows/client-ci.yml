@@ -58,6 +58,9 @@ jobs:
       - name: Run Native Snapshot Bootstrap Tests
         run: node packages/native_snapshot/tool/check.mjs
 
+      - name: Run Native Attachment Transfer Tests
+        run: node packages/native_attachment/tool/check.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 
