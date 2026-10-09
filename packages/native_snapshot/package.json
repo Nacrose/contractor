@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-snapshot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Snapshot bootstrap, cursor persistence and tombstones (M03-T05): consistent server-state snapshot + watermark materialized in one transaction, bounded deterministic pagination, one-transaction client apply with durable cursor persistence, tombstones for deletes/scope changes, manifest-closure reconcile preserving pending local work, typed resync_required on expired cursors. Continues from the M03-T04 feed watermark. Evidence runs against real SQLite (node:sqlite).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
