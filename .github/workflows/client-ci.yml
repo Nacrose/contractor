@@ -55,6 +55,9 @@ jobs:
       - name: Run Native Sync Feed Tests
         run: node packages/native_sync_feed/tool/check.mjs
 
+      - name: Run Native Snapshot Bootstrap Tests
+        run: node packages/native_snapshot/tool/check.mjs
+
       - name: Run Native SQLite Durability Harness
         run: python3 prototype/construction_client/tool/sqlite_durability_harness.py
 

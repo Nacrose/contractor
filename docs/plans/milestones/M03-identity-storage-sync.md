@@ -46,7 +46,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Financially effective commands retain durable receipts beyond the 30-day default with compaction; expiry cannot enable replayed business effects.
     - Operational monitoring, retention limits, failure behavior, rollback, and recovery follow the ratified decision record. The PR identifies the Flutter repository/parity task that consumes the feed.
 
-- [ ] **M03-T05** — Add snapshot bootstrap, cursor persistence, and tombstones
+- [x] **M03-T05** — Add snapshot bootstrap, cursor persistence, and tombstones (PR #36)
   - Depends on: M03-T03, M03-T04 · Output: bounded snapshot/bootstrap endpoint, local apply transaction, cursor/tombstone model, and recovery tests.
   - Scope: initialize a device to a consistent server state and continue from the feed without losing pending local work.
   - Acceptance:
