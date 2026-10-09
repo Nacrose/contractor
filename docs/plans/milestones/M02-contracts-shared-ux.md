@@ -46,7 +46,7 @@ Exit: native/web component contract tests and accessibility checks pass; no prod
     - Each capability declares platform availability and fallback behavior explicitly; no feature is hidden behind an install prompt or implicit platform branch.
     - Route and command identities are stable, typed, and do not encode authorization decisions in client state.
 
-- [ ] **M02-T07** — Verify responsive layouts, accessibility, and keyboard contracts
+- [x] **M02-T07** — Verify responsive layouts, accessibility, and keyboard contracts (PR #20)
   - Depends on: M02-T03, M02-T04, M02-T06 · Output: native/web component contract tests and accessibility evidence
   - Acceptance:
     - Core components pass keyboard/focus semantics, responsive viewport, semantic accessibility, and interaction contract checks on web and desktop.
