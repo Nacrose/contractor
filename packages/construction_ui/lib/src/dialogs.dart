@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'generated_tokens.dart';
+
 /// Standard dialog sizes from DLG-01 and scroll/footer behavior from DLG-02/03.
 enum ConstructionDialogSize {
   xs(360),
@@ -37,25 +39,25 @@ class ConstructionDialog extends StatelessWidget {
   Widget build(BuildContext context) => PopScope(
     canPop: !busy,
     child: Dialog(
-      insetPadding: const EdgeInsets.all(24),
+      insetPadding: const EdgeInsets.all(ConstructionTokens.space6),
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: size.width, maxHeight: 720),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(ConstructionTokens.space6),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(title, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 4),
+              const SizedBox(height: ConstructionTokens.space1),
               Text(description, style: Theme.of(context).textTheme.bodyMedium),
-              const SizedBox(height: 16),
+              const SizedBox(height: ConstructionTokens.space4),
               Flexible(child: SingleChildScrollView(child: content)),
               if (actions.isNotEmpty) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: ConstructionTokens.space4),
                 Wrap(
                   alignment: WrapAlignment.end,
-                  spacing: 8,
+                  spacing: ConstructionTokens.space2,
                   children: actions,
                 ),
               ],
