@@ -60,17 +60,6 @@ jobs:
             echo "Prototype pubspec.yaml not present yet; skipping Flutter unit tests."
           fi
 
-      - name: Analyze & Test shared Flutter UI package
-        run: |
-          if [ -f "packages/construction_ui/pubspec.yaml" ]; then
-            cd packages/construction_ui
-            flutter pub get
-            flutter analyze
-            flutter test
-          else
-            echo "Shared Flutter UI package not present yet; skipping package checks."
-          fi
-
   build_web:
     name: Build Web Target
     needs: lint_and_protocol
@@ -158,4 +147,30 @@ jobs:
             flutter build apk --release
           else
             echo "Prototype not yet present; skipping Android build."
+          fi
+
+  shared_ui_contracts:
+    name: Shared Flutter UI Contracts (Native + Chrome)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter (Pinned 3.47.6)
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.6'
+          channel: 'stable'
+          cache: true
+
+      - name: Analyze & Test shared Flutter UI package
+        run: |
+          if [ -f "packages/construction_ui/pubspec.yaml" ]; then
+            cd packages/construction_ui
+            flutter pub get
+            flutter analyze
+            flutter test
+            flutter test --platform chrome
+          else
+            echo "Shared Flutter UI package not present yet; skipping package checks."
           fi
