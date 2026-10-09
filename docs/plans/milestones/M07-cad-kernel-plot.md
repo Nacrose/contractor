@@ -1,7 +1,7 @@
 # M07 — CAD kernel, topology, rendering and plot
 
 > Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M07, §3 CAD row. Dependencies: M02, M03 and the M01 file/compute gate. Shares the operation substrate with M06. Registered at **WP level** — refine before the M02 gate opens.
-> Prior art: [cad-viewer evaluation](../reports/M07/prior-art-cad-viewer.md) · Dependency posture: [ADR-0014](../../adr/0014-open-source-only-dependency-posture.md) — open-source-only, no paid components.
+> Prior art: [cad-viewer evaluation](../reports/M07/prior-art-cad-viewer.md) · [ArtCraft family evaluation](../reports/prior-art-artcraft-family.md) · Dependency posture: [ADR-0014](../../adr/0014-open-source-only-dependency-posture.md) — open-source-only, no paid components · Candidate engine: CADCraft (storytold) per [ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md) — refinement must add a CADCraft prototype task (CLI/MCP over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess).
 
 Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, bounded memory and CAD interaction benchmarks on native/web. Broader AutoCAD parity remains gated by the full command/format matrix.
 

@@ -57,6 +57,7 @@ Exact dependencies per task are declared inside each milestone file; the v3 plan
 4. **One owner per shared contract** — schema, sync protocol, design tokens, shared bindings (v3 §9).
 5. **Dashboard work: Defer / do not start** for the duration (v3 §6.0 maintenance posture).
 6. **Start with M00 only**, then M01. No screen rewrites, no speculative dependency installs (v3 §10).
+7. **Upstream-tracked candidate engines** — ArtCraft tools (GridCraft/CADCraft/PdfCraft) are evidence-gated candidates per capability area; consume via tag-pinned CLI/MCP/Cargo-git surfaces, never forks or edited upstream code; registry `docs/vendor/ARTCRAFT.md` (ADR-0015; licenses per ADR-0014).
 
 ## Bootstrap record (founding PR)
 
