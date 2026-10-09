@@ -96,7 +96,7 @@ Exit: real SQLite plus disposable PostgreSQL evidence proves no lost accepted op
     - Failures report operation/device/cursor identifiers in sanitized form and demonstrate a deterministic recovery action.
     - The packet links the corresponding Flutter parity tests and identifies any server-side domain writers covered by the feed.
 
-- [ ] **M03-T10** — 👤 GATE — M03 exit evidence and owner decision
+- [x] **M03-T10** — 👤 GATE — M03 exit evidence and owner decision (PR #42)
   - Depends on: M03-T01…T09 and M04 task-level refinement PR · Output: `[M03-GATE]` evidence packet, M04 task register, and owner decision.
   - Acceptance:
     - Every M03 task is ticked with a PR reference and links to reproducible evidence; all M03 exit claims are supported by real SQLite and disposable PostgreSQL results.
