@@ -52,8 +52,10 @@ The following decisions were recorded during M03 and are presented here for expl
 - Protocol linter: PASS (checkbox/PR-reference/rollup consistency).
 - CI: all gates green on the merged implementation PRs (#32–#40); the M03-T09 matrix runs on every `lint_and_protocol` run with live disposable PostgreSQL.
 
-## 6. What the owner is asked to do
+## 6. Owner decision record
 
 1. Review this packet (and any linked report it raises questions about).
 2. Ratify the §4 design decisions (or request changes — each names its record so amendments are cheap).
 3. Approve and merge THIS PR (`[M03-GATE]`) under protocol R8. The merge IS the gate decision; M05 refinement and the M04 implementation sequence then unlock per the dependency graph.
+
+**Decision: APPROVED by the owner on 2026-10-09** (received as the single word "approve" in the owner channel). All nine §4 design-decision records are ratified as presented; no changes requested. The merge of PR #42 by owner instruction is the R8 gate decision for M03 — nothing in this milestone was self-approved.

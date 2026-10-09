@@ -25,7 +25,7 @@
 | M00 Inventory, fixtures & baseline | [M00-inventory-fixtures-baseline.md](milestones/M00-inventory-fixtures-baseline.md) | **Complete** | 21/21 | M00-T21 `👤 GATE` — passed (PR #16) |
 | M01 Platform feasibility & performance gate | [M01-platform-feasibility-gate.md](milestones/M01-platform-feasibility-gate.md) | **Complete** | 17/17 | M01-T17 `👤 GATE` — passed (PR #11) |
 | M02 Central contracts & shared UX | [M02-contracts-shared-ux.md](milestones/M02-contracts-shared-ux.md) | **Complete** | 8/8 | M02-T08 `👤 GATE` — passed (PR #31), owner approved 2026-10-09 |
-| M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | **COMPLETE** — T01–T09 (PRs #32–#40), T10 GATE (PR #42, owner approval pending per R8) | 10/10 | M03-T10 `👤 GATE` — **PR #42 open, awaiting owner** |
+| M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | **Complete** — T01–T09 (PRs #32–#40), T10 gate (PR #42) | 10/10 | M03-T10 `👤 GATE` — passed (PR #42), owner approved 2026-10-09 |
 | M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | Blocked by M03 — refined to task level by [PLAN-AMEND] (PR #41) | 0/9 | M04-T09 `👤 GATE` — not reached |
 | M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | Blocked by M04 (WP level) | 0/9 | M05-T09 `👤 GATE` — not reached |
 | M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | Blocked by M02/M03 (task level) | 0/11 | M06-T11 `👤 GATE` — not reached |
