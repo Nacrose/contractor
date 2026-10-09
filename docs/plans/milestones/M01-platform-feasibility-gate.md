@@ -107,7 +107,7 @@ Exit (v3, verbatim intent): measured report and architecture decision accepting 
     - Product-scope rows (browser engineering engines, browser field-ops, DWG scope, per-platform takeoff) produce **evidence + written proposals for the owner** — never self-executed; §1 parity gate holds until owner ADR (protocol R8; v3 v3-matrix rules).
     - Any budget renegotiation recorded as a decision — never silently lowered.
 
-- [ ] **M01-T17** — 👤 GATE — M01 measured report and stack decision
+- [x] **M01-T17** — 👤 GATE — M01 measured report and stack decision (PR #11)
   - Depends on: M01-T01…T16 (all) · Output: gate PR `[M01-GATE]` with the consolidated measured report and the architecture decision (accept stack / documented redesign)
   - Acceptance:
     - Kernel per-engine decision records drafted (authoritative implementation, per-target binding strategy, shared fixtures, duplication status) for engines going forward — required before any screen depends on them (v3 §4).
