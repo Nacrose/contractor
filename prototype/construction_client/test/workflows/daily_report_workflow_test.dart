@@ -163,6 +163,25 @@ void main() {
       throwsA(isA<RepositoryError>()),
     );
   });
+
+  test('procedure input preserves registered photo receipt metadata', () {
+    final photo = <String, Object?>{
+      'attachmentId': 'server-photo-1',
+      'receipt': 'server-photo-1',
+      'digest': 'a' * 64,
+      'fileSize': 1234,
+    };
+    final withPhoto = DailyReportDraft(
+      clientUuid: 'report-uuid-0001',
+      projectId: 'project-1',
+      reportDate: '2026-10-10',
+      remarks: 'Photos attached',
+      photos: [photo],
+    );
+
+    expect(withPhoto.toProcedureInput()['photos'], [photo]);
+    expect(DailyReportDraft.decode(withPhoto.encode()).photos, [photo]);
+  });
 }
 
 class _Transport implements SyncTransportPort {

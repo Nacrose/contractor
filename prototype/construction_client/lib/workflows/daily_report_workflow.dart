@@ -51,6 +51,7 @@ class DailyReportDraft {
   final String problems;
   final String safetyNotes;
   final String remarks;
+  final List<Map<String, Object?>> photos;
 
   DailyReportDraft({
     required this.clientUuid,
@@ -70,6 +71,7 @@ class DailyReportDraft {
     this.problems = '',
     this.safetyNotes = '',
     this.remarks = '',
+    this.photos = const [],
   });
 
   Map<String, Object?> toProcedureInput() {
@@ -93,7 +95,7 @@ class DailyReportDraft {
       if (problems.isNotEmpty) 'problems': problems,
       if (safetyNotes.isNotEmpty) 'safetyNotes': safetyNotes,
       if (remarks.isNotEmpty) 'remarks': remarks,
-      'photos': const <Object?>[],
+      'photos': photos,
     };
   }
 
@@ -128,6 +130,9 @@ class DailyReportDraft {
       problems: input['problems'] as String? ?? '',
       safetyNotes: input['safetyNotes'] as String? ?? '',
       remarks: input['remarks'] as String? ?? '',
+      photos: (input['photos'] as List<Object?>? ?? const [])
+          .map((photo) => Map<String, Object?>.from(photo! as Map))
+          .toList(),
     );
   }
 
