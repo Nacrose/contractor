@@ -24,4 +24,5 @@
 - The product server registrar/feed binding is not available, so tests use a contract fake and no real registration endpoint or second-device read has been demonstrated.
 - The product registrar/feed binding is not available. It must accept and link report UUIDs plus M03-T06 receipts to `workflow.dailyReport.createFieldReport`; this requires explicit approval for product-repo edits, which is still pending.
 - The editor exposes the injectable photo port, but the running product host does not yet instantiate it with real camera/gallery and registrar bindings.
+- The local report UUID is currently stored on the client attachment row and passed to the registrar contract, but `DailyReportDraft.toProcedureInput()` still emits an empty `photos` list. A receipt-reference payload contract and server-side report attachment transaction/feed write remain unimplemented; no claim is made that a registered photo is visible on the server report.
 - Real camera/gallery capture, interrupted app process recovery, and device telemetry still require a real device session.
