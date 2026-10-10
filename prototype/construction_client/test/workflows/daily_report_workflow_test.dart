@@ -147,6 +147,52 @@ void main() {
     },
   );
 
+  test('server rejection correction creates a new operation and preserves the rejected copy', () async {
+    mounted = open();
+    final store = DailyReportLocalStore(mounted!);
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft(),
+    );
+    mounted!.pendingOps.markInFlight('report-uuid-0001');
+    mounted!.pendingOps.recordRejected(
+      'report-uuid-0001',
+      'Report date is outside the project period.',
+    );
+
+    final corrected = draft(
+      uuid: 'report-uuid-0002',
+      remarks: 'Corrected date and site notes',
+    );
+    store.saveCorrectedCopy(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      rejectedClientUuid: 'report-uuid-0001',
+      draft: corrected,
+    );
+
+    expect(
+      mounted!.pendingOps.getOp('acct-1', 'report-uuid-0001')!.state,
+      'rejected',
+    );
+    expect(
+      mounted!.pendingOps.getOp('acct-1', 'report-uuid-0001')!.payload,
+      contains('Foundation poured'),
+    );
+    expect(
+      mounted!.pendingOps.getOp('acct-1', 'report-uuid-0002')!.state,
+      'pending',
+    );
+    expect(
+      store.get('acct-1', 'report-uuid-0002')!.remarks,
+      'Corrected date and site notes',
+    );
+    await store.flushDurability();
+  });
+
   test('procedure input preserves product field names and validates useful content', () {
     final payload = draft().toProcedureInput();
     expect(payload['projectId'], 'project-1');

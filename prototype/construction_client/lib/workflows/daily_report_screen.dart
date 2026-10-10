@@ -98,6 +98,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   late final TextEditingController _remarks = TextEditingController();
   String? _projectId;
   String? _savedId;
+  String? _photoReportId;
   String? _error;
   bool _saving = false;
   bool _saved = false;
@@ -279,7 +280,11 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   List<AttachmentTransferRecord> get _reportPhotos =>
       widget.photos
           ?.list()
-          .where((photo) => photo.dailyReportId == (_savedId ?? _clientUuid))
+          .where(
+            (photo) =>
+                photo.dailyReportId ==
+                (_photoReportId ?? _savedId ?? _clientUuid),
+          )
           .toList(growable: false) ??
       const <AttachmentTransferRecord>[];
 
@@ -334,6 +339,19 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             draft: draft,
           );
           _savedId = draft.clientUuid;
+        } else if (widget.store.operationState(widget.accountId, _savedId!) ==
+            'rejected') {
+          final rejectedId = _savedId!;
+          final corrected = draft.withClientUuid(_uuid());
+          widget.store.saveCorrectedCopy(
+            accountId: widget.accountId,
+            tenantId: widget.tenantId,
+            role: widget.role,
+            rejectedClientUuid: rejectedId,
+            draft: corrected,
+          );
+          _photoReportId = rejectedId;
+          _savedId = corrected.clientUuid;
         } else {
           widget.store.editUnsent(accountId: widget.accountId, draft: draft);
         }
@@ -473,7 +491,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.save_outlined),
-              label: Text(_saved ? 'Update local draft' : 'Save locally'),
+              label: Text(
+                opState == 'rejected'
+                    ? 'Save corrected copy'
+                    : _saved
+                    ? 'Update local draft'
+                    : 'Save locally',
+              ),
             ),
             actions: [
               ActionBarAction(
@@ -502,6 +526,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ],
+          if (opState == 'rejected') ...[
+            const SizedBox(height: 8),
+            const Text(
+              'This report was rejected by the server. Correct the fields and save a new copy; the rejected operation is retained for review.',
+            ),
+          ],
           const SizedBox(height: 16),
           Form(
             key: _formKey,
@@ -522,7 +552,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                           ),
                         )
                         .toList(),
-                    onChanged: _savedId == null && reportPhotos.isEmpty
+                    onChanged:
+                        (_savedId == null || opState == 'rejected') &&
+                            reportPhotos.isEmpty
                         ? (value) => setState(() => _projectId = value)
                         : null,
                     validator: (value) => value == null || value.isEmpty

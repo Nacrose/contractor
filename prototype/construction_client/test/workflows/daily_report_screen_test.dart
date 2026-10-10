@@ -100,6 +100,72 @@ void main() {
     expect(rows.single.kind, 'workflow.dailyReport.createFieldReport');
   });
 
+  testWidgets(
+    'rejected report offers correction and saves a new immutable operation',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: DailyReportLocalStore(mount!),
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DropdownButtonFormField<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('P-01 — Bridge').last);
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Daily remarks'),
+        'Original report content',
+      );
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+
+      final oldId =
+          mount!.driver
+                  .prepare(
+                    'SELECT client_uuid FROM daily_report_local WHERE account_id = ?',
+                  )
+                  .get(['acct-1'])!['client_uuid']
+              as String;
+      mount!.pendingOps.markInFlight(oldId);
+      mount!.pendingOps.recordRejected(oldId, 'Correct the report and retry.');
+      await tester.tap(find.byTooltip('Sync now'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Save corrected copy'), findsOneWidget);
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Daily remarks'),
+        'Corrected report content',
+      );
+      await tester.ensureVisible(find.text('Save corrected copy'));
+      await tester.tap(find.text('Save corrected copy'));
+      await tester.pumpAndSettle();
+
+      final count = mount!.driver
+          .prepare(
+            'SELECT COUNT(*) AS count FROM pending_op WHERE account_id = ?',
+          )
+          .get(['acct-1'])!['count'];
+      expect(count, 2);
+      expect(mount!.pendingOps.getOp('acct-1', oldId)!.state, 'rejected');
+      final replacement = mount!.pendingOps
+          .listDue('acct-1', DateTime.now().millisecondsSinceEpoch + 1000)
+          .single;
+      expect(replacement.state, 'pending');
+      expect(replacement.payload, contains('Corrected report content'));
+      expect(replacement.opId, isNot(oldId));
+    },
+  );
+
   testWidgets('typed section rows save normalized procedure payloads', (
     tester,
   ) async {

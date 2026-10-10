@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'mount.dart';
 import 'ports.dart';
 import '../workflows/daily_report_workflow.dart';
+import 'daily_report_snapshot.dart';
 
 const Migration
 kAttachmentJournalMigration = Migration(5, 'attachment_journal_baseline', [
@@ -45,6 +46,7 @@ const List<Migration> kM04WorkflowMigrations = [
     'ALTER TABLE attachment ADD COLUMN daily_report_id TEXT',
     'CREATE INDEX idx_attachment_report ON attachment (account_id, daily_report_id, state)',
   ]),
+  kDailyReportSnapshotMigration,
 ];
 
 const String _objectPrefix = 'attachments/';

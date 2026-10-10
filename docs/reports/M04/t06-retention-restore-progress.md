@@ -1,8 +1,8 @@
 # M04-T06: Retention, restore, and attachment download progress
 
-- **Status:** mounted attachment re-fetch and digest verification are implemented and tested locally; M04-T06 acceptance remains open.
+- **Status:** snapshot bootstrap application, durable resume, and rejected-report correction are implemented locally; registered-photo re-fetch remains a contract only and live product round-trip evidence is still missing.
 - **Branch:** `m04-t06-restore`, stacked on the M04-T05 checkpoint.
-- **Evidence:** `flutter test test/mount/attachment_transfer_test.dart` — 5 passed; combined M04 transfer, editor, workflow, and expanded fault-matrix suites — 20 passed; targeted `dart analyze` — no issues.
+- **Evidence:** full native Flutter suite — 185 passed; `dart analyze` — no issues. Focused snapshot/bootstrap and rejection-correction tests are included.
 
 ## Implemented contract
 
@@ -13,14 +13,14 @@ The tests cover successful fetch plus local persistence, final bytes matching th
 ## Required evidence still missing
 
 - Product PR #165 contains the protected read procedure `workflow.dailyReport.getAttachmentData({ id })`; each request resolves the report project, calls `assertDailyReportView`, and reads bytes from `StoredFile`. The Flutter fetcher is still only a contract port, so this route is not wired or exercised by the mount.
-- Snapshot bootstrap is available in the M03 package, but the Flutter mount does not yet apply snapshot daily-report rows into the T03 local domain repository. The prepared product PR #166 exposes incremental CDC pull only; neither #165 nor #166 currently exposes the initial daily-report snapshot route or its payload contract. New-device record restoration therefore remains unproven.
-- The mounted T05 conflict/revocation tests prove local report retention for those outcomes, but no explicit server `rejected` outcome test yet demonstrates fix-and-retry from the user path.
+- Product PR #166 now includes an authenticated project-scoped snapshot endpoint and documented payload contract (commit `adc46e6f` pushed after local build and browser check). PR #166 and its prerequisite #165 remain unmerged. The Flutter mount applies snapshot pages into a separate accepted-report replica, persists its page cursor, resumes after restart, closes the manifest before deleting stale replicas, protects pending operation IDs, and stores the decimal feed watermark for incremental pull. Local fake-transport proof exists; product-backed restore remains unproven.
+- A server rejection can now be corrected into a new client UUID and queued as a new operation while the rejected payload remains intact. Local repository coverage exists; a real product rejection and user-session retry remain unproven.
 - No product feed association proves restored registered photos reappear on a second device.
 
 ## Browser persistence follow-on (2026-10-10)
 
-The T06 worktree now contains a browser SQLite WASM + IndexedDB driver, a SQLite-backed object store, an async browser mount, and a browser photo service. Local writes await `flushDurability()` before the editor reports a save. Browser hosts must supply a credential binding explicitly; the mount does not fall back to the native keystore on web. The official `sqlite3.wasm` release asset was checksum-verified before vendoring. `flutter analyze`, the full native `flutter test` suite (180 passed), and a release web compile importing the actual browser mount dependency graph passed. `flutter run -d chrome --web-port 4181 -t tool/m04_browser_probe.dart` logged PASS after saving a report and its pending operation, awaiting the IndexedDB flush, closing the browser mount, reopening it, and comparing both records. The probe uses a test-only credential fixture and does not exercise sign-in. `flutter test --platform chrome` itself did not complete the earlier driver-only lifecycle probe. Product route/auth scope, snapshot application, rejected fix-and-retry, and second-device restoration remain open.
+The T06 worktree also contains a browser SQLite WASM + IndexedDB driver, a SQLite-backed object store, an async browser mount, and a browser photo service. Local writes await `flushDurability()` before the editor reports a save. Browser hosts must supply a credential binding explicitly; the mount does not fall back to the native keystore on web. The official `sqlite3.wasm` release asset was checksum-verified before vendoring. The full native suite now passes at 185 tests; the release web compile importing the actual browser mount dependency graph passed earlier. The existing `flutter run -d chrome --web-port 4181 -t tool/m04_browser_probe.dart` probe logged PASS after saving and reopening a report plus pending operation. It uses a test-only credential fixture and does not exercise sign-in or product routes. `flutter test --platform chrome` did not complete the earlier driver-only lifecycle probe. Authenticated product restore, registered-photo download wiring, and second-device evidence remain open.
 
-These gaps depend on the daily-report server binding and real product routes. This progress report does not claim T06 complete.
+The local snapshot and rejection paths do not claim authenticated server acceptance or T06 completion.
 
-Product PRs #165 and #166 remain draft and unmerged. The local product database and test account are not configured, so authenticated download, snapshot/live-feed reconcile, and a second-device restore have not been exercised.
+Product PRs #165 and #166 remain draft and unmerged. The local product database and test account are not configured, so authenticated download, live snapshot/feed reconcile, a real rejected-response correction, and second-device restore have not been exercised.

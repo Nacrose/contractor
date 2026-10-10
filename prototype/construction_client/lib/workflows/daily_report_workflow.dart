@@ -172,6 +172,27 @@ class DailyReportDraft {
     );
   }
 
+  DailyReportDraft withClientUuid(String value) => DailyReportDraft(
+    clientUuid: value,
+    projectId: projectId,
+    reportDate: reportDate,
+    weatherMorning: weatherMorning,
+    weatherAfternoon: weatherAfternoon,
+    weatherEvening: weatherEvening,
+    maxTempC: maxTempC,
+    minTempC: minTempC,
+    rainfallMm: rainfallMm,
+    workforce: workforce,
+    workProgress: workProgress,
+    equipmentUsed: equipmentUsed,
+    materialReceived: materialReceived,
+    materialConsumed: materialConsumed,
+    problems: problems,
+    safetyNotes: safetyNotes,
+    remarks: remarks,
+    photos: photos,
+  );
+
   void _validate() {
     if (clientUuid.length < 8 || clientUuid.length > 128) {
       throw RepositoryError(
@@ -303,6 +324,16 @@ abstract interface class DailyReportWorkflowStore {
 
   void editUnsent({required String accountId, required DailyReportDraft draft});
 
+  /// Saves a corrected copy with a new idempotency UUID. The rejected
+  /// operation and its immutable payload remain available for audit.
+  String saveCorrectedCopy({
+    required String accountId,
+    required String tenantId,
+    required String role,
+    required String rejectedClientUuid,
+    required DailyReportDraft draft,
+  });
+
   DailyReportDraft? get(String accountId, String clientUuid);
 
   String? operationState(String accountId, String clientUuid);
@@ -410,6 +441,61 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
         );
       }
     });
+  }
+
+  @override
+  String saveCorrectedCopy({
+    required String accountId,
+    required String tenantId,
+    required String role,
+    required String rejectedClientUuid,
+    required DailyReportDraft draft,
+  }) {
+    final rejected = mount.pendingOps.getOp(accountId, rejectedClientUuid);
+    if (rejected == null || rejected.state != 'rejected') {
+      throw RepositoryError(
+        'illegal_transition',
+        'Only a server-rejected report can be copied for correction.',
+      );
+    }
+    if (draft.clientUuid == rejectedClientUuid) {
+      throw RepositoryError(
+        'illegal_transition',
+        'A corrected report must use a new client UUID.',
+      );
+    }
+    final payload = draft.encode();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    return mount.outbox.saveMutation(
+      SaveMutationInput(
+        accountId: accountId,
+        projectId: draft.projectId,
+        op: PendingOpInput(
+          opId: draft.clientUuid,
+          kind: 'workflow.dailyReport.createFieldReport',
+          payload: payload,
+          tenantId: tenantId,
+          role: role,
+        ),
+        domain: (tx) {
+          tx
+              .prepare(
+                'INSERT INTO daily_report_local '
+                '(client_uuid, account_id, project_id, report_date, payload, created_at, updated_at) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?)',
+              )
+              .run([
+                draft.clientUuid,
+                accountId,
+                draft.projectId,
+                draft.reportDate,
+                payload,
+                now,
+                now,
+              ]);
+        },
+      ),
+    );
   }
 
   @override
