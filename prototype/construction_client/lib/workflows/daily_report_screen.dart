@@ -6,7 +6,9 @@ import 'package:construction_ui/construction_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../mount/attachment_transfer.dart';
 import 'daily_report_workflow.dart';
+import 'daily_report_photo_port.dart';
 import '../mount/ports.dart';
 
 class DailyReportProjectOption {
@@ -26,6 +28,7 @@ class DailyReportScreen extends StatefulWidget {
     required this.tenantId,
     required this.role,
     required this.projects,
+    this.photoPort,
     super.key,
   });
 
@@ -34,6 +37,7 @@ class DailyReportScreen extends StatefulWidget {
   final String tenantId;
   final String role;
   final List<DailyReportProjectOption> projects;
+  final DailyReportPhotoPort? photoPort;
 
   @override
   State<DailyReportScreen> createState() => _DailyReportScreenState();
@@ -74,7 +78,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   String? _savedId;
   String? _error;
   bool _saving = false;
+  bool _photoBusy = false;
   bool _saved = false;
+  List<AttachmentTransferRecord> _photos = const [];
 
   static final CapabilityRegistry _capabilities = CapabilityRegistry(const []);
   static final RouteRegistry _routes = RouteRegistry(
@@ -114,6 +120,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       TargetPlatform.linux => ConstructionPlatform.linux,
       TargetPlatform.fuchsia => ConstructionPlatform.android,
     };
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _photos = widget.photoPort?.list() ?? const [];
+    if (widget.photoPort != null) _resumePhotos();
   }
 
   @override
@@ -159,7 +172,75 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     problems: _problems.text,
     safetyNotes: _safety.text,
     remarks: _remarks.text,
+    photos: _registeredPhotoReferences,
   );
+
+  List<Map<String, Object?>> get _registeredPhotoReferences => _photos
+      .where(
+        (photo) =>
+            photo.projectId == _projectId &&
+            photo.complete &&
+            photo.receipt != null &&
+            photo.digest != null &&
+            photo.bytes != null,
+      )
+      .map(
+        (photo) => <String, Object?>{
+          // The product adapter uses the server's registered FieldPhoto id
+          // for both attachmentId and receipt, then verifies digest and size.
+          'attachmentId': photo.receipt!,
+          'receipt': photo.receipt!,
+          'digest': photo.digest!,
+          'fileSize': photo.bytes!,
+        },
+      )
+      .toList();
+
+  List<AttachmentTransferRecord> get _projectPhotos =>
+      _photos.where((photo) => photo.projectId == _projectId).toList();
+
+  Future<void> _resumePhotos() async {
+    try {
+      await widget.photoPort!.resumeAll();
+      if (mounted) setState(() => _photos = widget.photoPort!.list());
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    }
+  }
+
+  Future<void> _capturePhoto(PhotoCaptureSource source) async {
+    final port = widget.photoPort;
+    if (port == null || _projectId == null || _photoBusy) return;
+    setState(() {
+      _photoBusy = true;
+      _error = null;
+    });
+    try {
+      await port.captureAndRegister(projectId: _projectId!, source: source);
+      if (mounted) setState(() => _photos = port.list());
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    } finally {
+      if (mounted) setState(() => _photoBusy = false);
+    }
+  }
+
+  Future<void> _retryPhoto(String attachmentId) async {
+    final port = widget.photoPort;
+    if (port == null || _photoBusy) return;
+    setState(() {
+      _photoBusy = true;
+      _error = null;
+    });
+    try {
+      await port.retry(attachmentId);
+      if (mounted) setState(() => _photos = port.list());
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    } finally {
+      if (mounted) setState(() => _photoBusy = false);
+    }
+  }
 
   List<Map<String, Object?>> _rows(String raw, String label) {
     final decoded = jsonDecode(raw);
@@ -173,6 +254,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_projectId == null || _projectId!.isEmpty) {
       setState(() => _error = 'Choose a project before saving.');
+      return;
+    }
+    if (_projectPhotos.any((photo) => !photo.complete)) {
+      setState(
+        () => _error = 'Finish or retry every photo transfer before saving.',
+      );
       return;
     }
     setState(() {
@@ -238,8 +325,16 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         'pending' => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_QUEUED,
         _ => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_NOT_QUEUED,
       },
-      attachmentCompletion:
-          AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED,
+      attachmentCompletion: _projectPhotos.isEmpty
+          ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
+          : _projectPhotos.any(
+              (photo) => photo.state == AttachmentTransferState.failed,
+            )
+          ? AttachmentCompletionState
+                .ATTACHMENT_COMPLETION_STATE_RETRYABLE_FAILURE
+          : _projectPhotos.every((photo) => photo.complete)
+          ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_COMPLETE
+          : AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_UPLOADING,
       backup: BackupState.BACKUP_STATE_NOT_CONFIGURED,
       pendingWorkRetained: opState != null && opState != 'accepted',
       nextUserAction: opState == 'rejected'
@@ -311,7 +406,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                           ),
                         )
                         .toList(),
-                    onChanged: _savedId == null
+                    onChanged: _savedId == null && _projectPhotos.isEmpty
                         ? (value) => setState(() => _projectId = value)
                         : null,
                     validator: (value) => value == null || value.isEmpty
@@ -368,6 +463,51 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   _field(_safety, 'Safety notes', lines: 3),
                   _field(_remarks, 'Daily remarks', lines: 4),
                 ]),
+                if (widget.photoPort != null)
+                  _section('Photos', [
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: _projectId == null || _photoBusy
+                              ? null
+                              : () => _capturePhoto(PhotoCaptureSource.camera),
+                          icon: const Icon(Icons.camera_alt_outlined),
+                          label: const Text('Take photo'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: _projectId == null || _photoBusy
+                              ? null
+                              : () => _capturePhoto(PhotoCaptureSource.gallery),
+                          icon: const Icon(Icons.photo_library_outlined),
+                          label: const Text('Choose photo'),
+                        ),
+                        if (_photoBusy)
+                          const Padding(
+                            padding: EdgeInsets.all(12),
+                            child: SizedBox.square(
+                              dimension: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                      ],
+                    ),
+                    if (_projectId == null)
+                      const Text('Choose a project before adding photos.'),
+                    for (final photo in _projectPhotos)
+                      _PhotoTransferTile(
+                        photo: photo,
+                        bytes: photo.complete
+                            ? widget.photoPort!.registeredBytes(photo.id)
+                            : null,
+                        onRetry: photo.state == AttachmentTransferState.failed
+                            ? () => _retryPhoto(photo.id)
+                            : null,
+                      ),
+                    Text(
+                      '${_registeredPhotoReferences.length} registered photo(s) will be attached to this report.',
+                    ),
+                  ]),
               ],
             ),
           ),
@@ -462,6 +602,49 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     FormatException() => 'Check the section JSON and try saving again.',
     _ => 'Save failed. Your draft is still on this device.',
   };
+}
+
+class _PhotoTransferTile extends StatelessWidget {
+  const _PhotoTransferTile({
+    required this.photo,
+    required this.bytes,
+    required this.onRetry,
+  });
+
+  final AttachmentTransferRecord photo;
+  final Uint8List? bytes;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = switch (photo.state) {
+      AttachmentTransferState.staging => 'Staging',
+      AttachmentTransferState.staged => 'Staged',
+      AttachmentTransferState.finalized => 'Uploading',
+      AttachmentTransferState.registered => 'Registered',
+      AttachmentTransferState.failed => 'Failed',
+    };
+    return Card(
+      child: ListTile(
+        leading: bytes == null
+            ? const Icon(Icons.image_outlined)
+            : Image.memory(bytes!, width: 52, height: 52, fit: BoxFit.cover),
+        title: Text('Photo ${photo.id.substring(0, min(8, photo.id.length))}'),
+        subtitle: Text(
+          photo.complete
+              ? '$state · ${photo.bytes ?? 0} bytes'
+              : '$state${photo.failureDetail == null ? '' : ' · ${photo.failureDetail}'}',
+        ),
+        trailing: onRetry == null
+            ? null
+            : IconButton(
+                tooltip: 'Retry photo transfer',
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh),
+              ),
+      ),
+    );
+  }
 }
 
 class _SyncHealthCard extends StatelessWidget {

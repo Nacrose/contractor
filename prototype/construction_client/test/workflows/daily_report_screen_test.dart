@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:construction_client/mount/attachment_transfer.dart';
 import 'package:construction_client/mount/mount.dart';
 import 'package:construction_client/mount/ports.dart';
+import 'package:construction_client/workflows/daily_report_photo_port.dart';
 import 'package:construction_client/workflows/daily_report_screen.dart';
 import 'package:construction_client/workflows/daily_report_workflow.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +98,94 @@ void main() {
     expect(rows, hasLength(1));
     expect(rows.single.kind, 'workflow.dailyReport.createFieldReport');
   });
+
+  testWidgets(
+    'shows only registered photo state from the injected photo port',
+    (tester) async {
+      final photos = _Photos();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: DailyReportLocalStore(mount!),
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+            photoPort: photos,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('P-01 — Bridge').last);
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -3000));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Choose photo'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Registered'), findsOneWidget);
+      expect(
+        find.text('1 registered photo(s) will be attached to this report.'),
+        findsOneWidget,
+      );
+    },
+  );
+}
+
+class _Photos implements DailyReportPhotoPort {
+  final List<AttachmentTransferRecord> records = [];
+
+  @override
+  List<AttachmentTransferRecord> list() => records;
+
+  AttachmentTransferRecord _registered(String id) => AttachmentTransferRecord(
+    id: id,
+    accountId: 'acct-1',
+    projectId: 'project-1',
+    sourcePath: '/private/photo.jpg',
+    objectKey: 'attachments/$id',
+    digest: 'a' * 64,
+    bytes: 1234,
+    state: AttachmentTransferState.registered,
+    failureKind: null,
+    failureStep: null,
+    failureDetail: null,
+    attempts: 1,
+    nextAttemptAtMs: null,
+    receipt: 'server-photo-1',
+    createdAtMs: 1,
+    updatedAtMs: 2,
+  );
+
+  @override
+  Future<AttachmentTransferRecord?> captureAndRegister({
+    required String projectId,
+    required PhotoCaptureSource source,
+  }) async {
+    final record = _registered('local-transfer-1');
+    records.add(record);
+    return record;
+  }
+
+  @override
+  Future<AttachmentTransferRecord> retry(String attachmentId) async =>
+      records.singleWhere((record) => record.id == attachmentId);
+
+  @override
+  Future<AttachmentResumeSummary> resumeAll() async =>
+      const AttachmentResumeSummary(
+        completed: [],
+        stillPending: [],
+        failed: [],
+      );
+
+  @override
+  Uint8List? registeredBytes(String attachmentId) => null;
 }
 
 class _Transport implements SyncTransportPort {
