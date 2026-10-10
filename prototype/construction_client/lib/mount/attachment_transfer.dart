@@ -131,6 +131,17 @@ abstract interface class AttachmentRegistrarPort {
   Future<String> completeUpload(String uploadId, String digest, int bytes);
 }
 
+/// Fetches a previously registered object. The server implementation must
+/// authorize the receipt against the supplied tenant/project/role on every
+/// request (the route is expected to be `attachments.downloadRegistered`).
+abstract interface class RegisteredAttachmentFetchPort {
+  Future<Uint8List> fetchRegistered({
+    required String receipt,
+    required String objectId,
+    required ScopeClaims scope,
+  });
+}
+
 class AttachmentRegistrarError implements Exception {
   final AttachmentFailureKind kind;
   final String message;
@@ -451,6 +462,121 @@ class AttachmentTransferManager {
         'Photo upload interrupted; it can resume from the server offset.',
       );
     }
+  }
+
+  /// Restore a registered object onto a new device. Bytes pass through the
+  /// same durable stage/finalize journal and SHA-256 checks as a new capture;
+  /// the existing server receipt is retained, so restore never re-uploads.
+  Future<AttachmentTransferRecord> restoreRegistered({
+    required String accountId,
+    required String attachmentId,
+    required String projectId,
+    required String objectId,
+    required String receipt,
+    required String expectedDigest,
+    required String sourcePath,
+    required ScopeClaims scope,
+    required RegisteredAttachmentFetchPort fetcher,
+  }) async {
+    if (scope.projectId != projectId || receipt.isEmpty || objectId.isEmpty) {
+      throw RepositoryError(
+        'misconfigured',
+        'Restore requires a receipt and object id scoped to the requested project.',
+      );
+    }
+    Uint8List bytes;
+    try {
+      bytes = await fetcher.fetchRegistered(
+        receipt: receipt,
+        objectId: objectId,
+        scope: scope,
+      );
+    } on AttachmentRegistrarError catch (error) {
+      return _recordRestoreFailure(
+        accountId,
+        attachmentId,
+        projectId,
+        sourcePath,
+        error.kind,
+        error.message,
+      );
+    } catch (_) {
+      return _recordRestoreFailure(
+        accountId,
+        attachmentId,
+        projectId,
+        sourcePath,
+        AttachmentFailureKind.retryable,
+        'Photo download failed; it can be fetched again.',
+      );
+    }
+    if (_digest.digest(bytes) != expectedDigest) {
+      return _recordRestoreFailure(
+        accountId,
+        attachmentId,
+        projectId,
+        sourcePath,
+        AttachmentFailureKind.digestMismatch,
+        'Downloaded photo does not match the registered SHA-256 digest.',
+      );
+    }
+    var restored = stageBytes(
+      accountId: accountId,
+      id: attachmentId,
+      projectId: projectId,
+      sourcePath: sourcePath,
+      bytes: bytes,
+    );
+    if (restored.state == AttachmentTransferState.failed) return restored;
+    restored = finalize(accountId, attachmentId);
+    if (restored.state == AttachmentTransferState.failed) return restored;
+    mount.outbox.withImmediateTransaction(() {
+      _setState(accountId, attachmentId, AttachmentTransferState.registered, {
+        'receipt': receipt,
+        'failure_kind': null,
+        'failure_step': null,
+        'failure_detail': null,
+      });
+      mount.outbox.transitionAttachment(accountId, attachmentId, 'registered');
+      _event(accountId, attachmentId, 'registered', {
+        'receipt': receipt,
+        'restored': true,
+        'digest': expectedDigest,
+      });
+    });
+    return get(accountId, attachmentId)!;
+  }
+
+  AttachmentTransferRecord _recordRestoreFailure(
+    String accountId,
+    String id,
+    String projectId,
+    String sourcePath,
+    AttachmentFailureKind kind,
+    String detail,
+  ) {
+    var current = get(accountId, id);
+    if (current == null) {
+      mount.outbox.withImmediateTransaction(() {
+        final now = nowMs();
+        mount.driver.prepare(
+          'INSERT INTO attachment (id, account_id, project_id, source_path, state, failure_kind, failure_step, failure_detail, created_at, updated_at) '
+          "VALUES (?, ?, ?, ?, 'failed', ?, 'stage', ?, ?, ?)",
+        ).run([id, accountId, projectId, sourcePath, _failureWire(kind), detail, now, now]);
+        mount.outbox.stageAttachment(
+          accountId,
+          attachmentId: id,
+          projectId: projectId,
+          localPath: sourcePath,
+          digest: '',
+          bytes: 0,
+        );
+        mount.outbox.transitionAttachment(accountId, id, 'failed');
+        _event(accountId, id, 'failed', {'step': 'download', 'kind': _failureWire(kind)});
+      });
+      current = get(accountId, id);
+    }
+    return current!;
   }
 
   Future<AttachmentTransferRecord> resume(

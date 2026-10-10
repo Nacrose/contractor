@@ -143,6 +143,44 @@ void main() {
     expect(failed.failureKind, AttachmentFailureKind.digestMismatch);
     expect(manager.isComplete('acct-1', staged.id), isFalse);
   });
+
+  test('restore re-fetches registered bytes and verifies the digest before completion', () async {
+    final bytes = Uint8List.fromList([5, 8, 13, 21]);
+    final restored = await manager.restoreRegistered(
+      accountId: 'acct-restore',
+      attachmentId: 'photo-restore-0001',
+      projectId: 'project-1',
+      objectId: 'object-123',
+      receipt: 'receipt-123',
+      expectedDigest: mount!.digest.digest(bytes),
+      sourcePath: '${tmp.path}/restored-source.jpg',
+      scope: const ScopeClaims(tenantId: 'tenant-1', projectId: 'project-1', role: 'field'),
+      fetcher: _Fetch(bytes),
+    );
+
+    expect(restored.state, AttachmentTransferState.registered);
+    expect(restored.receipt, 'receipt-123');
+    expect(manager.isComplete('acct-restore', restored.id), isTrue);
+    expect(mount!.objects.getBytes(attachmentFinalKey(restored.id)), bytes);
+  });
+
+  test('tampered restore bytes produce a typed incomplete record', () async {
+    final restored = await manager.restoreRegistered(
+      accountId: 'acct-restore',
+      attachmentId: 'photo-restore-bad1',
+      projectId: 'project-1',
+      objectId: 'object-123',
+      receipt: 'receipt-123',
+      expectedDigest: 'wrong-digest',
+      sourcePath: '${tmp.path}/restored-source.jpg',
+      scope: const ScopeClaims(tenantId: 'tenant-1', projectId: 'project-1', role: 'field'),
+      fetcher: _Fetch(Uint8List.fromList([5, 8, 13, 21])),
+    );
+
+    expect(restored.state, AttachmentTransferState.failed);
+    expect(restored.failureKind, AttachmentFailureKind.digestMismatch);
+    expect(manager.isComplete('acct-restore', restored.id), isFalse);
+  });
 }
 
 ConstructionMount _open(Directory tmp) => openMount(
@@ -197,6 +235,18 @@ class _Registrar implements AttachmentRegistrarPort {
     String digest,
     int bytes,
   ) async => 'stored-photo-receipt';
+}
+
+class _Fetch implements RegisteredAttachmentFetchPort {
+  final Uint8List bytes;
+  _Fetch(this.bytes);
+
+  @override
+  Future<Uint8List> fetchRegistered({
+    required String receipt,
+    required String objectId,
+    required ScopeClaims scope,
+  }) async => bytes;
 }
 
 class _CorruptingObjectStore implements ObjectStore {
