@@ -64,6 +64,13 @@ void main() {
         store.get('acct-1', 'report-uuid-0001')?.remarks,
         'Foundation poured',
       );
+      final health = store.syncHealth('acct-1', 'tenant-1');
+      expect(health.synced, isFalse);
+      expect(health.pendingOperationCount, 1);
+      expect(
+        health.reasons,
+        contains('1 pending operation(s) not yet accepted'),
+      );
 
       mounted!.driver.close();
       mounted = open();

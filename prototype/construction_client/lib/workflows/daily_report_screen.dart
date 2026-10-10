@@ -226,6 +226,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     final opState = _savedId == null
         ? null
         : widget.store.operationState(widget.accountId, _savedId!);
+    final health = widget.store.syncHealth(widget.accountId, widget.tenantId);
     final status = SaveSyncStatus(
       localPersistence: _saved
           ? LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED
@@ -282,6 +283,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             status: status,
             onNextAction: opState == 'pending' ? _syncNow : null,
           ),
+          _SyncHealthCard(health: health),
           if (_error != null) ...[
             const SizedBox(height: 12),
             Text(
@@ -460,6 +462,61 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     FormatException() => 'Check the section JSON and try saving again.',
     _ => 'Save failed. Your draft is still on this device.',
   };
+}
+
+class _SyncHealthCard extends StatelessWidget {
+  const _SyncHealthCard({required this.health});
+
+  final DeviceSyncHealth health;
+
+  @override
+  Widget build(BuildContext context) => Card(
+    margin: const EdgeInsets.only(top: 12),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Device sync health',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 8),
+          Text(health.synced ? 'No pending work' : 'Needs attention'),
+          Text('${health.pendingOperationCount} pending operation(s)'),
+          if (health.oldestPendingAgeMs != null)
+            Text('Oldest pending: ${_ageLabel(health.oldestPendingAgeMs!)}'),
+          if (health.conflicts > 0)
+            Text('${health.conflicts} conflict(s) need review'),
+          if (health.blocked > 0)
+            Text('${health.blocked} operation(s) blocked by a prerequisite'),
+          for (final reason in health.reasons) Text(reason),
+          const SizedBox(height: 6),
+          Text(
+            'Accepted feed cursors',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          if (health.lastAcceptedCursors.isEmpty)
+            const Text('No accepted cursor recorded on this device yet.')
+          else
+            for (final cursor in health.lastAcceptedCursors)
+              Text('${cursor.scope}: ${cursor.lastAcceptedSeq}'),
+          for (final rejection in health.rejections.take(3))
+            Text('${rejection.kind}: ${rejection.reason}'),
+        ],
+      ),
+    ),
+  );
+}
+
+String _ageLabel(int milliseconds) {
+  if (milliseconds < 60 * 1000) {
+    return 'under a minute';
+  }
+  if (milliseconds < 60 * 60 * 1000) {
+    return '${milliseconds ~/ (60 * 1000)} min';
+  }
+  return '${milliseconds ~/ (60 * 60 * 1000)} hr';
 }
 
 String _today() {

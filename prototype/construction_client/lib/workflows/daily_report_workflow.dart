@@ -10,6 +10,7 @@ import 'dart:convert';
 import '../mount/mount.dart';
 import '../mount/outbox_repository.dart';
 import '../mount/ports.dart';
+import '../mount/sync_health.dart';
 
 const Migration kDailyReportLocalMigration = Migration(
   4,
@@ -193,6 +194,8 @@ abstract interface class DailyReportWorkflowStore {
 
   String? operationState(String accountId, String clientUuid);
 
+  DeviceSyncHealth syncHealth(String accountId, String tenantId);
+
   Future<void> syncNow();
 }
 
@@ -305,6 +308,13 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   @override
   String? operationState(String accountId, String clientUuid) =>
       mount.pendingOps.getOp(accountId, clientUuid)?.state;
+
+  @override
+  DeviceSyncHealth syncHealth(String accountId, String tenantId) =>
+      buildDeviceSyncHealth(
+        mount.healthSource(accountId: accountId, tenantId: tenantId),
+        HealthOptions(nowMs: DateTime.now().millisecondsSinceEpoch),
+      );
 
   @override
   Future<void> syncNow() => mount.drainTriggers.manual();
