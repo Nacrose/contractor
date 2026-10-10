@@ -42,6 +42,7 @@ void main() {
         accountId: 'acct-1',
         id: 'photo-uuid-0001',
         projectId: 'project-1',
+        dailyReportId: 'report-client-1',
         sourcePath: source.path,
         bytes: bytes,
       );
@@ -59,6 +60,7 @@ void main() {
       expect(manager.isComplete('acct-1', staged.id), isTrue);
       expect(mount!.outbox.pendingWorkSummary('acct-1').attachmentsPending, 0);
       expect(registrar.uploaded, bytes);
+      expect(registrar.lastDailyReportId, 'report-client-1');
       expect(
         manager.events('acct-1', staged.id).map((event) => event['kind']),
         [
@@ -150,16 +152,22 @@ void main() {
       accountId: 'acct-restore',
       attachmentId: 'photo-restore-0001',
       projectId: 'project-1',
+      dailyReportId: 'report-restore-1',
       objectId: 'object-123',
       receipt: 'receipt-123',
       expectedDigest: mount!.digest.digest(bytes),
       sourcePath: '${tmp.path}/restored-source.jpg',
-      scope: const ScopeClaims(tenantId: 'tenant-1', projectId: 'project-1', role: 'field'),
+      scope: const ScopeClaims(
+        tenantId: 'tenant-1',
+        projectId: 'project-1',
+        role: 'field',
+      ),
       fetcher: _Fetch(bytes),
     );
 
     expect(restored.state, AttachmentTransferState.registered);
     expect(restored.receipt, 'receipt-123');
+    expect(restored.dailyReportId, 'report-restore-1');
     expect(manager.isComplete('acct-restore', restored.id), isTrue);
     expect(mount!.objects.getBytes(attachmentFinalKey(restored.id)), bytes);
   });
@@ -169,11 +177,16 @@ void main() {
       accountId: 'acct-restore',
       attachmentId: 'photo-restore-bad1',
       projectId: 'project-1',
+      dailyReportId: 'report-restore-2',
       objectId: 'object-123',
       receipt: 'receipt-123',
       expectedDigest: 'wrong-digest',
       sourcePath: '${tmp.path}/restored-source.jpg',
-      scope: const ScopeClaims(tenantId: 'tenant-1', projectId: 'project-1', role: 'field'),
+      scope: const ScopeClaims(
+        tenantId: 'tenant-1',
+        projectId: 'project-1',
+        role: 'field',
+      ),
       fetcher: _Fetch(Uint8List.fromList([5, 8, 13, 21])),
     );
 
@@ -195,6 +208,7 @@ ConstructionMount _open(Directory tmp) => openMount(
 
 class _Registrar implements AttachmentRegistrarPort {
   Uint8List uploaded = Uint8List(0);
+  String? lastDailyReportId;
   bool failAfterFirstChunk = false;
   bool _failed = false;
 
@@ -203,9 +217,13 @@ class _Registrar implements AttachmentRegistrarPort {
     required String attachmentId,
     required String accountId,
     required String? projectId,
+    required String? dailyReportId,
     required String digest,
     required int bytes,
-  }) async => 'upload-$attachmentId';
+  }) async {
+    lastDailyReportId = dailyReportId;
+    return 'upload-$attachmentId';
+  }
 
   @override
   Future<int> queryUpload(String uploadId) async => uploaded.length;

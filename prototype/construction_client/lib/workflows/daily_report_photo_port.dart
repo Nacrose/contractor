@@ -12,6 +12,7 @@ abstract interface class DailyReportPhotoPort {
 
   Future<AttachmentTransferRecord?> captureAndRegister({
     required String projectId,
+    required String dailyReportId,
     required PhotoCaptureSource source,
   });
 

@@ -29,10 +29,11 @@ class DailyReportPhotoService implements DailyReportPhotoPort {
   @override
   Future<AttachmentTransferRecord?> captureAndRegister({
     required String projectId,
+    required String dailyReportId,
     required PhotoCaptureSource source,
   }) async {
-    if (projectId.isEmpty) {
-      throw StateError('Select a project before adding a photo.');
+    if (projectId.isEmpty || dailyReportId.isEmpty) {
+      throw StateError('Select a project and report before adding a photo.');
     }
     final selected = await picker.pickImage(
       source: source == PhotoCaptureSource.camera
@@ -56,6 +57,7 @@ class DailyReportPhotoService implements DailyReportPhotoPort {
       accountId: accountId,
       id: id,
       projectId: projectId,
+      dailyReportId: dailyReportId,
       sourcePath: sourceFile.path,
       bytes: bytes,
     );

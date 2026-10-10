@@ -7,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'daily_report_workflow.dart';
+import 'daily_report_photo_port.dart';
+import '../mount/attachment_transfer.dart';
 import '../mount/ports.dart';
 
 class DailyReportProjectOption {
@@ -26,6 +28,7 @@ class DailyReportScreen extends StatefulWidget {
     required this.tenantId,
     required this.role,
     required this.projects,
+    this.photos,
     super.key,
   });
 
@@ -34,6 +37,7 @@ class DailyReportScreen extends StatefulWidget {
   final String tenantId;
   final String role;
   final List<DailyReportProjectOption> projects;
+  final DailyReportPhotoPort? photos;
 
   @override
   State<DailyReportScreen> createState() => _DailyReportScreenState();
@@ -75,6 +79,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   String? _error;
   bool _saving = false;
   bool _saved = false;
+  bool _photoBusy = false;
 
   static final CapabilityRegistry _capabilities = CapabilityRegistry(const []);
   static final RouteRegistry _routes = RouteRegistry(
@@ -211,6 +216,45 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     }
   }
 
+  Future<void> _capturePhoto(PhotoCaptureSource source) async {
+    final photos = widget.photos;
+    if (photos == null) return;
+    if (_projectId == null || _projectId!.isEmpty) {
+      setState(() => _error = 'Choose a project before adding a photo.');
+      return;
+    }
+    setState(() {
+      _photoBusy = true;
+      _error = null;
+    });
+    try {
+      await photos.captureAndRegister(
+        projectId: _projectId!,
+        dailyReportId: _savedId ?? _clientUuid,
+        source: source,
+      );
+      if (mounted) setState(() {});
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    } finally {
+      if (mounted) setState(() => _photoBusy = false);
+    }
+  }
+
+  Future<void> _retryPhoto(String id) async {
+    final photos = widget.photos;
+    if (photos == null) return;
+    setState(() => _photoBusy = true);
+    try {
+      await photos.retry(id);
+      if (mounted) setState(() {});
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    } finally {
+      if (mounted) setState(() => _photoBusy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final route = _routes[RouteId('daily-report.new')];
@@ -227,6 +271,29 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         ? null
         : widget.store.operationState(widget.accountId, _savedId!);
     final health = widget.store.syncHealth(widget.accountId, widget.tenantId);
+    final reportId = _savedId ?? _clientUuid;
+    final reportPhotos =
+        widget.photos
+            ?.list()
+            .where((photo) => photo.dailyReportId == reportId)
+            .toList(growable: false) ??
+        const <AttachmentTransferRecord>[];
+    final attachmentState = reportPhotos.isEmpty
+        ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
+        : reportPhotos.every((photo) => photo.complete)
+        ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_COMPLETE
+        : reportPhotos.any(
+            (photo) =>
+                photo.failureKind == AttachmentFailureKind.rejection ||
+                photo.failureKind == AttachmentFailureKind.revoked,
+          )
+        ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_REJECTED
+        : reportPhotos.any(
+            (photo) => photo.state == AttachmentTransferState.failed,
+          )
+        ? AttachmentCompletionState
+              .ATTACHMENT_COMPLETION_STATE_RETRYABLE_FAILURE
+        : AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_UPLOADING;
     final status = SaveSyncStatus(
       localPersistence: _saved
           ? LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED
@@ -238,8 +305,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         'pending' => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_QUEUED,
         _ => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_NOT_QUEUED,
       },
-      attachmentCompletion:
-          AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED,
+      attachmentCompletion: attachmentState,
       backup: BackupState.BACKUP_STATE_NOT_CONFIGURED,
       pendingWorkRetained: opState != null && opState != 'accepted',
       nextUserAction: opState == 'rejected'
@@ -311,7 +377,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                           ),
                         )
                         .toList(),
-                    onChanged: _savedId == null
+                    onChanged: _savedId == null && reportPhotos.isEmpty
                         ? (value) => setState(() => _projectId = value)
                         : null,
                     validator: (value) => value == null || value.isEmpty
@@ -330,6 +396,36 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                         : 'Use YYYY-MM-DD',
                   ),
                 ]),
+                if (widget.photos != null)
+                  _section('Photos', [
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: _photoBusy || _projectId == null
+                              ? null
+                              : () => _capturePhoto(PhotoCaptureSource.camera),
+                          icon: const Icon(Icons.photo_camera_outlined),
+                          label: const Text('Take photo'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: _photoBusy || _projectId == null
+                              ? null
+                              : () => _capturePhoto(PhotoCaptureSource.gallery),
+                          icon: const Icon(Icons.photo_library_outlined),
+                          label: const Text('Choose photo'),
+                        ),
+                      ],
+                    ),
+                    if (reportPhotos.isEmpty)
+                      const ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(Icons.photo_outlined),
+                        title: Text('No photos attached'),
+                      ),
+                    for (final photo in reportPhotos) _photoTile(photo),
+                  ]),
                 _section('Weather', [
                   _field(_morning, 'Morning weather'),
                   _field(_midday, 'Midday weather'),
@@ -374,6 +470,40 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           const SizedBox(height: 24),
         ],
       ),
+    );
+  }
+
+  Widget _photoTile(AttachmentTransferRecord photo) {
+    final bytes = photo.complete
+        ? widget.photos?.registeredBytes(photo.id)
+        : null;
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: bytes == null
+          ? const Icon(Icons.image_outlined)
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.memory(
+                bytes,
+                width: 52,
+                height: 52,
+                fit: BoxFit.cover,
+              ),
+            ),
+      title: Text(
+        'Photo ${photo.id.substring(0, photo.id.length.clamp(0, 8))}',
+      ),
+      subtitle: Text(
+        photo.complete
+            ? 'Registered · ${photo.bytes ?? 0} bytes'
+            : photo.failureDetail ?? 'Transfer ${photo.state.name}',
+      ),
+      trailing: photo.state == AttachmentTransferState.failed
+          ? TextButton(
+              onPressed: _photoBusy ? null : () => _retryPhoto(photo.id),
+              child: const Text('Retry'),
+            )
+          : null,
     );
   }
 

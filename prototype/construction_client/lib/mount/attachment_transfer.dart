@@ -41,6 +41,10 @@ kAttachmentJournalMigration = Migration(5, 'attachment_journal_baseline', [
 const List<Migration> kM04WorkflowMigrations = [
   kDailyReportLocalMigration,
   kAttachmentJournalMigration,
+  Migration(6, 'attachment_report_link', [
+    'ALTER TABLE attachment ADD COLUMN daily_report_id TEXT',
+    'CREATE INDEX idx_attachment_report ON attachment (account_id, daily_report_id, state)',
+  ]),
 ];
 
 const String _objectPrefix = 'attachments/';
@@ -66,6 +70,7 @@ class AttachmentTransferRecord {
   final String id;
   final String accountId;
   final String? projectId;
+  final String? dailyReportId;
   final String sourcePath;
   final String? objectKey;
   final String? digest;
@@ -84,6 +89,7 @@ class AttachmentTransferRecord {
     required this.id,
     required this.accountId,
     required this.projectId,
+    required this.dailyReportId,
     required this.sourcePath,
     required this.objectKey,
     required this.digest,
@@ -120,6 +126,7 @@ abstract interface class AttachmentRegistrarPort {
     required String attachmentId,
     required String accountId,
     required String? projectId,
+    required String? dailyReportId,
     required String digest,
     required int bytes,
   });
@@ -133,7 +140,7 @@ abstract interface class AttachmentRegistrarPort {
 
 /// Fetches a previously registered object. The server implementation must
 /// authorize the receipt against the supplied tenant/project/role on every
-/// request (the route is expected to be `attachments.downloadRegistered`).
+/// request. The product adapter must define the concrete route before wiring it.
 abstract interface class RegisteredAttachmentFetchPort {
   Future<Uint8List> fetchRegistered({
     required String receipt,
@@ -218,6 +225,7 @@ class AttachmentTransferManager {
     required String accountId,
     required String id,
     required String? projectId,
+    String? dailyReportId,
     required String sourcePath,
     required Uint8List bytes,
   }) {
@@ -241,10 +249,18 @@ class AttachmentTransferManager {
         mount.driver
             .prepare(
               'INSERT INTO attachment '
-              '(id, account_id, project_id, source_path, state, created_at, updated_at) '
-              "VALUES (?, ?, ?, ?, 'staging', ?, ?)",
+              '(id, account_id, project_id, daily_report_id, source_path, state, created_at, updated_at) '
+              "VALUES (?, ?, ?, ?, ?, 'staging', ?, ?)",
             )
-            .run([id, accountId, projectId, sourcePath, now, now]);
+            .run([
+              id,
+              accountId,
+              projectId,
+              dailyReportId,
+              sourcePath,
+              now,
+              now,
+            ]);
         mount.outbox.stageAttachment(
           accountId,
           attachmentId: id,
@@ -256,9 +272,9 @@ class AttachmentTransferManager {
       } else {
         mount.driver
             .prepare(
-              "UPDATE attachment SET project_id=?, source_path=?, object_key=NULL, digest=NULL, bytes=NULL, state='staging', failure_kind=NULL, failure_step=NULL, failure_detail=NULL, next_attempt_at_ms=NULL, updated_at=? WHERE id=? AND account_id=?",
+              "UPDATE attachment SET project_id=?, daily_report_id=?, source_path=?, object_key=NULL, digest=NULL, bytes=NULL, state='staging', failure_kind=NULL, failure_step=NULL, failure_detail=NULL, next_attempt_at_ms=NULL, updated_at=? WHERE id=? AND account_id=?",
             )
-            .run([projectId, sourcePath, now, id, accountId]);
+            .run([projectId, dailyReportId, sourcePath, now, id, accountId]);
         mount.driver
             .prepare(
               "UPDATE attachment_stage SET project_id=?, local_path=?, digest=?, bytes=?, state='staging', updated_at=? WHERE id=? AND account_id=?",
@@ -394,6 +410,7 @@ class AttachmentTransferManager {
         attachmentId: id,
         accountId: accountId,
         projectId: current.projectId,
+        dailyReportId: current.dailyReportId,
         digest: current.digest!,
         bytes: current.bytes!,
       );
@@ -471,6 +488,7 @@ class AttachmentTransferManager {
     required String accountId,
     required String attachmentId,
     required String projectId,
+    required String dailyReportId,
     required String objectId,
     required String receipt,
     required String expectedDigest,
@@ -478,10 +496,13 @@ class AttachmentTransferManager {
     required ScopeClaims scope,
     required RegisteredAttachmentFetchPort fetcher,
   }) async {
-    if (scope.projectId != projectId || receipt.isEmpty || objectId.isEmpty) {
+    if (scope.projectId != projectId ||
+        dailyReportId.isEmpty ||
+        receipt.isEmpty ||
+        objectId.isEmpty) {
       throw RepositoryError(
         'misconfigured',
-        'Restore requires a receipt and object id scoped to the requested project.',
+        'Restore requires a report id, receipt, and object id scoped to the requested project.',
       );
     }
     Uint8List bytes;
@@ -496,6 +517,7 @@ class AttachmentTransferManager {
         accountId,
         attachmentId,
         projectId,
+        dailyReportId,
         sourcePath,
         error.kind,
         error.message,
@@ -505,6 +527,7 @@ class AttachmentTransferManager {
         accountId,
         attachmentId,
         projectId,
+        dailyReportId,
         sourcePath,
         AttachmentFailureKind.retryable,
         'Photo download failed; it can be fetched again.',
@@ -515,6 +538,7 @@ class AttachmentTransferManager {
         accountId,
         attachmentId,
         projectId,
+        dailyReportId,
         sourcePath,
         AttachmentFailureKind.digestMismatch,
         'Downloaded photo does not match the registered SHA-256 digest.',
@@ -524,6 +548,7 @@ class AttachmentTransferManager {
       accountId: accountId,
       id: attachmentId,
       projectId: projectId,
+      dailyReportId: dailyReportId,
       sourcePath: sourcePath,
       bytes: bytes,
     );
@@ -551,6 +576,7 @@ class AttachmentTransferManager {
     String accountId,
     String id,
     String projectId,
+    String dailyReportId,
     String sourcePath,
     AttachmentFailureKind kind,
     String detail,
@@ -559,10 +585,22 @@ class AttachmentTransferManager {
     if (current == null) {
       mount.outbox.withImmediateTransaction(() {
         final now = nowMs();
-        mount.driver.prepare(
-          'INSERT INTO attachment (id, account_id, project_id, source_path, state, failure_kind, failure_step, failure_detail, created_at, updated_at) '
-          "VALUES (?, ?, ?, ?, 'failed', ?, 'stage', ?, ?, ?)",
-        ).run([id, accountId, projectId, sourcePath, _failureWire(kind), detail, now, now]);
+        mount.driver
+            .prepare(
+              'INSERT INTO attachment (id, account_id, project_id, daily_report_id, source_path, state, failure_kind, failure_step, failure_detail, created_at, updated_at) '
+              "VALUES (?, ?, ?, ?, ?, 'failed', ?, 'stage', ?, ?, ?)",
+            )
+            .run([
+              id,
+              accountId,
+              projectId,
+              dailyReportId,
+              sourcePath,
+              _failureWire(kind),
+              detail,
+              now,
+              now,
+            ]);
         mount.outbox.stageAttachment(
           accountId,
           attachmentId: id,
@@ -572,7 +610,10 @@ class AttachmentTransferManager {
           bytes: 0,
         );
         mount.outbox.transitionAttachment(accountId, id, 'failed');
-        _event(accountId, id, 'failed', {'step': 'download', 'kind': _failureWire(kind)});
+        _event(accountId, id, 'failed', {
+          'step': 'download',
+          'kind': _failureWire(kind),
+        });
       });
       current = get(accountId, id);
     }
@@ -647,6 +688,7 @@ class AttachmentTransferManager {
             accountId: accountId,
             id: id,
             projectId: current.projectId,
+            dailyReportId: current.dailyReportId,
             sourcePath: current.sourcePath,
             bytes: source,
           );
@@ -790,6 +832,7 @@ class AttachmentTransferManager {
         id: '${row['id']}',
         accountId: '${row['account_id']}',
         projectId: row['project_id'] as String?,
+        dailyReportId: row['daily_report_id'] as String?,
         sourcePath: '${row['source_path']}',
         objectKey: row['object_key'] as String?,
         digest: row['digest'] as String?,

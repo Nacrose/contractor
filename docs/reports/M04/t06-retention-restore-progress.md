@@ -2,13 +2,13 @@
 
 - **Status:** mounted attachment re-fetch and digest verification are implemented and tested locally; M04-T06 acceptance remains open.
 - **Branch:** `m04-t06-restore`, stacked on the M04-T05 checkpoint.
-- **Evidence:** `flutter test test/mount/attachment_transfer_test.dart` — 5 passed; targeted `dart analyze` — no issues.
+- **Evidence:** `flutter test test/mount/attachment_transfer_test.dart` — 5 passed; combined M04 transfer, editor, workflow, and fault-matrix run — 17 passed; targeted `dart analyze` — no issues.
 
 ## Implemented contract
 
-`AttachmentTransferManager.restoreRegistered` accepts a registered receipt and object ID, the expected SHA-256, project scope claims, and a `RegisteredAttachmentFetchPort`. The host fetcher is expected to call `attachments.downloadRegistered` and revalidate tenant, project, and role authorization on every request. The returned bytes go through the same app-private source, attachment journal, atomic object-store staging, and post-finalization SHA-256 verification as captured photos. The pre-existing server receipt is retained; restore does not upload or register a second object. A digest mismatch is recorded as a typed `digestMismatch` failure and cannot become complete.
+`AttachmentTransferManager.restoreRegistered` accepts a report UUID, registered receipt and object ID, expected SHA-256, project scope claims, and a `RegisteredAttachmentFetchPort`. The host fetcher must call the product-approved download route and revalidate tenant, project, and role authorization on every request. Returned bytes go through the same report-linked attachment journal, app-private source, atomic object-store staging, and post-finalization SHA-256 verification as captured photos. The existing server receipt is retained; restore does not upload or register a second object. A digest mismatch is recorded as typed `digestMismatch` and cannot become complete.
 
-The tests cover successful fetch plus local persistence, final bytes matching the expected digest, and tampered bytes remaining incomplete. The fetch interface carries scope claims, but there is no HTTP/product-server implementation in this branch.
+The tests cover successful fetch plus local persistence, final bytes matching the expected digest, and tampered bytes remaining incomplete. The fetch interface carries scope claims, but there is no HTTP/product-server implementation in this branch. Shared editor tests verify report UUID propagation and registered-only previews.
 
 ## Required evidence still missing
 
