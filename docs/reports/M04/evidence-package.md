@@ -2,8 +2,8 @@
 
 - **Status:** draft; M04 exit criteria are not satisfied.
 - **Date:** 2026-10-10.
-- **Flutter evidence branch:** `m04-t06-restore` (contractor PR #51; current task code is stacked on the latest T05 checkpoint).
-- **Product prerequisite:** daily-report adapter and registered-photo reference change [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165) and stacked CDC feed/pull PR [#166](https://github.com/Nacrose/Construction_Manager/pull/166) are draft and unmerged. PR #166's Vercel Preview is Ready, but its persistent worker is not deployed. The local product database/test account are not configured, so atomic feed delivery, authenticated server acceptance, and second-device visibility remain unproven.
+- **Flutter evidence branch:** `codex/m04-t03-native-callback` (Contractor PR #52, stacked on PR #51); the current task code includes the native auth callback handler.
+- **Product prerequisites:** daily-report adapter/photo references [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), CDC feed/pull PR [#166](https://github.com/Nacrose/Construction_Manager/pull/166), and native PKCE endpoints [#167](https://github.com/Nacrose/Construction_Manager/pull/167) are draft and unmerged. PR #166's Vercel Preview is Ready, but its persistent worker is not deployed. The user confirmed that local signup works, but a database-backed authenticated native workflow and second-device round trip have not been verified.
 
 ## Task evidence inventory
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | M04-T01 | [Domain path trace](domain-path-trace.md); merged PR #44 | Complete per execution plan |
 | M04-T02 | [Flutter mount report](flutter-mount.md); merged PR #45 | Complete per execution plan |
-| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, typed row payload widget test, and Chrome IndexedDB persistence probe; product adapter change prepared but not merged | Open: CDC feed/pull deployment, authenticated host, live server acceptance, and second-device visibility are unproven |
+| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, typed row payload widget test, Chrome IndexedDB persistence probe, native callback PR #52, and a locally inspected iPhone local-preview capture; product adapter/auth PRs prepared but not merged | Open: Flutter PKCE sign-in/exchange, CDC feed/pull deployment, live server acceptance, and second-device visibility are unproven |
 | M04-T04 | [Photo transfer progress](t04-photo-transfer-progress.md) | Open: product-backed registration/download and real-device session evidence remain missing |
 | M04-T05 | [Vertical fault matrix](fault-matrix-vertical.md) | Open: automated mounted legs exist; reboot/hardware/server evidence and complete health transcripts remain missing |
 | M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md); mounted snapshot restore and rejected-report correction tests | Open: product endpoint PR is pushed but unmerged; product-backed attachment download, live restore, and second-device photo evidence remain missing |
@@ -21,7 +21,8 @@
 
 ## Verification already run
 
-- Native Flutter shell on `m04-t06-restore`: `flutter build ios --debug --no-codesign` completed successfully; this proves the iOS target compiles, but does not install or launch it on the iPhone. Xcode signing is configured locally by the owner, but no signed device launch is recorded here.
+- Earlier native Flutter shell checkpoint on `m04-t06-restore`: `flutter build ios --debug --no-codesign` completed successfully; that checkpoint proved compilation only and did not install or launch the app on the iPhone. The later signed M04-host launch is recorded in the next item.
+- Native M04 host on `codex/m04-t03-native-callback`: signed iOS release build completed and the app was launched on the paired iPhone with `devicectl`; a screenshot was visually inspected locally and showed the daily-report editor in local-preview mode. The screenshot is not included in the PR. The Flutter wireless VM disconnected after the debug launch, so no sustained telemetry or sync session is claimed.
 - macOS preview host: after adding the macOS Keychain handler, `flutter build macos --debug` succeeded and `flutter run -d macos` started the app and Dart VM service. The host uses a local preview account/project, has no authenticated server session, and explicitly does not sync or upload photos. It does not demonstrate full product parity or close M04-T03/T04.
 - `dart analyze` in `prototype/construction_client/` — no issues.
 - `flutter test` in `prototype/construction_client/` — 185 tests passed, including snapshot resume/closure and rejected-copy flow.
