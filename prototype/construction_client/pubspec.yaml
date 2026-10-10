@@ -48,6 +48,7 @@ dependencies:
     path: ../../packages/construction_application
   construction_ui:
     path: ../../packages/construction_ui
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
