@@ -49,10 +49,12 @@ void main() {
   DailyLogSyncOrchestrator engine(
     SyncTransportPort transport, {
     int Function()? nowMs,
+    AuthEventSink? authEvents,
   }) => DailyLogSyncOrchestrator(
     mount: mount!,
     deviceId: 'device-1',
     random: _FixedRandom(),
+    authEvents: authEvents,
     nowMs: nowMs ?? () => 1000,
     backoffBaseMs: 10,
     backoffCapMs: 100,
@@ -237,6 +239,75 @@ void main() {
       'ok',
     );
   });
+
+  test(
+    'expired authentication stops dispatch and leaves reports visible',
+    () async {
+      getStore().save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: draft('report-auth-expired'),
+      );
+      var sends = 0;
+      final authEvents = _AuthEvents();
+      reopenWith(
+        _Transport((envelope) async {
+          sends++;
+          return SyncOutcome(
+            kind: SyncOutcomeKind.authenticationRequired,
+            opId: envelope.opId,
+            detail: 'session expired',
+          );
+        }),
+      );
+
+      final result = await engine(
+        mount!.transport,
+        authEvents: authEvents,
+      ).drain('acct-1');
+
+      expect(result.stoppedFor, 'authentication_required');
+      expect(sends, 1);
+      expect(authEvents.events, [
+        ('authentication_required', 'report-auth-expired'),
+      ]);
+      expect(
+        mount!.pendingOps.getOp('acct-1', 'report-auth-expired')?.state,
+        'pending',
+      );
+      expect(
+        getStore().syncHealth('acct-1', 'tenant-1').pendingOperationCount,
+        1,
+      );
+    },
+  );
+
+  test('absent network retains the report and schedules a retry', () async {
+    getStore().save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft('report-offline-001'),
+    );
+    reopenWith(
+      _Transport(
+        (_) async => throw const SocketException('Network is unreachable'),
+      ),
+    );
+
+    final result = await engine(mount!.transport).drain('acct-1');
+
+    expect(result.retrying, ['report-offline-001']);
+    expect(
+      mount!.pendingOps.getOp('acct-1', 'report-offline-001')?.state,
+      'pending',
+    );
+    expect(
+      getStore().syncHealth('acct-1', 'tenant-1').pendingOperationCount,
+      1,
+    );
+  });
 }
 
 ConstructionMount _open(Directory root, SyncTransportPort transport) =>
@@ -279,4 +350,11 @@ class _Credentials implements SecureCredentialStore {
 
   @override
   Future<void> wipeAll() async {}
+}
+
+class _AuthEvents implements AuthEventSink {
+  final events = <(String, String?)>[];
+
+  @override
+  void onAuthEvent(String kind, String? opId) => events.add((kind, opId));
 }
