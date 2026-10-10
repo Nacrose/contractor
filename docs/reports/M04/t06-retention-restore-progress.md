@@ -13,7 +13,7 @@ The tests cover successful fetch plus local persistence, final bytes matching th
 ## Required evidence still missing
 
 - Product PR #165 contains the protected read procedure `workflow.dailyReport.getAttachmentData({ id })`; each request resolves the report project, calls `assertDailyReportView`, and reads bytes from `StoredFile`. The Flutter fetcher is still only a contract port, so this route is not wired or exercised by the mount.
-- Snapshot bootstrap is available in the M03 package, but the Flutter mount does not yet apply snapshot daily-report rows into the T03 local domain repository. New-device record restoration therefore remains unproven.
+- Snapshot bootstrap is available in the M03 package, but the Flutter mount does not yet apply snapshot daily-report rows into the T03 local domain repository. The prepared product PR #166 exposes incremental CDC pull only; neither #165 nor #166 currently exposes the initial daily-report snapshot route or its payload contract. New-device record restoration therefore remains unproven.
 - The mounted T05 conflict/revocation tests prove local report retention for those outcomes, but no explicit server `rejected` outcome test yet demonstrates fix-and-retry from the user path.
 - No product feed association proves restored registered photos reappear on a second device.
 

@@ -14,7 +14,7 @@
 | M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, typed row payload widget test, and Chrome IndexedDB persistence probe; product adapter change prepared but not merged | Open: CDC feed/pull deployment, authenticated host, live server acceptance, and second-device visibility are unproven |
 | M04-T04 | [Photo transfer progress](t04-photo-transfer-progress.md) | Open: product-backed registration/download and real-device session evidence remain missing |
 | M04-T05 | [Vertical fault matrix](fault-matrix-vertical.md) | Open: automated mounted legs exist; reboot/hardware/server evidence and complete health transcripts remain missing |
-| M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md) | Open: product download route/auth, applying snapshot rows, rejection fix-and-retry, and second-device photo restore remain missing |
+| M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md) | Open: product download route/auth, initial snapshot endpoint and payload contract, applying snapshot rows, rejection fix-and-retry, and second-device photo restore remain missing |
 | M04-T07 | [Device telemetry](device-telemetry.md) | Open: no Android/iOS device is available on the capture host; no real workflow telemetry or correlated server metrics were captured |
 | M04-T08 | [Rule parity progress](daily-report-rule-parity-progress.md) | Open: local row editor parity improved; native and web workflow recordings, live-route fixture, complete T03–T07 evidence, and owner verification are missing |
 | M04-T09 | This packet and the M05 task refinement are prerequisites | Not reached; the owner must review and approve the gate after all task evidence is complete |
@@ -28,7 +28,7 @@
 
 ## Open exit evidence
 
-1. Merge product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165) and [#166](https://github.com/Nacrose/Construction_Manager/pull/166), configure the database/test account, then deploy and verify the CDC feed/pull path. Demonstrate atomic feed delivery, server acceptance, and visibility in the current web app and on a second device before closing T03.
+1. Extend the product PR stack with an authenticated, project-scoped initial daily-report snapshot endpoint and stable payload contract; PR [#166](https://github.com/Nacrose/Construction_Manager/pull/166) currently covers incremental CDC pull only. Then merge product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165) and [#166](https://github.com/Nacrose/Construction_Manager/pull/166), configure the database/test account, and deploy and verify both bootstrap and CDC paths. Demonstrate atomic feed delivery, server acceptance, and visibility in the current web app and on a second device before closing T03.
 2. Record the workflow on a real supported Android or iOS device, including sync latency, battery/background behavior, crash-free rate, and sanitized crash reporting. Correlate one full sync with server M03-T08 metrics.
 3. Complete T04–T06 product-backed attachment registration, snapshot application, and recoverable rejection/fix/retry evidence.
 4. Finish the full current-rule parity fixture against the product route and link the native and web recordings.
