@@ -22,7 +22,7 @@
 - `dart analyze` on the workflow, mount, tests, and screen — **no issues found**.
 - `dart analyze lib/mount lib/workflows/daily_report_workflow.dart lib/workflows/daily_report_screen.dart` — **no issues found** after adding the browser driver.
 - `flutter build web --wasm --release -t lib/m04_compile_check.dart` — **web compilation succeeded** for the injected browser mount, driver, and daily-report screen dependency graph. The temporary compile entrypoint was removed after the run.
-- `flutter test --platform chrome test/mount/browser_sqlite_driver_test.dart` — **not verified**: the Chrome test harness did not complete the IndexedDB persistence check. The temporary probe was removed; a passing browser reload test is still required.
+- Browser persistence probe — **not verified**: `flutter test --platform chrome` did not complete, and a temporary headless Chrome page also remained pending at `IndexedDbFileSystem.open`; a separate raw `indexedDB.open()` probe likewise produced no success/error/blocked event within 20 seconds. The probes were removed. A passing browser reload test is still required.
 
 ## Acceptance still open
 
