@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:construction_application/construction_application.dart';
@@ -56,21 +55,44 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   late final TextEditingController _minTemp = TextEditingController();
   late final TextEditingController _maxTemp = TextEditingController();
   late final TextEditingController _rain = TextEditingController();
-  late final TextEditingController _workforce = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _progress = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _equipment = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _received = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _consumed = TextEditingController(
-    text: '[]',
-  );
+  final List<_ReportRow> _workforceRows = [
+    _ReportRow(
+      {
+        'company': '',
+        'trade': '',
+        'headcount': '',
+        'regHours': '',
+        'otHours': '',
+      },
+      selections: {'skill': 'unskilled'},
+    ),
+  ];
+  final List<_ReportRow> _progressRows = [
+    _ReportRow({
+      'taskDescription': '',
+      'unit': '',
+      'actualQty': '',
+      'location': '',
+    }),
+  ];
+  final List<_ReportRow> _equipmentRows = [
+    _ReportRow(
+      {'name': '', 'workingHours': '', 'fuel': ''},
+      selections: {'ownership': 'owned'},
+    ),
+  ];
+  final List<_ReportRow> _receivedRows = [
+    _ReportRow({
+      'name': '',
+      'qty': '',
+      'unit': '',
+      'supplier': '',
+      'vehicle': '',
+    }),
+  ];
+  final List<_ReportRow> _consumedRows = [
+    _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+  ];
   late final TextEditingController _problems = TextEditingController();
   late final TextEditingController _safety = TextEditingController();
   late final TextEditingController _remarks = TextEditingController();
@@ -131,16 +153,20 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       _minTemp,
       _maxTemp,
       _rain,
-      _workforce,
-      _progress,
-      _equipment,
-      _received,
-      _consumed,
       _problems,
       _safety,
       _remarks,
     ]) {
       controller.dispose();
+    }
+    for (final row in [
+      ..._workforceRows,
+      ..._progressRows,
+      ..._equipmentRows,
+      ..._receivedRows,
+      ..._consumedRows,
+    ]) {
+      row.dispose();
     }
     _actionCoordinator.dispose();
     super.dispose();
@@ -156,11 +182,94 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     minTempC: _minTemp.text.trim(),
     maxTempC: _maxTemp.text.trim(),
     rainfallMm: _rain.text.trim(),
-    workforce: _rows(_workforce.text, 'Workforce'),
-    workProgress: _rows(_progress.text, 'Work progress'),
-    equipmentUsed: _rows(_equipment.text, 'Equipment'),
-    materialReceived: _rows(_received.text, 'Materials received'),
-    materialConsumed: _rows(_consumed.text, 'Materials consumed'),
+    workforce: _workforceRows
+        .where(
+          (row) => row.hasText([
+            'company',
+            'trade',
+            'headcount',
+            'regHours',
+            'otHours',
+          ]),
+        )
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'company': row.value('company'),
+            'trade': row.value('trade'),
+            'skill': row.selections['skill'] ?? 'unskilled',
+            'headcount': row.number('headcount'),
+            'regHours': row.number('regHours'),
+            'otHours': row.number('otHours'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    workProgress: _progressRows
+        .where(
+          (row) => row.hasText(['taskDescription', 'actualQty', 'location']),
+        )
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          final quantity = row.number('actualQty');
+          return {
+            'taskDescription': row.value('taskDescription'),
+            'unit': row.nullableValue('unit'),
+            'actualQty': quantity,
+            'batchedQty': quantity,
+            'payableQty': quantity,
+            'location': row.nullableValue('location'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    equipmentUsed: _equipmentRows
+        .where((row) => row.hasText(['name', 'workingHours', 'fuel']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'name': row.value('name'),
+            'type': '',
+            'ownership': row.selections['ownership'] ?? 'owned',
+            'workingHours': row.number('workingHours'),
+            'fuel': row.number('fuel'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    materialReceived: _receivedRows
+        .where((row) => row.hasText(['name', 'qty', 'supplier', 'vehicle']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'name': row.value('name'),
+            'qty': row.number('qty'),
+            'unit': row.nullableValue('unit'),
+            'supplier': row.nullableValue('supplier'),
+            'vehicle': row.nullableValue('vehicle'),
+            'testStatus': 'none',
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    materialConsumed: _consumedRows
+        .where((row) => row.hasText(['name', 'quantity']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'materialId': null,
+            'name': row.value('name'),
+            'quantity': row.number('quantity'),
+            'unit': row.nullableValue('unit'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
     problems: _problems.text,
     safetyNotes: _safety.text,
     remarks: _remarks.text,
@@ -196,14 +305,6 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   bool get _canAddPhotos =>
       _savedId == null ||
       widget.store.canEditUnsent(widget.accountId, _savedId!);
-
-  List<Map<String, Object?>> _rows(String raw, String label) {
-    final decoded = jsonDecode(raw);
-    if (decoded is! List || decoded.any((row) => row is! Map)) {
-      throw FormatException('$label must be a JSON array of objects.');
-    }
-    return decoded.map((row) => Map<String, Object?>.from(row as Map)).toList();
-  }
 
   Future<void> _save() async {
     if (_reportPhotos.any((photo) => !photo.complete)) {
@@ -480,31 +581,11 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   _numberField(_maxTemp, 'Max °C'),
                   _numberField(_rain, 'Rainfall mm'),
                 ]),
-                _jsonSection(
-                  _workforce,
-                  'Workforce',
-                  '[{"company":"","trade":"","skill":"unskilled","headcount":"","regHours":"","otHours":""}]',
-                ),
-                _jsonSection(
-                  _progress,
-                  'Work progress',
-                  '[{"taskDescription":"","unit":"","actualQty":"","location":""}]',
-                ),
-                _jsonSection(
-                  _equipment,
-                  'Equipment used',
-                  '[{"name":"","ownership":"owned","workingHours":"","fuel":""}]',
-                ),
-                _jsonSection(
-                  _received,
-                  'Materials received',
-                  '[{"name":"","qty":"","unit":"","supplier":"","vehicle":""}]',
-                ),
-                _jsonSection(
-                  _consumed,
-                  'Materials consumed',
-                  '[{"name":"","quantity":"","unit":""}]',
-                ),
+                _workforceSection(),
+                _progressSection(),
+                _equipmentSection(),
+                _receivedSection(),
+                _consumedSection(),
                 _section('Problems, safety & remarks', [
                   _field(_problems, 'Problems', lines: 3),
                   _field(_safety, 'Safety notes', lines: 3),
@@ -568,32 +649,194 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     ),
   );
 
-  Widget _jsonSection(
-    TextEditingController controller,
-    String title,
-    String initial,
-  ) => _section(title, [
-    TextFormField(
-      controller: controller,
-      minLines: 2,
-      maxLines: 8,
-      decoration: InputDecoration(
-        labelText: '$title rows (JSON)',
-        helperText: 'Use the existing daily report row fields. Enter [] when there are none.',
-        border: const OutlineInputBorder(),
-      ),
-      validator: (raw) {
-        try {
-          final value = jsonDecode(raw ?? initial);
-          return value is List && value.every((row) => row is Map)
-              ? null
-              : 'Enter a JSON array of row objects';
-        } catch (_) {
-          return 'Enter valid JSON';
-        }
+  Widget _workforceSection() => _reportRowsSection(
+    'Workforce',
+    _workforceRows,
+    createRow: () => _ReportRow(
+      {
+        'company': '',
+        'trade': '',
+        'headcount': '',
+        'regHours': '',
+        'otHours': '',
       },
+      selections: {'skill': 'unskilled'},
+    ),
+    addLabel: 'Add workforce row',
+    fields: [
+      _rowText('company', 'Company'),
+      _rowText('trade', 'Trade'),
+      _rowSelect('skill', 'Skill', const {
+        'unskilled': 'Unskilled',
+        'semi': 'Semi-skilled',
+        'skilled': 'Skilled',
+      }),
+      _rowNumber('headcount', 'Headcount'),
+      _rowNumber('regHours', 'Regular hours'),
+      _rowNumber('otHours', 'Overtime hours'),
+    ],
+  );
+
+  Widget _progressSection() => _reportRowsSection(
+    'Work progress',
+    _progressRows,
+    createRow: () => _ReportRow({
+      'taskDescription': '',
+      'unit': '',
+      'actualQty': '',
+      'location': '',
+    }),
+    addLabel: 'Add progress row',
+    fields: [
+      _rowText('taskDescription', 'Task description'),
+      _rowText('unit', 'Unit'),
+      _rowNumber('actualQty', 'Actual quantity'),
+      _rowText('location', 'Location'),
+    ],
+  );
+
+  Widget _equipmentSection() => _reportRowsSection(
+    'Equipment used',
+    _equipmentRows,
+    createRow: () => _ReportRow(
+      {'name': '', 'workingHours': '', 'fuel': ''},
+      selections: {'ownership': 'owned'},
+    ),
+    addLabel: 'Add equipment row',
+    fields: [
+      _rowText('name', 'Equipment name'),
+      _rowSelect('ownership', 'Ownership', const {
+        'owned': 'Owned',
+        'hired': 'Hired',
+      }),
+      _rowNumber('workingHours', 'Working hours'),
+      _rowNumber('fuel', 'Fuel'),
+    ],
+  );
+
+  Widget _receivedSection() => _reportRowsSection(
+    'Materials received',
+    _receivedRows,
+    createRow: () => _ReportRow({
+      'name': '',
+      'qty': '',
+      'unit': '',
+      'supplier': '',
+      'vehicle': '',
+    }),
+    addLabel: 'Add received material',
+    fields: [
+      _rowText('name', 'Material name'),
+      _rowNumber('qty', 'Quantity'),
+      _rowText('unit', 'Unit'),
+      _rowText('supplier', 'Supplier'),
+      _rowText('vehicle', 'Vehicle'),
+    ],
+  );
+
+  Widget _consumedSection() => _reportRowsSection(
+    'Materials consumed',
+    _consumedRows,
+    createRow: () => _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+    addLabel: 'Add consumed material',
+    fields: [
+      _rowText('name', 'Material name'),
+      _rowNumber('quantity', 'Quantity'),
+      _rowText('unit', 'Unit'),
+    ],
+  );
+
+  Widget _reportRowsSection(
+    String title,
+    List<_ReportRow> rows, {
+    required _ReportRow Function() createRow,
+    required String addLabel,
+    required List<_ReportRowField> fields,
+  }) => _section(title, [
+    for (var index = 0; index < rows.length; index++) ...[
+      if (index > 0) const Divider(height: 20),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final field in fields)
+            SizedBox(width: 220, child: field.build(rows[index], setState)),
+          if (rows.length > 1)
+            IconButton(
+              tooltip: 'Remove row',
+              onPressed: () => setState(() => rows.removeAt(index).dispose()),
+              icon: const Icon(Icons.remove_circle_outline),
+            ),
+        ],
+      ),
+    ],
+    Align(
+      alignment: Alignment.centerLeft,
+      child: TextButton.icon(
+        onPressed: () => setState(() => rows.add(createRow())),
+        icon: const Icon(Icons.add),
+        label: Text(addLabel),
+      ),
     ),
   ]);
+
+  _ReportRowField _rowText(String key, String label) => _ReportRowField(
+    key: key,
+    build: (row, refresh) => TextFormField(
+      controller: row.controllers[key],
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    ),
+  );
+
+  _ReportRowField _rowNumber(String key, String label) => _ReportRowField(
+    key: key,
+    build: (row, refresh) => TextFormField(
+      controller: row.controllers[key],
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+        signed: true,
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) return null;
+        final parsed = double.tryParse(value);
+        return parsed != null && parsed.isFinite ? null : 'Enter a number';
+      },
+    ),
+  );
+
+  _ReportRowField _rowSelect(
+    String key,
+    String label,
+    Map<String, String> options,
+  ) => _ReportRowField(
+    key: key,
+    build: (row, refresh) => DropdownButtonFormField<String>(
+      initialValue: row.selections[key] ?? options.keys.first,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      items: options.entries
+          .map(
+            (entry) =>
+                DropdownMenuItem(value: entry.key, child: Text(entry.value)),
+          )
+          .toList(growable: false),
+      onChanged: (value) {
+        if (value == null) return;
+        row.selections[key] = value;
+        refresh(() {});
+      },
+    ),
+  );
 
   Widget _field(
     TextEditingController controller,
@@ -635,7 +878,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   String _safeError(Object error) => switch (error) {
     RepositoryError(:final kind) =>
       'Save failed ($kind). Your draft is still on this device.',
-    FormatException() => 'Check the section JSON and try saving again.',
+    FormatException() => 'Check the numeric values and try saving again.',
     _ => 'Save failed. Your draft is still on this device.',
   };
 }
@@ -683,6 +926,52 @@ class _SyncHealthCard extends StatelessWidget {
       ),
     ),
   );
+}
+
+class _ReportRow {
+  final Map<String, TextEditingController> controllers;
+  final Map<String, String> selections;
+
+  _ReportRow(
+    Map<String, String> textValues, {
+    Map<String, String> selections = const {},
+  }) : controllers = {
+         for (final entry in textValues.entries)
+           entry.key: TextEditingController(text: entry.value),
+       },
+       selections = Map.of(selections);
+
+  String value(String key) => controllers[key]!.text.trim();
+
+  String? nullableValue(String key) {
+    final value = this.value(key);
+    return value.isEmpty ? null : value;
+  }
+
+  double number(String key) {
+    final value = this.value(key);
+    if (value.isEmpty) return 0;
+    final parsed = double.tryParse(value);
+    if (parsed == null || !parsed.isFinite) {
+      throw FormatException('$key must be a finite number.');
+    }
+    return parsed;
+  }
+
+  bool hasText(List<String> keys) => keys.any((key) => value(key).isNotEmpty);
+
+  void dispose() {
+    for (final controller in controllers.values) {
+      controller.dispose();
+    }
+  }
+}
+
+class _ReportRowField {
+  final String key;
+  final Widget Function(_ReportRow, StateSetter) build;
+
+  const _ReportRowField({required this.key, required this.build});
 }
 
 String _ageLabel(int milliseconds) {

@@ -78,7 +78,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('P-01 — Bridge').last);
     await tester.pumpAndSettle();
@@ -100,6 +100,86 @@ void main() {
     expect(rows.single.kind, 'workflow.dailyReport.createFieldReport');
   });
 
+  testWidgets('typed section rows save normalized procedure payloads', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: DailyReportLocalStore(mount!),
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('P-01 — Bridge').last);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Company'),
+      'Acme',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Trade'),
+      'Masonry',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Headcount'),
+      '4',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Regular hours'),
+      '8',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Task description'),
+      'Pour footing',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Actual quantity'),
+      '12.5',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Daily remarks'),
+      'Crew on site',
+    );
+    await tester.ensureVisible(find.text('Save locally'));
+    await tester.tap(find.text('Save locally'));
+    await tester.pumpAndSettle();
+
+    final op = mount!.pendingOps
+        .listDue('acct-1', DateTime.now().millisecondsSinceEpoch + 1000)
+        .single;
+    final payload = jsonDecode(op.payload) as Map<String, dynamic>;
+    final workforce = jsonDecode(payload['workforce'] as String) as List;
+    final progress = jsonDecode(payload['workProgress'] as String) as List;
+    expect(workforce.single, {
+      'company': 'Acme',
+      'trade': 'Masonry',
+      'skill': 'unskilled',
+      'headcount': 4.0,
+      'regHours': 8.0,
+      'otHours': 0.0,
+      'sortOrder': 0,
+    });
+    expect(progress.single, {
+      'taskDescription': 'Pour footing',
+      'unit': null,
+      'actualQty': 12.5,
+      'batchedQty': 12.5,
+      'payableQty': 12.5,
+      'location': null,
+      'sortOrder': 0,
+    });
+  });
+
   testWidgets(
     'photo capture binds the stable report id and previews registered photos only',
     (tester) async {
@@ -119,7 +199,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.tap(find.byType(DropdownButtonFormField<String>).first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('P-01 — Bridge').last);
       await tester.pumpAndSettle();
