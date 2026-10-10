@@ -1,0 +1,476 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:construction_application/construction_application.dart';
+import 'package:construction_ui/construction_ui.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'daily_report_workflow.dart';
+import '../mount/ports.dart';
+
+class DailyReportProjectOption {
+  const DailyReportProjectOption({required this.id, required this.label});
+
+  final String id;
+  final String label;
+}
+
+/// Shared native/web daily-report editor. The host supplies its signed-in
+/// scope, active projects, and durable M04 mount; this widget owns no auth or
+/// permission decision.
+class DailyReportScreen extends StatefulWidget {
+  const DailyReportScreen({
+    required this.store,
+    required this.accountId,
+    required this.tenantId,
+    required this.role,
+    required this.projects,
+    super.key,
+  });
+
+  final DailyReportWorkflowStore store;
+  final String accountId;
+  final String tenantId;
+  final String role;
+  final List<DailyReportProjectOption> projects;
+
+  @override
+  State<DailyReportScreen> createState() => _DailyReportScreenState();
+}
+
+class _DailyReportScreenState extends State<DailyReportScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _actionCoordinator = ConstructionActionCoordinator();
+  late final String _clientUuid = _uuid();
+  late final TextEditingController _date = TextEditingController(
+    text: _today(),
+  );
+  late final TextEditingController _morning = TextEditingController();
+  late final TextEditingController _midday = TextEditingController();
+  late final TextEditingController _evening = TextEditingController();
+  late final TextEditingController _minTemp = TextEditingController();
+  late final TextEditingController _maxTemp = TextEditingController();
+  late final TextEditingController _rain = TextEditingController();
+  late final TextEditingController _workforce = TextEditingController(
+    text: '[]',
+  );
+  late final TextEditingController _progress = TextEditingController(
+    text: '[]',
+  );
+  late final TextEditingController _equipment = TextEditingController(
+    text: '[]',
+  );
+  late final TextEditingController _received = TextEditingController(
+    text: '[]',
+  );
+  late final TextEditingController _consumed = TextEditingController(
+    text: '[]',
+  );
+  late final TextEditingController _problems = TextEditingController();
+  late final TextEditingController _safety = TextEditingController();
+  late final TextEditingController _remarks = TextEditingController();
+  String? _projectId;
+  String? _savedId;
+  String? _error;
+  bool _saving = false;
+  bool _saved = false;
+
+  static final CapabilityRegistry _capabilities = CapabilityRegistry(const []);
+  static final RouteRegistry _routes = RouteRegistry(
+    capabilities: _capabilities,
+    routes: [
+      RouteDefinition(
+        id: RouteId('daily-report.new'),
+        path: '/daily-reports/new',
+        label: 'New daily report',
+        requiredCapabilities: const [],
+      ),
+    ],
+  );
+  static final CommandRegistry _commands = CommandRegistry(
+    capabilities: _capabilities,
+    commands: [
+      CommandDefinition(
+        id: CommandId('daily-report.save-local'),
+        label: 'Save daily report locally',
+        requiredCapabilities: const [],
+      ),
+      CommandDefinition(
+        id: CommandId('daily-report.sync-now'),
+        label: 'Sync daily report',
+        requiredCapabilities: const [],
+      ),
+    ],
+  );
+
+  ConstructionPlatform get _platform {
+    if (kIsWeb) return ConstructionPlatform.web;
+    return switch (defaultTargetPlatform) {
+      TargetPlatform.android => ConstructionPlatform.android,
+      TargetPlatform.iOS => ConstructionPlatform.ios,
+      TargetPlatform.macOS => ConstructionPlatform.macos,
+      TargetPlatform.windows => ConstructionPlatform.windows,
+      TargetPlatform.linux => ConstructionPlatform.linux,
+      TargetPlatform.fuchsia => ConstructionPlatform.android,
+    };
+  }
+
+  @override
+  void dispose() {
+    for (final controller in [
+      _date,
+      _morning,
+      _midday,
+      _evening,
+      _minTemp,
+      _maxTemp,
+      _rain,
+      _workforce,
+      _progress,
+      _equipment,
+      _received,
+      _consumed,
+      _problems,
+      _safety,
+      _remarks,
+    ]) {
+      controller.dispose();
+    }
+    _actionCoordinator.dispose();
+    super.dispose();
+  }
+
+  DailyReportDraft _draft() => DailyReportDraft(
+    clientUuid: _savedId ?? _clientUuid,
+    projectId: _projectId ?? '',
+    reportDate: _date.text.trim(),
+    weatherMorning: _morning.text.trim(),
+    weatherAfternoon: _midday.text.trim(),
+    weatherEvening: _evening.text.trim(),
+    minTempC: _minTemp.text.trim(),
+    maxTempC: _maxTemp.text.trim(),
+    rainfallMm: _rain.text.trim(),
+    workforce: _rows(_workforce.text, 'Workforce'),
+    workProgress: _rows(_progress.text, 'Work progress'),
+    equipmentUsed: _rows(_equipment.text, 'Equipment'),
+    materialReceived: _rows(_received.text, 'Materials received'),
+    materialConsumed: _rows(_consumed.text, 'Materials consumed'),
+    problems: _problems.text,
+    safetyNotes: _safety.text,
+    remarks: _remarks.text,
+  );
+
+  List<Map<String, Object?>> _rows(String raw, String label) {
+    final decoded = jsonDecode(raw);
+    if (decoded is! List || decoded.any((row) => row is! Map)) {
+      throw FormatException('$label must be a JSON array of objects.');
+    }
+    return decoded.map((row) => Map<String, Object?>.from(row as Map)).toList();
+  }
+
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) return;
+    if (_projectId == null || _projectId!.isEmpty) {
+      setState(() => _error = 'Choose a project before saving.');
+      return;
+    }
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      final draft = _draft();
+      await _actionCoordinator.run('Saving daily report', () async {
+        if (_savedId == null) {
+          widget.store.save(
+            accountId: widget.accountId,
+            tenantId: widget.tenantId,
+            role: widget.role,
+            draft: draft,
+          );
+          _savedId = draft.clientUuid;
+        } else {
+          widget.store.editUnsent(accountId: widget.accountId, draft: draft);
+        }
+      });
+      if (mounted) setState(() => _saved = true);
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _syncNow() async {
+    try {
+      await widget.store.syncNow();
+      if (mounted) setState(() {});
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final route = _routes[RouteId('daily-report.new')];
+    final commandAvailability = _commands.availableFor(
+      _platform,
+      _capabilities,
+    );
+    final canSave = commandAvailability
+        .firstWhere(
+          (entry) => entry.command.id.value == 'daily-report.save-local',
+        )
+        .available;
+    final opState = _savedId == null
+        ? null
+        : widget.store.operationState(widget.accountId, _savedId!);
+    final status = SaveSyncStatus(
+      localPersistence: _saved
+          ? LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED
+          : LocalPersistenceState.LOCAL_PERSISTENCE_STATE_NOT_STARTED,
+      serverAcceptance: switch (opState) {
+        'accepted' => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_ACCEPTED,
+        'in_flight' => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_SENDING,
+        'rejected' => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_REJECTED,
+        'pending' => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_QUEUED,
+        _ => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_NOT_QUEUED,
+      },
+      attachmentCompletion:
+          AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED,
+      backup: BackupState.BACKUP_STATE_NOT_CONFIGURED,
+      pendingWorkRetained: opState != null && opState != 'accepted',
+      nextUserAction: opState == 'rejected'
+          ? NextUserAction.NEXT_USER_ACTION_REVIEW_SERVER_REJECTION
+          : NextUserAction.NEXT_USER_ACTION_UNSPECIFIED,
+    );
+
+    return Scaffold(
+      appBar: AppBar(title: Text(route.label)),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: ActionBar(
+            ariaLabel: 'Daily report actions',
+            primary: FilledButton.icon(
+              onPressed: canSave && !_saving ? _save : null,
+              icon: _saving
+                  ? const SizedBox.square(
+                      dimension: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.save_outlined),
+              label: Text(_saved ? 'Update local draft' : 'Save locally'),
+            ),
+            actions: [
+              ActionBarAction(
+                label: 'Sync now',
+                icon: Icons.sync,
+                onPressed: _saved ? _syncNow : null,
+                disabled: !_saved,
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const SizedBox(height: 16),
+          SaveSyncStatusPanel(
+            status: status,
+            onNextAction: opState == 'pending' ? _syncNow : null,
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _error!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ],
+          const SizedBox(height: 16),
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _section('Where & when', [
+                  DropdownButtonFormField<String>(
+                    initialValue: _projectId,
+                    decoration: const InputDecoration(labelText: 'Project'),
+                    items: widget.projects
+                        .map(
+                          (project) => DropdownMenuItem(
+                            value: project.id,
+                            child: Text(
+                              project.label,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: _savedId == null
+                        ? (value) => setState(() => _projectId = value)
+                        : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Choose a project'
+                        : null,
+                  ),
+                  TextFormField(
+                    controller: _date,
+                    decoration: const InputDecoration(
+                      labelText: 'Report date',
+                      hintText: 'YYYY-MM-DD',
+                    ),
+                    validator: (value) =>
+                        RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value ?? '')
+                        ? null
+                        : 'Use YYYY-MM-DD',
+                  ),
+                ]),
+                _section('Weather', [
+                  _field(_morning, 'Morning weather'),
+                  _field(_midday, 'Midday weather'),
+                  _field(_evening, 'Evening weather'),
+                  _numberField(_minTemp, 'Min °C'),
+                  _numberField(_maxTemp, 'Max °C'),
+                  _numberField(_rain, 'Rainfall mm'),
+                ]),
+                _jsonSection(
+                  _workforce,
+                  'Workforce',
+                  '[{"company":"","trade":"","skill":"unskilled","headcount":"","regHours":"","otHours":""}]',
+                ),
+                _jsonSection(
+                  _progress,
+                  'Work progress',
+                  '[{"taskDescription":"","unit":"","actualQty":"","location":""}]',
+                ),
+                _jsonSection(
+                  _equipment,
+                  'Equipment used',
+                  '[{"name":"","ownership":"owned","workingHours":"","fuel":""}]',
+                ),
+                _jsonSection(
+                  _received,
+                  'Materials received',
+                  '[{"name":"","qty":"","unit":"","supplier":"","vehicle":""}]',
+                ),
+                _jsonSection(
+                  _consumed,
+                  'Materials consumed',
+                  '[{"name":"","quantity":"","unit":""}]',
+                ),
+                _section('Problems, safety & remarks', [
+                  _field(_problems, 'Problems', lines: 3),
+                  _field(_safety, 'Safety notes', lines: 3),
+                  _field(_remarks, 'Daily remarks', lines: 4),
+                ]),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _section(String title, List<Widget> children) => Card(
+    margin: const EdgeInsets.only(bottom: 12),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          ...children,
+        ],
+      ),
+    ),
+  );
+
+  Widget _jsonSection(
+    TextEditingController controller,
+    String title,
+    String initial,
+  ) => _section(title, [
+    TextFormField(
+      controller: controller,
+      minLines: 2,
+      maxLines: 8,
+      decoration: InputDecoration(
+        labelText: '$title rows (JSON)',
+        helperText: 'Use the existing daily report row fields. Enter [] when there are none.',
+        border: const OutlineInputBorder(),
+      ),
+      validator: (raw) {
+        try {
+          final value = jsonDecode(raw ?? initial);
+          return value is List && value.every((row) => row is Map)
+              ? null
+              : 'Enter a JSON array of row objects';
+        } catch (_) {
+          return 'Enter valid JSON';
+        }
+      },
+    ),
+  ]);
+
+  Widget _field(
+    TextEditingController controller,
+    String label, {
+    int lines = 1,
+  }) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: TextFormField(
+      controller: controller,
+      minLines: lines,
+      maxLines: lines == 1 ? 1 : 6,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    ),
+  );
+
+  Widget _numberField(TextEditingController controller, String label) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: TextFormField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(
+            decimal: true,
+            signed: true,
+          ),
+          decoration: InputDecoration(
+            labelText: label,
+            border: const OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty || double.tryParse(value) != null
+              ? null
+              : 'Enter a number',
+        ),
+      );
+
+  String _safeError(Object error) => switch (error) {
+    RepositoryError(:final kind) =>
+      'Save failed ($kind). Your draft is still on this device.',
+    FormatException() => 'Check the section JSON and try saving again.',
+    _ => 'Save failed. Your draft is still on this device.',
+  };
+}
+
+String _today() {
+  final now = DateTime.now();
+  return '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+}
+
+String _uuid() {
+  final random = Random.secure();
+  return List.generate(
+    16,
+    (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+  ).join();
+}

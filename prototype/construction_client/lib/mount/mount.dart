@@ -48,15 +48,21 @@ class MountOptions {
 
   final int busyTimeoutMs;
 
+  /// Feature-owned migrations append after the mount's stable v3 schema.
+  /// The workflow supplies its own versioned migration without changing the
+  /// M03 outbox baseline.
+  final List<Migration> extraMigrations;
+
   /// Run PRAGMA integrity_check at open (recommended for every app start).
   final bool integrityCheck;
 
-  const MountOptions({
+  MountOptions({
     required this.dbPath,
     required this.objectRoot,
     this.busyTimeoutMs = 2000,
     this.integrityCheck = true,
-  });
+    List<Migration> extraMigrations = const [],
+  }) : extraMigrations = List.unmodifiable(extraMigrations);
 }
 
 class ConstructionMount {
@@ -121,7 +127,10 @@ ConstructionMount openMount({
   SyncTransportPort? transport,
   ExecutionEnvironmentPort? environment,
 }) {
-  final driver = openNativeSqliteDriver(options.dbPath, busyTimeoutMs: options.busyTimeoutMs);
+  final driver = openNativeSqliteDriver(
+    options.dbPath,
+    busyTimeoutMs: options.busyTimeoutMs,
+  );
 
   // Durability policy enforced at open (outbox repository.ts openOutbox):
   // re-asserted idempotently so an arbitrary driver construction cannot
@@ -129,17 +138,24 @@ ConstructionMount openMount({
   driver.exec(kOutboxPragmaJournalMode);
   driver.exec(kOutboxPragmaSynchronous);
   driver.exec(kOutboxPragmaForeignKeys);
-  driver.exec('PRAGMA busy_timeout=${options.busyTimeoutMs < 0 ? 0 : options.busyTimeoutMs}');
+  driver.exec(
+    'PRAGMA busy_timeout=${options.busyTimeoutMs < 0 ? 0 : options.busyTimeoutMs}',
+  );
   if (options.integrityCheck) {
     final row = driver.prepare('PRAGMA integrity_check').get(const []);
     final result = row == null ? null : '${row.values.first}';
     if (result != 'ok') {
       driver.close();
-      throw RepositoryError('corrupt', 'integrity_check failed at open.', {'result': result ?? '(no row)'});
+      throw RepositoryError('corrupt', 'integrity_check failed at open.', {
+        'result': result ?? '(no row)',
+      });
     }
   }
 
-  final migrations = migrateMount(driver);
+  final migrations = migrateMount(
+    driver,
+    extraMigrations: options.extraMigrations,
+  );
   final outbox = OutboxRepository(driver);
   final pendingOps = OutboxPendingOperationSource(outbox);
   final objects = FilesystemObjectStore(options.objectRoot);
@@ -155,8 +171,12 @@ ConstructionMount openMount({
     objects: objects,
     sourceReader: const FileSourceReader(),
     digest: const Sha256DigestPort(),
-    transport: transport ?? (throw RepositoryError('misconfigured',
-        'SyncTransportPort requires the server sync endpoint; the host supplies HttpSyncTransport.')),
+    transport:
+        transport ??
+        (throw RepositoryError(
+          'misconfigured',
+          'SyncTransportPort requires the server sync endpoint; the host supplies HttpSyncTransport.',
+        )),
     drainTriggers: SyncDrainTriggers(
       drain: (_) async {}, // the M04-T03 orchestrator port replaces this
       environment: environment ?? const ForegroundOnlyEnvironment(),
