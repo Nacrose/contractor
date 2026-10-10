@@ -2,7 +2,7 @@
 
 - **Status:** mounted attachment re-fetch and digest verification are implemented and tested locally; M04-T06 acceptance remains open.
 - **Branch:** `m04-t06-restore`, stacked on the M04-T05 checkpoint.
-- **Evidence:** `flutter test test/mount/attachment_transfer_test.dart` — 5 passed; combined M04 transfer, editor, workflow, and fault-matrix run — 17 passed; targeted `dart analyze` — no issues.
+- **Evidence:** `flutter test test/mount/attachment_transfer_test.dart` — 5 passed; combined M04 transfer, editor, workflow, and expanded fault-matrix suites — 20 passed; targeted `dart analyze` — no issues.
 
 ## Implemented contract
 

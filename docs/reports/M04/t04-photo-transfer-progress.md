@@ -17,7 +17,7 @@
 
 - `flutter test test/mount/attachment_transfer_test.dart` — **3 tests passed**: completion only after receipt, restart after interrupted chunk upload, and final-object digest mismatch retention.
 - `dart analyze` on the attachment manager, native photo service, port, and tests — **no issues found**.
-- Latest combined attachment/editor/fault-matrix run: **17 Flutter tests passed** across transfer, workflow, screen, and T05 suites; targeted Dart analysis — **no issues found**. Screen evidence verifies report UUID propagation and registered-only previews.
+- Latest combined attachment/editor/fault-matrix run before the added T05 legs: **17 Flutter tests passed**; the expanded T05 suite now passes **8 tests**, bringing the combined total to 20. Targeted Dart analysis — **no issues found**. Screen evidence verifies report UUID propagation and registered-only previews.
 
 ## Acceptance still open
 

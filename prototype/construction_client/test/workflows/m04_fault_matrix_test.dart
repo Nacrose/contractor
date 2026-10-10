@@ -129,6 +129,95 @@ void main() {
     },
   );
 
+  test(
+    'expired login stops the batch and leaves the report locally visible',
+    () async {
+      getStore().save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: draft('report-expired-login1'),
+      );
+      reopenWith(
+        _Transport(
+          (envelope) async => SyncOutcome(
+            kind: SyncOutcomeKind.authenticationRequired,
+            opId: envelope.opId,
+            detail: 'session expired',
+          ),
+        ),
+      );
+      final sync = engine(mount!.transport);
+      final result = await sync.drain('acct-1');
+      expect(result.stoppedFor, 'authentication_required');
+      expect(
+        getStore().get('acct-1', 'report-expired-login1')?.remarks,
+        'Crew poured footing',
+      );
+      expect(
+        mount!.pendingOps.getOp('acct-1', 'report-expired-login1')?.state,
+        'pending',
+      );
+    },
+  );
+
+  test('absent network requeues without losing the report', () async {
+    getStore().save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft('report-network-off01'),
+    );
+    reopenWith(_Transport((_) async => throw const SocketException('offline')));
+    final sync = engine(mount!.transport);
+    final result = await sync.drain('acct-1');
+    expect(result.retrying, ['report-network-off01']);
+    expect(
+      getStore().get('acct-1', 'report-network-off01')?.remarks,
+      'Crew poured footing',
+    );
+    expect(
+      getStore().syncHealth('acct-1', 'tenant-1').pendingOperationCount,
+      1,
+    );
+  });
+
+  test(
+    'server rejection keeps the local report and rejection health visible',
+    () async {
+      getStore().save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: draft('report-rejected-001'),
+      );
+      reopenWith(
+        _Transport(
+          (envelope) async => SyncOutcome(
+            kind: SyncOutcomeKind.rejected,
+            opId: envelope.opId,
+            detail: 'daily report permission denied',
+          ),
+        ),
+      );
+      final sync = engine(mount!.transport);
+      final result = await sync.drain('acct-1');
+      expect(result.rejected, ['report-rejected-001']);
+      expect(
+        getStore().get('acct-1', 'report-rejected-001')?.remarks,
+        'Crew poured footing',
+      );
+      expect(
+        mount!.pendingOps.getOp('acct-1', 'report-rejected-001')?.state,
+        'rejected',
+      );
+      expect(
+        getStore().syncHealth('acct-1', 'tenant-1').rejections,
+        isNotEmpty,
+      );
+    },
+  );
+
   test('process restart replays the same in-flight op and records the original receipt', () async {
     getStore().save(
       accountId: 'acct-1',
