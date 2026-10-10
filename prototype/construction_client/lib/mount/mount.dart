@@ -44,7 +44,18 @@ class MountOptions {
   final String dbPath;
 
   /// Root directory for attachment objects (device filesystem on native).
-  final Directory objectRoot;
+  final Directory? objectRoot;
+
+  /// Optional platform-bound SQLite driver. Browser hosts construct this
+  /// asynchronously over IndexedDB before opening the shared mount.
+  final MountSqliteDriver? driver;
+
+  /// Optional platform-specific object store and attachment source reader.
+  /// Native defaults use the device filesystem; browser hosts must provide
+  /// their own bindings before enabling attachment capture.
+  final ObjectStore? objectStore;
+  final SourceReaderPort? sourceReader;
+  final DigestPort? digest;
 
   final int busyTimeoutMs;
 
@@ -58,7 +69,11 @@ class MountOptions {
 
   MountOptions({
     required this.dbPath,
-    required this.objectRoot,
+    this.objectRoot,
+    this.driver,
+    this.objectStore,
+    this.sourceReader,
+    this.digest,
     this.busyTimeoutMs = 2000,
     this.integrityCheck = true,
     List<Migration> extraMigrations = const [],
@@ -94,6 +109,11 @@ class ConstructionMount {
     required this.migrations,
   });
 
+  /// Waits for the backing platform store to persist all writes issued before
+  /// this call. Native SQLite has already completed synchronous=FULL writes;
+  /// the browser VFS waits for its queued IndexedDB operations.
+  Future<void> flushDurability() => driver.flushDurability();
+
   /// Envelope constructor for the drain loop (M04-T03 orchestrator port).
   SyncEnvelope envelopeFor({
     required PendingOpRecord op,
@@ -127,15 +147,20 @@ ConstructionMount openMount({
   SyncTransportPort? transport,
   ExecutionEnvironmentPort? environment,
 }) {
-  final driver = openNativeSqliteDriver(
-    options.dbPath,
-    busyTimeoutMs: options.busyTimeoutMs,
-  );
+  final driver = options.driver ??
+      openNativeSqliteDriver(
+        options.dbPath,
+        busyTimeoutMs: options.busyTimeoutMs,
+      );
 
   // Durability policy enforced at open (outbox repository.ts openOutbox):
   // re-asserted idempotently so an arbitrary driver construction cannot
   // silently weaken the flags.
-  driver.exec(kOutboxPragmaJournalMode);
+  driver.exec(
+    driver.supportsWal
+        ? kOutboxPragmaJournalMode
+        : 'PRAGMA journal_mode=DELETE',
+  );
   driver.exec(kOutboxPragmaSynchronous);
   driver.exec(kOutboxPragmaForeignKeys);
   driver.exec(
@@ -158,7 +183,13 @@ ConstructionMount openMount({
   );
   final outbox = OutboxRepository(driver);
   final pendingOps = OutboxPendingOperationSource(outbox);
-  final objects = FilesystemObjectStore(options.objectRoot);
+  final objects = options.objectStore ??
+      (options.objectRoot == null
+          ? throw RepositoryError(
+              'misconfigured',
+              'A native object directory or platform object store is required.',
+            )
+          : FilesystemObjectStore(options.objectRoot!));
 
   return ConstructionMount(
     driver: driver,
@@ -169,8 +200,8 @@ ConstructionMount openMount({
     credentials: credentials ?? MethodChannelSecureCredentialStore.create(),
     systemBrowser: systemBrowser ?? UrlLauncherSystemBrowserPort(),
     objects: objects,
-    sourceReader: const FileSourceReader(),
-    digest: const Sha256DigestPort(),
+    sourceReader: options.sourceReader ?? const FileSourceReader(),
+    digest: options.digest ?? const Sha256DigestPort(),
     transport:
         transport ??
         (throw RepositoryError(

@@ -193,6 +193,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         } else {
           widget.store.editUnsent(accountId: widget.accountId, draft: draft);
         }
+        await widget.store.flushDurability();
       });
       if (mounted) setState(() => _saved = true);
     } catch (error) {

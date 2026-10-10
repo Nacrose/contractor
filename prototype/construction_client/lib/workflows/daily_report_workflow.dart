@@ -181,6 +181,9 @@ class DailyReportDraft {
 }
 
 abstract interface class DailyReportWorkflowStore {
+  /// Completes the platform durability barrier after local writes.
+  Future<void> flushDurability();
+
   String save({
     required String accountId,
     required String tenantId,
@@ -203,6 +206,9 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   final ConstructionMount mount;
 
   DailyReportLocalStore(this.mount);
+
+  @override
+  Future<void> flushDurability() => mount.flushDurability();
 
   /// Creates a local report row and pending server operation in the same
   /// SQLite transaction, so neither half can survive alone.
