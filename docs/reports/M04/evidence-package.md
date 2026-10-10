@@ -3,7 +3,7 @@
 - **Status:** draft; M04 exit criteria are not satisfied.
 - **Date:** 2026-10-10.
 - **Flutter evidence branch:** `m04-t06-restore`, commit `7a023659139ce3e59e3345532786a0b0c5518dc1`.
-- **Product prerequisite:** the `workflow.dailyReport.createFieldReport` adapter/feed/photo-reference binding has not been merged. The client has no demonstrated server acceptance or second-device visibility.
+- **Product prerequisite:** an adapter and registered-photo reference change is in draft [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), commit `6a42b820` (`codex/m04-daily-report-sync`). It is not merged. The product repo has no deployed CDC feed/pull worker, so atomic feed delivery, authenticated server acceptance, and second-device visibility remain unproven.
 
 ## Task evidence inventory
 
@@ -11,7 +11,7 @@
 |---|---|---|
 | M04-T01 | [Domain path trace](domain-path-trace.md); merged PR #44 | Complete per execution plan |
 | M04-T02 | [Flutter mount report](flutter-mount.md); merged PR #45 | Complete per execution plan |
-| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, typed row payload widget test, and Chrome IndexedDB persistence probe | Open: product procedure binding, authenticated host, server acceptance, and second-device visibility are unproven |
+| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, typed row payload widget test, and Chrome IndexedDB persistence probe; product adapter change prepared but not merged | Open: CDC feed/pull deployment, authenticated host, live server acceptance, and second-device visibility are unproven |
 | M04-T04 | [Photo transfer progress](t04-photo-transfer-progress.md) | Open: product-backed registration/download and real-device session evidence remain missing |
 | M04-T05 | [Vertical fault matrix](fault-matrix-vertical.md) | Open: automated mounted legs exist; reboot/hardware/server evidence and complete health transcripts remain missing |
 | M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md) | Open: product download route/auth, applying snapshot rows, rejection fix-and-retry, and second-device photo restore remain missing |
@@ -28,7 +28,7 @@
 
 ## Open exit evidence
 
-1. Merge the product adapter for `workflow.dailyReport.createFieldReport`, preserving its permission checks and atomic feed event and accepting registered-photo references. Then demonstrate server acceptance and visibility in the current web app and on a second device.
+1. Merge [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), then deploy and verify the CDC feed/pull path. The adapter calls the existing permission-checked report procedure and accepts registered-photo references, but the product repository does not contain the CDC worker or pull route. Demonstrate atomic feed delivery, server acceptance, and visibility in the current web app and on a second device before closing T03.
 2. Record the workflow on a real supported Android or iOS device, including sync latency, battery/background behavior, crash-free rate, and sanitized crash reporting. Correlate one full sync with server M03-T08 metrics.
 3. Complete T04–T06 product-backed attachment registration, snapshot application, and recoverable rejection/fix/retry evidence.
 4. Finish the full current-rule parity fixture against the product route and link the native and web recordings.
