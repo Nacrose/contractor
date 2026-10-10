@@ -33,6 +33,35 @@ const Migration kDailyReportLocalMigration = Migration(
 /// A field report in the exact section shape used by the existing product
 /// daily-report form. Section rows stay JSON objects and are serialized into
 /// the string fields expected by `createFieldReport`.
+class RegisteredDailyReportPhoto {
+  final String attachmentId;
+  final String receipt;
+  final String digest;
+  final int bytes;
+
+  const RegisteredDailyReportPhoto({
+    required this.attachmentId,
+    required this.receipt,
+    required this.digest,
+    required this.bytes,
+  });
+
+  Map<String, Object?> toJson() => {
+    'attachmentId': attachmentId,
+    'receipt': receipt,
+    'digest': digest,
+    'fileSize': bytes,
+  };
+
+  static RegisteredDailyReportPhoto fromJson(Map<String, Object?> json) =>
+      RegisteredDailyReportPhoto(
+        attachmentId: json['attachmentId']! as String,
+        receipt: json['receipt']! as String,
+        digest: json['digest']! as String,
+        bytes: json['fileSize']! as int,
+      );
+}
+
 class DailyReportDraft {
   final String clientUuid;
   final String projectId;
@@ -51,6 +80,7 @@ class DailyReportDraft {
   final String problems;
   final String safetyNotes;
   final String remarks;
+  final List<RegisteredDailyReportPhoto> photos;
 
   DailyReportDraft({
     required this.clientUuid,
@@ -70,6 +100,7 @@ class DailyReportDraft {
     this.problems = '',
     this.safetyNotes = '',
     this.remarks = '',
+    this.photos = const [],
   });
 
   Map<String, Object?> toProcedureInput() {
@@ -93,7 +124,7 @@ class DailyReportDraft {
       if (problems.isNotEmpty) 'problems': problems,
       if (safetyNotes.isNotEmpty) 'safetyNotes': safetyNotes,
       if (remarks.isNotEmpty) 'remarks': remarks,
-      'photos': const <Object?>[],
+      'photos': photos.map((photo) => photo.toJson()).toList(growable: false),
     };
   }
 
@@ -128,6 +159,13 @@ class DailyReportDraft {
       problems: input['problems'] as String? ?? '',
       safetyNotes: input['safetyNotes'] as String? ?? '',
       remarks: input['remarks'] as String? ?? '',
+      photos: (input['photos'] as List<Object?>? ?? const [])
+          .map(
+            (photo) => RegisteredDailyReportPhoto.fromJson(
+              Map<String, Object?>.from(photo! as Map),
+            ),
+          )
+          .toList(growable: false),
     );
   }
 
@@ -193,6 +231,8 @@ abstract interface class DailyReportWorkflowStore {
   DailyReportDraft? get(String accountId, String clientUuid);
 
   String? operationState(String accountId, String clientUuid);
+
+  bool canEditUnsent(String accountId, String clientUuid);
 
   DeviceSyncHealth syncHealth(String accountId, String tenantId);
 
@@ -308,6 +348,12 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   @override
   String? operationState(String accountId, String clientUuid) =>
       mount.pendingOps.getOp(accountId, clientUuid)?.state;
+
+  @override
+  bool canEditUnsent(String accountId, String clientUuid) {
+    final op = mount.pendingOps.getOp(accountId, clientUuid);
+    return op != null && op.state == 'pending' && op.attempts == 0;
+  }
 
   @override
   DeviceSyncHealth syncHealth(String accountId, String tenantId) =>

@@ -17,12 +17,12 @@
 
 - `flutter test test/mount/attachment_transfer_test.dart` — **3 tests passed**: completion only after receipt, restart after interrupted chunk upload, and final-object digest mismatch retention.
 - `dart analyze` on the attachment manager, native photo service, port, and tests — **no issues found**.
-- Latest combined attachment/editor/fault-matrix run before the added T05 legs: **17 Flutter tests passed**; the expanded T05 suite now passes **8 tests**, bringing the combined total to 20. Targeted Dart analysis — **no issues found**. Screen evidence verifies report UUID propagation and registered-only previews.
+- Combined attachment/editor/workflow/fault-matrix run: **20 Flutter tests passed**; targeted Dart analysis — **no issues found**. Screen evidence verifies report UUID propagation, receipt references in the outbox payload, save blocking while a photo is incomplete, and registered-only previews.
 
 ## Acceptance still open
 
-- The product server registrar/feed binding is not available, so tests use a contract fake and no real registration endpoint or second-device read has been demonstrated.
-- The product registrar/feed binding is not available. It must accept and link report UUIDs plus M03-T06 receipts to `workflow.dailyReport.createFieldReport`; this requires explicit approval for product-repo edits, which is still pending.
+- Tests use contract fakes; no real registration endpoint or second-device read has been demonstrated.
+- The current product procedure accepts inline photo uploads, while the M04 client now sends registered attachment receipt/digest references. The product schema, transactional attachment linkage, and feed write must be updated to accept this contract; explicit approval for product-repo edits is still pending.
 - The editor exposes the injectable photo port, but the running product host does not yet instantiate it with real camera/gallery and registrar bindings.
-- The local report UUID is currently stored on the client attachment row and passed to the registrar contract, but `DailyReportDraft.toProcedureInput()` still emits an empty `photos` list. A receipt-reference payload contract and server-side report attachment transaction/feed write remain unimplemented; no claim is made that a registered photo is visible on the server report.
+- The local report UUID is stored on the client attachment row and passed to the registrar contract. The report outbox payload includes the registered attachment ID, receipt, digest, and byte count; the server has not yet accepted or linked those references, so no claim is made that a registered photo is visible on the server report.
 - Real camera/gallery capture, interrupted app process recovery, and device telemetry still require a real device session.

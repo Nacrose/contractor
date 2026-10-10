@@ -164,7 +164,38 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     problems: _problems.text,
     safetyNotes: _safety.text,
     remarks: _remarks.text,
+    photos: _registeredPhotoReferences,
   );
+
+  List<AttachmentTransferRecord> get _reportPhotos =>
+      widget.photos
+          ?.list()
+          .where((photo) => photo.dailyReportId == (_savedId ?? _clientUuid))
+          .toList(growable: false) ??
+      const <AttachmentTransferRecord>[];
+
+  List<RegisteredDailyReportPhoto> get _registeredPhotoReferences =>
+      _reportPhotos
+          .where(
+            (photo) =>
+                photo.complete &&
+                photo.receipt != null &&
+                photo.digest != null &&
+                photo.bytes != null,
+          )
+          .map(
+            (photo) => RegisteredDailyReportPhoto(
+              attachmentId: photo.id,
+              receipt: photo.receipt!,
+              digest: photo.digest!,
+              bytes: photo.bytes!,
+            ),
+          )
+          .toList(growable: false);
+
+  bool get _canAddPhotos =>
+      _savedId == null ||
+      widget.store.canEditUnsent(widget.accountId, _savedId!);
 
   List<Map<String, Object?>> _rows(String raw, String label) {
     final decoded = jsonDecode(raw);
@@ -175,6 +206,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   }
 
   Future<void> _save() async {
+    if (_reportPhotos.any((photo) => !photo.complete)) {
+      setState(() {
+        _error =
+            'Finish or retry each photo transfer before saving the report.';
+      });
+      return;
+    }
     if (!_formKey.currentState!.validate()) return;
     if (_projectId == null || _projectId!.isEmpty) {
       setState(() => _error = 'Choose a project before saving.');
@@ -219,6 +257,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   Future<void> _capturePhoto(PhotoCaptureSource source) async {
     final photos = widget.photos;
     if (photos == null) return;
+    if (!_canAddPhotos) {
+      setState(() {
+        _error =
+            'Photos cannot be added after this report has been dispatched.';
+      });
+      return;
+    }
     if (_projectId == null || _projectId!.isEmpty) {
       setState(() => _error = 'Choose a project before adding a photo.');
       return;
@@ -271,13 +316,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         ? null
         : widget.store.operationState(widget.accountId, _savedId!);
     final health = widget.store.syncHealth(widget.accountId, widget.tenantId);
-    final reportId = _savedId ?? _clientUuid;
-    final reportPhotos =
-        widget.photos
-            ?.list()
-            .where((photo) => photo.dailyReportId == reportId)
-            .toList(growable: false) ??
-        const <AttachmentTransferRecord>[];
+    final reportPhotos = _reportPhotos;
     final attachmentState = reportPhotos.isEmpty
         ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
         : reportPhotos.every((photo) => photo.complete)
@@ -403,14 +442,16 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                       runSpacing: 8,
                       children: [
                         OutlinedButton.icon(
-                          onPressed: _photoBusy || _projectId == null
+                          onPressed:
+                              _photoBusy || _projectId == null || !_canAddPhotos
                               ? null
                               : () => _capturePhoto(PhotoCaptureSource.camera),
                           icon: const Icon(Icons.photo_camera_outlined),
                           label: const Text('Take photo'),
                         ),
                         OutlinedButton.icon(
-                          onPressed: _photoBusy || _projectId == null
+                          onPressed:
+                              _photoBusy || _projectId == null || !_canAddPhotos
                               ? null
                               : () => _capturePhoto(PhotoCaptureSource.gallery),
                           icon: const Icon(Icons.photo_library_outlined),

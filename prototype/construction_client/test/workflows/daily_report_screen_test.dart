@@ -133,6 +133,39 @@ void main() {
       expect(find.text('Photo photo-re'), findsOneWidget);
       expect(find.text('Photo photo-fa'), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
+
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, 1000));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Finish or retry each photo transfer before saving the report.',
+        ),
+        findsOneWidget,
+      );
+      expect(mount!.pendingOps.listDue('acct-1', 9999999999999), isEmpty);
+
+      photos.records.removeLast();
+      final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
+      await tester.ensureVisible(remarks);
+      await tester.enterText(remarks, 'Report with registered photo');
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+
+      final op = mount!.pendingOps.listDue('acct-1', 9999999999999).single;
+      final payload = jsonDecode(op.payload) as Map<String, dynamic>;
+      expect(payload['photos'], [
+        {
+          'attachmentId': 'photo-registered',
+          'receipt': 'receipt',
+          'digest': 'sha256',
+          'fileSize': 3,
+        },
+      ]);
     },
   );
 }

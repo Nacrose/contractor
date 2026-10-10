@@ -7,7 +7,7 @@
 ## Implemented locally
 
 - A shared Flutter daily-report editor uses the M02 `RouteRegistry` and `CommandRegistry`, `construction_ui` `ActionBar`, and `SaveSyncStatusPanel`.
-- The form model preserves the current product `workflow.dailyReport.createFieldReport` fields and JSON section names. Photos are left to M04-T04.
+- The form model preserves the current product `workflow.dailyReport.createFieldReport` fields and JSON section names. A follow-on on `m04-t06-restore` now serializes registered attachment receipt/digest references in `photos`; the product procedure still needs the approved schema and transaction/feed update before those references can be accepted.
 - The native local store commits `daily_report_local` and the matching `workflow.dailyReport.createFieldReport` outbox item in one SQLite transaction. Its feature migration is versioned after the M04-T02 mount schema.
 - A report can be edited while its operation is pending and has never been dispatched. After the first attempt, its payload is immutable so its idempotency key cannot be replayed with changed data.
 - The M03-T07 drain policy is mounted and its launch/foreground/manual/background trigger callback can be bound to an active account. Missing/mismatched acceptance receipts are retained for safe retry.
