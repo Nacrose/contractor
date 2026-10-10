@@ -253,6 +253,69 @@ void main() {
     );
   });
 
+  test(
+    'lost acknowledgement replays the same mounted op without a second effect',
+    () async {
+      getStore().save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: draft('report-lost-ack001'),
+      );
+      SyncEnvelope? firstEnvelope;
+      var serverEffects = 0;
+      reopenWith(
+        _Transport((envelope) async {
+          firstEnvelope = envelope;
+          serverEffects++;
+          throw const SocketException('response lost after server commit');
+        }),
+      );
+      final first = await engine(mount!.transport).drain('acct-1');
+      expect(first.retrying, ['report-lost-ack001']);
+      expect(
+        getStore().get('acct-1', 'report-lost-ack001')?.remarks,
+        'Crew poured footing',
+      );
+      expect(
+        getStore().syncHealth('acct-1', 'tenant-1').pendingOperationCount,
+        1,
+      );
+
+      SyncEnvelope? replayEnvelope;
+      reopenWith(
+        _Transport((envelope) async {
+          replayEnvelope = envelope;
+          return SyncOutcome(
+            kind: SyncOutcomeKind.previouslyAccepted,
+            opId: envelope.opId,
+            receipt: 'receipt-from-first-commit',
+            serverSeq: 42,
+          );
+        }),
+      );
+      final replay = await engine(
+        mount!.transport,
+        nowMs: () => 2000,
+      ).drain('acct-1');
+
+      expect(replay.previouslyAccepted, ['report-lost-ack001']);
+      expect(replayEnvelope!.opId, firstEnvelope!.opId);
+      expect(replayEnvelope!.payloadDigest, firstEnvelope!.payloadDigest);
+      expect(serverEffects, 1);
+      expect(
+        mount!.pendingOps
+            .getOp('acct-1', 'report-lost-ack001')
+            ?.acceptedReceipt,
+        'receipt-from-first-commit',
+      );
+      expect(
+        getStore().syncHealth('acct-1', 'tenant-1').pendingOperationCount,
+        0,
+      );
+    },
+  );
+
   test('slow network retry leaves a durable pending report until a later accepted response', () async {
     getStore().save(
       accountId: 'acct-1',
