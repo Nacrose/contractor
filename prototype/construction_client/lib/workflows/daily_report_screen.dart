@@ -236,6 +236,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         } else {
           widget.store.editUnsent(accountId: widget.accountId, draft: draft);
         }
+        await widget.store.flushDurability();
       });
       if (mounted) setState(() => _saved = true);
     } catch (error) {
@@ -262,6 +263,10 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         _error =
             'Photos cannot be added after this report has been dispatched.';
       });
+      return;
+    }
+    if (_reportPhotos.length >= kDailyReportMaxPhotos) {
+      setState(() => _error = 'A daily report can contain at most 6 photos.');
       return;
     }
     if (_projectId == null || _projectId!.isEmpty) {

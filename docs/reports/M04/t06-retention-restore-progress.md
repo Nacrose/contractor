@@ -17,4 +17,8 @@ The tests cover successful fetch plus local persistence, final bytes matching th
 - The mounted T05 conflict/revocation tests prove local report retention for those outcomes, but no explicit server `rejected` outcome test yet demonstrates fix-and-retry from the user path.
 - No product feed association proves restored registered photos reappear on a second device.
 
+## Browser persistence follow-on (2026-10-10)
+
+The T06 worktree now contains a browser SQLite WASM + IndexedDB driver, a SQLite-backed object store, an async browser mount, and a browser photo service. Local writes await `flushDurability()` before the editor reports a save. The official `sqlite3.wasm` release asset was checksum-verified before vendoring. `flutter analyze`, the full native `flutter test` suite (177 passed), and a release web compile importing the actual browser mount dependency graph passed. A Chrome persistence probe did not complete in the Flutter web test harness, so close/reopen durability remains unverified and this implementation is still a candidate, not acceptance evidence. Product route/auth scope, snapshot application, rejected fix-and-retry, and second-device restoration remain open.
+
 These gaps depend on the daily-report server binding and real product routes. This progress report does not claim T06 complete.

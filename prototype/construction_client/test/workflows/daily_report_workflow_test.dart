@@ -163,6 +163,51 @@ void main() {
       throwsA(isA<RepositoryError>()),
     );
   });
+
+  test(
+    'daily-report validation matches product field limits and row rules',
+    () {
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0003',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          workProgress: const [
+            {'unit': 'm', 'sortOrder': 0},
+          ],
+        ).toProcedureInput(),
+        throwsA(isA<RepositoryError>()),
+      );
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0004',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          maxTempC: '71',
+          remarks: 'Report content',
+        ).toProcedureInput(),
+        throwsA(isA<RepositoryError>()),
+      );
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0005',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          remarks: 'Report content',
+          photos: List.generate(
+            7,
+            (index) => RegisteredDailyReportPhoto(
+              attachmentId: 'photo-$index',
+              receipt: 'receipt-$index',
+              digest: 'digest-$index',
+              bytes: 128,
+            ),
+          ),
+        ).toProcedureInput(),
+        throwsA(isA<RepositoryError>()),
+      );
+    },
+  );
 }
 
 class _Transport implements SyncTransportPort {

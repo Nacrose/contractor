@@ -21,7 +21,7 @@
 
 ## Acceptance still open
 
-- **Browser persistence:** web compilation does not prove a browser can save. `openNativeSqliteDriver` still fail-closes on web, and no IndexedDB-backed implementation of `DailyReportWorkflowStore` is mounted.
+- **Browser persistence:** an IndexedDB SQLite driver, browser object store, async browser mount, and browser photo picker candidate have been added on the T06 worktree. The editor now awaits the mount durability barrier after local writes. `flutter analyze` and a release web compile importing the actual browser mount dependency graph pass, but the Chrome lifecycle probe did not complete in the Flutter web test harness; persistence across browser reopen is therefore unverified, and T03 does not pass this criterion yet.
 - **Server binding:** the product repo still needs the approved M03 adapter/feed binding for `workflow.dailyReport.createFieldReport`, including server permission revalidation and an atomic feed event. Until that is merged, no server acceptance or second-device visibility is claimed. The user approval request for this separate product-repo PR is pending.
 - **Live scope and verification:** the widget host must supply real authenticated account/project data and an endpoint; the owner still needs the end-to-end acceptance proof and M04-T08 verification request.
 - Photos, device fault matrix, restore, hardware telemetry, and the owner gate remain assigned to T04–T09.

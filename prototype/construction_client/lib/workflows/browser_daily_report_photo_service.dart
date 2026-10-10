@@ -1,26 +1,24 @@
-import 'dart:io';
+/// Browser gallery picker backed by the mount's durable SQLite object store.
+library;
+
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
 
 import '../mount/attachment_transfer.dart';
-import 'daily_report_workflow.dart';
+import '../mount/ports.dart';
 import 'daily_report_photo_port.dart';
+import 'daily_report_workflow.dart';
 
-/// Native photo picker plus durable source-file binding for M03-T06.
-/// [durableSourceDirectory] must be an app-private persistent directory,
-/// supplied by the host (for example its application-support directory).
-class DailyReportPhotoService implements DailyReportPhotoPort {
+class BrowserDailyReportPhotoService implements DailyReportPhotoPort {
   final AttachmentTransferManager manager;
   final String accountId;
-  final Directory durableSourceDirectory;
   final ImagePicker picker;
 
-  DailyReportPhotoService({
+  BrowserDailyReportPhotoService({
     required this.manager,
     required this.accountId,
-    required this.durableSourceDirectory,
     ImagePicker? picker,
   }) : picker = picker ?? ImagePicker();
 
@@ -34,7 +32,10 @@ class DailyReportPhotoService implements DailyReportPhotoPort {
     required PhotoCaptureSource source,
   }) async {
     if (projectId.isEmpty || dailyReportId.isEmpty) {
-      throw StateError('Select a project and report before adding a photo.');
+      throw RepositoryError(
+        'misconfigured',
+        'Select a project and report before adding a photo.',
+      );
     }
     final selected = await picker.pickImage(
       source: source == PhotoCaptureSource.camera
@@ -53,32 +54,42 @@ class DailyReportPhotoService implements DailyReportPhotoPort {
         'Each report photo must be 10 MB or smaller.',
       );
     }
-    await durableSourceDirectory.create(recursive: true);
     final id = _newId();
-    final sourceFile = File(
-      '${durableSourceDirectory.path}${Platform.pathSeparator}$id.photo',
-    );
-    await sourceFile.writeAsBytes(bytes, flush: true);
+    final sourceKey = 'browser-sources/$id.photo';
+    manager.mount.objects.putBytes(sourceKey, bytes);
+    await manager.mount.flushDurability();
+
     final staged = manager.stageBytes(
       accountId: accountId,
       id: id,
       projectId: projectId,
       dailyReportId: dailyReportId,
-      sourcePath: sourceFile.path,
+      sourcePath: sourceKey,
       bytes: bytes,
     );
+    await manager.mount.flushDurability();
     if (staged.state == AttachmentTransferState.failed) return staged;
     final finalized = manager.finalize(accountId, id);
+    await manager.mount.flushDurability();
     if (finalized.state == AttachmentTransferState.failed) return finalized;
-    return manager.register(accountId, id);
+    final registered = await manager.register(accountId, id);
+    await manager.mount.flushDurability();
+    return registered;
   }
 
   @override
-  Future<AttachmentTransferRecord> retry(String attachmentId) =>
-      manager.retry(accountId, attachmentId);
+  Future<AttachmentTransferRecord> retry(String attachmentId) async {
+    final record = await manager.retry(accountId, attachmentId);
+    await manager.mount.flushDurability();
+    return record;
+  }
 
   @override
-  Future<AttachmentResumeSummary> resumeAll() => manager.resumeAll(accountId);
+  Future<AttachmentResumeSummary> resumeAll() async {
+    final summary = await manager.resumeAll(accountId);
+    await manager.mount.flushDurability();
+    return summary;
+  }
 
   @override
   Uint8List? registeredBytes(String attachmentId) {
