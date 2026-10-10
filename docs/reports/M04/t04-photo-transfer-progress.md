@@ -18,7 +18,8 @@
 
 ## Acceptance still open
 
-- The product server registrar/feed binding is not available, so tests use a contract fake and no real registration endpoint or second-device read has been demonstrated.
-- The daily-report payload currently has no registered-photo reference field. The server side must accept and link M03-T06 receipts to `workflow.dailyReport.createFieldReport`; this requires explicit approval for product-repo edits, which is still pending.
-- The daily-report editor does not yet expose the photo service until report linkage is implemented; user-visible transfer states and registered-only previews remain to be wired.
+- Product PR [#165](https://github.com/Nacrose/Construction_Manager/pull/165) now prepares the daily-report adapter to link registered photos using receipt, digest, and size verification; stacked PR [#166](https://github.com/Nacrose/Construction_Manager/pull/166) adds the feed pull path. Both are still draft and unmerged, so tests use a contract fake and no real registration endpoint or second-device read has been demonstrated. PR #166's Vercel Preview is Ready, but its persistent worker is not deployed.
+- The report/photo reference contract is prepared in PR #165, but the Flutter editor is not yet wired to the photo service and currently submits an empty `photos` list. The photo UI must submit only registered references and show transfer states; it must remain compatible with the product adapter before T04 acceptance.
+- The user authorized the product-repo work; that authorization is no longer pending. The product PRs still need to merge and run against configured infrastructure before end-to-end acceptance.
 - Real camera/gallery capture, interrupted app process recovery, and device telemetry still require a real device session.
+- The local product database and test account are not configured, so authenticated upload, server registration, and second-device reads cannot yet be exercised here.
