@@ -30,9 +30,41 @@ const Migration kDailyReportLocalMigration = Migration(
   ],
 );
 
+const int kDailyReportMaxPhotos = 6;
+const int kDailyReportPhotoMaxBytes = 10 * 1024 * 1024;
+
 /// A field report in the exact section shape used by the existing product
 /// daily-report form. Section rows stay JSON objects and are serialized into
 /// the string fields expected by `createFieldReport`.
+class RegisteredDailyReportPhoto {
+  final String attachmentId;
+  final String receipt;
+  final String digest;
+  final int bytes;
+
+  const RegisteredDailyReportPhoto({
+    required this.attachmentId,
+    required this.receipt,
+    required this.digest,
+    required this.bytes,
+  });
+
+  Map<String, Object?> toJson() => {
+    'attachmentId': attachmentId,
+    'receipt': receipt,
+    'digest': digest,
+    'fileSize': bytes,
+  };
+
+  static RegisteredDailyReportPhoto fromJson(Map<String, Object?> json) =>
+      RegisteredDailyReportPhoto(
+        attachmentId: json['attachmentId']! as String,
+        receipt: json['receipt']! as String,
+        digest: json['digest']! as String,
+        bytes: json['fileSize']! as int,
+      );
+}
+
 class DailyReportDraft {
   final String clientUuid;
   final String projectId;
@@ -51,7 +83,7 @@ class DailyReportDraft {
   final String problems;
   final String safetyNotes;
   final String remarks;
-  final List<Map<String, Object?>> photos;
+  final List<RegisteredDailyReportPhoto> photos;
 
   DailyReportDraft({
     required this.clientUuid,
@@ -95,7 +127,7 @@ class DailyReportDraft {
       if (problems.isNotEmpty) 'problems': problems,
       if (safetyNotes.isNotEmpty) 'safetyNotes': safetyNotes,
       if (remarks.isNotEmpty) 'remarks': remarks,
-      'photos': photos,
+      'photos': photos.map((photo) => photo.toJson()).toList(growable: false),
     };
   }
 
@@ -131,10 +163,35 @@ class DailyReportDraft {
       safetyNotes: input['safetyNotes'] as String? ?? '',
       remarks: input['remarks'] as String? ?? '',
       photos: (input['photos'] as List<Object?>? ?? const [])
-          .map((photo) => Map<String, Object?>.from(photo! as Map))
-          .toList(),
+          .map(
+            (photo) => RegisteredDailyReportPhoto.fromJson(
+              Map<String, Object?>.from(photo! as Map),
+            ),
+          )
+          .toList(growable: false),
     );
   }
+
+  DailyReportDraft withClientUuid(String value) => DailyReportDraft(
+    clientUuid: value,
+    projectId: projectId,
+    reportDate: reportDate,
+    weatherMorning: weatherMorning,
+    weatherAfternoon: weatherAfternoon,
+    weatherEvening: weatherEvening,
+    maxTempC: maxTempC,
+    minTempC: minTempC,
+    rainfallMm: rainfallMm,
+    workforce: workforce,
+    workProgress: workProgress,
+    equipmentUsed: equipmentUsed,
+    materialReceived: materialReceived,
+    materialConsumed: materialConsumed,
+    problems: problems,
+    safetyNotes: safetyNotes,
+    remarks: remarks,
+    photos: photos,
+  );
 
   void _validate() {
     if (clientUuid.length < 8 || clientUuid.length > 128) {
@@ -150,13 +207,71 @@ class DailyReportDraft {
         'A project and YYYY-MM-DD report date are required.',
       );
     }
-    final hasRows = [
-      workforce,
-      workProgress,
-      equipmentUsed,
-      materialReceived,
-      materialConsumed,
-    ].any((rows) => rows.any(_rowHasUserContent));
+    for (final (name, value, maxLength) in [
+      ('weatherMorning', weatherMorning, 40),
+      ('weatherAfternoon', weatherAfternoon, 40),
+      ('weatherEvening', weatherEvening, 40),
+      ('problems', problems, 8000),
+      ('safetyNotes', safetyNotes, 8000),
+      ('remarks', remarks, 8000),
+    ]) {
+      if (value.length > maxLength) {
+        throw RepositoryError(
+          'misconfigured',
+          '$name cannot exceed $maxLength characters.',
+        );
+      }
+    }
+    if (maxTempC.trim().isNotEmpty) {
+      _boundedNumber(maxTempC, 'maxTempC', -60, 70);
+    }
+    if (minTempC.trim().isNotEmpty) {
+      _boundedNumber(minTempC, 'minTempC', -60, 70);
+    }
+    if (rainfallMm.trim().isNotEmpty) {
+      _boundedNumber(rainfallMm, 'rainfallMm', 0, 5000);
+    }
+    final sections = [
+      (
+        'workforce',
+        workforce,
+        const ['company', 'trade', 'headcount', 'regHours', 'otHours'],
+      ),
+      (
+        'workProgress',
+        workProgress,
+        const ['taskDescription', 'actualQty', 'location'],
+      ),
+      ('equipmentUsed', equipmentUsed, const ['name', 'workingHours', 'fuel']),
+      (
+        'materialReceived',
+        materialReceived,
+        const ['name', 'qty', 'supplier', 'vehicle'],
+      ),
+      ('materialConsumed', materialConsumed, const ['name', 'quantity']),
+    ];
+    for (final (name, rows, _) in sections) {
+      final encoded = jsonEncode(rows);
+      if (rows.length > 200 || encoded.length > 200000) {
+        throw RepositoryError(
+          'misconfigured',
+          '$name exceeds the daily-report section limits.',
+        );
+      }
+    }
+    final hasRows = sections.any(
+      (section) => _hasContent(section.$2, section.$3),
+    );
+    if (photos.length > kDailyReportMaxPhotos ||
+        photos.any(
+          (photo) =>
+              photo.bytes <= 0 || photo.bytes > kDailyReportPhotoMaxBytes,
+        )) {
+      throw RepositoryError(
+        'misconfigured',
+        'A daily report can contain at most 6 photos of up to 10 MB each.',
+      );
+    }
     if (!hasRows &&
         problems.trim().isEmpty &&
         safetyNotes.trim().isEmpty &&
@@ -168,13 +283,13 @@ class DailyReportDraft {
     }
   }
 
-  bool _rowHasUserContent(Map<String, Object?> row) => row.entries.any((entry) {
-    // Product selects default to skill=unskilled and ownership=owned;
-    // those defaults alone do not make a blank template row report data.
-    if (entry.key == 'skill' || entry.key == 'ownership') return false;
-    final value = entry.value;
-    return value != null && value.toString().trim().isNotEmpty;
-  });
+  bool _hasContent(List<Map<String, Object?>> rows, List<String> inputKeys) =>
+      rows.any(
+        (row) => inputKeys.any((key) {
+          final value = row[key];
+          return value != null && value.toString().trim().isNotEmpty;
+        }),
+      );
 
   double _number(String value, String field) {
     final parsed = double.tryParse(value);
@@ -183,9 +298,23 @@ class DailyReportDraft {
     }
     return parsed;
   }
+
+  double _boundedNumber(String value, String field, double min, double max) {
+    final parsed = _number(value, field);
+    if (parsed < min || parsed > max) {
+      throw RepositoryError(
+        'misconfigured',
+        '$field must be between $min and $max.',
+      );
+    }
+    return parsed;
+  }
 }
 
 abstract interface class DailyReportWorkflowStore {
+  /// Completes the platform durability barrier after local writes.
+  Future<void> flushDurability();
+
   String save({
     required String accountId,
     required String tenantId,
@@ -195,9 +324,21 @@ abstract interface class DailyReportWorkflowStore {
 
   void editUnsent({required String accountId, required DailyReportDraft draft});
 
+  /// Saves a corrected copy with a new idempotency UUID. The rejected
+  /// operation and its immutable payload remain available for audit.
+  String saveCorrectedCopy({
+    required String accountId,
+    required String tenantId,
+    required String role,
+    required String rejectedClientUuid,
+    required DailyReportDraft draft,
+  });
+
   DailyReportDraft? get(String accountId, String clientUuid);
 
   String? operationState(String accountId, String clientUuid);
+
+  bool canEditUnsent(String accountId, String clientUuid);
 
   DeviceSyncHealth syncHealth(String accountId, String tenantId);
 
@@ -208,6 +349,9 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   final ConstructionMount mount;
 
   DailyReportLocalStore(this.mount);
+
+  @override
+  Future<void> flushDurability() => mount.flushDurability();
 
   /// Creates a local report row and pending server operation in the same
   /// SQLite transaction, so neither half can survive alone.
@@ -300,6 +444,61 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   }
 
   @override
+  String saveCorrectedCopy({
+    required String accountId,
+    required String tenantId,
+    required String role,
+    required String rejectedClientUuid,
+    required DailyReportDraft draft,
+  }) {
+    final rejected = mount.pendingOps.getOp(accountId, rejectedClientUuid);
+    if (rejected == null || rejected.state != 'rejected') {
+      throw RepositoryError(
+        'illegal_transition',
+        'Only a server-rejected report can be copied for correction.',
+      );
+    }
+    if (draft.clientUuid == rejectedClientUuid) {
+      throw RepositoryError(
+        'illegal_transition',
+        'A corrected report must use a new client UUID.',
+      );
+    }
+    final payload = draft.encode();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    return mount.outbox.saveMutation(
+      SaveMutationInput(
+        accountId: accountId,
+        projectId: draft.projectId,
+        op: PendingOpInput(
+          opId: draft.clientUuid,
+          kind: 'workflow.dailyReport.createFieldReport',
+          payload: payload,
+          tenantId: tenantId,
+          role: role,
+        ),
+        domain: (tx) {
+          tx
+              .prepare(
+                'INSERT INTO daily_report_local '
+                '(client_uuid, account_id, project_id, report_date, payload, created_at, updated_at) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?)',
+              )
+              .run([
+                draft.clientUuid,
+                accountId,
+                draft.projectId,
+                draft.reportDate,
+                payload,
+                now,
+                now,
+              ]);
+        },
+      ),
+    );
+  }
+
+  @override
   DailyReportDraft? get(String accountId, String clientUuid) {
     final row = mount.driver
         .prepare(
@@ -313,6 +512,12 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   @override
   String? operationState(String accountId, String clientUuid) =>
       mount.pendingOps.getOp(accountId, clientUuid)?.state;
+
+  @override
+  bool canEditUnsent(String accountId, String clientUuid) {
+    final op = mount.pendingOps.getOp(accountId, clientUuid);
+    return op != null && op.state == 'pending' && op.attempts == 0;
+  }
 
   @override
   DeviceSyncHealth syncHealth(String accountId, String tenantId) =>

@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'mount.dart';
 import 'ports.dart';
 import '../workflows/daily_report_workflow.dart';
+import 'daily_report_snapshot.dart';
 
 const Migration
 kAttachmentJournalMigration = Migration(5, 'attachment_journal_baseline', [
@@ -41,6 +42,11 @@ kAttachmentJournalMigration = Migration(5, 'attachment_journal_baseline', [
 const List<Migration> kM04WorkflowMigrations = [
   kDailyReportLocalMigration,
   kAttachmentJournalMigration,
+  Migration(6, 'attachment_report_link', [
+    'ALTER TABLE attachment ADD COLUMN daily_report_id TEXT',
+    'CREATE INDEX idx_attachment_report ON attachment (account_id, daily_report_id, state)',
+  ]),
+  kDailyReportSnapshotMigration,
 ];
 
 const String _objectPrefix = 'attachments/';
@@ -66,6 +72,7 @@ class AttachmentTransferRecord {
   final String id;
   final String accountId;
   final String? projectId;
+  final String? dailyReportId;
   final String sourcePath;
   final String? objectKey;
   final String? digest;
@@ -84,6 +91,7 @@ class AttachmentTransferRecord {
     required this.id,
     required this.accountId,
     required this.projectId,
+    required this.dailyReportId,
     required this.sourcePath,
     required this.objectKey,
     required this.digest,
@@ -120,6 +128,7 @@ abstract interface class AttachmentRegistrarPort {
     required String attachmentId,
     required String accountId,
     required String? projectId,
+    required String? dailyReportId,
     required String digest,
     required int bytes,
   });
@@ -129,6 +138,17 @@ abstract interface class AttachmentRegistrarPort {
   Future<int> putChunk(String uploadId, int offset, Uint8List chunk);
 
   Future<String> completeUpload(String uploadId, String digest, int bytes);
+}
+
+/// Fetches a previously registered object. The server implementation must
+/// authorize the receipt against the supplied tenant/project/role on every
+/// request. The product adapter must define the concrete route before wiring it.
+abstract interface class RegisteredAttachmentFetchPort {
+  Future<Uint8List> fetchRegistered({
+    required String receipt,
+    required String objectId,
+    required ScopeClaims scope,
+  });
 }
 
 class AttachmentRegistrarError implements Exception {
@@ -207,6 +227,7 @@ class AttachmentTransferManager {
     required String accountId,
     required String id,
     required String? projectId,
+    String? dailyReportId,
     required String sourcePath,
     required Uint8List bytes,
   }) {
@@ -230,10 +251,18 @@ class AttachmentTransferManager {
         mount.driver
             .prepare(
               'INSERT INTO attachment '
-              '(id, account_id, project_id, source_path, state, created_at, updated_at) '
-              "VALUES (?, ?, ?, ?, 'staging', ?, ?)",
+              '(id, account_id, project_id, daily_report_id, source_path, state, created_at, updated_at) '
+              "VALUES (?, ?, ?, ?, ?, 'staging', ?, ?)",
             )
-            .run([id, accountId, projectId, sourcePath, now, now]);
+            .run([
+              id,
+              accountId,
+              projectId,
+              dailyReportId,
+              sourcePath,
+              now,
+              now,
+            ]);
         mount.outbox.stageAttachment(
           accountId,
           attachmentId: id,
@@ -245,9 +274,9 @@ class AttachmentTransferManager {
       } else {
         mount.driver
             .prepare(
-              "UPDATE attachment SET project_id=?, source_path=?, object_key=NULL, digest=NULL, bytes=NULL, state='staging', failure_kind=NULL, failure_step=NULL, failure_detail=NULL, next_attempt_at_ms=NULL, updated_at=? WHERE id=? AND account_id=?",
+              "UPDATE attachment SET project_id=?, daily_report_id=?, source_path=?, object_key=NULL, digest=NULL, bytes=NULL, state='staging', failure_kind=NULL, failure_step=NULL, failure_detail=NULL, next_attempt_at_ms=NULL, updated_at=? WHERE id=? AND account_id=?",
             )
-            .run([projectId, sourcePath, now, id, accountId]);
+            .run([projectId, dailyReportId, sourcePath, now, id, accountId]);
         mount.driver
             .prepare(
               "UPDATE attachment_stage SET project_id=?, local_path=?, digest=?, bytes=?, state='staging', updated_at=? WHERE id=? AND account_id=?",
@@ -383,6 +412,7 @@ class AttachmentTransferManager {
         attachmentId: id,
         accountId: accountId,
         projectId: current.projectId,
+        dailyReportId: current.dailyReportId,
         digest: current.digest!,
         bytes: current.bytes!,
       );
@@ -453,6 +483,145 @@ class AttachmentTransferManager {
     }
   }
 
+  /// Restore a registered object onto a new device. Bytes pass through the
+  /// same durable stage/finalize journal and SHA-256 checks as a new capture;
+  /// the existing server receipt is retained, so restore never re-uploads.
+  Future<AttachmentTransferRecord> restoreRegistered({
+    required String accountId,
+    required String attachmentId,
+    required String projectId,
+    required String dailyReportId,
+    required String objectId,
+    required String receipt,
+    required String expectedDigest,
+    required String sourcePath,
+    required ScopeClaims scope,
+    required RegisteredAttachmentFetchPort fetcher,
+  }) async {
+    if (scope.projectId != projectId ||
+        dailyReportId.isEmpty ||
+        receipt.isEmpty ||
+        objectId.isEmpty) {
+      throw RepositoryError(
+        'misconfigured',
+        'Restore requires a report id, receipt, and object id scoped to the requested project.',
+      );
+    }
+    Uint8List bytes;
+    try {
+      bytes = await fetcher.fetchRegistered(
+        receipt: receipt,
+        objectId: objectId,
+        scope: scope,
+      );
+    } on AttachmentRegistrarError catch (error) {
+      return _recordRestoreFailure(
+        accountId,
+        attachmentId,
+        projectId,
+        dailyReportId,
+        sourcePath,
+        error.kind,
+        error.message,
+      );
+    } catch (_) {
+      return _recordRestoreFailure(
+        accountId,
+        attachmentId,
+        projectId,
+        dailyReportId,
+        sourcePath,
+        AttachmentFailureKind.retryable,
+        'Photo download failed; it can be fetched again.',
+      );
+    }
+    if (_digest.digest(bytes) != expectedDigest) {
+      return _recordRestoreFailure(
+        accountId,
+        attachmentId,
+        projectId,
+        dailyReportId,
+        sourcePath,
+        AttachmentFailureKind.digestMismatch,
+        'Downloaded photo does not match the registered SHA-256 digest.',
+      );
+    }
+    var restored = stageBytes(
+      accountId: accountId,
+      id: attachmentId,
+      projectId: projectId,
+      dailyReportId: dailyReportId,
+      sourcePath: sourcePath,
+      bytes: bytes,
+    );
+    if (restored.state == AttachmentTransferState.failed) return restored;
+    restored = finalize(accountId, attachmentId);
+    if (restored.state == AttachmentTransferState.failed) return restored;
+    mount.outbox.withImmediateTransaction(() {
+      _setState(accountId, attachmentId, AttachmentTransferState.registered, {
+        'receipt': receipt,
+        'failure_kind': null,
+        'failure_step': null,
+        'failure_detail': null,
+      });
+      mount.outbox.transitionAttachment(accountId, attachmentId, 'registered');
+      _event(accountId, attachmentId, 'registered', {
+        'receipt': receipt,
+        'restored': true,
+        'digest': expectedDigest,
+      });
+    });
+    return get(accountId, attachmentId)!;
+  }
+
+  AttachmentTransferRecord _recordRestoreFailure(
+    String accountId,
+    String id,
+    String projectId,
+    String dailyReportId,
+    String sourcePath,
+    AttachmentFailureKind kind,
+    String detail,
+  ) {
+    var current = get(accountId, id);
+    if (current == null) {
+      mount.outbox.withImmediateTransaction(() {
+        final now = nowMs();
+        mount.driver
+            .prepare(
+              'INSERT INTO attachment (id, account_id, project_id, daily_report_id, source_path, state, failure_kind, failure_step, failure_detail, created_at, updated_at) '
+              "VALUES (?, ?, ?, ?, ?, 'failed', ?, 'stage', ?, ?, ?)",
+            )
+            .run([
+              id,
+              accountId,
+              projectId,
+              dailyReportId,
+              sourcePath,
+              _failureWire(kind),
+              detail,
+              now,
+              now,
+            ]);
+        mount.outbox.stageAttachment(
+          accountId,
+          attachmentId: id,
+          projectId: projectId,
+          localPath: sourcePath,
+          digest: '',
+          bytes: 0,
+        );
+        mount.outbox.transitionAttachment(accountId, id, 'failed');
+        _event(accountId, id, 'failed', {
+          'step': 'download',
+          'kind': _failureWire(kind),
+        });
+      });
+      current = get(accountId, id);
+    }
+    return current!;
+  }
+
   Future<AttachmentTransferRecord> resume(
     String accountId,
     String id, {
@@ -521,6 +690,7 @@ class AttachmentTransferManager {
             accountId: accountId,
             id: id,
             projectId: current.projectId,
+            dailyReportId: current.dailyReportId,
             sourcePath: current.sourcePath,
             bytes: source,
           );
@@ -664,6 +834,7 @@ class AttachmentTransferManager {
         id: '${row['id']}',
         accountId: '${row['account_id']}',
         projectId: row['project_id'] as String?,
+        dailyReportId: row['daily_report_id'] as String?,
         sourcePath: '${row['source_path']}',
         objectKey: row['object_key'] as String?,
         digest: row['digest'] as String?,

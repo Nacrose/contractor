@@ -4,12 +4,12 @@
 /// the platform secure store through a method channel:
 ///   android -> Keystore-backed EncryptedSharedPreferences (MainActivity)
 ///   ios     -> Keychain, ThisDeviceOnly (AppDelegate)
-/// Desktop and web hosts have NO handler yet: MissingPluginException maps to
-/// the typed fail-closed CredentialStoreUnavailable — the mount NEVER
+///   macos   -> Keychain (MainFlutterWindow channel handler)
+/// Web, Windows, and Linux have NO handler yet: MissingPluginException maps
+/// to the typed fail-closed CredentialStoreUnavailable — the mount NEVER
 /// falls back to disk, SharedPreferences, SQLite, or any other non-secure
-/// surface (credentials.ts protocol-violation note). Platform handler
-/// bindings for desktop are a recorded follow-up constraint in the
-/// M04-T02 report.
+/// surface (credentials.ts protocol-violation note). Windows/Linux remain a
+/// recorded follow-up constraint in the M04-T02 report.
 library;
 
 import 'package:flutter/foundation.dart';

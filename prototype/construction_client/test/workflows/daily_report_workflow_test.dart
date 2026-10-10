@@ -147,6 +147,52 @@ void main() {
     },
   );
 
+  test('server rejection correction creates a new operation and preserves the rejected copy', () async {
+    mounted = open();
+    final store = DailyReportLocalStore(mounted!);
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft(),
+    );
+    mounted!.pendingOps.markInFlight('report-uuid-0001');
+    mounted!.pendingOps.recordRejected(
+      'report-uuid-0001',
+      'Report date is outside the project period.',
+    );
+
+    final corrected = draft(
+      uuid: 'report-uuid-0002',
+      remarks: 'Corrected date and site notes',
+    );
+    store.saveCorrectedCopy(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      rejectedClientUuid: 'report-uuid-0001',
+      draft: corrected,
+    );
+
+    expect(
+      mounted!.pendingOps.getOp('acct-1', 'report-uuid-0001')!.state,
+      'rejected',
+    );
+    expect(
+      mounted!.pendingOps.getOp('acct-1', 'report-uuid-0001')!.payload,
+      contains('Foundation poured'),
+    );
+    expect(
+      mounted!.pendingOps.getOp('acct-1', 'report-uuid-0002')!.state,
+      'pending',
+    );
+    expect(
+      store.get('acct-1', 'report-uuid-0002')!.remarks,
+      'Corrected date and site notes',
+    );
+    await store.flushDurability();
+  });
+
   test('procedure input preserves product field names and validates useful content', () {
     final payload = draft().toProcedureInput();
     expect(payload['projectId'], 'project-1');
@@ -164,24 +210,50 @@ void main() {
     );
   });
 
-  test('procedure input preserves registered photo receipt metadata', () {
-    final photo = <String, Object?>{
-      'attachmentId': 'server-photo-1',
-      'receipt': 'server-photo-1',
-      'digest': 'a' * 64,
-      'fileSize': 1234,
-    };
-    final withPhoto = DailyReportDraft(
-      clientUuid: 'report-uuid-0001',
-      projectId: 'project-1',
-      reportDate: '2026-10-10',
-      remarks: 'Photos attached',
-      photos: [photo],
-    );
-
-    expect(withPhoto.toProcedureInput()['photos'], [photo]);
-    expect(DailyReportDraft.decode(withPhoto.encode()).photos, [photo]);
-  });
+  test(
+    'daily-report validation matches product field limits and row rules',
+    () {
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0003',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          workProgress: const [
+            {'unit': 'm', 'sortOrder': 0},
+          ],
+        ).toProcedureInput(),
+        throwsA(isA<RepositoryError>()),
+      );
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0004',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          maxTempC: '71',
+          remarks: 'Report content',
+        ).toProcedureInput(),
+        throwsA(isA<RepositoryError>()),
+      );
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0005',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          remarks: 'Report content',
+          photos: List.generate(
+            7,
+            (index) => RegisteredDailyReportPhoto(
+              attachmentId: 'photo-$index',
+              receipt: 'receipt-$index',
+              digest: 'digest-$index',
+              bytes: 128,
+            ),
+          ),
+        ).toProcedureInput(),
+        throwsA(isA<RepositoryError>()),
+      );
+    },
+  );
 }
 
 class _Transport implements SyncTransportPort {

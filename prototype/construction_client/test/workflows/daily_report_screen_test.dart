@@ -1,11 +1,12 @@
 import 'dart:io';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:construction_client/mount/attachment_transfer.dart';
 import 'package:construction_client/mount/mount.dart';
 import 'package:construction_client/mount/ports.dart';
-import 'package:construction_client/workflows/daily_report_photo_port.dart';
 import 'package:construction_client/workflows/daily_report_screen.dart';
+import 'package:construction_client/workflows/daily_report_photo_port.dart';
 import 'package:construction_client/workflows/daily_report_workflow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -77,7 +78,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('P-01 — Bridge').last);
     await tester.pumpAndSettle();
@@ -100,7 +101,153 @@ void main() {
   });
 
   testWidgets(
-    'shows only registered photo state from the injected photo port',
+    'rejected report offers correction and saves a new immutable operation',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: DailyReportLocalStore(mount!),
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DropdownButtonFormField<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('P-01 — Bridge').last);
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Daily remarks'),
+        'Original report content',
+      );
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+
+      final oldId =
+          mount!.driver
+                  .prepare(
+                    'SELECT client_uuid FROM daily_report_local WHERE account_id = ?',
+                  )
+                  .get(['acct-1'])!['client_uuid']
+              as String;
+      mount!.pendingOps.markInFlight(oldId);
+      mount!.pendingOps.recordRejected(oldId, 'Correct the report and retry.');
+      await tester.tap(find.byTooltip('Sync now'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Save corrected copy'), findsOneWidget);
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Daily remarks'),
+        'Corrected report content',
+      );
+      await tester.ensureVisible(find.text('Save corrected copy'));
+      await tester.tap(find.text('Save corrected copy'));
+      await tester.pumpAndSettle();
+
+      final count = mount!.driver
+          .prepare(
+            'SELECT COUNT(*) AS count FROM pending_op WHERE account_id = ?',
+          )
+          .get(['acct-1'])!['count'];
+      expect(count, 2);
+      expect(mount!.pendingOps.getOp('acct-1', oldId)!.state, 'rejected');
+      final replacement = mount!.pendingOps
+          .listDue('acct-1', DateTime.now().millisecondsSinceEpoch + 1000)
+          .single;
+      expect(replacement.state, 'pending');
+      expect(replacement.payload, contains('Corrected report content'));
+      expect(replacement.opId, isNot(oldId));
+    },
+  );
+
+  testWidgets('typed section rows save normalized procedure payloads', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: DailyReportLocalStore(mount!),
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('P-01 — Bridge').last);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Company'),
+      'Acme',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Trade'),
+      'Masonry',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Headcount'),
+      '4',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Regular hours'),
+      '8',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Task description'),
+      'Pour footing',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Actual quantity'),
+      '12.5',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Daily remarks'),
+      'Crew on site',
+    );
+    await tester.ensureVisible(find.text('Save locally'));
+    await tester.tap(find.text('Save locally'));
+    await tester.pumpAndSettle();
+
+    final op = mount!.pendingOps
+        .listDue('acct-1', DateTime.now().millisecondsSinceEpoch + 1000)
+        .single;
+    final payload = jsonDecode(op.payload) as Map<String, dynamic>;
+    final workforce = jsonDecode(payload['workforce'] as String) as List;
+    final progress = jsonDecode(payload['workProgress'] as String) as List;
+    expect(workforce.single, {
+      'company': 'Acme',
+      'trade': 'Masonry',
+      'skill': 'unskilled',
+      'headcount': 4.0,
+      'regHours': 8.0,
+      'otHours': 0.0,
+      'sortOrder': 0,
+    });
+    expect(progress.single, {
+      'taskDescription': 'Pour footing',
+      'unit': null,
+      'actualQty': 12.5,
+      'batchedQty': 12.5,
+      'payableQty': 12.5,
+      'location': null,
+      'sortOrder': 0,
+    });
+  });
+
+  testWidgets(
+    'photo capture binds the stable report id and previews registered photos only',
     (tester) async {
       final photos = _Photos();
       await tester.pumpWidget(
@@ -113,68 +260,96 @@ void main() {
             projects: const [
               DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
             ],
-            photoPort: photos,
+            photos: photos,
           ),
         ),
       );
       await tester.pumpAndSettle();
-
-      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.tap(find.byType(DropdownButtonFormField<String>).first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('P-01 — Bridge').last);
       await tester.pumpAndSettle();
-      await tester.drag(find.byType(ListView), const Offset(0, -3000));
+      await tester.ensureVisible(find.text('Choose photo'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Choose photo'));
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Registered'), findsOneWidget);
+      expect(photos.lastProjectId, 'project-1');
+      expect(photos.lastReportId, isNotEmpty);
+      expect(find.text('Photo photo-re'), findsOneWidget);
+      expect(find.text('Photo photo-fa'), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
+
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, 1000));
+      await tester.pumpAndSettle();
       expect(
-        find.text('1 registered photo(s) will be attached to this report.'),
+        find.text(
+          'Finish or retry each photo transfer before saving the report.',
+        ),
         findsOneWidget,
       );
+      expect(mount!.pendingOps.listDue('acct-1', 9999999999999), isEmpty);
+
+      photos.records.removeLast();
+      final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
+      await tester.ensureVisible(remarks);
+      await tester.enterText(remarks, 'Report with registered photo');
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+
+      final op = mount!.pendingOps.listDue('acct-1', 9999999999999).single;
+      final payload = jsonDecode(op.payload) as Map<String, dynamic>;
+      expect(payload['photos'], [
+        {
+          'attachmentId': 'photo-registered',
+          'receipt': 'receipt',
+          'digest': 'sha256',
+          'fileSize': 3,
+        },
+      ]);
     },
   );
 }
 
 class _Photos implements DailyReportPhotoPort {
-  final List<AttachmentTransferRecord> records = [];
+  String? lastProjectId;
+  String? lastReportId;
+  final records = <AttachmentTransferRecord>[];
 
   @override
   List<AttachmentTransferRecord> list() => records;
 
-  AttachmentTransferRecord _registered(String id) => AttachmentTransferRecord(
-    id: id,
-    accountId: 'acct-1',
-    projectId: 'project-1',
-    sourcePath: '/private/photo.jpg',
-    objectKey: 'attachments/$id',
-    digest: 'a' * 64,
-    bytes: 1234,
-    state: AttachmentTransferState.registered,
-    failureKind: null,
-    failureStep: null,
-    failureDetail: null,
-    attempts: 1,
-    nextAttemptAtMs: null,
-    receipt: 'server-photo-1',
-    createdAtMs: 1,
-    updatedAtMs: 2,
-  );
-
   @override
   Future<AttachmentTransferRecord?> captureAndRegister({
     required String projectId,
+    required String dailyReportId,
     required PhotoCaptureSource source,
   }) async {
-    final record = _registered('local-transfer-1');
-    records.add(record);
-    return record;
+    lastProjectId = projectId;
+    lastReportId = dailyReportId;
+    records
+      ..clear()
+      ..add(
+        _record(
+          'photo-registered',
+          dailyReportId,
+          AttachmentTransferState.registered,
+        ),
+      )
+      ..add(
+        _record('photo-failed', dailyReportId, AttachmentTransferState.failed),
+      );
+    return records.first;
   }
 
   @override
   Future<AttachmentTransferRecord> retry(String attachmentId) async =>
-      records.singleWhere((record) => record.id == attachmentId);
+      records.last;
 
   @override
   Future<AttachmentResumeSummary> resumeAll() async =>
@@ -185,7 +360,42 @@ class _Photos implements DailyReportPhotoPort {
       );
 
   @override
-  Uint8List? registeredBytes(String attachmentId) => null;
+  Uint8List? registeredBytes(String attachmentId) =>
+      attachmentId == 'photo-registered'
+      ? base64Decode(
+          'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC',
+        )
+      : null;
+
+  AttachmentTransferRecord _record(
+    String id,
+    String reportId,
+    AttachmentTransferState state,
+  ) => AttachmentTransferRecord(
+    id: id,
+    accountId: 'acct-1',
+    projectId: 'project-1',
+    dailyReportId: reportId,
+    sourcePath: '/private/photo',
+    objectKey: state == AttachmentTransferState.registered
+        ? 'registered'
+        : null,
+    digest: state == AttachmentTransferState.registered ? 'sha256' : null,
+    bytes: state == AttachmentTransferState.registered ? 3 : null,
+    state: state,
+    failureKind: state == AttachmentTransferState.failed
+        ? AttachmentFailureKind.retryable
+        : null,
+    failureStep: state == AttachmentTransferState.failed
+        ? AttachmentTransferStep.register
+        : null,
+    failureDetail: state == AttachmentTransferState.failed ? 'network' : null,
+    attempts: 0,
+    nextAttemptAtMs: null,
+    receipt: state == AttachmentTransferState.registered ? 'receipt' : null,
+    createdAtMs: 1,
+    updatedAtMs: 1,
+  );
 }
 
 class _Transport implements SyncTransportPort {

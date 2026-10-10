@@ -7,4 +7,6 @@
 /// [MountSqliteDriver] from ports.dart.
 library;
 
-export 'sqlite_driver_stub.dart' if (dart.library.ffi) 'sqlite_driver_io.dart';
+export 'sqlite_driver_stub.dart'
+    if (dart.library.js_interop) 'sqlite_driver_web.dart'
+    if (dart.library.ffi) 'sqlite_driver_io.dart';

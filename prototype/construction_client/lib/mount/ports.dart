@@ -43,6 +43,11 @@ abstract interface class MountSqliteDriver implements SqlDriver {
   Object? pragmaValue(String pragma);
 
   void close();
+
+  /// Waits until committed writes have reached the platform's durable store.
+  /// Native SQLite completes this during transaction commit; browser VFS
+  /// bindings must flush their async IndexedDB journal before acknowledging.
+  Future<void> flushDurability();
 }
 
 /// Durability policy from driver.ts: WAL alone is NOT durability evidence —

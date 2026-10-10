@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:construction_application/construction_application.dart';
@@ -6,9 +5,9 @@ import 'package:construction_ui/construction_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../mount/attachment_transfer.dart';
 import 'daily_report_workflow.dart';
 import 'daily_report_photo_port.dart';
+import '../mount/attachment_transfer.dart';
 import '../mount/ports.dart';
 
 class DailyReportProjectOption {
@@ -28,7 +27,7 @@ class DailyReportScreen extends StatefulWidget {
     required this.tenantId,
     required this.role,
     required this.projects,
-    this.photoPort,
+    this.photos,
     super.key,
   });
 
@@ -37,7 +36,7 @@ class DailyReportScreen extends StatefulWidget {
   final String tenantId;
   final String role;
   final List<DailyReportProjectOption> projects;
-  final DailyReportPhotoPort? photoPort;
+  final DailyReportPhotoPort? photos;
 
   @override
   State<DailyReportScreen> createState() => _DailyReportScreenState();
@@ -56,31 +55,54 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   late final TextEditingController _minTemp = TextEditingController();
   late final TextEditingController _maxTemp = TextEditingController();
   late final TextEditingController _rain = TextEditingController();
-  late final TextEditingController _workforce = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _progress = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _equipment = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _received = TextEditingController(
-    text: '[]',
-  );
-  late final TextEditingController _consumed = TextEditingController(
-    text: '[]',
-  );
+  final List<_ReportRow> _workforceRows = [
+    _ReportRow(
+      {
+        'company': '',
+        'trade': '',
+        'headcount': '',
+        'regHours': '',
+        'otHours': '',
+      },
+      selections: {'skill': 'unskilled'},
+    ),
+  ];
+  final List<_ReportRow> _progressRows = [
+    _ReportRow({
+      'taskDescription': '',
+      'unit': '',
+      'actualQty': '',
+      'location': '',
+    }),
+  ];
+  final List<_ReportRow> _equipmentRows = [
+    _ReportRow(
+      {'name': '', 'workingHours': '', 'fuel': ''},
+      selections: {'ownership': 'owned'},
+    ),
+  ];
+  final List<_ReportRow> _receivedRows = [
+    _ReportRow({
+      'name': '',
+      'qty': '',
+      'unit': '',
+      'supplier': '',
+      'vehicle': '',
+    }),
+  ];
+  final List<_ReportRow> _consumedRows = [
+    _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+  ];
   late final TextEditingController _problems = TextEditingController();
   late final TextEditingController _safety = TextEditingController();
   late final TextEditingController _remarks = TextEditingController();
   String? _projectId;
   String? _savedId;
+  String? _photoReportId;
   String? _error;
   bool _saving = false;
-  bool _photoBusy = false;
   bool _saved = false;
-  List<AttachmentTransferRecord> _photos = const [];
+  bool _photoBusy = false;
 
   static final CapabilityRegistry _capabilities = CapabilityRegistry(const []);
   static final RouteRegistry _routes = RouteRegistry(
@@ -123,13 +145,6 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _photos = widget.photoPort?.list() ?? const [];
-    if (widget.photoPort != null) _resumePhotos();
-  }
-
-  @override
   void dispose() {
     for (final controller in [
       _date,
@@ -139,16 +154,20 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       _minTemp,
       _maxTemp,
       _rain,
-      _workforce,
-      _progress,
-      _equipment,
-      _received,
-      _consumed,
       _problems,
       _safety,
       _remarks,
     ]) {
       controller.dispose();
+    }
+    for (final row in [
+      ..._workforceRows,
+      ..._progressRows,
+      ..._equipmentRows,
+      ..._receivedRows,
+      ..._consumedRows,
+    ]) {
+      row.dispose();
     }
     _actionCoordinator.dispose();
     super.dispose();
@@ -164,102 +183,145 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     minTempC: _minTemp.text.trim(),
     maxTempC: _maxTemp.text.trim(),
     rainfallMm: _rain.text.trim(),
-    workforce: _rows(_workforce.text, 'Workforce'),
-    workProgress: _rows(_progress.text, 'Work progress'),
-    equipmentUsed: _rows(_equipment.text, 'Equipment'),
-    materialReceived: _rows(_received.text, 'Materials received'),
-    materialConsumed: _rows(_consumed.text, 'Materials consumed'),
+    workforce: _workforceRows
+        .where(
+          (row) => row.hasText([
+            'company',
+            'trade',
+            'headcount',
+            'regHours',
+            'otHours',
+          ]),
+        )
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'company': row.value('company'),
+            'trade': row.value('trade'),
+            'skill': row.selections['skill'] ?? 'unskilled',
+            'headcount': row.number('headcount'),
+            'regHours': row.number('regHours'),
+            'otHours': row.number('otHours'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    workProgress: _progressRows
+        .where(
+          (row) => row.hasText(['taskDescription', 'actualQty', 'location']),
+        )
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          final quantity = row.number('actualQty');
+          return {
+            'taskDescription': row.value('taskDescription'),
+            'unit': row.nullableValue('unit'),
+            'actualQty': quantity,
+            'batchedQty': quantity,
+            'payableQty': quantity,
+            'location': row.nullableValue('location'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    equipmentUsed: _equipmentRows
+        .where((row) => row.hasText(['name', 'workingHours', 'fuel']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'name': row.value('name'),
+            'type': '',
+            'ownership': row.selections['ownership'] ?? 'owned',
+            'workingHours': row.number('workingHours'),
+            'fuel': row.number('fuel'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    materialReceived: _receivedRows
+        .where((row) => row.hasText(['name', 'qty', 'supplier', 'vehicle']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'name': row.value('name'),
+            'qty': row.number('qty'),
+            'unit': row.nullableValue('unit'),
+            'supplier': row.nullableValue('supplier'),
+            'vehicle': row.nullableValue('vehicle'),
+            'testStatus': 'none',
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    materialConsumed: _consumedRows
+        .where((row) => row.hasText(['name', 'quantity']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'materialId': null,
+            'name': row.value('name'),
+            'quantity': row.number('quantity'),
+            'unit': row.nullableValue('unit'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
     problems: _problems.text,
     safetyNotes: _safety.text,
     remarks: _remarks.text,
     photos: _registeredPhotoReferences,
   );
 
-  List<Map<String, Object?>> get _registeredPhotoReferences => _photos
-      .where(
-        (photo) =>
-            photo.projectId == _projectId &&
-            photo.complete &&
-            photo.receipt != null &&
-            photo.digest != null &&
-            photo.bytes != null,
-      )
-      .map(
-        (photo) => <String, Object?>{
-          // The product adapter uses the server's registered FieldPhoto id
-          // for both attachmentId and receipt, then verifies digest and size.
-          'attachmentId': photo.receipt!,
-          'receipt': photo.receipt!,
-          'digest': photo.digest!,
-          'fileSize': photo.bytes!,
-        },
-      )
-      .toList();
+  List<AttachmentTransferRecord> get _reportPhotos =>
+      widget.photos
+          ?.list()
+          .where(
+            (photo) =>
+                photo.dailyReportId ==
+                (_photoReportId ?? _savedId ?? _clientUuid),
+          )
+          .toList(growable: false) ??
+      const <AttachmentTransferRecord>[];
 
-  List<AttachmentTransferRecord> get _projectPhotos =>
-      _photos.where((photo) => photo.projectId == _projectId).toList();
+  List<RegisteredDailyReportPhoto> get _registeredPhotoReferences =>
+      _reportPhotos
+          .where(
+            (photo) =>
+                photo.complete &&
+                photo.receipt != null &&
+                photo.digest != null &&
+                photo.bytes != null,
+          )
+          .map(
+            (photo) => RegisteredDailyReportPhoto(
+              attachmentId: photo.id,
+              receipt: photo.receipt!,
+              digest: photo.digest!,
+              bytes: photo.bytes!,
+            ),
+          )
+          .toList(growable: false);
 
-  Future<void> _resumePhotos() async {
-    try {
-      await widget.photoPort!.resumeAll();
-      if (mounted) setState(() => _photos = widget.photoPort!.list());
-    } catch (error) {
-      if (mounted) setState(() => _error = _safeError(error));
-    }
-  }
-
-  Future<void> _capturePhoto(PhotoCaptureSource source) async {
-    final port = widget.photoPort;
-    if (port == null || _projectId == null || _photoBusy) return;
-    setState(() {
-      _photoBusy = true;
-      _error = null;
-    });
-    try {
-      await port.captureAndRegister(projectId: _projectId!, source: source);
-      if (mounted) setState(() => _photos = port.list());
-    } catch (error) {
-      if (mounted) setState(() => _error = _safeError(error));
-    } finally {
-      if (mounted) setState(() => _photoBusy = false);
-    }
-  }
-
-  Future<void> _retryPhoto(String attachmentId) async {
-    final port = widget.photoPort;
-    if (port == null || _photoBusy) return;
-    setState(() {
-      _photoBusy = true;
-      _error = null;
-    });
-    try {
-      await port.retry(attachmentId);
-      if (mounted) setState(() => _photos = port.list());
-    } catch (error) {
-      if (mounted) setState(() => _error = _safeError(error));
-    } finally {
-      if (mounted) setState(() => _photoBusy = false);
-    }
-  }
-
-  List<Map<String, Object?>> _rows(String raw, String label) {
-    final decoded = jsonDecode(raw);
-    if (decoded is! List || decoded.any((row) => row is! Map)) {
-      throw FormatException('$label must be a JSON array of objects.');
-    }
-    return decoded.map((row) => Map<String, Object?>.from(row as Map)).toList();
-  }
+  bool get _canAddPhotos =>
+      _savedId == null ||
+      widget.store.canEditUnsent(widget.accountId, _savedId!);
 
   Future<void> _save() async {
+    if (_reportPhotos.any((photo) => !photo.complete)) {
+      setState(() {
+        _error =
+            'Finish or retry each photo transfer before saving the report.';
+      });
+      return;
+    }
     if (!_formKey.currentState!.validate()) return;
     if (_projectId == null || _projectId!.isEmpty) {
       setState(() => _error = 'Choose a project before saving.');
-      return;
-    }
-    if (_projectPhotos.any((photo) => !photo.complete)) {
-      setState(
-        () => _error = 'Finish or retry every photo transfer before saving.',
-      );
       return;
     }
     setState(() {
@@ -277,9 +339,23 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             draft: draft,
           );
           _savedId = draft.clientUuid;
+        } else if (widget.store.operationState(widget.accountId, _savedId!) ==
+            'rejected') {
+          final rejectedId = _savedId!;
+          final corrected = draft.withClientUuid(_uuid());
+          widget.store.saveCorrectedCopy(
+            accountId: widget.accountId,
+            tenantId: widget.tenantId,
+            role: widget.role,
+            rejectedClientUuid: rejectedId,
+            draft: corrected,
+          );
+          _photoReportId = rejectedId;
+          _savedId = corrected.clientUuid;
         } else {
           widget.store.editUnsent(accountId: widget.accountId, draft: draft);
         }
+        await widget.store.flushDurability();
       });
       if (mounted) setState(() => _saved = true);
     } catch (error) {
@@ -295,6 +371,56 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       if (mounted) setState(() {});
     } catch (error) {
       if (mounted) setState(() => _error = _safeError(error));
+    }
+  }
+
+  Future<void> _capturePhoto(PhotoCaptureSource source) async {
+    final photos = widget.photos;
+    if (photos == null) return;
+    if (!_canAddPhotos) {
+      setState(() {
+        _error =
+            'Photos cannot be added after this report has been dispatched.';
+      });
+      return;
+    }
+    if (_reportPhotos.length >= kDailyReportMaxPhotos) {
+      setState(() => _error = 'A daily report can contain at most 6 photos.');
+      return;
+    }
+    if (_projectId == null || _projectId!.isEmpty) {
+      setState(() => _error = 'Choose a project before adding a photo.');
+      return;
+    }
+    setState(() {
+      _photoBusy = true;
+      _error = null;
+    });
+    try {
+      await photos.captureAndRegister(
+        projectId: _projectId!,
+        dailyReportId: _savedId ?? _clientUuid,
+        source: source,
+      );
+      if (mounted) setState(() {});
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    } finally {
+      if (mounted) setState(() => _photoBusy = false);
+    }
+  }
+
+  Future<void> _retryPhoto(String id) async {
+    final photos = widget.photos;
+    if (photos == null) return;
+    setState(() => _photoBusy = true);
+    try {
+      await photos.retry(id);
+      if (mounted) setState(() {});
+    } catch (error) {
+      if (mounted) setState(() => _error = _safeError(error));
+    } finally {
+      if (mounted) setState(() => _photoBusy = false);
     }
   }
 
@@ -314,6 +440,23 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         ? null
         : widget.store.operationState(widget.accountId, _savedId!);
     final health = widget.store.syncHealth(widget.accountId, widget.tenantId);
+    final reportPhotos = _reportPhotos;
+    final attachmentState = reportPhotos.isEmpty
+        ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
+        : reportPhotos.every((photo) => photo.complete)
+        ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_COMPLETE
+        : reportPhotos.any(
+            (photo) =>
+                photo.failureKind == AttachmentFailureKind.rejection ||
+                photo.failureKind == AttachmentFailureKind.revoked,
+          )
+        ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_REJECTED
+        : reportPhotos.any(
+            (photo) => photo.state == AttachmentTransferState.failed,
+          )
+        ? AttachmentCompletionState
+              .ATTACHMENT_COMPLETION_STATE_RETRYABLE_FAILURE
+        : AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_UPLOADING;
     final status = SaveSyncStatus(
       localPersistence: _saved
           ? LocalPersistenceState.LOCAL_PERSISTENCE_STATE_SAVED
@@ -325,16 +468,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         'pending' => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_QUEUED,
         _ => ServerAcceptanceState.SERVER_ACCEPTANCE_STATE_NOT_QUEUED,
       },
-      attachmentCompletion: _projectPhotos.isEmpty
-          ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
-          : _projectPhotos.any(
-              (photo) => photo.state == AttachmentTransferState.failed,
-            )
-          ? AttachmentCompletionState
-                .ATTACHMENT_COMPLETION_STATE_RETRYABLE_FAILURE
-          : _projectPhotos.every((photo) => photo.complete)
-          ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_COMPLETE
-          : AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_UPLOADING,
+      attachmentCompletion: attachmentState,
       backup: BackupState.BACKUP_STATE_NOT_CONFIGURED,
       pendingWorkRetained: opState != null && opState != 'accepted',
       nextUserAction: opState == 'rejected'
@@ -357,7 +491,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.save_outlined),
-              label: Text(_saved ? 'Update local draft' : 'Save locally'),
+              label: Text(
+                opState == 'rejected'
+                    ? 'Save corrected copy'
+                    : _saved
+                    ? 'Update local draft'
+                    : 'Save locally',
+              ),
             ),
             actions: [
               ActionBarAction(
@@ -386,6 +526,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ],
+          if (opState == 'rejected') ...[
+            const SizedBox(height: 8),
+            const Text(
+              'This report was rejected by the server. Correct the fields and save a new copy; the rejected operation is retained for review.',
+            ),
+          ],
           const SizedBox(height: 16),
           Form(
             key: _formKey,
@@ -406,7 +552,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                           ),
                         )
                         .toList(),
-                    onChanged: _savedId == null && _projectPhotos.isEmpty
+                    onChanged:
+                        (_savedId == null || opState == 'rejected') &&
+                            reportPhotos.isEmpty
                         ? (value) => setState(() => _projectId = value)
                         : null,
                     validator: (value) => value == null || value.isEmpty
@@ -425,6 +573,38 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                         : 'Use YYYY-MM-DD',
                   ),
                 ]),
+                if (widget.photos != null)
+                  _section('Photos', [
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed:
+                              _photoBusy || _projectId == null || !_canAddPhotos
+                              ? null
+                              : () => _capturePhoto(PhotoCaptureSource.camera),
+                          icon: const Icon(Icons.photo_camera_outlined),
+                          label: const Text('Take photo'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed:
+                              _photoBusy || _projectId == null || !_canAddPhotos
+                              ? null
+                              : () => _capturePhoto(PhotoCaptureSource.gallery),
+                          icon: const Icon(Icons.photo_library_outlined),
+                          label: const Text('Choose photo'),
+                        ),
+                      ],
+                    ),
+                    if (reportPhotos.isEmpty)
+                      const ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(Icons.photo_outlined),
+                        title: Text('No photos attached'),
+                      ),
+                    for (final photo in reportPhotos) _photoTile(photo),
+                  ]),
                 _section('Weather', [
                   _field(_morning, 'Morning weather'),
                   _field(_midday, 'Midday weather'),
@@ -433,87 +613,56 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   _numberField(_maxTemp, 'Max °C'),
                   _numberField(_rain, 'Rainfall mm'),
                 ]),
-                _jsonSection(
-                  _workforce,
-                  'Workforce',
-                  '[{"company":"","trade":"","skill":"unskilled","headcount":"","regHours":"","otHours":""}]',
-                ),
-                _jsonSection(
-                  _progress,
-                  'Work progress',
-                  '[{"taskDescription":"","unit":"","actualQty":"","location":""}]',
-                ),
-                _jsonSection(
-                  _equipment,
-                  'Equipment used',
-                  '[{"name":"","ownership":"owned","workingHours":"","fuel":""}]',
-                ),
-                _jsonSection(
-                  _received,
-                  'Materials received',
-                  '[{"name":"","qty":"","unit":"","supplier":"","vehicle":""}]',
-                ),
-                _jsonSection(
-                  _consumed,
-                  'Materials consumed',
-                  '[{"name":"","quantity":"","unit":""}]',
-                ),
+                _workforceSection(),
+                _progressSection(),
+                _equipmentSection(),
+                _receivedSection(),
+                _consumedSection(),
                 _section('Problems, safety & remarks', [
                   _field(_problems, 'Problems', lines: 3),
                   _field(_safety, 'Safety notes', lines: 3),
                   _field(_remarks, 'Daily remarks', lines: 4),
                 ]),
-                if (widget.photoPort != null)
-                  _section('Photos', [
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        OutlinedButton.icon(
-                          onPressed: _projectId == null || _photoBusy
-                              ? null
-                              : () => _capturePhoto(PhotoCaptureSource.camera),
-                          icon: const Icon(Icons.camera_alt_outlined),
-                          label: const Text('Take photo'),
-                        ),
-                        OutlinedButton.icon(
-                          onPressed: _projectId == null || _photoBusy
-                              ? null
-                              : () => _capturePhoto(PhotoCaptureSource.gallery),
-                          icon: const Icon(Icons.photo_library_outlined),
-                          label: const Text('Choose photo'),
-                        ),
-                        if (_photoBusy)
-                          const Padding(
-                            padding: EdgeInsets.all(12),
-                            child: SizedBox.square(
-                              dimension: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          ),
-                      ],
-                    ),
-                    if (_projectId == null)
-                      const Text('Choose a project before adding photos.'),
-                    for (final photo in _projectPhotos)
-                      _PhotoTransferTile(
-                        photo: photo,
-                        bytes: photo.complete
-                            ? widget.photoPort!.registeredBytes(photo.id)
-                            : null,
-                        onRetry: photo.state == AttachmentTransferState.failed
-                            ? () => _retryPhoto(photo.id)
-                            : null,
-                      ),
-                    Text(
-                      '${_registeredPhotoReferences.length} registered photo(s) will be attached to this report.',
-                    ),
-                  ]),
               ],
             ),
           ),
           const SizedBox(height: 24),
         ],
       ),
+    );
+  }
+
+  Widget _photoTile(AttachmentTransferRecord photo) {
+    final bytes = photo.complete
+        ? widget.photos?.registeredBytes(photo.id)
+        : null;
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: bytes == null
+          ? const Icon(Icons.image_outlined)
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.memory(
+                bytes,
+                width: 52,
+                height: 52,
+                fit: BoxFit.cover,
+              ),
+            ),
+      title: Text(
+        'Photo ${photo.id.substring(0, photo.id.length.clamp(0, 8))}',
+      ),
+      subtitle: Text(
+        photo.complete
+            ? 'Registered · ${photo.bytes ?? 0} bytes'
+            : photo.failureDetail ?? 'Transfer ${photo.state.name}',
+      ),
+      trailing: photo.state == AttachmentTransferState.failed
+          ? TextButton(
+              onPressed: _photoBusy ? null : () => _retryPhoto(photo.id),
+              child: const Text('Retry'),
+            )
+          : null,
     );
   }
 
@@ -532,32 +681,194 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     ),
   );
 
-  Widget _jsonSection(
-    TextEditingController controller,
-    String title,
-    String initial,
-  ) => _section(title, [
-    TextFormField(
-      controller: controller,
-      minLines: 2,
-      maxLines: 8,
-      decoration: InputDecoration(
-        labelText: '$title rows (JSON)',
-        helperText: 'Use the existing daily report row fields. Enter [] when there are none.',
-        border: const OutlineInputBorder(),
-      ),
-      validator: (raw) {
-        try {
-          final value = jsonDecode(raw ?? initial);
-          return value is List && value.every((row) => row is Map)
-              ? null
-              : 'Enter a JSON array of row objects';
-        } catch (_) {
-          return 'Enter valid JSON';
-        }
+  Widget _workforceSection() => _reportRowsSection(
+    'Workforce',
+    _workforceRows,
+    createRow: () => _ReportRow(
+      {
+        'company': '',
+        'trade': '',
+        'headcount': '',
+        'regHours': '',
+        'otHours': '',
       },
+      selections: {'skill': 'unskilled'},
+    ),
+    addLabel: 'Add workforce row',
+    fields: [
+      _rowText('company', 'Company'),
+      _rowText('trade', 'Trade'),
+      _rowSelect('skill', 'Skill', const {
+        'unskilled': 'Unskilled',
+        'semi': 'Semi-skilled',
+        'skilled': 'Skilled',
+      }),
+      _rowNumber('headcount', 'Headcount'),
+      _rowNumber('regHours', 'Regular hours'),
+      _rowNumber('otHours', 'Overtime hours'),
+    ],
+  );
+
+  Widget _progressSection() => _reportRowsSection(
+    'Work progress',
+    _progressRows,
+    createRow: () => _ReportRow({
+      'taskDescription': '',
+      'unit': '',
+      'actualQty': '',
+      'location': '',
+    }),
+    addLabel: 'Add progress row',
+    fields: [
+      _rowText('taskDescription', 'Task description'),
+      _rowText('unit', 'Unit'),
+      _rowNumber('actualQty', 'Actual quantity'),
+      _rowText('location', 'Location'),
+    ],
+  );
+
+  Widget _equipmentSection() => _reportRowsSection(
+    'Equipment used',
+    _equipmentRows,
+    createRow: () => _ReportRow(
+      {'name': '', 'workingHours': '', 'fuel': ''},
+      selections: {'ownership': 'owned'},
+    ),
+    addLabel: 'Add equipment row',
+    fields: [
+      _rowText('name', 'Equipment name'),
+      _rowSelect('ownership', 'Ownership', const {
+        'owned': 'Owned',
+        'hired': 'Hired',
+      }),
+      _rowNumber('workingHours', 'Working hours'),
+      _rowNumber('fuel', 'Fuel'),
+    ],
+  );
+
+  Widget _receivedSection() => _reportRowsSection(
+    'Materials received',
+    _receivedRows,
+    createRow: () => _ReportRow({
+      'name': '',
+      'qty': '',
+      'unit': '',
+      'supplier': '',
+      'vehicle': '',
+    }),
+    addLabel: 'Add received material',
+    fields: [
+      _rowText('name', 'Material name'),
+      _rowNumber('qty', 'Quantity'),
+      _rowText('unit', 'Unit'),
+      _rowText('supplier', 'Supplier'),
+      _rowText('vehicle', 'Vehicle'),
+    ],
+  );
+
+  Widget _consumedSection() => _reportRowsSection(
+    'Materials consumed',
+    _consumedRows,
+    createRow: () => _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+    addLabel: 'Add consumed material',
+    fields: [
+      _rowText('name', 'Material name'),
+      _rowNumber('quantity', 'Quantity'),
+      _rowText('unit', 'Unit'),
+    ],
+  );
+
+  Widget _reportRowsSection(
+    String title,
+    List<_ReportRow> rows, {
+    required _ReportRow Function() createRow,
+    required String addLabel,
+    required List<_ReportRowField> fields,
+  }) => _section(title, [
+    for (var index = 0; index < rows.length; index++) ...[
+      if (index > 0) const Divider(height: 20),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final field in fields)
+            SizedBox(width: 220, child: field.build(rows[index], setState)),
+          if (rows.length > 1)
+            IconButton(
+              tooltip: 'Remove row',
+              onPressed: () => setState(() => rows.removeAt(index).dispose()),
+              icon: const Icon(Icons.remove_circle_outline),
+            ),
+        ],
+      ),
+    ],
+    Align(
+      alignment: Alignment.centerLeft,
+      child: TextButton.icon(
+        onPressed: () => setState(() => rows.add(createRow())),
+        icon: const Icon(Icons.add),
+        label: Text(addLabel),
+      ),
     ),
   ]);
+
+  _ReportRowField _rowText(String key, String label) => _ReportRowField(
+    key: key,
+    build: (row, refresh) => TextFormField(
+      controller: row.controllers[key],
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    ),
+  );
+
+  _ReportRowField _rowNumber(String key, String label) => _ReportRowField(
+    key: key,
+    build: (row, refresh) => TextFormField(
+      controller: row.controllers[key],
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+        signed: true,
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) return null;
+        final parsed = double.tryParse(value);
+        return parsed != null && parsed.isFinite ? null : 'Enter a number';
+      },
+    ),
+  );
+
+  _ReportRowField _rowSelect(
+    String key,
+    String label,
+    Map<String, String> options,
+  ) => _ReportRowField(
+    key: key,
+    build: (row, refresh) => DropdownButtonFormField<String>(
+      initialValue: row.selections[key] ?? options.keys.first,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      items: options.entries
+          .map(
+            (entry) =>
+                DropdownMenuItem(value: entry.key, child: Text(entry.value)),
+          )
+          .toList(growable: false),
+      onChanged: (value) {
+        if (value == null) return;
+        row.selections[key] = value;
+        refresh(() {});
+      },
+    ),
+  );
 
   Widget _field(
     TextEditingController controller,
@@ -599,52 +910,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   String _safeError(Object error) => switch (error) {
     RepositoryError(:final kind) =>
       'Save failed ($kind). Your draft is still on this device.',
-    FormatException() => 'Check the section JSON and try saving again.',
+    FormatException() => 'Check the numeric values and try saving again.',
     _ => 'Save failed. Your draft is still on this device.',
   };
-}
-
-class _PhotoTransferTile extends StatelessWidget {
-  const _PhotoTransferTile({
-    required this.photo,
-    required this.bytes,
-    required this.onRetry,
-  });
-
-  final AttachmentTransferRecord photo;
-  final Uint8List? bytes;
-  final VoidCallback? onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final state = switch (photo.state) {
-      AttachmentTransferState.staging => 'Staging',
-      AttachmentTransferState.staged => 'Staged',
-      AttachmentTransferState.finalized => 'Uploading',
-      AttachmentTransferState.registered => 'Registered',
-      AttachmentTransferState.failed => 'Failed',
-    };
-    return Card(
-      child: ListTile(
-        leading: bytes == null
-            ? const Icon(Icons.image_outlined)
-            : Image.memory(bytes!, width: 52, height: 52, fit: BoxFit.cover),
-        title: Text('Photo ${photo.id.substring(0, min(8, photo.id.length))}'),
-        subtitle: Text(
-          photo.complete
-              ? '$state · ${photo.bytes ?? 0} bytes'
-              : '$state${photo.failureDetail == null ? '' : ' · ${photo.failureDetail}'}',
-        ),
-        trailing: onRetry == null
-            ? null
-            : IconButton(
-                tooltip: 'Retry photo transfer',
-                onPressed: onRetry,
-                icon: const Icon(Icons.refresh),
-              ),
-      ),
-    );
-  }
 }
 
 class _SyncHealthCard extends StatelessWidget {
@@ -690,6 +958,52 @@ class _SyncHealthCard extends StatelessWidget {
       ),
     ),
   );
+}
+
+class _ReportRow {
+  final Map<String, TextEditingController> controllers;
+  final Map<String, String> selections;
+
+  _ReportRow(
+    Map<String, String> textValues, {
+    Map<String, String> selections = const {},
+  }) : controllers = {
+         for (final entry in textValues.entries)
+           entry.key: TextEditingController(text: entry.value),
+       },
+       selections = Map.of(selections);
+
+  String value(String key) => controllers[key]!.text.trim();
+
+  String? nullableValue(String key) {
+    final value = this.value(key);
+    return value.isEmpty ? null : value;
+  }
+
+  double number(String key) {
+    final value = this.value(key);
+    if (value.isEmpty) return 0;
+    final parsed = double.tryParse(value);
+    if (parsed == null || !parsed.isFinite) {
+      throw FormatException('$key must be a finite number.');
+    }
+    return parsed;
+  }
+
+  bool hasText(List<String> keys) => keys.any((key) => value(key).isNotEmpty);
+
+  void dispose() {
+    for (final controller in controllers.values) {
+      controller.dispose();
+    }
+  }
+}
+
+class _ReportRowField {
+  final String key;
+  final Widget Function(_ReportRow, StateSetter) build;
+
+  const _ReportRowField({required this.key, required this.build});
 }
 
 String _ageLabel(int milliseconds) {
