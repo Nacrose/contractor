@@ -12,7 +12,7 @@ The tests cover successful fetch plus local persistence, final bytes matching th
 
 ## Required evidence still missing
 
-- The server route, receipt-to-object lookup, authorization revalidation, and download response are not implemented or verified against `Construction_Manager`.
+- Product PR #165 contains the protected read procedure `workflow.dailyReport.getAttachmentData({ id })`; each request resolves the report project, calls `assertDailyReportView`, and reads bytes from `StoredFile`. The Flutter fetcher is still only a contract port, so this route is not wired or exercised by the mount.
 - Snapshot bootstrap is available in the M03 package, but the Flutter mount does not yet apply snapshot daily-report rows into the T03 local domain repository. New-device record restoration therefore remains unproven.
 - The mounted T05 conflict/revocation tests prove local report retention for those outcomes, but no explicit server `rejected` outcome test yet demonstrates fix-and-retry from the user path.
 - No product feed association proves restored registered photos reappear on a second device.
@@ -22,3 +22,5 @@ The tests cover successful fetch plus local persistence, final bytes matching th
 The T06 worktree now contains a browser SQLite WASM + IndexedDB driver, a SQLite-backed object store, an async browser mount, and a browser photo service. Local writes await `flushDurability()` before the editor reports a save. Browser hosts must supply a credential binding explicitly; the mount does not fall back to the native keystore on web. The official `sqlite3.wasm` release asset was checksum-verified before vendoring. `flutter analyze`, the full native `flutter test` suite (180 passed), and a release web compile importing the actual browser mount dependency graph passed. `flutter run -d chrome --web-port 4181 -t tool/m04_browser_probe.dart` logged PASS after saving a report and its pending operation, awaiting the IndexedDB flush, closing the browser mount, reopening it, and comparing both records. The probe uses a test-only credential fixture and does not exercise sign-in. `flutter test --platform chrome` itself did not complete the earlier driver-only lifecycle probe. Product route/auth scope, snapshot application, rejected fix-and-retry, and second-device restoration remain open.
 
 These gaps depend on the daily-report server binding and real product routes. This progress report does not claim T06 complete.
+
+Product PRs #165 and #166 remain draft and unmerged. The local product database and test account are not configured, so authenticated download, snapshot/live-feed reconcile, and a second-device restore have not been exercised.

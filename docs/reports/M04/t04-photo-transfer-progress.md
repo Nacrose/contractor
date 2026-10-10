@@ -22,7 +22,8 @@
 ## Acceptance still open
 
 - Tests use contract fakes; no real registration endpoint or second-device read has been demonstrated.
-- The current product procedure accepts inline photo uploads, while the M04 client now sends registered attachment receipt/digest references. The product schema, transactional attachment linkage, and feed write must be updated to accept this contract; explicit approval for product-repo edits is still pending.
+- Product PR [#165](https://github.com/Nacrose/Construction_Manager/pull/165) prepares the registered-reference schema and transactional attachment linkage for `workflow.dailyReport.createFieldReport`; stacked [PR #166](https://github.com/Nacrose/Construction_Manager/pull/166) prepares the feed path. Both remain draft and unmerged. The user's product-repo approval is already recorded; no live registrar, feed worker, or second-device read has been verified.
 - The editor exposes the injectable photo port, but the running product host does not yet instantiate it with real camera/gallery and registrar bindings.
 - The local report UUID is stored on the client attachment row and passed to the registrar contract. The report outbox payload includes the registered attachment ID, receipt, digest, and byte count; the server has not yet accepted or linked those references, so no claim is made that a registered photo is visible on the server report.
 - Real camera/gallery capture, interrupted app process recovery, and device telemetry still require a real device session.
+- The local product database and test account are not configured, so authenticated upload/registration cannot be exercised here.

@@ -21,10 +21,9 @@
 | Disk full during local save | Flutter mount + SQLite | I1/I4: domain row and pending operation commit atomically | Free space and save again | PASS — neither row remains after failure; SQLite integrity check is `ok` |
 | Tampered photo bytes / digest mismatch | M04-T04 attachment manager + SQLite | I1/I4: no corrupt photo is complete | Retry after resolving the storage or digest failure | Separate attachment tests prove a typed digest mismatch remains incomplete |
 | Device reboot | Not exercised | I1/I4 across actual device restart | Relaunch and reconcile journal | OPEN — reopening the SQLite file in a test process is not device reboot evidence |
-| Absent network | Not exercised as a distinct offline leg | I1/I4: local work remains durable and retryable | Restore connectivity, then retry | OPEN — retryable timeout is the only mounted network leg here |
 
 ## Limits and follow-up
 
 The ten tests run the mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. Health assertions exist for conflict, offline pending work, rejection, and lost acknowledgement; a complete health-surface transcript is not captured for every scenario. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
 
-The product server binding for `workflow.dailyReport.createFieldReport` and receipt-to-report photo association is still a prerequisite for end-to-end server fault legs. M04-T07/T08 will also require real device sessions and owner verification; this report does not substitute for them.
+Product PR [#165](https://github.com/Nacrose/Construction_Manager/pull/165) prepares `workflow.dailyReport.createFieldReport` and receipt-to-report photo association; stacked [PR #166](https://github.com/Nacrose/Construction_Manager/pull/166) prepares the feed route. Both remain draft and unmerged, PR #166's persistent worker is not deployed, and no local product database/test account is configured. M04-T07/T08 will also require real device sessions and owner verification; this report does not substitute for them.

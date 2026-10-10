@@ -2,8 +2,8 @@
 
 - **Status:** draft; M04 exit criteria are not satisfied.
 - **Date:** 2026-10-10.
-- **Flutter evidence branch:** `m04-t06-restore`, commit `7a023659139ce3e59e3345532786a0b0c5518dc1`.
-- **Product prerequisite:** an adapter and registered-photo reference change is in draft [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), commit `6a42b820` (`codex/m04-daily-report-sync`). It is not merged. The product repo has no deployed CDC feed/pull worker, so atomic feed delivery, authenticated server acceptance, and second-device visibility remain unproven.
+- **Flutter evidence branch:** `m04-t06-restore` (contractor PR #51; current task code is stacked on the latest T05 checkpoint).
+- **Product prerequisite:** daily-report adapter and registered-photo reference change [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165) and stacked CDC feed/pull PR [#166](https://github.com/Nacrose/Construction_Manager/pull/166) are draft and unmerged. PR #166's Vercel Preview is Ready, but its persistent worker is not deployed. The local product database/test account are not configured, so atomic feed delivery, authenticated server acceptance, and second-device visibility remain unproven.
 
 ## Task evidence inventory
 
@@ -28,7 +28,7 @@
 
 ## Open exit evidence
 
-1. Merge [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), then deploy and verify the CDC feed/pull path. The adapter calls the existing permission-checked report procedure and accepts registered-photo references, but the product repository does not contain the CDC worker or pull route. Demonstrate atomic feed delivery, server acceptance, and visibility in the current web app and on a second device before closing T03.
+1. Merge product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165) and [#166](https://github.com/Nacrose/Construction_Manager/pull/166), configure the database/test account, then deploy and verify the CDC feed/pull path. Demonstrate atomic feed delivery, server acceptance, and visibility in the current web app and on a second device before closing T03.
 2. Record the workflow on a real supported Android or iOS device, including sync latency, battery/background behavior, crash-free rate, and sanitized crash reporting. Correlate one full sync with server M03-T08 metrics.
 3. Complete T04–T06 product-backed attachment registration, snapshot application, and recoverable rejection/fix/retry evidence.
 4. Finish the full current-rule parity fixture against the product route and link the native and web recordings.
