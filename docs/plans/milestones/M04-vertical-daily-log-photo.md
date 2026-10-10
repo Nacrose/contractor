@@ -28,11 +28,11 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
 
 - [ ] **M04-T03** — The vertical workflow, shared Flutter: select project → create/edit log → save locally → sync
   - Depends on: M04-T01, M04-T02 · Output: one workflow code path running on installed apps and browser, with workflow tests.
-  - Scope: the M04 headline workflow (v3 §6 M04 W02): project selection, daily-log create/edit with the existing daily-report rules, local save committing the domain write and its pending operation together (M03-T03 contract), and dispatch through the M03-T07 orchestrator.
+  - Scope: the M04 headline workflow (v3 §6 M04 W02): project selection, daily-log create/edit with the existing daily-report rules, local save committing the domain write and its pending operation together (M03-T03 contract), and dispatch through the M03-T07 orchestrator. The current product procedure is `workflow.dailyReport.createFieldReport` (mounted by `workflowRouter`); it is not `fieldSubmission.submit`, which creates a different submission type. Before this task can demonstrate server acceptance, the product repo must provide the M03 adapter binding to that existing procedure, with its guards and feed write preserved. The product binding is a cross-repository prerequisite and must be merged before this task's PR; see [path correction](../../reports/M04/product-path-correction.md).
   - Acceptance:
     - The SAME widget/code path renders on native and web; no platform branch inside the workflow logic (platform differences live behind the M04-T02 ports).
     - A local save is durable per the M03-T03 contract (domain write + pending op together; private drafts where applicable) and survives app restart.
-    - Accepted data is visible in the current web app AND on a second device via the M03-T04/T05 sync surfaces; the round trip is demonstrated in a test or recorded fixture.
+    - Accepted data is visible in the current web app AND on a second device via the M03-T04/T05 sync surfaces; the round trip is demonstrated in a test or recorded fixture. Evidence must use the `workflow.dailyReport.createFieldReport` binding and prove the daily-report writer, not a `fieldSubmission` submission.
     - The workflow uses the shared component library and command registries (M02 contracts) — no new screen framework.
 
 - [ ] **M04-T04** — Photo attachment path live: capture → stage → finalize → register + sync-health UI binding
