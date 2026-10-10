@@ -65,18 +65,18 @@ The adapter (`OutboxPendingOperationSource`) implements the orchestrator contrac
 
 ## 3. Platform binding matrix and recorded constraints
 
-| Surface | Android | iOS | Linux desktop | Windows/macOS | Web |
-|---|---|---|---|---|---|
-| SQLite outbox | ffi driver + bundled engine (sqlite3_flutter_libs) | same | same | same | **FAIL-CLOSED stub** (constraint C1) |
-| Secure credentials | Keystore handler (shipped) | Keychain handler (shipped) | **fail-closed** (C2) | fail-closed (C2) | fail-closed (C2) |
-| System browser | external (Custom Tabs) | external (Safari) | external | external | in-place redirect |
-| Attachment bytes | device filesystem | same | same | same | M04-T03 obligation (C1) |
-| sha-256 | real (crypto pkg) | real | real | real | real (pure Dart) |
-| Sync transport | package:http | same | same | same | same |
-| Background drain | gated (ForegroundOnlyEnvironment) | gated | n/a | n/a | n/a |
+| Surface | Android | iOS | Linux | Windows | macOS | Web |
+|---|---|---|---|---|---|---|
+| SQLite outbox | ffi driver + bundled engine (sqlite3_flutter_libs) | same | same | same | same | **FAIL-CLOSED stub** (constraint C1) |
+| Secure credentials | Keystore handler (shipped) | Keychain handler (shipped) | **fail-closed** (C2) | **fail-closed** (C2) | Keychain method-channel handler (shipped; macOS build verified) | fail-closed (C1/C2) |
+| System browser | external (Custom Tabs) | external (Safari) | external | external | external | in-place redirect |
+| Attachment bytes | device filesystem | same | same | same | same | M04-T03 obligation (C1) |
+| sha-256 | real (crypto pkg) | real | real | real | real | real (pure Dart) |
+| Sync transport | package:http | same | same | same | same | same |
+| Background drain | gated (ForegroundOnlyEnvironment) | gated | n/a | n/a | n/a | n/a |
 
 - **C1 (web outbox)**: the web leg's browser outbox binding (IndexedDB/OPFS driver under the same `SqlDriver` shape) is a separate M04-T03 obligation — the vertical workflow must run the SAME code path on web, and its outbox driver is the piece that lands then. The stub refuses with the typed `misconfigured` kind; nothing pretends to be durable on web.
-- **C2 (desktop credentials)**: Linux/Windows/macOS host handlers for the secure store are follow-up work (the M04 exit runs on Android + web per the ratified evidence profile). Until a handler exists the store fail-closes; there is no plaintext fallback on any platform, ever.
+- **C2 (other desktop credentials)**: Linux and Windows host handlers for the secure store remain follow-up work. macOS now binds the secure-store channel to the OS Keychain; its handler is compiled in the M04 worktree. Web and unsupported desktop hosts still fail closed; there is no plaintext fallback on any platform, ever.
 - **C3 (Dart transport shape)**: the TS `SyncTransportPort.send` is synchronous (the M03 fixtures were); Dart IO is async, so the Dart port is `Future<SyncOutcome> send(...)` — the one deliberate shape deviation, recorded here and in ports.dart. The throw-on-network-failure and typed-outcome disciplines are unchanged; the Dart orchestrator port (M04-T03) consumes the async shape.
 - **C4 (background gate)**: `ForegroundOnlyEnvironment` marks background execution unsuitable until the M05-T06 OS scheduler adapters land. This is the conservative default, not a regression: foreground sync works without OS background scheduling (v3 §5.3), and M05-T06 pins the never-ran-background case.
 

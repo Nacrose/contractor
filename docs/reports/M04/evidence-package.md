@@ -22,7 +22,7 @@
 ## Verification already run
 
 - Native Flutter shell on `m04-t06-restore`: `flutter build ios --debug --no-codesign` completed successfully; this proves the iOS target compiles, but does not install or launch it on the iPhone. Xcode signing is configured locally by the owner, but no signed device launch is recorded here.
-- macOS preview host: `flutter run -d macos` launched the `Contractor OS` daily-report preview screen. This is local preview evidence only: the host uses a local preview account/project, has no authenticated server session, and explicitly does not sync or upload photos. It does not demonstrate full product parity or close M04-T03/T04.
+- macOS preview host: after adding the macOS Keychain handler, `flutter build macos --debug` succeeded and `flutter run -d macos` started the app and Dart VM service. The host uses a local preview account/project, has no authenticated server session, and explicitly does not sync or upload photos. It does not demonstrate full product parity or close M04-T03/T04.
 - `dart analyze` in `prototype/construction_client/` — no issues.
 - `flutter test` in `prototype/construction_client/` — 185 tests passed, including snapshot resume/closure and rejected-copy flow.
 - Chrome IndexedDB durability probe — saved a local report and matching pending operation, closed and reopened the browser mount, and read both back. The probe uses a test credential fixture; it does not exercise sign-in or the product server.
