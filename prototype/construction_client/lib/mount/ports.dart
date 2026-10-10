@@ -39,6 +39,17 @@ abstract interface class MountSqliteDriver implements SqlDriver {
   /// The database file this driver opened (durability evidence).
   String get path;
 
+  /// Whether the backing file system supports SQLite WAL shared memory.
+  /// Browser IndexedDB VFS uses the rollback journal and remains an
+  /// ephemeral synchronized cache; native device files use WAL.
+  bool get supportsWal;
+
+  /// Completes the platform storage barrier for writes already issued.
+  Future<void> flushDurability();
+
+  /// Closes the database and awaits any platform-specific final flush.
+  Future<void> closeDurably();
+
   /// PRAGMA introspection used by tests and open-verification only.
   Object? pragmaValue(String pragma);
 

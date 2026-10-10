@@ -14,7 +14,10 @@ import 'ports.dart';
 
 /// Conditional-export factory (sqlite_driver.dart): identical signature on
 /// every platform; the VM/AOT branch constructs the ffi driver.
-MountSqliteDriver openNativeSqliteDriver(String path, {int busyTimeoutMs = 2000}) {
+MountSqliteDriver openNativeSqliteDriver(
+  String path, {
+  int busyTimeoutMs = 2000,
+}) {
   final sq3.Database db;
   try {
     db = sq3.sqlite3.open(path);
@@ -31,13 +34,30 @@ MountSqliteDriver openNativeSqliteDriver(String path, {int busyTimeoutMs = 2000}
   return _NativeSqliteDriver(db, path);
 }
 
+Future<MountSqliteDriver> openBrowserSqliteDriver(
+  String path, {
+  int busyTimeoutMs = 2000,
+  List<int>? wasmBytes,
+}) => Future.error(
+  RepositoryError(
+    'misconfigured',
+    'Browser SQLite is unavailable on a native target.',
+  ),
+);
+
 class _NativeSqliteDriver implements MountSqliteDriver {
   final sq3.Database _db;
 
   @override
   final String path;
 
+  @override
+  bool get supportsWal => true;
+
   _NativeSqliteDriver(this._db, this.path);
+
+  @override
+  Future<void> flushDurability() async {}
 
   @override
   void exec(String sql) {
@@ -56,6 +76,9 @@ class _NativeSqliteDriver implements MountSqliteDriver {
 
   @override
   void close() => _db.dispose();
+
+  @override
+  Future<void> closeDurably() async => _db.dispose();
 }
 
 class _NativeStatement implements SqlStatement {

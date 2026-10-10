@@ -13,7 +13,23 @@ import 'ports.dart';
 
 /// Conditional-export factory (sqlite_driver.dart): identical signature on
 /// every platform; the web branch refuses with the typed misconfigured kind.
-MountSqliteDriver openNativeSqliteDriver(String path, {int busyTimeoutMs = 2000}) {
-  throw RepositoryError('misconfigured',
-      'NativeSqliteDriver is unavailable on the web build; the browser outbox binding is a separate mount obligation (M04-T02 report, web-binding constraint).');
+MountSqliteDriver openNativeSqliteDriver(
+  String path, {
+  int busyTimeoutMs = 2000,
+}) {
+  throw RepositoryError(
+    'misconfigured',
+    'NativeSqliteDriver is unavailable on the web build; the browser outbox binding is a separate mount obligation (M04-T02 report, web-binding constraint).',
+  );
 }
+
+Future<MountSqliteDriver> openBrowserSqliteDriver(
+  String path, {
+  int busyTimeoutMs = 2000,
+  List<int>? wasmBytes,
+}) => Future.error(
+  RepositoryError(
+    'misconfigured',
+    'Browser SQLite is unavailable on this target.',
+  ),
+);

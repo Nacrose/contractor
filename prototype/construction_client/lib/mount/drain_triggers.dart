@@ -27,9 +27,9 @@ enum DrainTrigger { launch, foreground, manual, background }
 typedef DrainCallback = Future<void> Function(DrainTrigger trigger);
 
 class SyncDrainTriggers with WidgetsBindingObserver {
-  final DrainCallback drain;
+  DrainCallback drain;
   final ExecutionEnvironmentPort? environment;
-  final bool Function() _isDraining;
+  bool Function() _isDraining;
 
   bool _attached = false;
 
@@ -38,6 +38,16 @@ class SyncDrainTriggers with WidgetsBindingObserver {
     this.environment,
     required this._isDraining,
   });
+
+  /// Connects the M04-T03 orchestrator after the mount is composed. This
+  /// keeps the M04-T02 ports free of a dependency on a workflow instance.
+  void bind({
+    required DrainCallback drain,
+    required bool Function() isDraining,
+  }) {
+    this.drain = drain;
+    _isDraining = isDraining;
+  }
 
   /// Host calls once after engine start (app-launch trigger).
   Future<void> onLaunch() => _start(DrainTrigger.launch);
@@ -101,6 +111,9 @@ class ForegroundOnlyEnvironment implements ExecutionEnvironmentPort {
 
   @override
   ({bool ok, String? reason}) suitableForBackgroundSync() {
-    return (ok: false, reason: 'background scheduling adapters land in M05-T06; foreground drains carry sync');
+    return (
+      ok: false,
+      reason: 'background scheduling adapters land in M05-T06; foreground drains carry sync',
+    );
   }
 }
