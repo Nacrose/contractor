@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'mount/mount.dart';
 import 'mount/ports.dart';
+import 'mount/system_browser.dart';
 import 'workflows/daily_report_screen.dart';
 import 'workflows/daily_report_workflow.dart';
 
@@ -44,6 +45,8 @@ class _M04NativeHostState extends State<_M04NativeHost> {
     );
     final objects = Directory('${root.path}${Platform.pathSeparator}objects');
     await root.create(recursive: true);
+    final systemBrowser = UrlLauncherSystemBrowserPort();
+    await systemBrowser.startListening();
     final mount = openMount(
       options: MountOptions(
         dbPath: '${root.path}${Platform.pathSeparator}offline-drafts.sqlite',
@@ -51,16 +54,21 @@ class _M04NativeHostState extends State<_M04NativeHost> {
         extraMigrations: const [kDailyReportLocalMigration],
       ),
       transport: _OfflinePreviewTransport(),
+      systemBrowser: systemBrowser,
     );
     return _M04HostServices(
       mount: mount,
       store: _OfflinePreviewStore(DailyReportLocalStore(mount)),
+      systemBrowser: systemBrowser,
     );
   }
 
   @override
   void dispose() {
-    _services.then((services) => services.mount.driver.close()).ignore();
+    _services.then((services) async {
+      await services.systemBrowser.stopListening();
+      services.mount.driver.close();
+    }).ignore();
     super.dispose();
   }
 
@@ -106,9 +114,14 @@ class _M04NativeHostState extends State<_M04NativeHost> {
 }
 
 class _M04HostServices {
-  const _M04HostServices({required this.mount, required this.store});
+  const _M04HostServices({
+    required this.mount,
+    required this.store,
+    required this.systemBrowser,
+  });
   final ConstructionMount mount;
   final DailyReportWorkflowStore store;
+  final UrlLauncherSystemBrowserPort systemBrowser;
 }
 
 class _OfflinePreviewTransport implements SyncTransportPort {

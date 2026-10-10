@@ -16,11 +16,19 @@ void main() {
       );
 
       await port.open('https://accounts.example.com/authorize?state=abc');
-      expect(launched.keys.single, 'https://accounts.example.com/authorize?state=abc');
-      expect(launched.values.single['mode'], 'external',
-          reason: 'credentials.ts: the client has NO WebView surface at all');
+      expect(
+        launched.keys.single,
+        'https://accounts.example.com/authorize?state=abc',
+      );
+      expect(
+        launched.values.single['mode'],
+        'external',
+        reason: 'credentials.ts: the client has NO WebView surface at all',
+      );
 
-      final refusing = UrlLauncherSystemBrowserPort(launchFn: (url, options) async => false);
+      final refusing = UrlLauncherSystemBrowserPort(
+        launchFn: (url, options) async => false,
+      );
       await expectLater(
         refusing.open('https://accounts.example.com/authorize'),
         throwsStateError,
@@ -30,7 +38,10 @@ void main() {
 
     test('awaitCallback resolves when the host delivers the redirect (before-await race buffered)', () async {
       final sink = DeepLinkSink();
-      final port = UrlLauncherSystemBrowserPort(linkSink: sink, launchFn: (url, options) async => true);
+      final port = UrlLauncherSystemBrowserPort(
+        linkSink: sink,
+        launchFn: (url, options) async => true,
+      );
 
       // Case 1: callback arrives BEFORE awaitCallback is called (warm-start).
       sink.deliver('app://callback?code=x&state=s');
@@ -44,11 +55,51 @@ void main() {
 
     test('awaitCallback surfaces a user-cancel as an error (no fabricated callback)', () async {
       final sink = DeepLinkSink();
-      final port = UrlLauncherSystemBrowserPort(linkSink: sink, launchFn: (url, options) async => true);
+      final port = UrlLauncherSystemBrowserPort(
+        linkSink: sink,
+        launchFn: (url, options) async => true,
+      );
 
       final future = port.awaitCallback();
       sink.fail(StateError('user cancelled'));
       await expectLater(future, throwsStateError);
+    });
+
+    test('only the exact registered callback reaches the auth sink', () async {
+      final sink = DeepLinkSink();
+      final port = UrlLauncherSystemBrowserPort(
+        linkSink: sink,
+        launchFn: (url, options) async => true,
+      );
+      final waiting = port.awaitCallback();
+
+      port.handleCallbackUri(
+        Uri.parse('https://contractor.example/auth/callback?code=no'),
+      );
+      port.handleCallbackUri(
+        Uri.parse(
+          'com.nacrose.contractor.constructionclient://auth/other?code=no',
+        ),
+      );
+
+      const callback =
+          'com.nacrose.contractor.constructionclient://auth/callback?code=abc&state=xyz';
+      port.handleCallbackUri(Uri.parse(callback));
+      expect(await waiting, callback);
+    });
+
+    test('duplicate callback delivery is suppressed', () async {
+      final sink = DeepLinkSink();
+      final port = UrlLauncherSystemBrowserPort(
+        linkSink: sink,
+        launchFn: (url, options) async => true,
+      );
+      const callback =
+          'com.nacrose.contractor.constructionclient://auth/callback?code=abc&state=xyz';
+      port.handleCallbackUri(Uri.parse(callback));
+      port.handleCallbackUri(Uri.parse(callback));
+
+      expect(await port.awaitCallback(), callback);
     });
   });
 }
