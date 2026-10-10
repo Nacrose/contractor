@@ -9,7 +9,7 @@ import 'sqlite_object_store.dart';
 Future<ConstructionMount> openBrowserMount({
   required String databaseName,
   required SyncTransportPort transport,
-  SecureCredentialStore? credentials,
+  required SecureCredentialStore credentials,
   SystemBrowserPort? systemBrowser,
   List<Migration> extraMigrations = const [],
   int busyTimeoutMs = 2000,

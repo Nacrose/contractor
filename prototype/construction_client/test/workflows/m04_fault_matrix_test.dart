@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:construction_client/mount/attachment_transfer.dart';
 import 'package:construction_client/mount/mount.dart';
 import 'package:construction_client/mount/ports.dart';
 import 'package:construction_client/mount/sync_orchestrator.dart';
@@ -316,6 +318,60 @@ void main() {
     },
   );
 
+  test('interrupted photo upload remains incomplete and resumes after mount reopen', () async {
+    final bytes = Uint8List.fromList(List.generate(13, (index) => index + 1));
+    final source = File('${tmp.path}/report-photo.jpg');
+    await source.writeAsBytes(bytes, flush: true);
+    final registrar = _PhotoRegistrar()..failAfterFirstChunk = true;
+    var manager = AttachmentTransferManager(
+      mount: mount!,
+      registrar: registrar,
+      nowMs: () => 1000,
+      chunkBytes: 4,
+      backoffBaseMs: 10,
+    );
+    manager.stageBytes(
+      accountId: 'acct-1',
+      id: 'photo-fault-0001',
+      projectId: 'project-1',
+      dailyReportId: 'report-photo-0001',
+      sourcePath: source.path,
+      bytes: bytes,
+    );
+    manager.finalize('acct-1', 'photo-fault-0001');
+
+    final interrupted = await manager.register('acct-1', 'photo-fault-0001');
+    expect(interrupted.state, AttachmentTransferState.failed);
+    expect(interrupted.failureKind, AttachmentFailureKind.retryable);
+    expect(manager.isComplete('acct-1', interrupted.id), isFalse);
+    expect(mount!.outbox.pendingWorkSummary('acct-1').attachmentsPending, 1);
+
+    mount!.driver.close();
+    mount = _open(
+      tmp,
+      _Transport(
+        (_) async => throw StateError('daily report sync must not be invoked'),
+      ),
+    );
+    manager = AttachmentTransferManager(
+      mount: mount!,
+      registrar: registrar,
+      nowMs: () => 50000,
+      chunkBytes: 4,
+    );
+    final resumed = await manager.resumeAll('acct-1');
+
+    expect(resumed.completed, ['photo-fault-0001']);
+    expect(resumed.failed, isEmpty);
+    expect(manager.isComplete('acct-1', 'photo-fault-0001'), isTrue);
+    expect(registrar.uploaded, bytes);
+    expect(
+      manager.get('acct-1', 'photo-fault-0001')?.dailyReportId,
+      'report-photo-0001',
+    );
+    expect(mount!.outbox.pendingWorkSummary('acct-1').attachmentsPending, 0);
+  });
+
   test('slow network retry leaves a durable pending report until a later accepted response', () async {
     getStore().save(
       accountId: 'acct-1',
@@ -396,7 +452,7 @@ ConstructionMount _open(Directory root, SyncTransportPort transport) =>
       options: MountOptions(
         dbPath: '${root.path}/outbox.db',
         objectRoot: Directory('${root.path}/objects'),
-        extraMigrations: const [kDailyReportLocalMigration],
+        extraMigrations: kM04WorkflowMigrations,
       ),
       credentials: _Credentials(),
       transport: transport,
@@ -431,4 +487,49 @@ class _Credentials implements SecureCredentialStore {
 
   @override
   Future<void> wipeAll() async {}
+}
+
+class _PhotoRegistrar implements AttachmentRegistrarPort {
+  Uint8List uploaded = Uint8List(0);
+  bool failAfterFirstChunk = false;
+  bool _failed = false;
+
+  @override
+  Future<String> openUpload({
+    required String attachmentId,
+    required String accountId,
+    required String? projectId,
+    required String? dailyReportId,
+    required String digest,
+    required int bytes,
+  }) async => 'upload-$attachmentId';
+
+  @override
+  Future<int> queryUpload(String uploadId) async => uploaded.length;
+
+  @override
+  Future<int> putChunk(String uploadId, int offset, Uint8List chunk) async {
+    if (failAfterFirstChunk && !_failed && offset > 0) {
+      _failed = true;
+      throw const AttachmentRegistrarError(
+        AttachmentFailureKind.retryable,
+        'network interrupted',
+      );
+    }
+    if (offset != uploaded.length) {
+      throw const AttachmentRegistrarError(
+        AttachmentFailureKind.internal,
+        'server byte offset did not match upload chunk',
+      );
+    }
+    uploaded = Uint8List.fromList([...uploaded, ...chunk]);
+    return uploaded.length;
+  }
+
+  @override
+  Future<String> completeUpload(
+    String uploadId,
+    String digest,
+    int bytes,
+  ) async => 'photo-receipt';
 }
