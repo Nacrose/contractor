@@ -124,9 +124,9 @@ class DailyReportDraft {
       'equipmentUsed': jsonEncode(equipmentUsed),
       'materialReceived': jsonEncode(materialReceived),
       'materialConsumed': jsonEncode(materialConsumed),
-      if (problems.isNotEmpty) 'problems': problems,
-      if (safetyNotes.isNotEmpty) 'safetyNotes': safetyNotes,
-      if (remarks.isNotEmpty) 'remarks': remarks,
+      if (problems.trim().isNotEmpty) 'problems': problems.trim(),
+      if (safetyNotes.trim().isNotEmpty) 'safetyNotes': safetyNotes.trim(),
+      if (remarks.trim().isNotEmpty) 'remarks': remarks.trim(),
       'photos': photos.map((photo) => photo.toJson()).toList(growable: false),
     };
   }
@@ -262,17 +262,23 @@ class DailyReportDraft {
     final hasRows = sections.any(
       (section) => _hasContent(section.$2, section.$3),
     );
+    final digestPattern = RegExp(r'^[a-f0-9]{64}$', caseSensitive: false);
     if (photos.length > kDailyReportMaxPhotos ||
         photos.any(
           (photo) =>
-              photo.bytes <= 0 || photo.bytes > kDailyReportPhotoMaxBytes,
+              photo.attachmentId.isEmpty ||
+              photo.receipt.isEmpty ||
+              !digestPattern.hasMatch(photo.digest) ||
+              photo.bytes <= 0 ||
+              photo.bytes > kDailyReportPhotoMaxBytes,
         )) {
       throw RepositoryError(
         'misconfigured',
-        'A daily report can contain at most 6 photos of up to 10 MB each.',
+        'A daily report can contain at most 6 valid registered photos of up to 10 MB each.',
       );
     }
     if (!hasRows &&
+        photos.isEmpty &&
         problems.trim().isEmpty &&
         safetyNotes.trim().isEmpty &&
         remarks.trim().isEmpty) {

@@ -200,6 +200,20 @@ void main() {
     expect(payload['reportDate'], '2026-10-10');
     expect(payload['workProgress'], '[]');
     expect(payload['photos'], isEmpty);
+    final notes = DailyReportDraft(
+      clientUuid: 'report-uuid-0008',
+      projectId: 'project-1',
+      reportDate: '2026-10-10',
+      workforce: const [
+        {'company': 'Crew'},
+      ],
+      problems: '  Access blocked  ',
+      safetyNotes: '   ',
+      remarks: '  Work continued  ',
+    ).toProcedureInput();
+    expect(notes['problems'], 'Access blocked');
+    expect(notes['remarks'], 'Work continued');
+    expect(notes.containsKey('safetyNotes'), isFalse);
     expect(
       () => DailyReportDraft(
         clientUuid: 'report-uuid-0002',
@@ -252,6 +266,57 @@ void main() {
         ).toProcedureInput(),
         throwsA(isA<RepositoryError>()),
       );
+    },
+  );
+
+  test(
+    'registered photos match the product contract and can be report content',
+    () {
+      final photoOnly = DailyReportDraft(
+        clientUuid: 'report-uuid-0006',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        photos: [
+          RegisteredDailyReportPhoto(
+            attachmentId: 'photo-1',
+            receipt: 'receipt-1',
+            digest: List.filled(64, 'a').join(),
+            bytes: 128,
+          ),
+        ],
+      ).toProcedureInput();
+      expect(photoOnly['photos'], hasLength(1));
+
+      for (final photo in [
+        RegisteredDailyReportPhoto(
+          attachmentId: '',
+          receipt: 'receipt-1',
+          digest: List.filled(64, 'a').join(),
+          bytes: 128,
+        ),
+        RegisteredDailyReportPhoto(
+          attachmentId: 'photo-1',
+          receipt: '',
+          digest: List.filled(64, 'a').join(),
+          bytes: 128,
+        ),
+        const RegisteredDailyReportPhoto(
+          attachmentId: 'photo-1',
+          receipt: 'receipt-1',
+          digest: 'not-a-sha256',
+          bytes: 128,
+        ),
+      ]) {
+        expect(
+          () => DailyReportDraft(
+            clientUuid: 'report-uuid-0007',
+            projectId: 'project-1',
+            reportDate: '2026-10-10',
+            photos: [photo],
+          ).toProcedureInput(),
+          throwsA(isA<RepositoryError>()),
+        );
+      }
     },
   );
 }
