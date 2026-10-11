@@ -25,7 +25,7 @@ it does not count as device-recorded evidence.
 
 | Boundary | Engine | Invariant | Recovery | Result |
 |---|---|---|---|---|
-| Office edit conflicts with local report | Flutter mount + SQLite | I1/I4: local report retained; conflict is visible in sync health | Resolve against current server version, then retry | PASS — conflict row and original remarks remain; conflict count is 1 |
+| Office edit conflicts with local report | Flutter mount + SQLite | I1/I4: local report retained; conflict is visible in sync health | Resolve against current server version, then retry | PARTIAL — local row and original remarks remain and conflict count is 1; the Flutter screen has no current-server-version review or correction action, so recovery is not demonstrated |
 | Permission revoked during batch | Flutter mount + SQLite | I1/I3/I4: no later work is discarded or sent after revocation | Restore project access, then resume pending work | PASS — batch stops after one request and the later report remains pending |
 | Expired login during batch | Flutter mount + SQLite | I1/I4: report survives and batch stops | Reauthenticate, then retry | PASS — outcome is `authentication_required`; report and pending op remain |
 | Absent network | Flutter mount + SQLite + shared sync-health screen | I1/I4: report stays durable and pending | Restore connectivity, then retry | PASS — transport exception requeues the op; rendered health shows `Needs attention`, one pending op, and `1 pending operation(s) not yet accepted` |
