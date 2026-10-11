@@ -44,19 +44,38 @@ class MountOptions {
   final String dbPath;
 
   /// Root directory for attachment objects (device filesystem on native).
-  final Directory objectRoot;
+  final Directory? objectRoot;
+
+  /// Optional pre-opened platform database driver. Browser hosts construct
+  /// this asynchronously over IndexedDB before opening the shared mount.
+  final MountSqliteDriver? driver;
+
+  /// Platform-specific durable object store and source reader.
+  final ObjectStore? objectStore;
+  final SourceReaderPort? sourceReader;
+  final DigestPort? digest;
 
   final int busyTimeoutMs;
+
+  /// Feature-owned migrations append after the mount's stable v3 schema.
+  /// The workflow supplies its own versioned migration without changing the
+  /// M03 outbox baseline.
+  final List<Migration> extraMigrations;
 
   /// Run PRAGMA integrity_check at open (recommended for every app start).
   final bool integrityCheck;
 
-  const MountOptions({
+  MountOptions({
     required this.dbPath,
-    required this.objectRoot,
+    this.objectRoot,
+    this.driver,
+    this.objectStore,
+    this.sourceReader,
+    this.digest,
     this.busyTimeoutMs = 2000,
     this.integrityCheck = true,
-  });
+    List<Migration> extraMigrations = const [],
+  }) : extraMigrations = List.unmodifiable(extraMigrations);
 }
 
 class ConstructionMount {
@@ -87,6 +106,8 @@ class ConstructionMount {
     required this.drainTriggers,
     required this.migrations,
   });
+
+  Future<void> flushDurability() => driver.flushDurability();
 
   /// Envelope constructor for the drain loop (M04-T03 orchestrator port).
   SyncEnvelope envelopeFor({
@@ -121,7 +142,11 @@ ConstructionMount openMount({
   SyncTransportPort? transport,
   ExecutionEnvironmentPort? environment,
 }) {
-  final driver = openNativeSqliteDriver(options.dbPath, busyTimeoutMs: options.busyTimeoutMs);
+  final driver = options.driver ??
+      openNativeSqliteDriver(
+        options.dbPath,
+        busyTimeoutMs: options.busyTimeoutMs,
+      );
 
   // Durability policy enforced at open (outbox repository.ts openOutbox):
   // re-asserted idempotently so an arbitrary driver construction cannot
@@ -129,20 +154,33 @@ ConstructionMount openMount({
   driver.exec(kOutboxPragmaJournalMode);
   driver.exec(kOutboxPragmaSynchronous);
   driver.exec(kOutboxPragmaForeignKeys);
-  driver.exec('PRAGMA busy_timeout=${options.busyTimeoutMs < 0 ? 0 : options.busyTimeoutMs}');
+  driver.exec(
+    'PRAGMA busy_timeout=${options.busyTimeoutMs < 0 ? 0 : options.busyTimeoutMs}',
+  );
   if (options.integrityCheck) {
     final row = driver.prepare('PRAGMA integrity_check').get(const []);
     final result = row == null ? null : '${row.values.first}';
     if (result != 'ok') {
       driver.close();
-      throw RepositoryError('corrupt', 'integrity_check failed at open.', {'result': result ?? '(no row)'});
+      throw RepositoryError('corrupt', 'integrity_check failed at open.', {
+        'result': result ?? '(no row)',
+      });
     }
   }
 
-  final migrations = migrateMount(driver);
+  final migrations = migrateMount(
+    driver,
+    extraMigrations: options.extraMigrations,
+  );
   final outbox = OutboxRepository(driver);
   final pendingOps = OutboxPendingOperationSource(outbox);
-  final objects = FilesystemObjectStore(options.objectRoot);
+  final objects = options.objectStore ??
+      (options.objectRoot == null
+          ? throw RepositoryError(
+              'misconfigured',
+              'A native object directory or platform object store is required.',
+            )
+          : FilesystemObjectStore(options.objectRoot!));
 
   return ConstructionMount(
     driver: driver,
@@ -153,10 +191,14 @@ ConstructionMount openMount({
     credentials: credentials ?? MethodChannelSecureCredentialStore.create(),
     systemBrowser: systemBrowser ?? UrlLauncherSystemBrowserPort(),
     objects: objects,
-    sourceReader: const FileSourceReader(),
-    digest: const Sha256DigestPort(),
-    transport: transport ?? (throw RepositoryError('misconfigured',
-        'SyncTransportPort requires the server sync endpoint; the host supplies HttpSyncTransport.')),
+    sourceReader: options.sourceReader ?? const FileSourceReader(),
+    digest: options.digest ?? const Sha256DigestPort(),
+    transport:
+        transport ??
+        (throw RepositoryError(
+          'misconfigured',
+          'SyncTransportPort requires the server sync endpoint; the host supplies HttpSyncTransport.',
+        )),
     drainTriggers: SyncDrainTriggers(
       drain: (_) async {}, // the M04-T03 orchestrator port replaces this
       environment: environment ?? const ForegroundOnlyEnvironment(),
