@@ -12,7 +12,26 @@
 
 import { OperationMap } from "./contract.js";
 
+export const DAILY_REPORT_OPERATION = "workflow.dailyReport.createFieldReport" as const;
+
 export const SEED_OPERATIONS: OperationMap = {
+  // M04-T03 activation — the product native-sync route calls the existing
+  // daily-report service, preserving its project edit guard, transactional
+  // photo-reference checks, and durable clientUuid idempotency.
+  [DAILY_REPORT_OPERATION]: {
+    kind: "mutation",
+    service: "workflow.dailyReport.createFieldReport",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "inputReferences",
+      "idempotency",
+    ],
+  },
+
   // field-submission.ts — createDomainRouter declarative pipeline, withIdempotency
   // (M00-T07 §3 row 26: mutation via daily-report-sync normalization).
   "fieldSubmission.submit": {

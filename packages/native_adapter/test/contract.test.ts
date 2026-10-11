@@ -230,6 +230,22 @@ test("seed registry: every mutation requires idempotency or is explicitly justif
   }
 });
 
+test("daily report activation maps to its existing service with the declared guards", () => {
+  const binding = SEED_OPERATIONS["workflow.dailyReport.createFieldReport"];
+  assert.ok(binding);
+  assert.equal(binding.kind, "mutation");
+  assert.equal(binding.service, "workflow.dailyReport.createFieldReport");
+  assert.deepEqual(binding.guards, [
+    "identity",
+    "tenantScope",
+    "rateLimit",
+    "projectMembership",
+    "projectPermission",
+    "inputReferences",
+    "idempotency",
+  ]);
+});
+
 test("adapterError always carries its tRPC mapping", () => {
   const e = adapterError("locked", "Fiscal year locked.");
   assert.equal(e.trpcCode, "CONFLICT");
