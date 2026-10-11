@@ -5,6 +5,10 @@
 - **Deciders:** Repository owner (chat directive; recorded under protocol R8)
 - **Related:** ADR-0013 (M01 stack decision — evidence-gated continuation), ADR-0014 (open-source-only posture), `docs/reports/prior-art-artcraft-family.md` (family evaluation), M04/M06/M07/M08 milestone files
 
+## Amendment — 2026-10-12
+
+[ADR-0016](0016-artcraft-suite-in-place-embedding-and-table-modernization.md) clarifies the integration direction across GridCraft, CADCraft, PdfCraft, WordCraft and DeckCraft: full upstream editors retain their interfaces/ribbons; focused embedded views reuse supported upstream UI components and the same engine. The prior engine-only/custom-renderer preference does not constrain those modes. CLI/MCP remains the first evidence/automation surface, not the prescribed user interface. Per-app adoption evidence, server authority, immutable pins and no upstream source edits remain required. M06-T12 establishes the shared tested update/rollback pipeline; subsequent milestones integrate each app and font supply.
+
 ## Context
 
 The owner identified the ArtCraft family (`storytold/{gridcraft,cadcraft,pdfcraft,wordcraft}`) as directly relevant to this program and directed integration with a mechanism that allows direct updating from upstream. An org survey (2026-10-09, family report) added `craft-fonts` (font supply, MIT OR Apache-2.0); the same day the owner required **WordCraft and deckcraft** for letters/reports and presentations and **rejected photocraft for site-photo markup** in favour of a native overlay plus PdfCraft's annotation/export path; all adopt-track repos carry semver release tags (`v0.1.0`…`v0.4.0`), which are the pin targets.
@@ -16,11 +20,11 @@ This intersects ADR-0013, which (a) keeps the existing TypeScript application as
 ## Decision
 
 1. **Candidate engines, evidence-gated.** Each ArtCraft tool becomes a candidate engine for one capability area: GridCraft → M06 worksheet/BoQ; CADCraft → M07 CAD kernel/plot; PdfCraft → M08 PDF/takeoff **and the annotation/export path for site-photo markup (M04)**; **WordCraft → letters/reports/specs (.docx) and deckcraft → client-facing presentations — both owner-required (chat, 2026-10-09)**, registered as milestone M12 (`docs/plans/milestones/M12-documents-presentations.md`, `[PLAN-AMEND]` 2026-10-09); prototypes follow the M06/M07/M08 pattern; **craft-fonts → the font supply for any adopted engine** (font assets + per-font licences + SHA-256 manifest; consumed together with the engine that needs it). No production cutover happens without a fixture-based prototype comparison against the current authoritative engine (or, for new capability areas, an agreed reference) and a **per-engine adoption ADR**. ADR-0013's authority and parity rules are unchanged.
-2. **Upstream tracking, no forks.** We never fork or edit upstream code. Consumption surfaces, in order of preference:
+2. **Upstream tracking, no forks.** We never fork or edit upstream code. Consumption surfaces by use (CLI/MCP first for evidence and automation; supported app/component hosts for user interfaces):
    - **CLI / headless MCP subprocess** pinned to an upstream release tag (server-side batch jobs, agent automation) — lowest binding risk, matches the M01 spike's subprocess posture.
    - **Cargo git dependency pinned to a tag or commit** (`{ git = "https://github.com/storytold/<repo>.git", tag = "..." }`) when a Rust integration binds crates directly.
-   - WASM builds of their `-web` targets where the web app embeds a capability.
-   Updating = a PR that bumps the pin. Upstream advances flow directly without reconciliation merges.
+   - Supported full application hosts and reusable UI/canvas/editor components, including WASM builds of their `-web` targets where appropriate, for the two modes in ADR-0016. Per-app records verify installed-app/browser hosting and required extension hooks rather than assuming them.
+   Updating = a reviewed immutable pin/build-input bump through the shared command, with both-mode compatibility and rollback checks. Upstream source advances require no reconciliation merges, but API changes may require adapter work.
 3. **Vendor registry.** `docs/vendor/ARTCRAFT.md` records, per tool: pinned tag/rev, upstream URL, license, carried attribution files (LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION), artifact hash, and a dated change log. A distribution that includes an ArtCraft component must carry those files.
 4. **Patch policy.** If an upstream fix is needed before it lands upstream: file/propose it upstream first; if we must carry it locally, it lives in a separate overlay crate in *our* workspace that depends on theirs — upstream sources stay unmodified. Once upstream lands the fix, drop the overlay at the next pin bump.
 5. **Sync cadence.** A monthly upstream-sync check (or at each milestone gate, whichever first) reviews new tags against the registry and opens pin-bump PRs; security-relevant bumps are expedited. Pre-1.0 upstreams may make breaking changes: pins are exact tags/revs, never branches.

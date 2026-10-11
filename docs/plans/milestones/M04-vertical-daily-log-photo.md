@@ -102,3 +102,9 @@ The original WP-level register (superseded 2026-10-09 by the `[PLAN-AMEND]` refi
 ## Refinement contract
 
 Before the M04 gate PR opens, M05 is refined from work-package level to `M05-Tnn` tasks with scope, outputs, dependencies, and testable acceptance criteria via a `[PLAN-AMEND]` PR (protocol R9). Far-future milestones stay coarse until evidence supports their refinement.
+
+## Product binding checkpoint — 2026-10-11
+
+Construction_Manager PR #170 mounts `POST /api/native/sync` through the shared `@contractor/native-adapter` version resolver, operation registry, and ordered guard pipeline for both daily-report create and versioned update operations. Office and native edits use `updatedAt` compare-and-swap; a product router test simulates an office write and confirms a stale native update is rejected without a second write. The integration preserves session-derived tenant/account checks, server rate limits, project membership and edit checks, the existing transactional procedures, and idempotent replay behavior. The product branch pins Contractor commit `c04eb897`; PR #170 is pushed at `16408be2` and remains open as a draft. The owner confirmed the local product login page renders, but that does not establish native authentication or live acceptance.
+
+This resolves the route-conformance and versioned-update implementation gaps on the product PR branch. M04-T03 remains open until the product stack is merged and an authenticated native report is accepted, delivered through the feed, and visible on a second client. The M04 scope is unchanged.

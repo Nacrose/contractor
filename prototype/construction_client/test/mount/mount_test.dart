@@ -85,7 +85,7 @@ void main() {
       attempt: 1,
       nowMs: 7,
     );
-    expect(envelope.syncProtocolVersion, kSyncProtocolVersion);
+    expect(envelope.protocolVersion, kNativeAdapterProtocolVersion);
     expect(envelope.payloadDigest, mount.digest.digest('{"day":"2026-10-09"}'.codeUnits));
 
     // The health surface sees the pending op through the same store.
