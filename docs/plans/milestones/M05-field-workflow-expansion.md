@@ -6,7 +6,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
 
 ---
 
-- [ ] **M05-T01** — Expansion substrate: shared repositories, typed commands, and sync status for the workflow family
+- [x] **M05-T01** — Expansion substrate: shared repositories, typed commands, and sync status for the workflow family (PR #56)
   - Depends on: M04-T02, M04-T03 · Output: substrate extension code with tests — the per-domain operation bindings, command registrations, and sync-status wiring the expansion workflows share; no new screen framework.
   - Scope: extend the M04 mount (T02) and vertical workflow substrate (T03) so attendance, petty cash, MRR/delivery, and media workflows all run through the SAME repositories, typed commands, and sync-status components (v3 §6 M05 bullet 1) — one engine path, no per-workflow forks.
   - Acceptance:
@@ -15,7 +15,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Each workflow's adapter operation bindings (operationId + declared guard chain) are registered in the M03-T01 registry from the M00 router-inventory rows for that domain — a binding that cannot name its inventory row and guard chain cannot be registered.
     - Standing constraint (v3 §10): every writer added server-side for these workflows names its change-feed integration and Flutter-parity path in the per-workflow tasks below — none added silently.
 
-- [ ] **M05-T02** — Attendance submissions (duplicate rules central; server-authoritative time and sequence)
+- [x] **M05-T02** — Attendance submissions (duplicate rules central; server-authoritative time and sequence) (PR #57)
   - Depends on: M05-T01 · Output: attendance submission workflow running on native and web with tests; writer/feed disposition recorded in the task's evidence report.
   - Scope: attendance create/edit/post through the shared engine; duplicate attendance rules and field-capture timestamp semantics defined CENTRALLY; device time is never authoritative for posting sequence or approvals (v3 §6 M05 bullet 3).
   - Acceptance:
@@ -87,7 +87,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Post-retirement checks pass: no field-workflow regression in the web app (office surfaces keep working); service worker/cache cleanup verified.
     - Evidence is recorded before the retirement PR merges; the tick cites the drain evidence and the retirement diff.
 
-- [ ] **M05-T10** — 👤 GATE — M05 exit evidence and owner decision
+- [x] **M05-T10** — 👤 GATE — M05 exit evidence and owner decision (PR #65)
   - Depends on: M05-T01…T09 · Output: `[M05-GATE]` evidence packet; downstream (M06/M09) refinement needs noted; owner decision.
   - Acceptance:
     - Every M05 task is ticked with a PR reference and links reproducible evidence; each workflow's crash/replay/permission results are presented per the exit sentence.
