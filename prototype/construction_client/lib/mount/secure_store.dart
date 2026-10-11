@@ -87,6 +87,7 @@ class MethodChannelSecureCredentialStore implements SecureCredentialStore {
 
   @override
   Future<void> wipeAll() {
-    return _guard(() => channel.invokeMethod<void>('wipeAll'));
+    // Native handlers require an argument map even for this parameterless call.
+    return _guard(() => channel.invokeMethod<void>('wipeAll', const <String, Object?>{}));
   }
 }
