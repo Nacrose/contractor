@@ -33,7 +33,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Original actor + edited payload audit history survives the sync path: an office edit does not overwrite who originally submitted or what they submitted (pinned by test against the real audit-log service).
     - Financial command receipts follow the M03-T04 §7 durable-receipt rules (never expiry-deleted; compaction keeps the replay gate fail-closed).
 
-- [ ] **M05-T04** — MRR / delivery submissions (office review flows reused)
+- [x] **M05-T04** — MRR / delivery submissions (office review flows reused) (PR #59)
   - Depends on: M05-T01 · Output: MRR/delivery submission workflow running on native and web with tests.
   - Scope: `field-submission.ts` office review flows reused; material reconciliation semantics unchanged — `daily-report-sync` normalization is not forked or re-implemented client-side (v3 §6 M05 bullet 2).
   - Acceptance:
