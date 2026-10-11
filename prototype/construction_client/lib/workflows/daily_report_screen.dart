@@ -639,6 +639,16 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     }
   }
 
+  Future<void> _retryFailedPhotos() async {
+    final failedIds = _reportPhotos
+        .where((photo) => photo.state == AttachmentTransferState.failed)
+        .map((photo) => photo.id)
+        .toList(growable: false);
+    for (final id in failedIds) {
+      await _retryPhoto(id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final route = _routes[RouteId('daily-report.new')];
@@ -662,6 +672,11 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       widget.tenantId,
     );
     final reportPhotos = _reportPhotos;
+    final failedPhotoIds = reportPhotos
+        .where((photo) => photo.state == AttachmentTransferState.failed)
+        .map((photo) => photo.id)
+        .toList(growable: false);
+    final hasIncompletePhotos = reportPhotos.any((photo) => !photo.complete);
     final attachmentState = reportPhotos.isEmpty
         ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
         : reportPhotos.every((photo) => photo.complete)
@@ -691,9 +706,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       },
       attachmentCompletion: attachmentState,
       backup: BackupState.BACKUP_STATE_NOT_CONFIGURED,
-      pendingWorkRetained: opState != null && opState != 'accepted',
+      pendingWorkRetained:
+          (opState != null && opState != 'accepted') || hasIncompletePhotos,
       nextUserAction: opState == 'rejected'
           ? NextUserAction.NEXT_USER_ACTION_REVIEW_SERVER_REJECTION
+          : failedPhotoIds.isNotEmpty
+          ? NextUserAction.NEXT_USER_ACTION_RETRY_ATTACHMENTS
           : NextUserAction.NEXT_USER_ACTION_UNSPECIFIED,
     );
 
@@ -762,7 +780,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             ),
           SaveSyncStatusPanel(
             status: status,
-            onNextAction: opState == 'pending' ? _syncNow : null,
+            onNextAction: opState == 'rejected'
+                ? null
+                : failedPhotoIds.isNotEmpty
+                ? _retryFailedPhotos
+                : opState == 'pending'
+                ? _syncNow
+                : null,
           ),
           _SyncHealthCard(
             health: health,

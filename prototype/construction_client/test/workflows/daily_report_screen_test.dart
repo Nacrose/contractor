@@ -584,17 +584,34 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Choose photo'));
       await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, 1000));
+      await tester.pumpAndSettle();
 
       expect(photos.lastProjectId, 'project-1');
       expect(photos.lastReportId, isNotEmpty);
       expect(find.text('Photo photo-re'), findsOneWidget);
       expect(find.text('Photo photo-fa'), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
+      expect(find.text('Upload delayed'), findsOneWidget);
+      expect(
+        find.text('Pending work remains saved on this device.'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('Retry attachment uploads'));
+      await tester.tap(find.text('Retry attachment uploads'));
+      await tester.pumpAndSettle();
+      expect(photos.retryCalls, ['photo-failed']);
 
       await tester.ensureVisible(find.text('Save locally'));
       await tester.tap(find.text('Save locally'));
       await tester.pumpAndSettle();
-      await tester.drag(find.byType(ListView), const Offset(0, 1000));
+      await tester.dragUntilVisible(
+        find.text(
+          'Finish or retry each photo transfer before saving the report.',
+        ),
+        find.byType(ListView),
+        const Offset(0, -300),
+      );
       await tester.pumpAndSettle();
       expect(
         find.text(
@@ -645,6 +662,7 @@ class _Photos implements DailyReportPhotoPort {
   String? lastProjectId;
   String? lastReportId;
   final records = <AttachmentTransferRecord>[];
+  final retryCalls = <String>[];
 
   @override
   List<AttachmentTransferRecord> list() => records;
@@ -673,8 +691,10 @@ class _Photos implements DailyReportPhotoPort {
   }
 
   @override
-  Future<AttachmentTransferRecord> retry(String attachmentId) async =>
-      records.last;
+  Future<AttachmentTransferRecord> retry(String attachmentId) async {
+    retryCalls.add(attachmentId);
+    return records.last;
+  }
 
   @override
   Future<AttachmentResumeSummary> resumeAll() async =>

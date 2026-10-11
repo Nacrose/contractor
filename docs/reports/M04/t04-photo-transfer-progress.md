@@ -32,4 +32,12 @@
 
 The connected host now instantiates `HttpPhotoUploadRegistrar` with the authenticated client and the report-linked attachment manager; camera/gallery capture is wired through the shared photo port. The sync-health card shows pending operations, oldest age, exact snapshot feed cursors, accepted operation sequences, conflicts, blocked operations, and rejection reasons. The editor previews a photo only after the manager reports it registered.
 
-The product upload/snapshot changes are pushed to the stacked Construction_Manager PR #170, but have not been merged or exercised against the user's account. Flutter analysis and the full **207-test** suite pass, and iOS, macOS, and web builds compile after the local draft-recovery update. Widget coverage checks the exact decimal snapshot cursor and reopening a saved report. No photo was captured or uploaded on the user's device in this checkpoint, so server registration, interrupted-device recovery, and second-device visibility remain unproven. The user created a local account and confirmed that the local login page renders, but the attempted native sign-in reloaded the login page and has not established a session.
+The shared Save and sync panel now also treats any incomplete report photo as
+retained pending work. A retryable transfer displays “Upload delayed” and a
+“Retry attachment uploads” action that retries the failed photo rows; the
+screen test asserts the retained-work message and invokes the retry through
+that action. This closes a false-clear status gap for pending uploads in the
+shared editor, but does not replace the device sync-health model or prove a
+live server upload.
+
+The product upload/snapshot changes are pushed to the stacked Construction_Manager PR #170, but have not been merged or exercised against the user's account. After the status fix, the full **207-test** Flutter suite passes and `flutter analyze --no-pub` is clean. The iOS, macOS, and web compile checks passed after the earlier saved-report recovery update and predate this status-only change. Widget coverage checks the exact decimal snapshot cursor and reopening a saved report. No photo was captured or uploaded on the user's device in this checkpoint, so server registration, interrupted-device recovery, and second-device visibility remain unproven. The user created a local account and confirmed that the local login page renders, but the attempted native sign-in reloaded the login page and has not established a session.
