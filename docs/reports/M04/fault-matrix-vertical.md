@@ -1,7 +1,7 @@
 # M04-T05: Vertical workflow fault matrix
 
 - **Status:** local mounted-engine matrix passes for ten automated legs; M04-T05 acceptance remains open.
-- **Branch:** `m04-t05-vertical-fault-matrix`, stacked on M04-T04.
+- **Current branch:** `codex/m04-connected-host`, with the connected recovery follow-on in Contractor PR #55.
 - **Run:** `flutter test test/workflows/m04_fault_matrix_test.dart` — 10 tests passed on 2026-10-11.
 - **Harness:** Flutter mount with a temporary on-disk SQLite database and deterministic fake sync transport.
 
@@ -13,7 +13,7 @@ Device sync health card, expired authentication shows a sign-in action and
 revoked project access tells the user to contact an admin; both notices state
 that locally saved reports are retained. The fault-matrix assertions verify
 each event carries the stopped operation ID, and two screen tests verify the
-recovery copy and sign-in action. The full Flutter client suite passes (203
+recovery copy and sign-in action. The full Flutter client suite passes (204
 tests), and `flutter analyze --no-pub` reports no issues. These checks cover the
 event and UI seams separately; they do not count as a device-recorded health
 transcript.
@@ -39,4 +39,4 @@ transcript.
 
 The ten tests run the mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. Health assertions exist for conflict, offline pending work, rejection, and lost acknowledgement; a complete health-surface transcript is not captured for every scenario. Auth and revocation now have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
 
-Product PR [#165](https://github.com/Nacrose/Construction_Manager/pull/165) prepares `workflow.dailyReport.createFieldReport` and receipt-to-report photo association; stacked [PR #166](https://github.com/Nacrose/Construction_Manager/pull/166) prepares the feed route. Both remain draft and unmerged, PR #166's persistent worker is not deployed, and no local product database/test account is configured. M04-T07/T08 will also require real device sessions and owner verification; this report does not substitute for them.
+Product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165), [#166](https://github.com/Nacrose/Construction_Manager/pull/166), [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and [#170](https://github.com/Nacrose/Construction_Manager/pull/170) prepare the report adapter, feed/snapshot, native PKCE, and resumable photo/snapshot digest paths. They remain draft and unmerged. The user reported creating a local account and confirmed the local login page renders, but the account has not been exercised through Flutter. M04-T07/T08 will also require real device sessions and owner verification; this report does not substitute for them.

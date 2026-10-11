@@ -1,8 +1,8 @@
 # M04-T06: Retention, restore, and attachment download progress
 
-- **Status:** snapshot bootstrap application, durable resume, and rejected-report correction are implemented locally; registered-photo re-fetch remains a contract only and live product round-trip evidence is still missing.
-- **Branch:** `m04-t06-restore`, stacked on the M04-T05 checkpoint.
-- **Evidence:** full native Flutter suite — 185 passed; `dart analyze` — no issues. Focused snapshot/bootstrap and rejection-correction tests are included.
+- **Status:** snapshot bootstrap, durable resume, rejected-report correction, and connected registered-photo re-fetch are implemented locally; live product round-trip evidence is still missing.
+- **Current branch:** `codex/m04-connected-host`, with the connected restore follow-on in Contractor PR #55.
+- **Latest evidence:** full Flutter client suite — 204 passed; `flutter analyze --no-pub` — no issues. Focused snapshot/bootstrap and rejection-correction tests are included.
 
 ## Implemented contract
 
@@ -12,10 +12,10 @@ The tests cover successful fetch plus local persistence, final bytes matching th
 
 ## Required evidence still missing
 
-- Product PR #165 contains the protected read procedure `workflow.dailyReport.getAttachmentData({ id })`; each request resolves the report project, calls `assertDailyReportView`, and reads bytes from `StoredFile`. The Flutter fetcher is still only a contract port, so this route is not wired or exercised by the mount.
-- Product PR #166 now includes an authenticated project-scoped snapshot endpoint and documented payload contract (commit `adc46e6f` pushed after local build and browser check). PR #166 and its prerequisite #165 remain unmerged. The Flutter mount applies snapshot pages into a separate accepted-report replica, persists its page cursor, resumes after restart, closes the manifest before deleting stale replicas, protects pending operation IDs, and stores the decimal feed watermark for incremental pull. Local fake-transport proof exists; product-backed restore remains unproven.
+- Product PR #165 contains the protected read procedure `workflow.dailyReport.getAttachmentData({ id })`; the connected Flutter host now fetches registered bytes through the authenticated `GET /api/files/[key]` route and revalidates scope on each request. The local restore path checks the snapshot digest and byte count before marking a restored object complete, but has not been exercised against the product account.
+- Product PR #166 includes an authenticated project-scoped snapshot endpoint and documented payload contract; PR #170 adds served photo digests/sizes and the resumable photo routes. PRs #165–#167 and #170 remain unmerged. The Flutter mount applies snapshot pages into a separate accepted-report replica, persists its page cursor, resumes after restart, closes the manifest before deleting stale replicas, protects pending operation IDs, and stores the decimal feed watermark for incremental pull. Local fake-transport proof exists; product-backed restore remains unproven.
 - A server rejection can now be corrected into a new client UUID and queued as a new operation while the rejected payload remains intact. Local repository coverage exists; a real product rejection and user-session retry remain unproven.
-- No product feed association proves restored registered photos reappear on a second device.
+- The feed/snapshot path has not been exercised live to prove registered photos reappear on a second device.
 
 ## Browser persistence follow-on (2026-10-10)
 
@@ -27,6 +27,6 @@ The local snapshot and rejection paths do not claim authenticated server accepta
 
 The connected host now implements `HttpRegisteredAttachmentFetcher` and invokes `restoreRegistered` for registered photos in accepted report snapshots. It downloads by the registered `storageKey` through the existing authenticated `GET /api/files/[key]` route, which rechecks the caller’s tenant, source record, and project permission on each read. The Flutter manager compares both the served byte count and SHA-256 from the snapshot before marking a restored object complete; a failed or mismatched fetch stays incomplete and retryable. Product PR #170 adds those served digest/size fields to the project-scoped snapshot.
 
-The Flutter restore tests, focused transport tests, full 201-test suite, and iOS/macOS/web compilation pass. Product PR #170 and its stacked prerequisites remain unmerged, and no live new-device restore has been exercised. T06 therefore remains open pending server-backed, cross-device evidence.
+The Flutter restore tests, focused transport tests, full 204-test suite, and iOS/macOS/web compilation pass. Product PR #170 and its stacked prerequisites remain unmerged, and no live new-device restore has been exercised. T06 therefore remains open pending server-backed, cross-device evidence.
 
-Product PRs #165 and #166 remain draft and unmerged. The local product database and test account are not configured, so authenticated download, live snapshot/feed reconcile, a real rejected-response correction, and second-device restore have not been exercised.
+Product PRs #165, #166, #167, and #170 remain draft and unmerged. The user reported creating a local account and confirmed the login page renders, but authenticated download, live snapshot/feed reconcile, a real rejected-response correction, and second-device restore have not been exercised through Flutter.

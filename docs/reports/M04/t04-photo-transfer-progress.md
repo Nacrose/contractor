@@ -1,7 +1,7 @@
 # M04-T04: Photo transfer implementation progress
 
 - **Status:** transfer engine, report-linked capture contract, and shared editor controls implemented locally; T04 acceptance is not claimed.
-- **Branch:** `m04-t04-photo-attachment` (stacked on the M04-T03 checkpoint)
+- **Current branch:** `codex/m04-connected-host`, with the follow-on in Contractor PR #55.
 - **Date:** 2026-10-10
 
 ## Implemented locally
@@ -22,14 +22,14 @@
 ## Acceptance still open
 
 - Tests use contract fakes; no real registration endpoint or second-device read has been demonstrated.
-- Product PR [#165](https://github.com/Nacrose/Construction_Manager/pull/165) prepares the registered-reference schema and transactional attachment linkage for `workflow.dailyReport.createFieldReport`; stacked [PR #166](https://github.com/Nacrose/Construction_Manager/pull/166) prepares the feed path. Both remain draft and unmerged. The user's product-repo approval is already recorded; no live registrar, feed worker, or second-device read has been verified.
-- The editor exposes the injectable photo port, but the running product host does not yet instantiate it with real camera/gallery and registrar bindings.
+- Product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165), [#166](https://github.com/Nacrose/Construction_Manager/pull/166), [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and [#170](https://github.com/Nacrose/Construction_Manager/pull/170) prepare the daily-report/photo binding, feed/snapshot, native PKCE, and resumable photo endpoints. They remain draft and unmerged; no live registrar, feed worker, or second-device read has been verified.
+- The connected Flutter host instantiates the photo port with native camera/gallery capture and the authenticated resumable registrar, but the flow has not yet been verified in a signed-in device session against the product server.
 - The local report UUID is stored on the client attachment row and passed to the registrar contract. The report outbox payload includes the registered attachment ID, receipt, digest, and byte count; the server has not yet accepted or linked those references, so no claim is made that a registered photo is visible on the server report.
 - Real camera/gallery capture, interrupted app process recovery, and device telemetry still require a real device session.
-- The local product database and test account are not configured, so authenticated upload/registration cannot be exercised here.
+- The user reported creating a local account and confirmed that the local login page renders, but the account has not been exercised through Flutter; authenticated upload/registration has not been demonstrated.
 
 ## Connected-host follow-on (2026-10-11)
 
 The connected host now instantiates `HttpPhotoUploadRegistrar` with the authenticated client and the report-linked attachment manager; camera/gallery capture is wired through the shared photo port. The sync-health card shows pending operations, oldest age, accepted cursors, conflicts, blocked operations, and rejection reasons. The editor previews a photo only after the manager reports it registered.
 
-The product upload/snapshot changes are pushed to the stacked Construction_Manager PR #170, but have not been merged or exercised against a live account. Flutter analysis and the full **201-test** suite pass, and iOS, macOS, and web builds compile. No photo was captured or uploaded on the user’s device in this checkpoint, so server registration, interrupted-device recovery, and second-device visibility remain unproven. The earlier “database/account not configured” observation is historical; the user later reported creating a local account, but its authenticated native flow has not been tested.
+The product upload/snapshot changes are pushed to the stacked Construction_Manager PR #170, but have not been merged or exercised against the user's account. Flutter analysis and the full **204-test** suite pass, and iOS, macOS, and web builds compile. No photo was captured or uploaded on the user's device in this checkpoint, so server registration, interrupted-device recovery, and second-device visibility remain unproven. The user reported creating a local account and confirmed that the local login page renders, but its authenticated native flow has not been tested.

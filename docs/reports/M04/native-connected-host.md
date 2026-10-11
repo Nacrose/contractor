@@ -27,7 +27,7 @@ The signup PostgreSQL cluster is at `127.0.0.1:5433`, database `contractor_m04_s
 ## 2026-10-11 follow-on
 
 After wiring orchestrator authentication/revocation events into the shared
-screen, the full Flutter suite passes (203 tests) and `flutter analyze
+screen, the full Flutter suite passes (204 tests) and `flutter analyze
 --no-pub` is clean. Current compile-only builds also pass for unsigned iOS
 release (`build/ios/iphoneos/Runner.app`), macOS debug
 (`build/macos/Build/Products/Debug/construction_client.app`), and web release
