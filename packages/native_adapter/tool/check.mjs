@@ -18,5 +18,7 @@ function run(cmd, args, opts = {}) {
 run("npx", ["-y", `-p`, `typescript@${TSC_VERSION}`, "tsc", "--project", "tsconfig.json"]);
 run("node", [resolve(PKG, ".test-build/test/contract.test.js")]);
 run("node", [resolve(PKG, ".test-build/test/attendance.test.js")]);
-console.log("native_adapter: contract and attendance tests PASSED");
+run("node", [resolve(PKG, ".test-build/test/site_expense.test.js")]);
+console.log("native_adapter: contract, attendance, and site expense tests PASSED");
+
 
