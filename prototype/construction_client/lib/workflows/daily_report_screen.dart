@@ -724,40 +724,60 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: ActionBar(
-            ariaLabel: 'Daily report actions',
-            primary: FilledButton.icon(
-              onPressed: canSave && !_saving ? _save : null,
-              icon: _saving
-                  ? const SizedBox.square(
-                      dimension: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.save_outlined),
-              label: Text(
-                opState == 'rejected'
-                    ? 'Save corrected copy'
-                    : opState == 'conflict'
-                    ? 'Save reviewed copy'
-                    : _saved && !_canEditCurrentReport
-                    ? 'Saved report'
-                    : _saved
-                    ? 'Update local draft'
-                    : 'Save locally',
-              ),
-            ),
-            actions: [
-              ActionBarAction(
-                label: 'Sync now',
-                icon: Icons.sync,
-                onPressed: _saved ? _syncNow : null,
-                disabled: !_saved,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _error!,
+                      key: const ValueKey('daily-report-save-error'),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ),
+                ),
+              ActionBar(
+                ariaLabel: 'Daily report actions',
+                primary: FilledButton.icon(
+                  onPressed: canSave && !_saving ? _save : null,
+                  icon: _saving
+                      ? const SizedBox.square(
+                          dimension: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.save_outlined),
+                  label: Text(
+                    opState == 'rejected'
+                        ? 'Save corrected copy'
+                        : opState == 'conflict'
+                        ? 'Save reviewed copy'
+                        : _saved && !_canEditCurrentReport
+                        ? 'Saved report'
+                        : _saved
+                        ? 'Update local draft'
+                        : 'Save locally',
+                  ),
+                ),
+                actions: [
+                  ActionBarAction(
+                    label: 'Sync now',
+                    icon: Icons.sync,
+                    onPressed: _saved ? _syncNow : null,
+                    disabled: !_saved,
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
       body: ListView(
+        key: const ValueKey('daily-report-screen-list'),
         padding: const EdgeInsets.all(20),
         children: [
           const SizedBox(height: 16),
@@ -800,13 +820,6 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             accessIssue: widget.syncAccessIssue,
             onSignInAgain: widget.onSignInAgain,
           ),
-          if (_error != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              _error!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ],
           if (opState == 'rejected') ...[
             const SizedBox(height: 8),
             const Text(
@@ -1226,9 +1239,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
 
   String _safeError(Object error) => switch (error) {
     RepositoryError(:final kind) =>
-      'Save failed ($kind). Your draft is still on this device.',
+      'Save failed ($kind). Your entry is still open on this device.',
     FormatException() => 'Check the numeric values and try saving again.',
-    _ => 'Save failed. Your draft is still on this device.',
+    _ => 'Save failed. Your entry is still open on this device.',
   };
 }
 

@@ -158,6 +158,116 @@ void main() {
     expect(find.text('Sign in again'), findsNothing);
   });
 
+  testWidgets(
+    'expired sync event reaches the screen and offers sign-in retry',
+    (tester) async {
+      tester.view.physicalSize = const Size(430, 932);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      mount!.driver.close();
+      mount = openMount(
+        options: MountOptions(
+          dbPath: '${tmp.path}/outbox.db',
+          objectRoot: Directory('${tmp.path}/objects'),
+          extraMigrations: kM04WorkflowMigrations,
+        ),
+        credentials: _Credentials(),
+        transport: _Transport(
+          (envelope) async => SyncOutcome(
+            kind: SyncOutcomeKind.authenticationRequired,
+            opId: envelope.opId,
+            detail: 'session expired',
+          ),
+        ),
+      );
+      final store = DailyReportLocalStore(mount!);
+      DailyReportSyncAccessIssue? issue;
+      late StateSetter updateHost;
+      mount!.drainTriggers.bind(
+        drain: (_) async => DailyLogSyncOrchestrator(
+          mount: mount!,
+          deviceId: 'device-1',
+          random: _FixedRandom(),
+          authEvents: _CallbackAuthEvents((kind, _) {
+            updateHost(() {
+              issue = switch (kind) {
+                'authentication_required' =>
+                  DailyReportSyncAccessIssue.authenticationRequired,
+                'revoked' => DailyReportSyncAccessIssue.revoked,
+                _ => null,
+              };
+            });
+          }),
+        ).drain('acct-1'),
+        isDraining: () => false,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setState) {
+              updateHost = setState;
+              return DailyReportScreen(
+                store: store,
+                accountId: 'acct-1',
+                tenantId: 'tenant-1',
+                role: 'field',
+                projects: const [
+                  DailyReportProjectOption(
+                    id: 'project-1',
+                    label: 'P-01 — Bridge',
+                  ),
+                ],
+                syncAccessIssue: issue,
+                onSignInAgain: () {},
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _selectProject(tester);
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Daily remarks'),
+        'Retain while the session is renewed',
+      );
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('More actions'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sync now'));
+      await tester.pumpAndSettle();
+
+      expect(issue, DailyReportSyncAccessIssue.authenticationRequired);
+      expect(
+        tester
+            .widget<DailyReportScreen>(find.byType(DailyReportScreen))
+            .syncAccessIssue,
+        DailyReportSyncAccessIssue.authenticationRequired,
+      );
+      expect(store.savedReports('acct-1', 'tenant-1'), hasLength(1));
+      expect(
+        store.savedReports('acct-1', 'tenant-1').single.draft.remarks,
+        'Retain while the session is renewed',
+      );
+      expect(mount!.pendingOps.listDue('acct-1', 9999999999999), hasLength(1));
+      await tester.dragUntilVisible(
+        find.text('Sign-in required to sync'),
+        find.byKey(const ValueKey('daily-report-screen-list')),
+        const Offset(0, 300),
+      );
+      expect(
+        find.text(
+          'Your report is saved locally. Sign in again to resume syncing.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Sign in again'), findsOneWidget);
+    },
+  );
+
   testWidgets('shows accepted reports restored for assigned projects', (
     tester,
   ) async {
@@ -298,7 +408,6 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save locally'));
     await tester.pumpAndSettle();
-
     expect(find.text('Update local draft'), findsOneWidget);
     final rows = mount!.pendingOps.listDue(
       'acct-1',
@@ -307,6 +416,157 @@ void main() {
     expect(rows, hasLength(1));
     expect(rows.single.kind, 'workflow.dailyReport.createFieldReport');
   });
+
+  testWidgets('disk-full save keeps the open entry clear and retryable', (
+    tester,
+  ) async {
+    final store = _RecoverableDiskFullStore(mount!);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: store,
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _selectProject(tester);
+    final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
+    await tester.ensureVisible(remarks);
+    await tester.enterText(remarks, 'Keep this unsaved entry available');
+    await tester.ensureVisible(find.text('Save locally'));
+    await tester.tap(find.text('Save locally'));
+    await tester.pumpAndSettle();
+    expect(store.saveAttempts, 1);
+
+    expect(
+      find.byKey(const ValueKey('daily-report-save-error')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Save failed (full). Your entry is still open on this device.'),
+      findsOneWidget,
+    );
+    expect(
+      tester.widget<TextFormField>(remarks).controller?.text,
+      'Keep this unsaved entry available',
+    );
+    expect(store.savedReports('acct-1', 'tenant-1'), isEmpty);
+    expect(mount!.pendingOps.listDue('acct-1', 9999999999999), isEmpty);
+
+    store.failDiskFull = false;
+    await tester.tap(find.text('Save locally'));
+    await tester.pumpAndSettle();
+    expect(store.savedReports('acct-1', 'tenant-1'), hasLength(1));
+    expect(
+      store.savedReports('acct-1', 'tenant-1').single.draft.remarks,
+      'Keep this unsaved entry available',
+    );
+  });
+
+  testWidgets(
+    'transport rejection reaches health and preserves correction path',
+    (tester) async {
+      mount!.driver.close();
+      mount = openMount(
+        options: MountOptions(
+          dbPath: '${tmp.path}/outbox.db',
+          objectRoot: Directory('${tmp.path}/objects'),
+          extraMigrations: kM04WorkflowMigrations,
+        ),
+        credentials: _Credentials(),
+        transport: _Transport(
+          (envelope) async => SyncOutcome(
+            kind: SyncOutcomeKind.rejected,
+            opId: envelope.opId,
+            detail: 'daily report permission denied',
+          ),
+        ),
+      );
+      final store = DailyReportLocalStore(mount!);
+      mount!.drainTriggers.bind(
+        drain: (_) async => DailyLogSyncOrchestrator(
+          mount: mount!,
+          deviceId: 'device-1',
+          random: _FixedRandom(),
+        ).drain('acct-1'),
+        isDraining: () => false,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: store,
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _selectProject(tester);
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Daily remarks'),
+        'Rejected but retained report',
+      );
+      await tester.ensureVisible(find.text('Save locally'));
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+      await store.syncNow();
+      await tester.pumpAndSettle();
+
+      final saved = store.savedReports('acct-1', 'tenant-1').single;
+      expect(saved.operationState, 'rejected');
+      expect(saved.draft.remarks, 'Rejected but retained report');
+      await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: store,
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.dragUntilVisible(
+        find.text('Device sync health'),
+        find.byKey(const ValueKey('daily-report-screen-list')),
+        const Offset(0, -300),
+      );
+      expect(find.text('Needs attention'), findsOneWidget);
+      expect(find.text('1 recent rejection(s) surfaced'), findsOneWidget);
+      await tester.ensureVisible(find.text('Saved on this device (1)'));
+      await tester.tap(find.text('Saved on this device (1)'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text(saved.draft.reportDate).first);
+      await tester.tap(find.text(saved.draft.reportDate).first);
+      await tester.pumpAndSettle();
+      expect(find.text('Save corrected copy'), findsOneWidget);
+      final rejectionGuidance = find.textContaining(
+        'This report was rejected by the server.',
+      );
+      await tester.dragUntilVisible(
+        rejectionGuidance,
+        find.byKey(const ValueKey('daily-report-screen-list')),
+        const Offset(0, -300),
+      );
+      expect(rejectionGuidance, findsOneWidget);
+    },
+  );
 
   testWidgets('transport failure remains visible in the sync health surface', (
     tester,
@@ -937,6 +1197,30 @@ Future<void> _selectProject(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+class _RecoverableDiskFullStore extends DailyReportLocalStore {
+  _RecoverableDiskFullStore(super.mount);
+
+  bool failDiskFull = true;
+  int saveAttempts = 0;
+
+  @override
+  String save({
+    required String accountId,
+    required String tenantId,
+    required String role,
+    required DailyReportDraft draft,
+  }) {
+    saveAttempts++;
+    if (failDiskFull) throw RepositoryError('full', 'simulated disk full');
+    return super.save(
+      accountId: accountId,
+      tenantId: tenantId,
+      role: role,
+      draft: draft,
+    );
+  }
+}
+
 class _Photos implements DailyReportPhotoPort {
   String? lastProjectId;
   String? lastReportId;
@@ -1035,6 +1319,15 @@ class _Transport implements SyncTransportPort {
   Future<SyncOutcome> send(SyncEnvelope envelope) async => handler == null
       ? throw StateError('test transport must not be called')
       : handler!(envelope);
+}
+
+class _CallbackAuthEvents implements AuthEventSink {
+  final void Function(String kind, String? opId) callback;
+
+  const _CallbackAuthEvents(this.callback);
+
+  @override
+  void onAuthEvent(String kind, String? opId) => callback(kind, opId);
 }
 
 class _FixedRandom implements OrchestratorRandomPort {
