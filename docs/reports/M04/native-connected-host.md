@@ -27,7 +27,7 @@ still open.
 
 ## Local environment
 
-At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. On the current 2026-10-11 check, neither `127.0.0.1:3108` nor the LAN forwarder `192.168.1.66:3000` accepts connections. Start the local product server and its Wi-Fi forwarder before retrying device sign-in. The previous login-page reload remains the last device result; no authenticated session is established.
+At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. On the current 2026-10-11 check, the product dev server responds with HTTP 200 on both `127.0.0.1:3108/login` and `192.168.1.66:3108/login`; the Wi-Fi forwarder at `192.168.1.66:3000` is not active. An HTTP 200 only proves the page is served. It does not prove browser JavaScript hydration or a session. The prior same-page reload remains the last device sign-in result; no authenticated session is established.
 
 ## Run the M04 app
 
