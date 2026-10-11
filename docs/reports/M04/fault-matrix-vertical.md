@@ -42,4 +42,19 @@ it does not count as device-recorded evidence.
 
 The ten matrix legs run mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. The offline leg now has a shared-screen transcript; conflict, rejection, and lost acknowledgement have model assertions, while complete screen transcripts are still missing for every fault. Auth and revocation have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
 
+### Product conflict-semantics check (2026-10-11)
+
+The first matrix row is a deterministic fake-transport scenario; it does not
+reproduce an office edit through the product API. In the current product
+checkout, `/api/native/sync` maps `TRPCError.CONFLICT` to a generic conflict
+outcome, and `workflow.dailyReport.createFieldReport` raises that error when a
+registered photo was filed by another request before this transaction could
+claim it. The native sync operation is a create operation and carries no
+server-report version or update operation. Therefore the existing row proves
+local retention and health surfacing only; it does not prove the planned
+simultaneous office-edit conflict or its recovery. That acceptance remains
+open pending an authorized product binding that can identify the current
+server state and a user-directed correction path. No automatic overwrite or
+retry is claimed.
+
 Product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165), [#166](https://github.com/Nacrose/Construction_Manager/pull/166), [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and [#170](https://github.com/Nacrose/Construction_Manager/pull/170) prepare the report adapter, feed/snapshot, native PKCE, and resumable photo/snapshot digest paths. Their last recorded state is draft and unmerged; a fresh GitHub API check was unavailable. The user created a local account and attempted native sign-in, but the login page reloaded. Server logs show no login POST or token exchange, so the account is not authenticated in Flutter. M04-T07/T08 will also require real device sessions and owner verification; this report does not substitute for them.
