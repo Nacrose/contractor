@@ -54,6 +54,27 @@ These checks independently verify the Flutter client, current product routes, an
 
 The 2026-10-11 rerun on Contractor PR #55 commit `7d4da91` passed `flutter test --no-pub` — **215 tests** — and `flutter analyze --no-pub` — **no issues**. The latest additions cover visible disk-full recovery, rejection from the mounted sync transport, expired-session/revocation event delivery to the screen recovery notices, and offline/timeout retry through the mounted sync action to acceptance while retaining pending work after failure.
 
+## Versioned edit and verification update (2026-10-11)
+
+The shared Flutter editor now reopens accepted reports with their server
+`updatedAt` version and submits edits as a new idempotent operation. If the
+server reports a version conflict, the editor retains the local operation and
+payload; the user can refresh accepted reports, compare/reconcile, and submit a
+new operation without replacing the conflicted one. Product PR #170 now
+dispatches `workflow.dailyReport.updateFieldReport`. Office and native updates
+both use compare-and-swap on `updatedAt`. A product router test simulates an
+office edit advancing the version and asserts a stale native update is
+rejected before another write. This remains fixture evidence, not a live
+database race or iPhone session.
+
+The product repo's local login page at `http://127.0.0.1:3110/login` was checked
+by the owner and reported rendering. The latest Safari evidence still showed
+no assigned projects; project assignment, authenticated native sign-in, an
+accepted report, and feed/second-device visibility have not been demonstrated.
+Current verification on Contractor PR #55 is 219 passing Flutter tests with
+clean `flutter analyze --no-pub`. M04-T03 remains open until the product stack
+is merged and a connected report round trip is shown.
+
 ## Field-section parity follow-on (2026-10-11)
 
 With the owner's approval, the shared Flutter editor now includes site visits and meetings, plus the current BOQ and plan-versus-actual progress fields: BOQ code and description, location, planned quantity, batched/placed quantity, payable quantity, and unit. Local drafts encode these as section rows. When reopening a legacy local draft, `taskDescription` and `actualQty` seed the newer description and quantity controls so existing work remains visible.

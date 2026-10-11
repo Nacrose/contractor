@@ -65,17 +65,22 @@ The lost-ack leg now also has a mobile-sized screen transcript in `test/workflow
 
 ### Product conflict-semantics check (2026-10-11)
 
-The first matrix row is a deterministic fake-transport scenario; it does not
-reproduce an office edit through the product API. In the current product
-checkout, `/api/native/sync` maps `TRPCError.CONFLICT` to a generic conflict
-outcome, and `workflow.dailyReport.createFieldReport` raises that error when a
-registered photo was filed by another request before this transaction could
-claim it. The native sync operation is a create operation and carries no
-server-report version or update operation. Therefore the existing row proves
-local retention and health surfacing only; it does not prove the planned
-simultaneous office-edit conflict or its recovery. That acceptance remains
-open pending an authorized product binding that can identify the current
-server state and a user-directed correction path. No automatic overwrite or
-retry is claimed.
+The product branch now includes optimistic versions for office edits and a
+versioned native `workflow.dailyReport.updateFieldReport` operation. Both paths
+use an `updatedAt` compare-and-swap; native retries retain their idempotency
+key, and a stale version returns a conflict instead of overwriting the office
+revision. A router-level test models an office save advancing the version, then
+asserts that a native update with the old version is rejected before a second
+write. The adapter tests separately cover dispatch of the native update
+operation. Product PR #170 contains this implementation and test.
 
-Product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165), [#166](https://github.com/Nacrose/Construction_Manager/pull/166), [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and [#170](https://github.com/Nacrose/Construction_Manager/pull/170) prepare the report adapter, feed/snapshot, native PKCE, and resumable photo/snapshot digest paths. The last confirmed GitHub check on 2026-10-11 found all four open as drafts; current status could not be refreshed. The first native sign-in attempts did not establish a session. A later screenshot identified the immediate server error as missing `DATABASE_URL`; the local database service and server environment have since been restored. The owner later reported the daily-report page open on iPhone, but build mode and connected session remain unverified. M04-T07/T08 will also require real device sessions and owner verification; this report does not substitute for them.
+This closes the code-path gap that previously made an office-edit conflict
+impossible, but it is still fixture-level evidence: there is no live PostgreSQL
+race test or connected iPhone office/native conflict session. The Flutter
+editor has a user-directed recovery path that keeps the original conflict and
+payload intact while the user reviews the current accepted report and saves a
+new operation. No automatic overwrite or retry is claimed. M04-T05 remains
+open for live/server-backed fault evidence, hardware reboot evidence, and the
+other exit criteria.
+
+Product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165), [#166](https://github.com/Nacrose/Construction_Manager/pull/166), [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and [#170](https://github.com/Nacrose/Construction_Manager/pull/170) prepare the report adapter, feed/snapshot, native PKCE, and resumable photo/snapshot digest paths. A fresh remote check on 2026-10-11 confirms #170 is open as a draft at `16408be2`; Contractor PR #55 is open as a draft at `c04eb897`. The product login page was checked by the owner at `127.0.0.1:3110/login` and reported rendering. This is not evidence of a native session or accepted report. An earlier screenshot identified a missing `DATABASE_URL`; the local database service and server environment have since been restored. The owner has not yet supplied evidence of a live report round trip, real-device fault session, telemetry, or M04 gate verification.
