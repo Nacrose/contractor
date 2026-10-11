@@ -60,7 +60,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - OS scheduler bindings (Android WorkManager / iOS BGTaskScheduler class) live behind the mount ports — no scheduling logic inside workflow code.
     - OS constraints (battery/quota deferrals) surface honestly through the health read model — a blocked background window is visible, never silent.
 
-- [ ] **M05-T07** — Existing browser drafts/queues: explicit export/import or safe drain
+- [x] **M05-T07** — Existing browser drafts/queues: explicit export/import or safe drain (PR #62)
   - Depends on: M05-T02, M05-T03, M05-T04 · Output: migration tooling/flow with tests + drain evidence report `docs/reports/M05/browser-drain.md`.
   - Scope: explicit export/import or safe draining of existing browser drafts/queues (`cm-field-outbox` IndexedDB v3: `outbox`/`drafts`/`queries`; legacy `cm-offline-v2`) BEFORE retiring field PWA code; operation IDs preserved; no blanket IndexedDB deletion (v3 §6 M05 bullet 5).
   - Acceptance:
