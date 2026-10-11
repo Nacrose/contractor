@@ -311,6 +311,61 @@ void main() {
       find.widgetWithText(TextFormField, 'Actual quantity'),
       '12.5',
     );
+    await tester.ensureVisible(
+      find.widgetWithText(TextFormField, 'Equipment name'),
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Equipment name'),
+      'Excavator',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Working hours'),
+      '7.5',
+    );
+    await tester.enterText(find.widgetWithText(TextFormField, 'Fuel'), '20');
+    final ownership = find.byType(DropdownButtonFormField<String>).at(2);
+    await tester.ensureVisible(ownership);
+    await tester.pumpAndSettle();
+    await tester.tap(ownership);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Hired').last);
+    await tester.pumpAndSettle();
+
+    final receivedName = find
+        .widgetWithText(TextFormField, 'Material name')
+        .first;
+    await tester.ensureVisible(receivedName);
+    await tester.enterText(receivedName, 'Cement');
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Quantity').first,
+      '30',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Unit').at(1),
+      'bag',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Supplier'),
+      'Supplier A',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Vehicle'),
+      'TRK-01',
+    );
+
+    final consumedName = find
+        .widgetWithText(TextFormField, 'Material name')
+        .last;
+    await tester.ensureVisible(consumedName);
+    await tester.enterText(consumedName, 'Aggregate');
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Quantity').last,
+      '4',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Unit').last,
+      'm3',
+    );
     await tester.enterText(
       find.widgetWithText(TextFormField, 'Daily remarks'),
       'Crew on site',
@@ -325,6 +380,9 @@ void main() {
     final payload = jsonDecode(op.payload) as Map<String, dynamic>;
     final workforce = jsonDecode(payload['workforce'] as String) as List;
     final progress = jsonDecode(payload['workProgress'] as String) as List;
+    final equipment = jsonDecode(payload['equipmentUsed'] as String) as List;
+    final received = jsonDecode(payload['materialReceived'] as String) as List;
+    final consumed = jsonDecode(payload['materialConsumed'] as String) as List;
     expect(workforce.single, {
       'company': 'Acme',
       'trade': 'Masonry',
@@ -341,6 +399,30 @@ void main() {
       'batchedQty': 12.5,
       'payableQty': 12.5,
       'location': null,
+      'sortOrder': 0,
+    });
+    expect(equipment.single, {
+      'name': 'Excavator',
+      'type': '',
+      'ownership': 'hired',
+      'workingHours': 7.5,
+      'fuel': 20.0,
+      'sortOrder': 0,
+    });
+    expect(received.single, {
+      'name': 'Cement',
+      'qty': 30.0,
+      'unit': 'bag',
+      'supplier': 'Supplier A',
+      'vehicle': 'TRK-01',
+      'testStatus': 'none',
+      'sortOrder': 0,
+    });
+    expect(consumed.single, {
+      'materialId': null,
+      'name': 'Aggregate',
+      'quantity': 4.0,
+      'unit': 'm3',
       'sortOrder': 0,
     });
   });
