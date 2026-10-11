@@ -26,16 +26,16 @@
 | M01 Platform feasibility & performance gate | [M01-platform-feasibility-gate.md](milestones/M01-platform-feasibility-gate.md) | **Complete** | 17/17 | M01-T17 `👤 GATE` — passed (PR #11) |
 | M02 Central contracts & shared UX | [M02-contracts-shared-ux.md](milestones/M02-contracts-shared-ux.md) | **Complete** | 8/8 | M02-T08 `👤 GATE` — passed (PR #31), owner approved 2026-10-09 |
 | M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | **Complete** — T01–T09 (PRs #32–#40), T10 gate (PR #42) | 10/10 | M03-T10 `👤 GATE` — passed (PR #42), owner approved 2026-10-09 |
-| M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | In progress — T01 domain path trace (PR #44), T02 Flutter mount (PR #45); T03 awaits the current product-route sync binding ([path correction](../reports/M04/product-path-correction.md)) | 2/9 | M04-T09 `👤 GATE` — not reached |
-| M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | Blocked by M04 — refined to task level by [PLAN-AMEND] (PR #43) | 0/10 | M05-T10 `👤 GATE` — not reached |
-| M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | Blocked by M02/M03 (task level) | 0/11 | M06-T11 `👤 GATE` — not reached |
-| M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | Blocked by M02/M03 (task level) | 0/10 | M07-T10 `👤 GATE` — not reached |
-| M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | Blocked by M06/M07 contracts (task level) | 0/8 | M08-T08 `👤 GATE` — not reached |
+| M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | In progress — T01 trace (PR #44), T02 mount (PR #45); T03 awaits M03-T01 adapter conformance and live product acceptance ([path correction](../reports/M04/product-path-correction.md)) | 2/9 | M04-T09 `👤 GATE` — not reached |
+| M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | **Complete** — T01–T09 (PRs #56–#64), T10 gate (PR #65) | 10/10 | M05-T10 `👤 GATE` — submitted for owner review (PR #65) |
+| M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | In progress — T01 historical harness (PR #66); real execution required in T04; dual modes + updates registered | 1/13 | M06-T11 `👤 GATE` — not reached |
+| M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | Task level — dual CAD modes + update qualification registered | 0/11 | M07-T10 `👤 GATE` — not reached |
+| M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | Blocked by M06/M07 contracts; dual PDF modes + update qualification registered | 0/9 | M08-T08 `👤 GATE` — not reached |
 | M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/7 | M09-T07 `👤 GATE` — not reached |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
-| M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered by [PLAN-AMEND] 2026-10-09 (WP level) | 0/8 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **58/132** | |
+| M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered 2026-10-09; dual editor/embedded modes + updates amended 2026-10-12 (WP level) | 0/9 | M12-W08 `👤 GATE` — not reached |
+| **Program total** | | | **69/137** | |
 
 ## Dependency graph
 
@@ -59,7 +59,14 @@ Exact dependencies per task are declared inside each milestone file; the v3 plan
 4. **One owner per shared contract** — schema, sync protocol, design tokens, shared bindings (v3 §9).
 5. **Dashboard work: Defer / do not start** for the duration (v3 §6.0 maintenance posture).
 6. **Start with M00 only**, then M01. No screen rewrites, no speculative dependency installs (v3 §10).
-7. **Upstream-tracked candidate engines** — ArtCraft tools (GridCraft/CADCraft/PdfCraft, plus owner-required WordCraft/deckcraft for M12 and craft-fonts for font supply) are evidence-gated candidates per capability area; consume via tag-pinned CLI/MCP/Cargo-git surfaces, never forks or edited upstream code; registry `docs/vendor/ARTCRAFT.md` (ADR-0015; licenses per ADR-0014).
+7. **ArtCraft full editors, embedded capabilities and tested updates** — GridCraft/CADCraft/PdfCraft/WordCraft/DeckCraft reuse upstream full interfaces with ribbons/tools plus focused reusable components inside workflows. All adoption remains evidence-gated; no upstream forks/source edits. Contractor adapters own domain/lifecycle bindings; M06-T12 owns machine-readable pins and the shared release-update command, later milestones qualify their apps. See [ADR-0016](../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md), [master integration plan](artcraft-suite-master-integration-plan.md), ADR-0015 and vendor registry; licenses per ADR-0014.
+
+## ArtCraft planning amendment — 2026-10-12
+
+- **What changed:** full editing retains upstream chrome; embedded workflows reuse focused components across all five apps. M06-T05 replaces the custom Flutter grid mandate; new M06-T12/T13, M07-T11, M08-T09 and M12-W09 register suite updates, applicable calculation-table migration and app hosting/qualification. Existing task/gate IDs and historical completion checkboxes remain; gates depend on the added work.
+- **Why:** owner clarified that ribbon-free behavior applies to compact workflow capabilities, not full editors, and requested easy upstream release updates for the whole suite.
+- **Evidence:** owner chat clarification and inspection of the committed M06-T01 driver, which uses local simulators. Actual GridCraft/production-engine execution is required in T04; the earlier prototype report is marked superseded for adoption. No new implementation or gate is claimed complete.
+- **Scope:** planning/report/ADR amendment only; proposed packages, pins and update command require implementation in the registered tasks. Rollup adds five pending items (137 total); 69 historical completions remain.
 
 ## Bootstrap record (founding PR)
 

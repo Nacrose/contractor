@@ -3,11 +3,14 @@
 > Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M06, §3 worksheet row. Dependencies: M02, M03; M01 file/compute feasibility accepted. May develop before M05 completes; integrated rollout waits for the shared sync gate. This milestone is refined to task level under protocol R9 (refinement PR recorded in the register).
 > Candidate engine: GridCraft (storytold) — evidence-gated per [ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md); family evaluation in [prior-art report](../../reports/prior-art-artcraft-family.md); licenses per [ADR-0014](../../adr/0014-open-source-only-dependency-posture.md). M06-T01 is the required GridCraft prototype task (CLI/MCP over M00 fixtures vs the TS authority); any adoption beyond the prototype requires a per-engine adoption ADR (ADR-0015 §1).
 
+> UI/update direction: [ADR-0016](../../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md) and the [master integration plan](../artcraft-suite-master-integration-plan.md) require the full upstream editor with its ribbons plus embedded calculation-table mode, reusing upstream UI components. T12 owns the suite update pipeline; T13 covers calculation-table consumers across M04/M05 and other applicable workflows. Added IDs preserve existing references; gate T11 depends on T12/T13.
+> Evidence correction (2026-10-12): T01 remains a historical completion record for PR #66. Its committed driver uses local simulators rather than actual upstream/production execution. Its parity, decimal and MCP claims are not adoption evidence; T04 must revalidate them.
+
 Exit (v3): agreed feature matrix, native/web/server calculation parity, concurrent edit/structure tests and 50k/100k-row workload evidence. Retire redundant production evaluators only after all consumers switch.
 
 ---
 
-- [ ] **M06-T01** — GridCraft prototype: CLI/MCP evidence over M00 fixtures vs the TypeScript authority
+- [x] **M06-T01** — GridCraft prototype: CLI/MCP evidence over M00 fixtures vs the TypeScript authority (PR #66)
   - Depends on: M00-GATE (fixtures + baseline) · Output: prototype report `docs/reports/M06/gridcraft-prototype.md` + fixture/driver artifacts under `prototype/`; no production code change.
   - Scope: drive GridCraft pinned to an upstream release tag (start: `v0.3.0`) via its CLI and headless MCP server over the M00 worksheet fixtures; compare against the authoritative TypeScript worksheet/formula engine (`src/lib/worksheet/spreadsheet-engine.ts`, `formula-engine.ts` per ADR-0013/M01 authority map). This is disposable evidence work per the M01 prototype posture; it changes no production code and starts before the M02/M03 dependencies complete so its evidence can shape T04's engine decision.
   - Acceptance:
@@ -39,20 +42,24 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
   - Depends on: M06-T01, M06-T03 · Output: per-engine decision record update + ported calculation with differential fixture evidence.
   - Scope: port calculation modules to the shared core only with differential fixtures and a verified server binding; the per-engine decision record honors the kernel governance duplication status (single impl / governed temporary duplicate / accepted exception) (v3 §4, §6 M06).
   - Acceptance:
+    - Replace T01 simulation claims with actual pinned GridCraft execution versus the production TS authority. Record the resolved commit/artifact hash, invocation, actual MCP tool discovery and raw fixture outputs; simulators cannot satisfy parity, volatility, cycle or numeric evidence. Correct the prototype report and verify numeric representation and rounding without assuming `rust_decimal`.
+    - The adoption ADR names the shared app/engine version, full/embedded UI surfaces, target hosts, server binding and supported extension points; missing hooks are recorded with an upstream contribution path before affected production binding.
     - Differential fixtures cover the TS authority vs the ported implementation, including exact-decimal string/scaled-int crossings and degenerate/cycle stress fixtures from M00.
     - The server binding is verified (the authoritative path executes where the decision record says it does); no client-authorized financial results.
     - If GridCraft (or any ArtCraft engine) is selected beyond prototype evidence, a **per-engine adoption ADR** is approved first (ADR-0015 §1); otherwise the TS authority remains and the record says so.
     - Kernel governance duplication status is maintained and recorded (single implementation, governed temporary duplicate, or accepted exception with owner named).
     - Known unsupported formulas/features remain visible; no silent lossy import/export.
 
-- [ ] **M06-T05** — One virtualized Flutter grid consuming engine viewport/layout output
-  - Depends on: M06-T02, M06-T04 · Output: virtualized grid prototype consuming engine output, with workload evidence.
-  - Scope: one virtualized Flutter grid consuming engine viewport/layout output; no widget per cell; no recalculation triggered by scrolling (v3 §6 M06).
+- [ ] **M06-T05** — GridCraft full editor and embedded calculation-table host
+  - Depends on: M06-T02, M06-T04 · Output: one Contractor adapter hosting both upstream UI modes, with platform/interaction evidence.
+  - Scope: full workbook editing retains upstream ribbons, formula bar, sheets and tools; embedded workflows reuse the upstream grid with cells, row/column headers, formulas, selection, copy/paste and protected fields. This supersedes the mandatory custom Flutter renderer. Prototype the installed-app and browser hosts before production cutover.
   - Acceptance:
-    - 50k/100k-row workload evidence per §7 bands, reported on the ratified device profile.
-    - Scroll interactions trigger no recalculation and no per-cell widget creation; windowing/layout come from the engine.
-    - Selection/edit affordances route through the shared component library (M02-T03) and command registries (M02-T06).
-    - Remains a bounded prototype until the per-engine decision record authorizes production use (ADR-0013).
+    - Both modes use the same pinned upstream app/engine and reusable UI components. Supported configuration/component hooks are identified from actual source; adapter names are not asserted to be upstream options. No upstream source edits or brittle private/DOM hooks.
+    - Switching modes retains document identity, revision and pending edits; undo/selection continuity is tested, with any unsupported behavior explicitly recorded. Domain restrictions hold in both modes.
+    - Grid commands route through Contractor contracts; cover typing, paste, fill, delete, structural changes, import and automation against protected rates/codes/totals. Derived-formula inspection and editable-input focus work without full editor chrome in embedded mode.
+    - Native/web hosts demonstrate keyboard focus, IME, clipboard, accessibility, resize, cancellation/disposal and interception of upstream file/save actions into M03 lifecycle contracts. No assumed native/mobile UI binding.
+    - 50k/100k-row workloads report scrolling, input/paste, recalc, memory and serialization separately on ratified profiles; scrolling causes no recalc. Virtualization reuses the upstream grid rather than per-cell host widgets.
+    - Production use remains gated by the adoption ADR and evidence; missing extension hooks are tracked upstream and block the affected embedded capability.
 
 - [ ] **M06-T06** — Cell/structure operations: version checks, compensating undo, conflict review, compaction/checkpoints
   - Depends on: M06-T02, M06-T04 · Output: operation layer with versioning, undo and compaction evidence.
@@ -91,16 +98,39 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Recovery from interrupted structure operations is demonstrated (checkpoint replay, no corruption).
 
 - [ ] **M06-T10** — Redundant production evaluator retirement (consumer-switch complete)
-  - Depends on: M06-T04…T09, M06-GATE preparation sweep · Output: consumer-sweep record + retirement change.
+  - Depends on: M06-T04…T09, M06-T13 · Output: pre-gate consumer-sweep record + retirement change.
   - Scope: retire redundant production evaluators only after all consumers switch (v3 §2 instruction 10).
   - Acceptance:
     - A consumer sweep documents every production caller of the retired evaluator with its replacement path.
     - Retirement is gated on all consumers switched; the sweep and switch evidence is linked.
     - Rollback path recorded (restore is a revert, not a rewrite).
 
-- [ ] **M06-T11** — 👤 GATE — M06 exit evidence
-  - Depends on: M06-T01…T10 · Output: `[M06-GATE]` evidence packet and owner decision.
+- [ ] **M06-T12** — Shared ArtCraft release-update pipeline and GridCraft upgrade qualification
+  - Depends on: M06-T04, M06-T05 · Output: machine-readable pins/build inputs, documented update command, adapter conformance contract and a GridCraft upgrade/rollback report.
+  - Scope: implement the cross-suite lifecycle/version boundary once, with per-app registrations for GridCraft, CADCraft, PdfCraft, WordCraft, DeckCraft and craft-fonts. Proposed command interface: `scripts/update-artcraft <app> <release>`; documentation must distinguish supported integrations from pending app registrations.
   - Acceptance:
+    - Configuration records upstream URL, release tag, immutable commit, artifact digest and build/lockfile inputs independently per app; the vendor registry mirrors effective pins. Unevaluated apps have no fabricated pin or passed status.
+    - One documented command resolves an explicit release, refreshes the selected build/dependency and runs registered compatibility checks, producing a reviewable diff/report. Unsupported app registrations fail explicitly until their milestone integrates them. Shared dependency/font changes run affected dependent checks.
+    - The update report includes release/API changes, licenses/attribution and adapter changes; screens remain dependent on Contractor contracts. No tracked branches, live auto-upgrades or modifications to upstream source.
+    - Use two actual GridCraft releases to demonstrate full-editor and embedded-table compatibility, formula/protection/domain behavior, file open/save/reopen, previous-release documents, local recovery, sync conflicts and supported target/performance checks.
+    - Demonstrate rollback using retained build artifacts and compatible operation history/files or a tested migration/restore. Preserve original/checkpoint bytes; incompatible newer saved data blocks promotion until recovery is proven.
+    - Document monthly/per-gate review, expedited security updates and promotion through existing approval gates. Zero-fork is not represented as zero adapter maintenance.
+
+- [ ] **M06-T13** — Calculation-table consumer inventory, pilot and workflow migration
+  - Depends on: M06-T05, M06-T07, M06-T08, M06-T09, M06-T12 · Output: consumer inventory, a working domain-backed pilot and migration/retirement evidence for applicable tables.
+  - Scope: inventory BoQ/IPC, measurement, daily-log, material-delivery/receipt, expense and other application calculation/data-entry tables; migrate applicable consumers through the shared GridCraft adapter. Coordinate M04/M05 consumers without changing their historical task completions.
+  - Acceptance:
+    - Inventory names every affected screen/transport/import/job and its replacement or justified standard-table disposition. Ordinary record lists are not automatically converted.
+    - First deliver one BoQ/measurement pilot proving editable quantity, protected contractual fields, visible formulas, exact authoritative service agreement, crash-safe local saving and a real sync-conflict path; then migrate remaining applicable consumers.
+    - Schemas map stable domain row IDs and columns to existing models. Sort/filter/paste/insert/delete/undo preserve identity; edits dispatch validated domain commands through local transactions/outbox and existing server permissions/approvals. No direct SQL or full-workbook domain overwrite.
+    - Full-editor access cannot bypass domain-backed table protection. Authorized rate changes use the existing amendment workflow; rejected edits reconcile visibly without losing pending user intent.
+    - Workbook/freeform mode and domain-backed tables have explicit authority contracts, source provenance and checkpoint/recovery behavior. Financial arithmetic remains in existing services.
+    - Consumer switch and retirement evidence includes native/web workflow and mobile input/accessibility checks, with rollback preserving unsynchronized work. No screen-specific engine, offline queue or permanent duplicate domain model.
+
+- [ ] **M06-T11** — 👤 GATE — M06 exit evidence
+  - Depends on: M06-T01…T10, M06-T12, M06-T13 · Output: `[M06-GATE]` evidence packet and owner decision.
+  - Acceptance:
+    - Full/embedded hosting, calculation-table consumer migration and a real GridCraft release upgrade/rollback are evidenced; T01 simulation claims are replaced by T04 actual execution evidence.
     - Parity + workload evidence aggregated: feature matrix, native/web/server calculation parity, concurrent edit/structure tests, 50k/100k-row workload per §7.
     - M08 inputs (BoQ linking contract) confirmed and linked (M08 refinement dependency).
     - Per-engine adoption ADR status recorded (adopted with ADR reference, or TS authority retained with evidence).
@@ -108,4 +138,4 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
 
 ## Refinement contract
 
-This milestone is refined to task level under protocol R9. M06-T01 (GridCraft prototype) satisfies ADR-0015's requirement that refinement add an ArtCraft prototype task driving the tool via CLI/MCP over M00 fixtures against the authoritative engine, producing a report in `docs/reports/`. The former `M02-W08` reference in this contract was a typo for `M02-T08` (the M02 gate); the obligation — refine before that gate merges — is satisfied by this PR.
+This milestone is refined to task level under protocol R9. M06-T01 originally recorded ADR-0015's required prototype; the simulator evidence correction above requires actual execution under T04 before adoption. The required prototype must drive actual upstream CLI/MCP over M00 fixtures against the authoritative engine and produce a reproducible report in `docs/reports/`. The former `M02-W08` reference in this contract was a typo for `M02-T08` (the M02 gate); the obligation — refine before that gate merges — is satisfied by this PR.
