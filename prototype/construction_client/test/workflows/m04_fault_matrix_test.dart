@@ -253,15 +253,44 @@ void main() {
     },
   );
 
-  test('process restart replays the same in-flight op and records the original receipt', () async {
-    getStore().save(
-      accountId: 'acct-1',
-      tenantId: 'tenant-1',
-      role: 'field',
-      draft: draft('report-restart-01'),
-    );
-    mount!.pendingOps.markInFlight('report-restart-01');
+  test('separate process restart replays the same in-flight op and records its original receipt', () async {
     mount!.driver.close();
+    mount = null;
+
+    final flutterRoot = Platform.environment['FLUTTER_ROOT'];
+    expect(
+      flutterRoot,
+      isNotNull,
+      reason: 'Flutter test must expose FLUTTER_ROOT',
+    );
+    final child = await Process.start(
+      '$flutterRoot/bin/flutter',
+      ['test', '--no-pub', 'tool/m04_process_restart_child_test.dart'],
+      workingDirectory: Directory.current.path,
+      environment: {
+        ...Platform.environment,
+        'M04_RESTART_DB': '${tmp.path}/outbox.db',
+        'M04_RESTART_OBJECT_ROOT': '${tmp.path}/objects',
+      },
+    );
+    final stdoutFuture = child.stdout
+        .transform(const SystemEncoding().decoder)
+        .join();
+    final stderrFuture = child.stderr
+        .transform(const SystemEncoding().decoder)
+        .join();
+    final exitCode = await child.exitCode.timeout(
+      const Duration(seconds: 60),
+      onTimeout: () {
+        child.kill();
+        return -1;
+      },
+    );
+    final stdout = await stdoutFuture;
+    final stderr = await stderrFuture;
+    expect(exitCode, 0, reason: 'restart child failed: $stderr\n$stdout');
+    expect(stdout, contains('separate process prepared report-restart-01'));
+
     mount = _open(
       tmp,
       _Transport(
