@@ -26,7 +26,7 @@
 - The connected Flutter host instantiates the photo port with native camera/gallery capture and the authenticated resumable registrar, but the flow has not yet been verified in a signed-in device session against the product server.
 - The local report UUID is stored on the client attachment row and passed to the registrar contract. The report outbox payload includes the registered attachment ID, receipt, digest, and byte count; the server has not yet accepted or linked those references, so no claim is made that a registered photo is visible on the server report.
 - Real camera/gallery capture, interrupted app process recovery, and device telemetry still require a real device session.
-- Earlier native sign-in attempts did not establish a session. A later screenshot showed the server-side Prisma failure caused by missing `DATABASE_URL`; the local database and dev server have since been restored. Authenticated upload/registration has not been demonstrated because post-fix native sign-in remains unverified.
+- Earlier native sign-in attempts did not establish a session. A later screenshot showed the server-side Prisma failure caused by missing `DATABASE_URL`; the local database and dev server have since been restored. The owner later reported the daily-report page open on iPhone, but the build mode and connected session are unverified. Authenticated upload/registration has not been demonstrated.
 
 ## Connected-host follow-on (2026-10-11)
 
