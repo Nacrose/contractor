@@ -22,12 +22,11 @@ the login JavaScript from loading, the browser can fall back to a GET and
 reload the login page. This is the leading code-based diagnosis, not a proven
 runtime cause; browser network/console evidence is unavailable. The product
 repo requires explicit owner confirmation before edits, so the LAN-origin
-change remains pending approval. Native sign-in and live sync acceptance are
-still open.
+requested LAN-origin allowance and server-handled fallback are awaiting owner approval. The owner reports the direct LAN `:3108` sign-in attempt also reloaded the login page. Native sign-in and live sync acceptance remain open.
 
 ## Local environment
 
-At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. On the current 2026-10-11 check, the product dev server responds with HTTP 200 on both `127.0.0.1:3108/login` and `192.168.1.66:3108/login`; the Wi-Fi forwarder at `192.168.1.66:3000` is not active. An HTTP 200 only proves the page is served. It does not prove browser JavaScript hydration or a session. The prior same-page reload remains the last device sign-in result; no authenticated session is established.
+At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. On the current 2026-10-11 check, the product dev server responds with HTTP 200 on both `127.0.0.1:3108/login` and `192.168.1.66:3108/login`; the Wi-Fi forwarder at `192.168.1.66:3000` is not active. An HTTP 200 only proves the page is served. It does not prove browser JavaScript hydration or a session. The owner reports the direct `:3108` sign-in attempt also reloaded the login page; no authenticated session is established.
 
 ## Run the M04 app
 
