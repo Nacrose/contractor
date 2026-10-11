@@ -24,7 +24,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - The M00 inventories' attendance writers are audited and dispositioned (migrated → emit their change atomically per the M03-T04 pattern; excluded → reason recorded) — no silent writer; the Flutter-parity path is named (M02 `platform_contracts` generation pattern).
     - Approval remains a distinct server-side action where currently required; the native client cannot self-approve (permission guards enforced at the adapter, in GUARD_ORDER).
 
-- [ ] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history)
+- [x] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history) (PR #58)
   - Depends on: M05-T01 · Output: expense submission workflow running on native and web with tests.
   - Scope: existing `site-expense` resolvers reused (adapter seed binding `siteExpense.create` already names the full financial guard chain); approval distinctness preserved; original actor + edited payload audit history kept (v3 §6 M05 bullet 2).
   - Acceptance:
@@ -33,7 +33,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Original actor + edited payload audit history survives the sync path: an office edit does not overwrite who originally submitted or what they submitted (pinned by test against the real audit-log service).
     - Financial command receipts follow the M03-T04 §7 durable-receipt rules (never expiry-deleted; compaction keeps the replay gate fail-closed).
 
-- [ ] **M05-T04** — MRR / delivery submissions (office review flows reused)
+- [x] **M05-T04** — MRR / delivery submissions (office review flows reused) (PR #59)
   - Depends on: M05-T01 · Output: MRR/delivery submission workflow running on native and web with tests.
   - Scope: `field-submission.ts` office review flows reused; material reconciliation semantics unchanged — `daily-report-sync` normalization is not forked or re-implemented client-side (v3 §6 M05 bullet 2).
   - Acceptance:
@@ -42,7 +42,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Material reconciliation results are computed server-side from the same inputs as the current app — parity pinned by test (differences would be listed and dispositioned, none silent).
     - The delivery writer set is dispositioned against the M00 inventories (migrated/excluded with reasons) per the M03-T04 audited-writer pattern.
 
-- [ ] **M05-T05** — Field photos through the full pipeline (native camera/files adapters)
+- [x] **M05-T05** — Field photos through the full pipeline (native camera/files adapters) (PR #60)
   - Depends on: M05-T01, M04-T04 · Output: capture → stage → finalize → register for every expansion workflow that attaches media, with tests.
   - Scope: native camera + OS file adapters bound to the M03-T06 protocol (one manager, one journal — no per-workflow transfer code); photos visible in office review surfaces (v3 §6 M05 bullet 4).
   - Acceptance:
