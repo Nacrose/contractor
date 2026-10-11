@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 import 'attachment_transfer.dart';
+import 'ports.dart';
 
 /// One protocol for Flutter web and installed clients. The session owner
 /// supplies current authorization headers; tokens are never journaled here.
@@ -161,4 +162,57 @@ class HttpPhotoUploadRegistrar
     AttachmentFailureKind.retryable,
     'The server returned an invalid photo upload response.',
   );
+}
+
+/// Downloads an already registered object through the product's authenticated
+/// file route. That route rechecks tenant and project permissions on every read.
+class HttpRegisteredAttachmentFetcher implements RegisteredAttachmentFetchPort {
+  final Uri server;
+  final http.Client client;
+  final Duration timeout;
+
+  HttpRegisteredAttachmentFetcher({
+    required this.server,
+    required this.client,
+    this.timeout = const Duration(seconds: 30),
+  });
+
+  @override
+  Future<Uint8List> fetchRegistered({
+    required String receipt,
+    required String objectId,
+    required ScopeClaims scope,
+  }) async {
+    if (receipt.isEmpty ||
+        objectId.isEmpty ||
+        scope.projectId == null ||
+        scope.projectId!.isEmpty ||
+        scope.tenantId.isEmpty) {
+      throw const AttachmentRegistrarError(
+        AttachmentFailureKind.rejection,
+        'Photo restore requires a registered receipt and project scope.',
+      );
+    }
+    final uri = server.resolve('/api/files/${Uri.encodeComponent(objectId)}');
+    final response = await client.get(uri).timeout(timeout);
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      throw const AttachmentRegistrarError(
+        AttachmentFailureKind.revoked,
+        'Project access changed. Sign in and check your project access.',
+      );
+    }
+    if (response.statusCode == 404) {
+      throw const AttachmentRegistrarError(
+        AttachmentFailureKind.rejection,
+        'The registered photo is no longer available.',
+      );
+    }
+    if (response.statusCode != 200) {
+      throw const AttachmentRegistrarError(
+        AttachmentFailureKind.retryable,
+        'Photo download failed; it can be retried.',
+      );
+    }
+    return response.bodyBytes;
+  }
 }

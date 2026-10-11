@@ -547,6 +547,7 @@ class AttachmentTransferManager {
     required String objectId,
     required String receipt,
     required String expectedDigest,
+    int? expectedBytes,
     required String sourcePath,
     required ScopeClaims scope,
     required RegisteredAttachmentFetchPort fetcher,
@@ -558,6 +559,21 @@ class AttachmentTransferManager {
       throw RepositoryError(
         'misconfigured',
         'Restore requires a report id, receipt, and object id scoped to the requested project.',
+      );
+    }
+    final existing = get(accountId, attachmentId);
+    if (existing?.state == AttachmentTransferState.registered) {
+      if (existing!.receipt == receipt &&
+          existing.projectId == projectId &&
+          existing.dailyReportId == dailyReportId &&
+          existing.registeredDigest == expectedDigest &&
+          (expectedBytes == null ||
+              existing.registeredBytes == expectedBytes)) {
+        return existing;
+      }
+      throw RepositoryError(
+        'illegal_transition',
+        'A different registered photo already uses this restore id.',
       );
     }
     Uint8List bytes;
@@ -599,6 +615,17 @@ class AttachmentTransferManager {
         'Downloaded photo does not match the registered SHA-256 digest.',
       );
     }
+    if (expectedBytes != null && bytes.length != expectedBytes) {
+      return _recordRestoreFailure(
+        accountId,
+        attachmentId,
+        projectId,
+        dailyReportId,
+        sourcePath,
+        AttachmentFailureKind.digestMismatch,
+        'Downloaded photo size does not match the registered metadata.',
+      );
+    }
     var restored = stageBytes(
       accountId: accountId,
       id: attachmentId,
@@ -613,6 +640,8 @@ class AttachmentTransferManager {
     mount.outbox.withImmediateTransaction(() {
       _setState(accountId, attachmentId, AttachmentTransferState.registered, {
         'receipt': receipt,
+        'registered_digest': expectedDigest,
+        'registered_bytes': bytes.length,
         'failure_kind': null,
         'failure_step': null,
         'failure_detail': null,

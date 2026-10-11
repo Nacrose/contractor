@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import 'mount/attachment_transfer.dart';
+import 'mount/daily_report_snapshot.dart';
 import 'mount/mount.dart';
 import 'mount/native_identity.dart';
 import 'mount/photo_upload_transport.dart';
@@ -184,12 +185,12 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
           }
           return Column(
             children: [
-              if (current.offline)
-                const MaterialBanner(
+              if (current.offline || current.restoreWarning != null)
+                MaterialBanner(
                   content: Text(
-                    'Offline: showing your previously loaded projects. Save locally and sync when connected.',
+                    current.restoreWarning ?? 'Offline: showing your previously loaded projects. Save locally and sync when connected.',
                   ),
-                  actions: [SizedBox.shrink()],
+                  actions: const [SizedBox.shrink()],
                 ),
               Expanded(
                 child: DailyReportScreen(
@@ -200,6 +201,27 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
                   role: 'member',
                   projects: current.projects,
                   photos: current.photos,
+                  refreshAcceptedReports: current.refreshAcceptedReports,
+                  acceptedReports: () => services.mount.driver
+                      .prepare(
+                        'SELECT report_id, payload FROM daily_report_replica '
+                        'WHERE account_id=? AND tenant_id=? AND project_id IN ('
+                        '${List.filled(current.projects.length, '?').join(',')})',
+                      )
+                      .all([
+                        current.session.accountId,
+                        current.session.organizationId,
+                        ...current.projects.map((project) => project.id),
+                      ])
+                      .map(
+                        (row) => {
+                          ...Map<String, Object?>.from(
+                            jsonDecode(row['payload'] as String) as Map,
+                          ),
+                          'id': row['report_id'],
+                        },
+                      )
+                      .toList(growable: false),
                 ),
               ),
             ],
@@ -231,11 +253,15 @@ class _ConnectedWorkspace {
   final List<DailyReportProjectOption> projects;
   final DailyReportPhotoService photos;
   final bool offline;
+  final String? restoreWarning;
+  final Future<void> Function() refreshAcceptedReports;
   const _ConnectedWorkspace(
     this.session,
     this.projects,
     this.photos,
     this.offline,
+    this.restoreWarning,
+    this.refreshAcceptedReports,
   );
 }
 
@@ -277,6 +303,18 @@ class _ConnectedServices {
         client: authorized,
         authorizationHeaders: () async => const {},
       ),
+    );
+    final snapshotTransport = HttpDailyReportSnapshotTransport(
+      endpoint: identity.server.resolve('/api/native/sync/snapshot'),
+      client: authorized,
+      bearerToken: () async => (await identity.authorizationHeaders(
+        accountId: session.accountId,
+      ))['authorization']?.replaceFirst('Bearer ', ''),
+    );
+    final snapshotRestorer = DailyReportSnapshotRestorer(mount: mount);
+    final attachmentFetcher = HttpRegisteredAttachmentFetcher(
+      server: identity.server,
+      client: authorized,
     );
     final photos = DailyReportPhotoService(
       manager: manager,
@@ -349,8 +387,97 @@ class _ConnectedServices {
       if (projects.isEmpty) rethrow;
       offline = true;
     }
+    String? restoreWarning;
+    for (final project in projects) {
+      try {
+        await snapshotRestorer.restore(
+          accountId: session.accountId,
+          tenantId: session.organizationId,
+          projectId: project.id,
+          transport: snapshotTransport,
+          forceFresh: !offline,
+        );
+      } on NativeIdentityFailure {
+        rethrow;
+      } catch (_) {
+        restoreWarning = 'Some accepted reports could not be restored. Reconnect and sync to retry.';
+        continue;
+      }
+      final rows = mount.driver
+          .prepare(
+            'SELECT report_id, payload FROM daily_report_replica '
+            'WHERE account_id=? AND tenant_id=? AND project_id=?',
+          )
+          .all([session.accountId, session.organizationId, project.id]);
+      for (final row in rows) {
+        final payload =
+            jsonDecode(row['payload'] as String) as Map<String, dynamic>;
+        final attachments = payload['attachments'];
+        if (attachments is! List) continue;
+        for (final raw in attachments) {
+          if (raw is! Map) continue;
+          final receipt = raw['registeredPhotoId'];
+          final objectId = raw['storageKey'];
+          final digest = raw['servedSha256'];
+          if (receipt is! String || receipt.isEmpty) continue;
+          final servedSize = raw['servedSize'];
+          if (objectId is! String ||
+              objectId.isEmpty ||
+              digest is! String ||
+              digest.isEmpty ||
+              servedSize is! int ||
+              servedSize < 1) {
+            restoreWarning = 'A registered photo is missing its server digest and could not be restored.';
+            continue;
+          }
+          final source =
+              '${root.path}/photo-sources/restored-${Uri.encodeComponent(receipt)}.photo';
+          try {
+            final restored = await manager.restoreRegistered(
+              accountId: session.accountId,
+              attachmentId: receipt,
+              projectId: project.id,
+              dailyReportId: row['report_id'] as String,
+              objectId: objectId,
+              receipt: receipt,
+              expectedDigest: digest,
+              expectedBytes: servedSize,
+              sourcePath: source,
+              scope: ScopeClaims(
+                tenantId: session.organizationId,
+                projectId: project.id,
+                role: 'member',
+              ),
+              fetcher: attachmentFetcher,
+            );
+            if (!restored.complete) {
+              restoreWarning = 'Some registered photos could not be restored. Reconnect and sync to retry.';
+            }
+          } catch (_) {
+            restoreWarning = 'Some registered photos could not be restored. Reconnect and sync to retry.';
+          }
+        }
+      }
+    }
     await mount.drainTriggers.onLaunch();
-    return _ConnectedWorkspace(session, projects, photos, offline);
+    return _ConnectedWorkspace(
+      session,
+      projects,
+      photos,
+      offline,
+      restoreWarning,
+      () async {
+        for (final project in projects) {
+          await snapshotRestorer.restore(
+            accountId: session.accountId,
+            tenantId: session.organizationId,
+            projectId: project.id,
+            transport: snapshotTransport,
+            forceFresh: true,
+          );
+        }
+      },
+    );
   }
 }
 

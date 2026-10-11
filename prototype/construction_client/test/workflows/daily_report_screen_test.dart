@@ -60,6 +60,44 @@ void main() {
     },
   );
 
+  testWidgets('shows accepted reports restored for assigned projects', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: DailyReportLocalStore(mount!),
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+          acceptedReports: () => [
+            {
+              'id': 'server-report-1',
+              'projectId': 'project-1',
+              'number': 'DSR-20261010-1',
+              'reportDate': '2026-10-10T00:00:00.000Z',
+              'status': 'submitted',
+              'remarks': 'Restored accepted report',
+            },
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Synced daily reports (1)'), findsOneWidget);
+    await tester.tap(find.text('Synced daily reports (1)'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('DSR-20261010-1'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Remarks: Restored accepted report'), findsOneWidget);
+    expect(find.text('Date: 2026-10-10'), findsOneWidget);
+  });
+
   testWidgets('project selection and local save create an outbox item', (
     tester,
   ) async {

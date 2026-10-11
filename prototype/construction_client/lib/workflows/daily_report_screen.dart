@@ -28,6 +28,8 @@ class DailyReportScreen extends StatefulWidget {
     required this.role,
     required this.projects,
     this.photos,
+    this.acceptedReports,
+    this.refreshAcceptedReports,
     super.key,
   });
 
@@ -37,6 +39,8 @@ class DailyReportScreen extends StatefulWidget {
   final String role;
   final List<DailyReportProjectOption> projects;
   final DailyReportPhotoPort? photos;
+  final List<Map<String, Object?>> Function()? acceptedReports;
+  final Future<void> Function()? refreshAcceptedReports;
 
   @override
   State<DailyReportScreen> createState() => _DailyReportScreenState();
@@ -370,6 +374,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   Future<void> _syncNow() async {
     try {
       await widget.store.syncNow();
+      await widget.refreshAcceptedReports?.call();
       if (mounted) setState(() {});
     } catch (error) {
       if (mounted) setState(() => _error = _safeError(error));
@@ -516,6 +521,11 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         padding: const EdgeInsets.all(20),
         children: [
           const SizedBox(height: 16),
+          _AcceptedDailyReports(
+            reports: widget.acceptedReports?.call() ?? const [],
+            projects: widget.projects,
+            photos: widget.photos,
+          ),
           SaveSyncStatusPanel(
             status: status,
             onNextAction: opState == 'pending' ? _syncNow : null,
@@ -916,6 +926,153 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     _ => 'Save failed. Your draft is still on this device.',
   };
 }
+
+class _AcceptedDailyReports extends StatelessWidget {
+  const _AcceptedDailyReports({
+    required this.reports,
+    required this.projects,
+    required this.photos,
+  });
+
+  final List<Map<String, Object?>> reports;
+  final List<DailyReportProjectOption> projects;
+  final DailyReportPhotoPort? photos;
+
+  @override
+  Widget build(BuildContext context) {
+    if (reports.isEmpty) return const SizedBox.shrink();
+    final ordered = [...reports]
+      ..sort((a, b) => '${b['reportDate']}'.compareTo('${a['reportDate']}'));
+    return Card(
+      child: ExpansionTile(
+        title: Text('Synced daily reports (${ordered.length})'),
+        children: [
+          for (final report in ordered)
+            ListTile(
+              leading: const Icon(Icons.receipt_long_outlined),
+              title: Text('${report['number'] ?? 'Daily report'}'),
+              subtitle: Text(
+                '${_reportDateLabel(report['reportDate'])} · '
+                '${_projectLabel(projects, report['projectId'])} · '
+                '${report['status'] ?? 'synced'}',
+              ),
+              onTap: () => _showReport(context, report, photos),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+String _projectLabel(List<DailyReportProjectOption> projects, Object? id) =>
+    projects.where((project) => project.id == id).firstOrNull?.label ?? '';
+
+String _reportDateLabel(Object? date) {
+  if (date is! String) return 'Date unavailable';
+  return date.length >= 10 ? date.substring(0, 10) : date;
+}
+
+Future<void> _showReport(
+  BuildContext context,
+  Map<String, Object?> report,
+  DailyReportPhotoPort? photos,
+) => showDialog<void>(
+  context: context,
+  builder: (context) => AlertDialog(
+    title: Text('${report['number'] ?? 'Daily report'}'),
+    content: SizedBox(
+      width: 520,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Date: ${_reportDateLabel(report['reportDate'])}'),
+            Text('Status: ${report['status'] ?? 'synced'}'),
+            if (report['weatherMorning'] case final value?
+                when '$value'.isNotEmpty)
+              Text('Morning weather: $value'),
+            if (report['weatherAfternoon'] case final value?
+                when '$value'.isNotEmpty)
+              Text('Afternoon weather: $value'),
+            if (report['weatherEvening'] case final value?
+                when '$value'.isNotEmpty)
+              Text('Evening weather: $value'),
+            for (final section in const [
+              ('Workforce', 'workforce'),
+              ('Work progress', 'workProgress'),
+              ('Equipment', 'equipmentUsed'),
+              ('Materials received', 'materialReceived'),
+              ('Materials consumed', 'materialConsumed'),
+              ('Site visits', 'siteVisits'),
+              ('Meetings', 'meetings'),
+            ])
+              if (report[section.$2] is List &&
+                  (report[section.$2] as List).isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(section.$1, style: Theme.of(context).textTheme.titleSmall),
+                for (final row in report[section.$2] as List)
+                  if (row is Map)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        row.entries
+                            .where(
+                              (entry) =>
+                                  entry.value != null &&
+                                  '${entry.value}'.isNotEmpty,
+                            )
+                            .map((entry) => '${entry.key}: ${entry.value}')
+                            .join(' · '),
+                      ),
+                    ),
+              ],
+            if ('${report['problems'] ?? ''}'.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text('Problems: ${report['problems']}'),
+            ],
+            if ('${report['safetyNotes'] ?? ''}'.isNotEmpty)
+              Text('Safety: ${report['safetyNotes']}'),
+            if ('${report['remarks'] ?? ''}'.isNotEmpty)
+              Text('Remarks: ${report['remarks']}'),
+            if (report['attachments'] is List)
+              for (final attachment in report['attachments'] as List)
+                if (attachment is Map) ...[
+                  const SizedBox(height: 12),
+                  Text('${attachment['fileName'] ?? 'Registered photo'}'),
+                  if (attachment['registeredPhotoId'] is String &&
+                      photos != null)
+                    Builder(
+                      builder: (context) {
+                        final bytes = photos.registeredBytes(
+                          attachment['registeredPhotoId'] as String,
+                        );
+                        return bytes == null
+                            ? const Text(
+                                'Photo is not available on this device yet.',
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.memory(
+                                  bytes,
+                                  height: 160,
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                      },
+                    ),
+                ],
+          ],
+        ),
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Close'),
+      ),
+    ],
+  ),
+);
 
 class _SyncHealthCard extends StatelessWidget {
   const _SyncHealthCard({required this.health});

@@ -174,31 +174,58 @@ void main() {
     expect(manager.isComplete('acct-1', staged.id), isFalse);
   });
 
-  test('restore re-fetches registered bytes and verifies the digest before completion', () async {
-    final bytes = Uint8List.fromList([5, 8, 13, 21]);
-    final restored = await manager.restoreRegistered(
-      accountId: 'acct-restore',
-      attachmentId: 'photo-restore-0001',
-      projectId: 'project-1',
-      dailyReportId: 'report-restore-1',
-      objectId: 'object-123',
-      receipt: 'receipt-123',
-      expectedDigest: mount!.digest.digest(bytes),
-      sourcePath: '${tmp.path}/restored-source.jpg',
-      scope: const ScopeClaims(
-        tenantId: 'tenant-1',
+  test(
+    'restore verifies registered bytes and is idempotent after completion',
+    () async {
+      final bytes = Uint8List.fromList([5, 8, 13, 21]);
+      final fetcher = _Fetch(bytes);
+      final restored = await manager.restoreRegistered(
+        accountId: 'acct-restore',
+        attachmentId: 'photo-restore-0001',
         projectId: 'project-1',
-        role: 'field',
-      ),
-      fetcher: _Fetch(bytes),
-    );
+        dailyReportId: 'report-restore-1',
+        objectId: 'object-123',
+        receipt: 'receipt-123',
+        expectedDigest: mount!.digest.digest(bytes),
+        expectedBytes: bytes.length,
+        sourcePath: '${tmp.path}/restored-source.jpg',
+        scope: const ScopeClaims(
+          tenantId: 'tenant-1',
+          projectId: 'project-1',
+          role: 'field',
+        ),
+        fetcher: fetcher,
+      );
 
-    expect(restored.state, AttachmentTransferState.registered);
-    expect(restored.receipt, 'receipt-123');
-    expect(restored.dailyReportId, 'report-restore-1');
-    expect(manager.isComplete('acct-restore', restored.id), isTrue);
-    expect(mount!.objects.getBytes(attachmentFinalKey(restored.id)), bytes);
-  });
+      expect(restored.state, AttachmentTransferState.registered);
+      expect(restored.receipt, 'receipt-123');
+      expect(restored.dailyReportId, 'report-restore-1');
+      expect(restored.registeredDigest, mount!.digest.digest(bytes));
+      expect(restored.registeredBytes, bytes.length);
+      expect(manager.isComplete('acct-restore', restored.id), isTrue);
+      expect(mount!.objects.getBytes(attachmentFinalKey(restored.id)), bytes);
+
+      final repeated = await manager.restoreRegistered(
+        accountId: 'acct-restore',
+        attachmentId: 'photo-restore-0001',
+        projectId: 'project-1',
+        dailyReportId: 'report-restore-1',
+        objectId: 'object-123',
+        receipt: 'receipt-123',
+        expectedDigest: mount!.digest.digest(bytes),
+        expectedBytes: bytes.length,
+        sourcePath: '${tmp.path}/restored-source.jpg',
+        scope: const ScopeClaims(
+          tenantId: 'tenant-1',
+          projectId: 'project-1',
+          role: 'field',
+        ),
+        fetcher: fetcher,
+      );
+      expect(repeated.id, restored.id);
+      expect(fetcher.calls, 1);
+    },
+  );
 
   test('tampered restore bytes produce a typed incomplete record', () async {
     final restored = await manager.restoreRegistered(
@@ -299,6 +326,7 @@ class _Registrar implements AttachmentRegistrarPort {
 
 class _Fetch implements RegisteredAttachmentFetchPort {
   final Uint8List bytes;
+  int calls = 0;
   _Fetch(this.bytes);
 
   @override
@@ -306,7 +334,10 @@ class _Fetch implements RegisteredAttachmentFetchPort {
     required String receipt,
     required String objectId,
     required ScopeClaims scope,
-  }) async => bytes;
+  }) async {
+    calls++;
+    return bytes;
+  }
 }
 
 class _CorruptingObjectStore implements ObjectStore {
