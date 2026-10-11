@@ -539,14 +539,11 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             status: status,
             onNextAction: opState == 'pending' ? _syncNow : null,
           ),
-          if (widget.syncAccessIssue != null) ...[
-            const SizedBox(height: 12),
-            _SyncAccessNotice(
-              issue: widget.syncAccessIssue!,
-              onSignInAgain: widget.onSignInAgain,
-            ),
-          ],
-          _SyncHealthCard(health: health),
+          _SyncHealthCard(
+            health: health,
+            accessIssue: widget.syncAccessIssue,
+            onSignInAgain: widget.onSignInAgain,
+          ),
           if (_error != null) ...[
             const SizedBox(height: 12),
             Text(
@@ -954,9 +951,12 @@ class _SyncAccessNotice extends StatelessWidget {
     final authenticationRequired =
         issue == DailyReportSyncAccessIssue.authenticationRequired;
     final colors = Theme.of(context).colorScheme;
-    return Card(
+    return Container(
       key: const ValueKey('daily-report-sync-access-issue'),
-      color: colors.errorContainer,
+      decoration: BoxDecoration(
+        color: colors.errorContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -1158,9 +1158,15 @@ Future<void> _showReport(
 );
 
 class _SyncHealthCard extends StatelessWidget {
-  const _SyncHealthCard({required this.health});
+  const _SyncHealthCard({
+    required this.health,
+    this.accessIssue,
+    this.onSignInAgain,
+  });
 
   final DeviceSyncHealth health;
+  final DailyReportSyncAccessIssue? accessIssue;
+  final VoidCallback? onSignInAgain;
 
   @override
   Widget build(BuildContext context) => Card(
@@ -1176,6 +1182,13 @@ class _SyncHealthCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(health.synced ? 'No pending work' : 'Needs attention'),
+          if (accessIssue != null) ...[
+            const SizedBox(height: 8),
+            _SyncAccessNotice(
+              issue: accessIssue!,
+              onSignInAgain: onSignInAgain,
+            ),
+          ],
           Text('${health.pendingOperationCount} pending operation(s)'),
           if (health.oldestPendingAgeMs != null)
             Text('Oldest pending: ${_ageLabel(health.oldestPendingAgeMs!)}'),
