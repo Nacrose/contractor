@@ -27,3 +27,9 @@
 - The local report UUID is stored on the client attachment row and passed to the registrar contract. The report outbox payload includes the registered attachment ID, receipt, digest, and byte count; the server has not yet accepted or linked those references, so no claim is made that a registered photo is visible on the server report.
 - Real camera/gallery capture, interrupted app process recovery, and device telemetry still require a real device session.
 - The local product database and test account are not configured, so authenticated upload/registration cannot be exercised here.
+
+## Connected-host follow-on (2026-10-11)
+
+The connected host now instantiates `HttpPhotoUploadRegistrar` with the authenticated client and the report-linked attachment manager; camera/gallery capture is wired through the shared photo port. The sync-health card shows pending operations, oldest age, accepted cursors, conflicts, blocked operations, and rejection reasons. The editor previews a photo only after the manager reports it registered.
+
+The product upload/snapshot changes are pushed to the stacked Construction_Manager PR #170, but have not been merged or exercised against a live account. Flutter analysis and the full **201-test** suite pass, and iOS, macOS, and web builds compile. No photo was captured or uploaded on the user’s device in this checkpoint, so server registration, interrupted-device recovery, and second-device visibility remain unproven. The earlier “database/account not configured” observation is historical; the user later reported creating a local account, but its authenticated native flow has not been tested.

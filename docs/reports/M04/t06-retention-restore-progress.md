@@ -23,4 +23,10 @@ The T06 worktree also contains a browser SQLite WASM + IndexedDB driver, a SQLit
 
 The local snapshot and rejection paths do not claim authenticated server acceptance or T06 completion.
 
+## Connected restore follow-on (2026-10-11)
+
+The connected host now implements `HttpRegisteredAttachmentFetcher` and invokes `restoreRegistered` for registered photos in accepted report snapshots. It downloads by the registered `storageKey` through the existing authenticated `GET /api/files/[key]` route, which rechecks the caller’s tenant, source record, and project permission on each read. The Flutter manager compares both the served byte count and SHA-256 from the snapshot before marking a restored object complete; a failed or mismatched fetch stays incomplete and retryable. Product PR #170 adds those served digest/size fields to the project-scoped snapshot.
+
+The Flutter restore tests, focused transport tests, full 201-test suite, and iOS/macOS/web compilation pass. Product PR #170 and its stacked prerequisites remain unmerged, and no live new-device restore has been exercised. T06 therefore remains open pending server-backed, cross-device evidence.
+
 Product PRs #165 and #166 remain draft and unmerged. The local product database and test account are not configured, so authenticated download, live snapshot/feed reconcile, a real rejected-response correction, and second-device restore have not been exercised.

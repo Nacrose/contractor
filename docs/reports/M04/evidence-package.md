@@ -37,6 +37,12 @@
 4. Finish the full current-rule parity fixture against the product route and link the native and web recordings.
 5. After tasks T01–T08 satisfy their criteria, request owner verification and open the M04-T09 gate PR. The owner makes the gate decision.
 
+## Current checkpoint (2026-10-11)
+
+The connected Flutter host and restore follow-on are pushed to Contractor PR #55 (latest commit `fd2af30`). Registered-photo snapshot digest metadata is pushed to Construction_Manager PR #170 (latest commit `abd31961`). The local login page at `http://127.0.0.1:3108/login` was checked by the owner and confirmed to render; this does not establish sign-in from Flutter or an accepted report. The user later reported creating a local account, superseding the older “account not configured” note above, but that account has not been used by this agent or validated through the app.
+
+Latest code verification: Flutter analysis clean; full Flutter suite **201 passed**; iOS release build (`--no-codesign`), macOS debug build, and web release build succeeded. The agent did not open any app, inspect a screen, or launch the iPhone during this checkpoint. The owner’s device evidence, authenticated server round trip, live photo restore, telemetry, video/log packet, and explicit M04 gate approval remain outstanding. The app currently implements the M04 daily-report/photo vertical, not the later full feature-parity milestone.
+
 ## Owner verification request
 
 **Owner: please verify the recorded native and web daily-report workflow against the linked evidence before approving M04-T09.** The recordings and live product round trip have not yet been produced, so this is a requested future verification step, not a claim that verification occurred.
