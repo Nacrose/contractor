@@ -588,51 +588,127 @@ void main() {
     },
   );
 
-  testWidgets('transport failure remains visible in the sync health surface', (
-    tester,
-  ) async {
-    final store = DailyReportLocalStore(mount!);
-    store.save(
-      accountId: 'acct-1',
-      tenantId: 'tenant-1',
-      role: 'field',
-      draft: DailyReportDraft(
-        clientUuid: 'report-health-offline1',
-        projectId: 'project-1',
-        reportDate: '2026-10-10',
-        remarks: 'Pending until the network returns',
-      ),
-    );
-
-    await store.syncNow();
-
-    expect(
-      mount!.pendingOps.getOp('acct-1', 'report-health-offline1')?.state,
-      'pending',
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        home: DailyReportScreen(
-          store: store,
-          accountId: 'acct-1',
-          tenantId: 'tenant-1',
-          role: 'field',
-          projects: const [
-            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
-          ],
+  for (final scenario in [
+    (
+      name: 'offline sync remains visible and retries from the screen',
+      failWithException: true,
+      detail: 'offline',
+    ),
+    (
+      name: 'retryable timeout remains visible and retries from the screen',
+      failWithException: false,
+      detail: 'network timeout',
+    ),
+  ]) {
+    testWidgets(scenario.name, (tester) async {
+      tester.view.physicalSize = const Size(430, 932);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      mount!.driver.close();
+      var requests = 0;
+      var nowMs = DateTime.now().millisecondsSinceEpoch + 1000;
+      mount = openMount(
+        options: MountOptions(
+          dbPath: '${tmp.path}/outbox.db',
+          objectRoot: Directory('${tmp.path}/objects'),
+          extraMigrations: kM04WorkflowMigrations,
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Device sync health'));
+        credentials: _Credentials(),
+        transport: _Transport((envelope) async {
+          requests++;
+          if (requests == 1 && scenario.failWithException) {
+            throw const SocketException('offline');
+          }
+          if (requests == 1) {
+            return SyncOutcome(
+              kind: SyncOutcomeKind.retryable,
+              opId: envelope.opId,
+              detail: scenario.detail,
+              retryAfterMs: 500,
+            );
+          }
+          return SyncOutcome(
+            kind: SyncOutcomeKind.accepted,
+            opId: envelope.opId,
+            receipt: 'accepted-after-retry',
+          );
+        }),
+      );
+      final reportId = scenario.failWithException
+          ? 'report-health-offline1'
+          : 'report-health-timeout1';
+      final store = DailyReportLocalStore(mount!);
+      store.save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: DailyReportDraft(
+          clientUuid: reportId,
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          remarks: 'Pending until connectivity recovers',
+        ),
+      );
+      mount!.drainTriggers.bind(
+        drain: (_) async => DailyLogSyncOrchestrator(
+          mount: mount!,
+          deviceId: 'device-1',
+          random: _FixedRandom(),
+          nowMs: () => nowMs,
+          backoffBaseMs: 10,
+          backoffCapMs: 100,
+        ).drain('acct-1'),
+        isDraining: () => false,
+      );
 
-    expect(find.text('Needs attention'), findsOneWidget);
-    expect(find.text('1 pending operation(s)'), findsOneWidget);
-    expect(
-      find.text('1 pending operation(s) not yet accepted'),
-      findsOneWidget,
-    );
-  });
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: store,
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Saved on this device (1)'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('2026-10-10').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('More actions'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sync now'));
+      await tester.pumpAndSettle();
+
+      expect(requests, 1);
+      expect(mount!.pendingOps.getOp('acct-1', reportId)?.state, 'pending');
+      expect(
+        store.get('acct-1', reportId)?.remarks,
+        'Pending until connectivity recovers',
+      );
+      expect(find.text('Needs attention'), findsOneWidget);
+      expect(find.text('1 pending operation(s)'), findsOneWidget);
+      expect(
+        find.text('1 pending operation(s) not yet accepted'),
+        findsOneWidget,
+      );
+
+      nowMs += 60_000;
+      await tester.tap(find.byTooltip('More actions'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sync now'));
+      await tester.pumpAndSettle();
+
+      expect(requests, 2);
+      expect(mount!.pendingOps.getOp('acct-1', reportId)?.state, 'accepted');
+      expect(find.text('No pending work'), findsOneWidget);
+    });
+  }
 
   testWidgets(
     'lost acknowledgement stays pending on screen and retry records one server effect',
