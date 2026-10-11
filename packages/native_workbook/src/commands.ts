@@ -357,3 +357,75 @@ function advanceWorkbookState(workbook: WorkbookModel): void {
   workbook.revision += 1;
   workbook.saveSyncStatus = markLocalEdit(workbook.saveSyncStatus);
 }
+
+export interface HistoryEntry {
+  command: WorkbookCommand;
+  compensatingCommand?: WorkbookCommand;
+}
+
+export class WorkbookCommandEngine {
+  private workbook: WorkbookModel;
+  private undoStack: HistoryEntry[] = [];
+  private redoStack: HistoryEntry[] = [];
+
+  constructor(workbook: WorkbookModel) {
+    this.workbook = workbook;
+  }
+
+  public getWorkbook(): WorkbookModel {
+    return this.workbook;
+  }
+
+  public execute(command: WorkbookCommand): CommandExecutionResult {
+    const result = executeCommand(this.workbook, command);
+    if (result.success) {
+      this.undoStack.push({
+        command,
+        compensatingCommand: result.compensatingCommand,
+      });
+      this.redoStack = [];
+    }
+    return result;
+  }
+
+  public canUndo(): boolean {
+    return this.undoStack.length > 0;
+  }
+
+  public undo(): boolean {
+    const entry = this.undoStack.pop();
+    if (!entry) return false;
+
+    if (entry.compensatingCommand) {
+      const res = executeCommand(this.workbook, entry.compensatingCommand);
+      if (res.success) {
+        this.redoStack.push({
+          command: entry.command,
+          compensatingCommand: entry.compensatingCommand,
+        });
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public canRedo(): boolean {
+    return this.redoStack.length > 0;
+  }
+
+  public redo(): boolean {
+    const entry = this.redoStack.pop();
+    if (!entry) return false;
+
+    const res = executeCommand(this.workbook, entry.command);
+    if (res.success) {
+      this.undoStack.push({
+        command: entry.command,
+        compensatingCommand: res.compensatingCommand ?? entry.compensatingCommand,
+      });
+      return true;
+    }
+    return false;
+  }
+}
+

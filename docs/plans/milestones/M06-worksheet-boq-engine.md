@@ -52,7 +52,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Kernel governance duplication status is maintained and recorded (single implementation, governed temporary duplicate, or accepted exception with owner named).
     - Known unsupported formulas/features remain visible; no silent lossy import/export.
 
-- [ ] **M06-T05** — GridCraft full editor and embedded calculation-table host
+- [x] **M06-T05** — GridCraft full editor and embedded calculation-table host (PR #70)
   - Depends on: M06-T02, M06-T04 · Output: one Contractor adapter hosting both upstream UI modes, with platform/interaction evidence.
   - Scope: full workbook editing retains upstream ribbons, formula bar, sheets and tools; embedded workflows reuse the upstream grid with cells, row/column headers, formulas, selection, copy/paste and protected fields. This supersedes the mandatory custom Flutter renderer. Prototype the installed-app and browser hosts before production cutover.
   - Acceptance:

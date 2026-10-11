@@ -105,3 +105,36 @@ export function markSyncFailure(current: SaveSyncState): SaveSyncState {
     nextUserAction: 'retry_sync',
   };
 }
+
+export class WorkbookSaveSyncCoordinator {
+  private state: SaveSyncState;
+
+  constructor(initialState?: SaveSyncState) {
+    this.state = initialState ?? createInitialSaveSyncState();
+  }
+
+  public getState(): SaveSyncState {
+    return this.state;
+  }
+
+  public markEdit(): void {
+    this.state = markLocalEdit(this.state);
+  }
+
+  public markSaved(): void {
+    this.state = markLocalSaved(this.state);
+  }
+
+  public markServerAccepted(): void {
+    this.state = markServerAccepted(this.state);
+  }
+
+  public markServerRejected(): void {
+    this.state = markServerRejected(this.state);
+  }
+
+  public markSyncFailure(): void {
+    this.state = markSyncFailure(this.state);
+  }
+}
+
