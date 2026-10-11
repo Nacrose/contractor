@@ -205,55 +205,58 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
               'Your account needs project membership and Daily Programme access.',
             );
           }
-          return Column(
-            children: [
-              if (current.offline || current.restoreWarning != null)
-                MaterialBanner(
-                  content: Text(
-                    current.restoreWarning ?? 'Offline: showing your previously loaded projects. Save locally and sync when connected.',
+          return SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                if (current.offline || current.restoreWarning != null)
+                  MaterialBanner(
+                    content: Text(
+                      current.restoreWarning ?? 'Offline: showing your previously loaded projects. Save locally and sync when connected.',
+                    ),
+                    actions: const [SizedBox.shrink()],
                   ),
-                  actions: const [SizedBox.shrink()],
+                Expanded(
+                  child: DailyReportScreen(
+                    key: ValueKey(current.session.accountId),
+                    store: DailyReportLocalStore(services.mount),
+                    accountId: current.session.accountId,
+                    tenantId: current.session.organizationId,
+                    role: 'member',
+                    projects: current.projects,
+                    photos: current.photos,
+                    refreshAcceptedReports: current.refreshAcceptedReports,
+                    syncAccessIssue: _syncAccessIssue,
+                    onSignInAgain: _busy ? null : () => _signIn(services),
+                    onSyncStarted: () {
+                      if (mounted && _syncAccessIssue != null) {
+                        setState(() => _syncAccessIssue = null);
+                      }
+                    },
+                    acceptedReports: () => services.mount.driver
+                        .prepare(
+                          'SELECT report_id, payload FROM daily_report_replica '
+                          'WHERE account_id=? AND tenant_id=? AND project_id IN ('
+                          '${List.filled(current.projects.length, '?').join(',')})',
+                        )
+                        .all([
+                          current.session.accountId,
+                          current.session.organizationId,
+                          ...current.projects.map((project) => project.id),
+                        ])
+                        .map(
+                          (row) => {
+                            ...Map<String, Object?>.from(
+                              jsonDecode(row['payload'] as String) as Map,
+                            ),
+                            'id': row['report_id'],
+                          },
+                        )
+                        .toList(growable: false),
+                  ),
                 ),
-              Expanded(
-                child: DailyReportScreen(
-                  key: ValueKey(current.session.accountId),
-                  store: DailyReportLocalStore(services.mount),
-                  accountId: current.session.accountId,
-                  tenantId: current.session.organizationId,
-                  role: 'member',
-                  projects: current.projects,
-                  photos: current.photos,
-                  refreshAcceptedReports: current.refreshAcceptedReports,
-                  syncAccessIssue: _syncAccessIssue,
-                  onSignInAgain: _busy ? null : () => _signIn(services),
-                  onSyncStarted: () {
-                    if (mounted && _syncAccessIssue != null) {
-                      setState(() => _syncAccessIssue = null);
-                    }
-                  },
-                  acceptedReports: () => services.mount.driver
-                      .prepare(
-                        'SELECT report_id, payload FROM daily_report_replica '
-                        'WHERE account_id=? AND tenant_id=? AND project_id IN ('
-                        '${List.filled(current.projects.length, '?').join(',')})',
-                      )
-                      .all([
-                        current.session.accountId,
-                        current.session.organizationId,
-                        ...current.projects.map((project) => project.id),
-                      ])
-                      .map(
-                        (row) => {
-                          ...Map<String, Object?>.from(
-                            jsonDecode(row['payload'] as String) as Map,
-                          ),
-                          'id': row['report_id'],
-                        },
-                      )
-                      .toList(growable: false),
-                ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       );

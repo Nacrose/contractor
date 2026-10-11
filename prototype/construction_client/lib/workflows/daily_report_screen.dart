@@ -1453,6 +1453,11 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       );
 
   String _safeError(Object error) => switch (error) {
+    RepositoryError(
+      kind: 'misconfigured',
+      message: 'Add report content before saving.',
+    ) =>
+      'Add work details, notes, or a photo before saving.',
     RepositoryError(:final kind) =>
       'Save failed ($kind). Your entry is still open on this device.',
     FormatException() => 'Check the numeric values and try saving again.',
