@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'mount/mount.dart';
+import 'mount/attachment_transfer.dart';
 import 'mount/ports.dart';
 import 'mount/system_browser.dart';
 import 'workflows/daily_report_screen.dart';
 import 'workflows/daily_report_workflow.dart';
+import 'connected_m04_host.dart';
 
 /// Native development host for the M04 daily-report workflow.
 ///
-/// Drafts persist on this device. Authentication, server sync, and registered
-/// photo upload are intentionally not represented as connected in this host.
+/// Drafts persist on this device. CONTRACTOR_SERVER_URL selects the connected
+/// identity, sync, and photo ports; omitting it selects the local preview.
 class ContractorOsApp extends StatelessWidget {
   const ContractorOsApp({super.key});
 
@@ -24,7 +26,13 @@ class ContractorOsApp extends StatelessWidget {
       colorSchemeSeed: const Color(0xFF176B5B),
       useMaterial3: true,
     ),
-    home: const _M04NativeHost(),
+    home: const String.fromEnvironment('CONTRACTOR_SERVER_URL').isEmpty
+        ? const _M04NativeHost()
+        : ConnectedM04Host(
+            server: Uri.parse(
+              const String.fromEnvironment('CONTRACTOR_SERVER_URL'),
+            ),
+          ),
   );
 }
 
@@ -51,7 +59,7 @@ class _M04NativeHostState extends State<_M04NativeHost> {
       options: MountOptions(
         dbPath: '${root.path}${Platform.pathSeparator}offline-drafts.sqlite',
         objectRoot: objects,
-        extraMigrations: const [kDailyReportLocalMigration],
+        extraMigrations: kM04WorkflowMigrations,
       ),
       transport: _OfflinePreviewTransport(),
       systemBrowser: systemBrowser,
@@ -155,17 +163,17 @@ class _OfflinePreviewStore implements DailyReportWorkflowStore {
     required DailyReportDraft draft,
   }) => local.editUnsent(accountId: accountId, draft: draft);
   @override
-  String saveCorrectedCopy({
+  String saveRecoveryCopy({
     required String accountId,
     required String tenantId,
     required String role,
-    required String rejectedClientUuid,
+    required String sourceClientUuid,
     required DailyReportDraft draft,
-  }) => local.saveCorrectedCopy(
+  }) => local.saveRecoveryCopy(
     accountId: accountId,
     tenantId: tenantId,
     role: role,
-    rejectedClientUuid: rejectedClientUuid,
+    sourceClientUuid: sourceClientUuid,
     draft: draft,
   );
   @override
@@ -175,11 +183,17 @@ class _OfflinePreviewStore implements DailyReportWorkflowStore {
   String? operationState(String accountId, String clientUuid) =>
       local.operationState(accountId, clientUuid);
   @override
+  List<SavedDailyReport> savedReports(String accountId, String tenantId) =>
+      local.savedReports(accountId, tenantId);
+  @override
   bool canEditUnsent(String accountId, String clientUuid) =>
       local.canEditUnsent(accountId, clientUuid);
   @override
   DeviceSyncHealth syncHealth(String accountId, String tenantId) =>
       local.syncHealth(accountId, tenantId);
+  @override
+  List<DailyReportFeedCursor> feedCursors(String accountId, String tenantId) =>
+      local.feedCursors(accountId, tenantId);
   @override
   Future<void> syncNow() => Future.error(
     StateError(

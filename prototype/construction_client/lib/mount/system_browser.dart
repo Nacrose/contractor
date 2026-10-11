@@ -23,6 +23,9 @@ class DeepLinkSink {
   Completer<String>? _pending;
   final List<String> _buffer = [];
 
+  /// Cold-start authorization may arrive before the identity host is mounted.
+  String? takeBuffered() => _buffer.isEmpty ? null : _buffer.removeAt(0);
+
   Future<String> next() {
     if (_buffer.isNotEmpty) {
       return Future<String>.value(_buffer.removeAt(0));

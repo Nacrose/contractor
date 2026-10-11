@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:construction_client/mount/mount.dart';
 import 'package:construction_client/mount/ports.dart';
@@ -86,6 +87,103 @@ void main() {
     },
   );
 
+  test(
+    'accepted report edits queue a versioned native update and survive restart',
+    () {
+      mounted = open();
+      final store = DailyReportLocalStore(mounted!);
+      final edit = DailyReportDraft(
+        clientUuid: 'report-update-0001',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        serverReportId: 'server-report-1',
+        expectedUpdatedAt: '2026-10-10T12:00:00.000Z',
+        remarks: 'Inspection complete',
+      );
+
+      store.save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: edit,
+      );
+
+      final op = mounted!.pendingOps.getOp('acct-1', edit.clientUuid)!;
+      final payload = jsonDecode(op.payload) as Map<String, Object?>;
+      expect(op.kind, 'workflow.dailyReport.updateFieldReport');
+      expect(payload['clientUuid'], edit.clientUuid);
+      expect(payload['projectId'], 'project-1');
+      expect(payload['reportId'], 'server-report-1');
+      expect(payload['expectedUpdatedAt'], '2026-10-10T12:00:00.000Z');
+      expect(payload['remarks'], 'Inspection complete');
+      expect(payload.containsKey('reportDate'), isFalse);
+      expect(
+        store.get('acct-1', edit.clientUuid)?.serverReportId,
+        'server-report-1',
+      );
+
+      mounted!.driver.close();
+      mounted = open();
+      final reopened = DailyReportLocalStore(mounted!);
+      expect(
+        reopened.get('acct-1', edit.clientUuid)?.expectedUpdatedAt,
+        '2026-10-10T12:00:00.000Z',
+      );
+      expect(
+        mounted!.pendingOps.getOp('acct-1', edit.clientUuid)?.payload,
+        op.payload,
+      );
+    },
+  );
+
+  test('conflict recovery creates a new versioned update without changing the conflicted command', () {
+    mounted = open();
+    final store = DailyReportLocalStore(mounted!);
+    final original = DailyReportDraft(
+      clientUuid: 'report-update-0002',
+      projectId: 'project-1',
+      reportDate: '2026-10-10',
+      serverReportId: 'server-report-1',
+      expectedUpdatedAt: '2026-10-10T12:00:00.000Z',
+      remarks: 'Mobile revision',
+    );
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: original,
+    );
+    final originalPayload = mounted!.pendingOps
+        .getOp('acct-1', original.clientUuid)!
+        .payload;
+    mounted!.pendingOps.markInFlight(original.clientUuid);
+    mounted!.pendingOps.markConflict(
+      original.clientUuid,
+      'Report version changed.',
+    );
+
+    final recovery = original
+        .withClientUuid('report-update-0003')
+        .withExpectedUpdatedAt('2026-10-10T12:05:00.001Z');
+    store.saveRecoveryCopy(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      sourceClientUuid: original.clientUuid,
+      draft: recovery,
+    );
+
+    final oldOp = mounted!.pendingOps.getOp('acct-1', original.clientUuid)!;
+    final newOp = mounted!.pendingOps.getOp('acct-1', recovery.clientUuid)!;
+    final newPayload = jsonDecode(newOp.payload) as Map<String, Object?>;
+    expect(oldOp.state, 'conflict');
+    expect(oldOp.payload, originalPayload);
+    expect(newOp.state, 'pending');
+    expect(newOp.kind, 'workflow.dailyReport.updateFieldReport');
+    expect(newPayload['reportId'], 'server-report-1');
+    expect(newPayload['expectedUpdatedAt'], '2026-10-10T12:05:00.001Z');
+  });
+
   test('an outbox insertion failure rolls back the local report row', () {
     mounted = open();
     final store = DailyReportLocalStore(mounted!);
@@ -147,6 +245,60 @@ void main() {
     },
   );
 
+  test('saved report index is account-and-tenant-scoped with outbox state', () {
+    mounted = open();
+    final store = DailyReportLocalStore(mounted!);
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-a01'),
+    );
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-b01', remarks: 'Later report'),
+    );
+    store.save(
+      accountId: 'acct-2',
+      tenantId: 'tenant-2',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-x01'),
+    );
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-2',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-y01'),
+    );
+    mounted!.pendingOps.markInFlight('report-saved-a01');
+    mounted!.pendingOps.recordRejected(
+      'report-saved-a01',
+      'Review this entry.',
+    );
+
+    final saved = store.savedReports('acct-1', 'tenant-1');
+    expect(saved.map((report) => report.draft.clientUuid), [
+      'report-saved-b01',
+      'report-saved-a01',
+    ]);
+    expect(saved.first.operationState, 'pending');
+    expect(saved.last.operationState, 'rejected');
+    expect(
+      store
+          .savedReports('acct-2', 'tenant-2')
+          .map((report) => report.draft.clientUuid),
+      ['report-saved-x01'],
+    );
+    expect(
+      store
+          .savedReports('acct-1', 'tenant-2')
+          .map((report) => report.draft.clientUuid),
+      ['report-saved-y01'],
+    );
+  });
+
   test('server rejection correction creates a new operation and preserves the rejected copy', () async {
     mounted = open();
     final store = DailyReportLocalStore(mounted!);
@@ -166,11 +318,11 @@ void main() {
       uuid: 'report-uuid-0002',
       remarks: 'Corrected date and site notes',
     );
-    store.saveCorrectedCopy(
+    store.saveRecoveryCopy(
       accountId: 'acct-1',
       tenantId: 'tenant-1',
       role: 'field',
-      rejectedClientUuid: 'report-uuid-0001',
+      sourceClientUuid: 'report-uuid-0001',
       draft: corrected,
     );
 
@@ -200,6 +352,20 @@ void main() {
     expect(payload['reportDate'], '2026-10-10');
     expect(payload['workProgress'], '[]');
     expect(payload['photos'], isEmpty);
+    final notes = DailyReportDraft(
+      clientUuid: 'report-uuid-0008',
+      projectId: 'project-1',
+      reportDate: '2026-10-10',
+      workforce: const [
+        {'company': 'Crew'},
+      ],
+      problems: '  Access blocked  ',
+      safetyNotes: '   ',
+      remarks: '  Work continued  ',
+    ).toProcedureInput();
+    expect(notes['problems'], 'Access blocked');
+    expect(notes['remarks'], 'Work continued');
+    expect(notes.containsKey('safetyNotes'), isFalse);
     expect(
       () => DailyReportDraft(
         clientUuid: 'report-uuid-0002',
@@ -251,6 +417,118 @@ void main() {
           ),
         ).toProcedureInput(),
         throwsA(isA<RepositoryError>()),
+      );
+    },
+  );
+
+  test(
+    'registered photos match the product contract and can be report content',
+    () {
+      final photoOnly = DailyReportDraft(
+        clientUuid: 'report-uuid-0006',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        photos: [
+          RegisteredDailyReportPhoto(
+            attachmentId: 'photo-1',
+            receipt: 'receipt-1',
+            digest: List.filled(64, 'a').join(),
+            bytes: 128,
+          ),
+        ],
+      ).toProcedureInput();
+      expect(photoOnly['photos'], hasLength(1));
+
+      for (final photo in [
+        RegisteredDailyReportPhoto(
+          attachmentId: '',
+          receipt: 'receipt-1',
+          digest: List.filled(64, 'a').join(),
+          bytes: 128,
+        ),
+        RegisteredDailyReportPhoto(
+          attachmentId: 'photo-1',
+          receipt: '',
+          digest: List.filled(64, 'a').join(),
+          bytes: 128,
+        ),
+        const RegisteredDailyReportPhoto(
+          attachmentId: 'photo-1',
+          receipt: 'receipt-1',
+          digest: 'not-a-sha256',
+          bytes: 128,
+        ),
+      ]) {
+        expect(
+          () => DailyReportDraft(
+            clientUuid: 'report-uuid-0007',
+            projectId: 'project-1',
+            reportDate: '2026-10-10',
+            photos: [photo],
+          ).toProcedureInput(),
+          throwsA(isA<RepositoryError>()),
+        );
+      }
+    },
+  );
+
+  test(
+    'field report section arrays survive local encoding and sync mapping',
+    () {
+      final original = DailyReportDraft(
+        clientUuid: 'report-uuid-0010',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        workProgress: const [
+          {
+            'boqCode': 'B.01',
+            'boqDesc': 'Concrete pour',
+            'plannedQty': 20,
+            'actualQty': 12,
+            'batchedQty': 12,
+            'payableQty': 10,
+            'unit': 'm3',
+            'location': 'Zone A',
+          },
+        ],
+        siteVisits: const [
+          {
+            'visitor': 'Site engineer',
+            'organization': 'Client',
+            'purpose': 'Inspection',
+            'time': '10:30',
+            'notes': 'Slab accepted',
+            'sortOrder': 0,
+          },
+        ],
+        meetings: const [
+          {
+            'topic': 'Toolbox talk',
+            'attendees': 'Crew A',
+            'notes': 'Discussed site safety',
+            'sortOrder': 0,
+          },
+        ],
+      );
+
+      final local = DailyReportDraft.decode(original.encode());
+      final payload = local.toProcedureInput();
+      expect(
+        jsonDecode(payload['workProgress']! as String),
+        original.workProgress,
+      );
+      expect(jsonDecode(payload['siteVisits']! as String), original.siteVisits);
+      expect(jsonDecode(payload['meetings']! as String), original.meetings);
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0011',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          siteVisits: const [
+            {'visitor': 'Client inspector'},
+          ],
+        ).toProcedureInput(),
+        returnsNormally,
       );
     },
   );

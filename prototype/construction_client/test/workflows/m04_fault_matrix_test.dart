@@ -51,16 +51,18 @@ void main() {
   DailyLogSyncOrchestrator engine(
     SyncTransportPort transport, {
     int Function()? nowMs,
+    AuthEventSink? authEvents,
   }) => DailyLogSyncOrchestrator(
     mount: mount!,
     deviceId: 'device-1',
     random: _FixedRandom(),
     nowMs: nowMs ?? () => 1000,
+    authEvents: authEvents,
     backoffBaseMs: 10,
     backoffCapMs: 100,
   );
 
-  test('office edit conflict preserves the full local report and surfaces conflict health', () async {
+  test('modeled conflict preserves the report and survives reopen with conflict health', () async {
     getStore().save(
       accountId: 'acct-1',
       tenantId: 'tenant-1',
@@ -81,6 +83,31 @@ void main() {
     final result = await sync.drain('acct-1');
 
     expect(result.conflicts, ['report-conflict-01']);
+    expect(
+      getStore().get('acct-1', 'report-conflict-01')?.remarks,
+      'Crew poured footing',
+    );
+    final conflicted = mount!.pendingOps.getOp('acct-1', 'report-conflict-01')!;
+    expect(conflicted.state, 'conflict');
+    expect(conflicted.lastError, 'server version changed');
+    expect(conflicted.payload, contains('Crew poured footing'));
+    final health = getStore().syncHealth('acct-1', 'tenant-1');
+    expect(health.conflicts, 1);
+    expect(health.synced, isFalse);
+    expect(
+      health.reasons,
+      contains('1 conflicted operation(s) awaiting resolution'),
+    );
+
+    final originalPayload = conflicted.payload;
+    reopenWith(
+      _Transport(
+        (_) async => throw StateError('conflict must not be auto-retried'),
+      ),
+    );
+    final reopened = mount!.pendingOps.getOp('acct-1', 'report-conflict-01')!;
+    expect(reopened.state, 'conflict');
+    expect(reopened.payload, originalPayload);
     expect(
       getStore().get('acct-1', 'report-conflict-01')?.remarks,
       'Crew poured footing',
@@ -114,11 +141,14 @@ void main() {
           );
         }),
       );
-      final sync = engine(mount!.transport);
+      final authEvents = _AuthEvents();
+      final sync = engine(mount!.transport, authEvents: authEvents);
 
       final result = await sync.drain('acct-1');
 
       expect(result.stoppedFor, 'revoked');
+      expect(authEvents.kinds, ['revoked']);
+      expect(authEvents.opIds, ['a-report-revoked']);
       expect(sends, 1);
       expect(
         getStore().get('acct-1', 'z-report-pending')?.remarks,
@@ -149,9 +179,12 @@ void main() {
           ),
         ),
       );
-      final sync = engine(mount!.transport);
+      final authEvents = _AuthEvents();
+      final sync = engine(mount!.transport, authEvents: authEvents);
       final result = await sync.drain('acct-1');
       expect(result.stoppedFor, 'authentication_required');
+      expect(authEvents.kinds, ['authentication_required']);
+      expect(authEvents.opIds, ['report-expired-login1']);
       expect(
         getStore().get('acct-1', 'report-expired-login1')?.remarks,
         'Crew poured footing',
@@ -220,15 +253,44 @@ void main() {
     },
   );
 
-  test('process restart replays the same in-flight op and records the original receipt', () async {
-    getStore().save(
-      accountId: 'acct-1',
-      tenantId: 'tenant-1',
-      role: 'field',
-      draft: draft('report-restart-01'),
-    );
-    mount!.pendingOps.markInFlight('report-restart-01');
+  test('separate process restart replays the same in-flight op and records its original receipt', () async {
     mount!.driver.close();
+    mount = null;
+
+    final flutterRoot = Platform.environment['FLUTTER_ROOT'];
+    expect(
+      flutterRoot,
+      isNotNull,
+      reason: 'Flutter test must expose FLUTTER_ROOT',
+    );
+    final child = await Process.start(
+      '$flutterRoot/bin/flutter',
+      ['test', '--no-pub', 'tool/m04_process_restart_child_test.dart'],
+      workingDirectory: Directory.current.path,
+      environment: {
+        ...Platform.environment,
+        'M04_RESTART_DB': '${tmp.path}/outbox.db',
+        'M04_RESTART_OBJECT_ROOT': '${tmp.path}/objects',
+      },
+    );
+    final stdoutFuture = child.stdout
+        .transform(const SystemEncoding().decoder)
+        .join();
+    final stderrFuture = child.stderr
+        .transform(const SystemEncoding().decoder)
+        .join();
+    final exitCode = await child.exitCode.timeout(
+      const Duration(seconds: 60),
+      onTimeout: () {
+        child.kill();
+        return -1;
+      },
+    );
+    final stdout = await stdoutFuture;
+    final stderr = await stderrFuture;
+    expect(exitCode, 0, reason: 'restart child failed: $stderr\n$stdout');
+    expect(stdout, contains('separate process prepared report-restart-01'));
+
     mount = _open(
       tmp,
       _Transport(
@@ -470,6 +532,17 @@ class _Transport implements SyncTransportPort {
 class _FixedRandom implements OrchestratorRandomPort {
   @override
   double next() => 0.5;
+}
+
+class _AuthEvents implements AuthEventSink {
+  final kinds = <String>[];
+  final opIds = <String?>[];
+
+  @override
+  void onAuthEvent(String kind, String? opId) {
+    kinds.add(kind);
+    opIds.add(opId);
+  }
 }
 
 class _Credentials implements SecureCredentialStore {

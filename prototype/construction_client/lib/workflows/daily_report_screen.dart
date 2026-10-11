@@ -17,6 +17,8 @@ class DailyReportProjectOption {
   final String label;
 }
 
+enum DailyReportSyncAccessIssue { authenticationRequired, revoked }
+
 /// Shared native/web daily-report editor. The host supplies its signed-in
 /// scope, active projects, and durable M04 mount; this widget owns no auth or
 /// permission decision.
@@ -28,6 +30,11 @@ class DailyReportScreen extends StatefulWidget {
     required this.role,
     required this.projects,
     this.photos,
+    this.acceptedReports,
+    this.refreshAcceptedReports,
+    this.syncAccessIssue,
+    this.onSignInAgain,
+    this.onSyncStarted,
     super.key,
   });
 
@@ -37,6 +44,11 @@ class DailyReportScreen extends StatefulWidget {
   final String role;
   final List<DailyReportProjectOption> projects;
   final DailyReportPhotoPort? photos;
+  final List<Map<String, Object?>> Function()? acceptedReports;
+  final Future<void> Function()? refreshAcceptedReports;
+  final DailyReportSyncAccessIssue? syncAccessIssue;
+  final VoidCallback? onSignInAgain;
+  final VoidCallback? onSyncStarted;
 
   @override
   State<DailyReportScreen> createState() => _DailyReportScreenState();
@@ -45,7 +57,7 @@ class DailyReportScreen extends StatefulWidget {
 class _DailyReportScreenState extends State<DailyReportScreen> {
   final _formKey = GlobalKey<FormState>();
   final _actionCoordinator = ConstructionActionCoordinator();
-  late final String _clientUuid = _uuid();
+  String _clientUuid = _uuid();
   late final TextEditingController _date = TextEditingController(
     text: _today(),
   );
@@ -69,9 +81,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   ];
   final List<_ReportRow> _progressRows = [
     _ReportRow({
-      'taskDescription': '',
+      'boqCode': '',
+      'boqDesc': '',
+      'plannedQty': '',
+      'batchedQty': '',
+      'payableQty': '',
       'unit': '',
-      'actualQty': '',
       'location': '',
     }),
   ];
@@ -93,12 +108,27 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   final List<_ReportRow> _consumedRows = [
     _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
   ];
+  final List<_ReportRow> _visitorRows = [
+    _ReportRow({
+      'visitor': '',
+      'organization': '',
+      'purpose': '',
+      'time': '',
+      'notes': '',
+    }),
+  ];
+  final List<_ReportRow> _meetingRows = [
+    _ReportRow({'topic': '', 'attendees': '', 'notes': ''}),
+  ];
   late final TextEditingController _problems = TextEditingController();
   late final TextEditingController _safety = TextEditingController();
   late final TextEditingController _remarks = TextEditingController();
   String? _projectId;
   String? _savedId;
+  String? _serverReportId;
+  String? _expectedUpdatedAt;
   String? _photoReportId;
+  List<RegisteredDailyReportPhoto> _inheritedRegisteredPhotos = const [];
   String? _error;
   bool _saving = false;
   bool _saved = false;
@@ -166,6 +196,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       ..._equipmentRows,
       ..._receivedRows,
       ..._consumedRows,
+      ..._visitorRows,
+      ..._meetingRows,
     ]) {
       row.dispose();
     }
@@ -177,6 +209,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     clientUuid: _savedId ?? _clientUuid,
     projectId: _projectId ?? '',
     reportDate: _date.text.trim(),
+    serverReportId: _serverReportId,
+    expectedUpdatedAt: _expectedUpdatedAt,
     weatherMorning: _morning.text.trim(),
     weatherAfternoon: _midday.text.trim(),
     weatherEvening: _evening.text.trim(),
@@ -209,19 +243,69 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         .toList(growable: false),
     workProgress: _progressRows
         .where(
-          (row) => row.hasText(['taskDescription', 'actualQty', 'location']),
+          (row) => row.hasText([
+            'boqCode',
+            'boqDesc',
+            'plannedQty',
+            'batchedQty',
+            'payableQty',
+            'location',
+          ]),
         )
         .indexed
         .map((entry) {
           final (index, row) = entry;
-          final quantity = row.number('actualQty');
+          final batchedQuantity = row.number('batchedQty');
+          final payableQuantity = row.value('payableQty').isEmpty
+              ? batchedQuantity
+              : row.number('payableQty');
+          final description = row.value('boqDesc');
           return {
-            'taskDescription': row.value('taskDescription'),
+            'boqCode': row.nullableValue('boqCode'),
+            'boqDesc': row.nullableValue('boqDesc'),
+            'taskDescription': description,
+            'plannedQty': row.number('plannedQty'),
+            'actualQty': batchedQuantity,
+            'batchedQty': batchedQuantity,
+            'payableQty': payableQuantity,
             'unit': row.nullableValue('unit'),
-            'actualQty': quantity,
-            'batchedQty': quantity,
-            'payableQty': quantity,
             'location': row.nullableValue('location'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    siteVisits: _visitorRows
+        .where(
+          (row) => row.hasText([
+            'visitor',
+            'organization',
+            'purpose',
+            'time',
+            'notes',
+          ]),
+        )
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'visitor': row.value('visitor'),
+            'organization': row.nullableValue('organization'),
+            'purpose': row.nullableValue('purpose'),
+            'time': row.nullableValue('time'),
+            'notes': row.nullableValue('notes'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    meetings: _meetingRows
+        .where((row) => row.hasText(['topic', 'attendees', 'notes']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'topic': row.value('topic'),
+            'attendees': row.nullableValue('attendees'),
+            'notes': row.nullableValue('notes'),
             'sortOrder': index,
           };
         })
@@ -283,33 +367,313 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           .where(
             (photo) =>
                 photo.dailyReportId ==
-                (_photoReportId ?? _savedId ?? _clientUuid),
+                    (_photoReportId ?? _savedId ?? _clientUuid) ||
+                (photo.complete &&
+                    photo.receipt != null &&
+                    _inheritedRegisteredPhotos.any(
+                      (reference) => reference.receipt == photo.receipt,
+                    )),
           )
           .toList(growable: false) ??
       const <AttachmentTransferRecord>[];
 
-  List<RegisteredDailyReportPhoto> get _registeredPhotoReferences =>
-      _reportPhotos
-          .where(
-            (photo) =>
-                photo.complete &&
-                photo.receipt != null &&
-                photo.digest != null &&
-                photo.bytes != null,
-          )
-          .map(
-            (photo) => RegisteredDailyReportPhoto(
-              attachmentId: photo.id,
-              receipt: photo.receipt!,
-              digest: photo.registeredDigest ?? photo.digest!,
-              bytes: photo.registeredBytes ?? photo.bytes!,
-            ),
-          )
-          .toList(growable: false);
+  List<RegisteredDailyReportPhoto> get _registeredPhotoReferences {
+    final byReceipt = <String, RegisteredDailyReportPhoto>{
+      for (final photo in _inheritedRegisteredPhotos) photo.receipt: photo,
+    };
+    for (final photo in _reportPhotos) {
+      if (!photo.complete ||
+          photo.receipt == null ||
+          photo.digest == null ||
+          photo.bytes == null) {
+        continue;
+      }
+      // The product reference names the registered FieldPhoto row; the local
+      // journal UUID remains the capture/retry identity.
+      byReceipt[photo.receipt!] = RegisteredDailyReportPhoto(
+        attachmentId: photo.receipt!,
+        receipt: photo.receipt!,
+        digest: photo.registeredDigest ?? photo.digest!,
+        bytes: photo.registeredBytes ?? photo.bytes!,
+      );
+    }
+    return byReceipt.values.toList(growable: false);
+  }
 
   bool get _canAddPhotos =>
-      _savedId == null ||
-      widget.store.canEditUnsent(widget.accountId, _savedId!);
+      _serverReportId == null &&
+      (_savedId == null ||
+          widget.store.canEditUnsent(widget.accountId, _savedId!));
+
+  bool get _canEditCurrentReport {
+    if (_serverReportId != null) return true;
+    final savedId = _savedId;
+    if (savedId == null) return true;
+    return const {
+          'rejected',
+          'conflict',
+        }.contains(widget.store.operationState(widget.accountId, savedId)) ||
+        widget.store.canEditUnsent(widget.accountId, savedId);
+  }
+
+  void _openSavedReport(SavedDailyReport saved) =>
+      _loadDraft(saved.draft, savedId: saved.draft.clientUuid, saved: true);
+
+  void _openAcceptedReport(Map<String, Object?> report) {
+    if (report['status'] != 'draft') return;
+    try {
+      _loadDraft(
+        DailyReportDraft.fromServerSnapshot(report, clientUuid: _uuid()),
+        savedId: null,
+        saved: false,
+      );
+    } catch (error) {
+      setState(() => _error = _safeError(error));
+    }
+  }
+
+  void _loadDraft(
+    DailyReportDraft draft, {
+    required String? savedId,
+    required bool saved,
+  }) {
+    void replaceRows(
+      List<_ReportRow> target,
+      List<Map<String, Object?>> values,
+      List<String> textKeys,
+      _ReportRow Function() emptyRow, {
+      Map<String, Map<String, String>> selectOptions = const {},
+    }) {
+      for (final row in target) {
+        row.dispose();
+      }
+      target
+        ..clear()
+        ..addAll(
+          values.map((value) {
+            final textValues = {
+              for (final key in textKeys) key: value[key]?.toString() ?? '',
+            };
+            final selections = <String, String>{};
+            for (final entry in selectOptions.entries) {
+              final valueForKey = value[entry.key]?.toString();
+              selections[entry.key] = entry.value.containsKey(valueForKey)
+                  ? valueForKey!
+                  : entry.value.keys.first;
+            }
+            return _ReportRow(textValues, selections: selections);
+          }),
+        );
+      if (target.isEmpty) target.add(emptyRow());
+    }
+
+    setState(() {
+      _clientUuid = draft.clientUuid;
+      _savedId = savedId;
+      _serverReportId = draft.serverReportId;
+      _expectedUpdatedAt = draft.expectedUpdatedAt;
+      _photoReportId = draft.serverReportId ?? savedId;
+      _inheritedRegisteredPhotos = draft.photos;
+      _projectId = draft.projectId;
+      _date.text = draft.reportDate;
+      _morning.text = draft.weatherMorning;
+      _midday.text = draft.weatherAfternoon;
+      _evening.text = draft.weatherEvening;
+      _minTemp.text = draft.minTempC;
+      _maxTemp.text = draft.maxTempC;
+      _rain.text = draft.rainfallMm;
+      _problems.text = draft.problems;
+      _safety.text = draft.safetyNotes;
+      _remarks.text = draft.remarks;
+      _saved = saved;
+      _error = null;
+      replaceRows(
+        _workforceRows,
+        draft.workforce,
+        const ['company', 'trade', 'headcount', 'regHours', 'otHours'],
+        () => _ReportRow(
+          {
+            'company': '',
+            'trade': '',
+            'headcount': '',
+            'regHours': '',
+            'otHours': '',
+          },
+          selections: const {'skill': 'unskilled'},
+        ),
+        selectOptions: const {
+          'skill': {
+            'unskilled': 'Unskilled',
+            'semi': 'Semi-skilled',
+            'skilled': 'Skilled',
+          },
+        },
+      );
+      replaceRows(
+        _progressRows,
+        draft.workProgress
+            .map(
+              (row) => {
+                ...row,
+                'boqDesc': row['boqDesc'] ?? row['taskDescription'],
+                'batchedQty': row['batchedQty'] ?? row['actualQty'],
+                'payableQty': row['payableQty'] ?? row['actualQty'],
+              },
+            )
+            .toList(growable: false),
+        const [
+          'boqCode',
+          'boqDesc',
+          'plannedQty',
+          'batchedQty',
+          'payableQty',
+          'unit',
+          'location',
+        ],
+        () => _ReportRow({
+          'boqCode': '',
+          'boqDesc': '',
+          'plannedQty': '',
+          'batchedQty': '',
+          'payableQty': '',
+          'unit': '',
+          'location': '',
+        }),
+      );
+      replaceRows(
+        _equipmentRows,
+        draft.equipmentUsed,
+        const ['name', 'workingHours', 'fuel'],
+        () => _ReportRow(
+          {'name': '', 'workingHours': '', 'fuel': ''},
+          selections: const {'ownership': 'owned'},
+        ),
+        selectOptions: const {
+          'ownership': {'owned': 'Owned', 'hired': 'Hired'},
+        },
+      );
+      replaceRows(
+        _receivedRows,
+        draft.materialReceived,
+        const ['name', 'qty', 'unit', 'supplier', 'vehicle'],
+        () => _ReportRow({
+          'name': '',
+          'qty': '',
+          'unit': '',
+          'supplier': '',
+          'vehicle': '',
+        }),
+      );
+      replaceRows(_consumedRows, draft.materialConsumed, const [
+        'name',
+        'quantity',
+        'unit',
+      ], () => _ReportRow({'name': '', 'quantity': '', 'unit': ''}));
+      replaceRows(
+        _visitorRows,
+        draft.siteVisits,
+        const ['visitor', 'organization', 'purpose', 'time', 'notes'],
+        () => _ReportRow({
+          'visitor': '',
+          'organization': '',
+          'purpose': '',
+          'time': '',
+          'notes': '',
+        }),
+      );
+      replaceRows(_meetingRows, draft.meetings, const [
+        'topic',
+        'attendees',
+        'notes',
+      ], () => _ReportRow({'topic': '', 'attendees': '', 'notes': ''}));
+    });
+  }
+
+  void _startNewReport() {
+    void resetRows(List<_ReportRow> target, List<_ReportRow> initial) {
+      for (final row in target) {
+        row.dispose();
+      }
+      target
+        ..clear()
+        ..addAll(initial);
+    }
+
+    setState(() {
+      _savedId = null;
+      _serverReportId = null;
+      _expectedUpdatedAt = null;
+      _photoReportId = null;
+      _inheritedRegisteredPhotos = const [];
+      _clientUuid = _uuid();
+      _projectId = null;
+      _date.text = _today();
+      _morning.clear();
+      _midday.clear();
+      _evening.clear();
+      _minTemp.clear();
+      _maxTemp.clear();
+      _rain.clear();
+      _problems.clear();
+      _safety.clear();
+      _remarks.clear();
+      _saved = false;
+      _error = null;
+      resetRows(_workforceRows, [
+        _ReportRow(
+          {
+            'company': '',
+            'trade': '',
+            'headcount': '',
+            'regHours': '',
+            'otHours': '',
+          },
+          selections: const {'skill': 'unskilled'},
+        ),
+      ]);
+      resetRows(_progressRows, [
+        _ReportRow({
+          'boqCode': '',
+          'boqDesc': '',
+          'plannedQty': '',
+          'batchedQty': '',
+          'payableQty': '',
+          'unit': '',
+          'location': '',
+        }),
+      ]);
+      resetRows(_equipmentRows, [
+        _ReportRow(
+          {'name': '', 'workingHours': '', 'fuel': ''},
+          selections: const {'ownership': 'owned'},
+        ),
+      ]);
+      resetRows(_receivedRows, [
+        _ReportRow({
+          'name': '',
+          'qty': '',
+          'unit': '',
+          'supplier': '',
+          'vehicle': '',
+        }),
+      ]);
+      resetRows(_consumedRows, [
+        _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+      ]);
+      resetRows(_visitorRows, [
+        _ReportRow({
+          'visitor': '',
+          'organization': '',
+          'purpose': '',
+          'time': '',
+          'notes': '',
+        }),
+      ]);
+      resetRows(_meetingRows, [
+        _ReportRow({'topic': '', 'attendees': '', 'notes': ''}),
+      ]);
+    });
+  }
 
   Future<void> _save() async {
     if (_reportPhotos.any((photo) => !photo.complete)) {
@@ -339,19 +703,43 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             draft: draft,
           );
           _savedId = draft.clientUuid;
-        } else if (widget.store.operationState(widget.accountId, _savedId!) ==
-            'rejected') {
-          final rejectedId = _savedId!;
-          final corrected = draft.withClientUuid(_uuid());
-          widget.store.saveCorrectedCopy(
+        } else if (const {
+          'rejected',
+          'conflict',
+        }.contains(widget.store.operationState(widget.accountId, _savedId!))) {
+          final sourceId = _savedId!;
+          var corrected = draft.withClientUuid(_uuid());
+          if (draft.serverReportId != null) {
+            final current = widget.acceptedReports
+                ?.call()
+                .where((report) => report['id'] == draft.serverReportId)
+                .firstOrNull;
+            final rawVersion = current?['updatedAt'];
+            final currentVersion = rawVersion is DateTime
+                ? rawVersion.toUtc().toIso8601String()
+                : rawVersion is String
+                ? DateTime.tryParse(rawVersion)?.toUtc().toIso8601String()
+                : null;
+            if (currentVersion == null) {
+              throw RepositoryError(
+                'conflict',
+                'Refresh the current server report before saving a reviewed copy.',
+              );
+            }
+            corrected = corrected.withExpectedUpdatedAt(currentVersion);
+          }
+          widget.store.saveRecoveryCopy(
             accountId: widget.accountId,
             tenantId: widget.tenantId,
             role: widget.role,
-            rejectedClientUuid: rejectedId,
+            sourceClientUuid: sourceId,
             draft: corrected,
           );
-          _photoReportId = rejectedId;
+          _photoReportId = sourceId;
           _savedId = corrected.clientUuid;
+          _clientUuid = corrected.clientUuid;
+          _serverReportId = corrected.serverReportId;
+          _expectedUpdatedAt = corrected.expectedUpdatedAt;
         } else {
           widget.store.editUnsent(accountId: widget.accountId, draft: draft);
         }
@@ -366,8 +754,10 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   }
 
   Future<void> _syncNow() async {
+    widget.onSyncStarted?.call();
     try {
       await widget.store.syncNow();
+      await widget.refreshAcceptedReports?.call();
       if (mounted) setState(() {});
     } catch (error) {
       if (mounted) setState(() => _error = _safeError(error));
@@ -424,6 +814,16 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     }
   }
 
+  Future<void> _retryFailedPhotos() async {
+    final failedIds = _reportPhotos
+        .where((photo) => photo.state == AttachmentTransferState.failed)
+        .map((photo) => photo.id)
+        .toList(growable: false);
+    for (final id in failedIds) {
+      await _retryPhoto(id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final route = _routes[RouteId('daily-report.new')];
@@ -431,16 +831,27 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       _platform,
       _capabilities,
     );
-    final canSave = commandAvailability
-        .firstWhere(
-          (entry) => entry.command.id.value == 'daily-report.save-local',
-        )
-        .available;
+    final canSave =
+        commandAvailability
+            .firstWhere(
+              (entry) => entry.command.id.value == 'daily-report.save-local',
+            )
+            .available &&
+        _canEditCurrentReport;
     final opState = _savedId == null
         ? null
         : widget.store.operationState(widget.accountId, _savedId!);
     final health = widget.store.syncHealth(widget.accountId, widget.tenantId);
+    final feedCursors = widget.store.feedCursors(
+      widget.accountId,
+      widget.tenantId,
+    );
     final reportPhotos = _reportPhotos;
+    final failedPhotoIds = reportPhotos
+        .where((photo) => photo.state == AttachmentTransferState.failed)
+        .map((photo) => photo.id)
+        .toList(growable: false);
+    final hasIncompletePhotos = reportPhotos.any((photo) => !photo.complete);
     final attachmentState = reportPhotos.isEmpty
         ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
         : reportPhotos.every((photo) => photo.complete)
@@ -470,9 +881,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       },
       attachmentCompletion: attachmentState,
       backup: BackupState.BACKUP_STATE_NOT_CONFIGURED,
-      pendingWorkRetained: opState != null && opState != 'accepted',
+      pendingWorkRetained:
+          (opState != null && opState != 'accepted') || hasIncompletePhotos,
       nextUserAction: opState == 'rejected'
           ? NextUserAction.NEXT_USER_ACTION_REVIEW_SERVER_REJECTION
+          : failedPhotoIds.isNotEmpty
+          ? NextUserAction.NEXT_USER_ACTION_RETRY_ATTACHMENTS
           : NextUserAction.NEXT_USER_ACTION_UNSPECIFIED,
     );
 
@@ -481,55 +895,113 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: ActionBar(
-            ariaLabel: 'Daily report actions',
-            primary: FilledButton.icon(
-              onPressed: canSave && !_saving ? _save : null,
-              icon: _saving
-                  ? const SizedBox.square(
-                      dimension: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.save_outlined),
-              label: Text(
-                opState == 'rejected'
-                    ? 'Save corrected copy'
-                    : _saved
-                    ? 'Update local draft'
-                    : 'Save locally',
-              ),
-            ),
-            actions: [
-              ActionBarAction(
-                label: 'Sync now',
-                icon: Icons.sync,
-                onPressed: _saved ? _syncNow : null,
-                disabled: !_saved,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _error!,
+                      key: const ValueKey('daily-report-save-error'),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ),
+                ),
+              ActionBar(
+                ariaLabel: 'Daily report actions',
+                primary: FilledButton.icon(
+                  onPressed: canSave && !_saving ? _save : null,
+                  icon: _saving
+                      ? const SizedBox.square(
+                          dimension: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.save_outlined),
+                  label: Text(
+                    opState == 'rejected'
+                        ? 'Save corrected copy'
+                        : opState == 'conflict'
+                        ? 'Save reviewed copy'
+                        : _saved && !_canEditCurrentReport
+                        ? 'Saved report'
+                        : _saved
+                        ? 'Update local draft'
+                        : 'Save locally',
+                  ),
+                ),
+                actions: [
+                  ActionBarAction(
+                    label: 'Sync now',
+                    icon: Icons.sync,
+                    onPressed: _saved ? _syncNow : null,
+                    disabled: !_saved,
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
       body: ListView(
+        key: const ValueKey('daily-report-screen-list'),
         padding: const EdgeInsets.all(20),
         children: [
           const SizedBox(height: 16),
+          _AcceptedDailyReports(
+            reports: widget.acceptedReports?.call() ?? const [],
+            projects: widget.projects,
+            photos: widget.photos,
+            onEdit: _openAcceptedReport,
+          ),
+          _SavedDailyReports(
+            reports: widget.store.savedReports(
+              widget.accountId,
+              widget.tenantId,
+            ),
+            projects: widget.projects,
+            selectedId: _savedId,
+            onOpen: _openSavedReport,
+          ),
+          if (_savedId != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: _startNewReport,
+                icon: const Icon(Icons.add),
+                label: const Text('New report'),
+              ),
+            ),
           SaveSyncStatusPanel(
             status: status,
-            onNextAction: opState == 'pending' ? _syncNow : null,
+            onNextAction: opState == 'rejected'
+                ? null
+                : failedPhotoIds.isNotEmpty
+                ? _retryFailedPhotos
+                : opState == 'pending'
+                ? _syncNow
+                : null,
           ),
-          _SyncHealthCard(health: health),
-          if (_error != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              _error!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ],
+          _SyncHealthCard(
+            health: health,
+            feedCursors: feedCursors,
+            accessIssue: widget.syncAccessIssue,
+            onSignInAgain: widget.onSignInAgain,
+          ),
           if (opState == 'rejected') ...[
             const SizedBox(height: 8),
             const Text(
               'This report was rejected by the server. Correct the fields and save a new copy; the rejected operation is retained for review.',
+            ),
+          ],
+          if (opState == 'conflict') ...[
+            const SizedBox(height: 8),
+            const Text(
+              'This report conflicts with server state. Tap Sync now to refresh synced reports above, compare the current version, then reconcile this copy and save it as a new operation. The original conflict stays unchanged.',
             ),
           ],
           const SizedBox(height: 16),
@@ -541,19 +1013,28 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   DropdownButtonFormField<String>(
                     initialValue: _projectId,
                     decoration: const InputDecoration(labelText: 'Project'),
-                    items: widget.projects
-                        .map(
-                          (project) => DropdownMenuItem(
-                            value: project.id,
-                            child: Text(
-                              project.label,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                    items: [
+                      ...widget.projects.map(
+                        (project) => DropdownMenuItem(
+                          value: project.id,
+                          child: Text(
+                            project.label,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        )
-                        .toList(),
+                        ),
+                      ),
+                      if (_projectId != null &&
+                          !widget.projects.any(
+                            (project) => project.id == _projectId,
+                          ))
+                        DropdownMenuItem(
+                          value: _projectId,
+                          child: Text('Unavailable project · $_projectId'),
+                        ),
+                    ],
                     onChanged:
-                        (_savedId == null || opState == 'rejected') &&
+                        _serverReportId == null &&
+                            _canEditCurrentReport &&
                             reportPhotos.isEmpty
                         ? (value) => setState(() => _projectId = value)
                         : null,
@@ -563,6 +1044,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   ),
                   TextFormField(
                     controller: _date,
+                    enabled: _serverReportId == null && _canEditCurrentReport,
                     decoration: const InputDecoration(
                       labelText: 'Report date',
                       hintText: 'YYYY-MM-DD',
@@ -597,13 +1079,26 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                         ),
                       ],
                     ),
-                    if (reportPhotos.isEmpty)
+                    if (_registeredPhotoReferences.isEmpty)
                       const ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(Icons.photo_outlined),
                         title: Text('No photos attached'),
                       ),
                     for (final photo in reportPhotos) _photoTile(photo),
+                    for (final reference in _registeredPhotoReferences.where(
+                      (reference) => !reportPhotos.any(
+                        (photo) => photo.receipt == reference.receipt,
+                      ),
+                    ))
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.cloud_done_outlined),
+                        title: Text('Registered photo ${reference.receipt}'),
+                        subtitle: Text(
+                          'Available on the server · ${reference.bytes} bytes',
+                        ),
+                      ),
                   ]),
                 _section('Weather', [
                   _field(_morning, 'Morning weather'),
@@ -618,6 +1113,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                 _equipmentSection(),
                 _receivedSection(),
                 _consumedSection(),
+                _visitorsSection(),
+                _meetingsSection(),
                 _section('Problems, safety & remarks', [
                   _field(_problems, 'Problems', lines: 3),
                   _field(_safety, 'Safety notes', lines: 3),
@@ -710,20 +1207,26 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   );
 
   Widget _progressSection() => _reportRowsSection(
-    'Work progress',
+    'Plan vs. actual work progress',
     _progressRows,
     createRow: () => _ReportRow({
-      'taskDescription': '',
+      'boqCode': '',
+      'boqDesc': '',
+      'plannedQty': '',
+      'batchedQty': '',
+      'payableQty': '',
       'unit': '',
-      'actualQty': '',
       'location': '',
     }),
     addLabel: 'Add progress row',
     fields: [
-      _rowText('taskDescription', 'Task description'),
-      _rowText('unit', 'Unit'),
-      _rowNumber('actualQty', 'Actual quantity'),
+      _rowText('boqCode', 'BOQ code'),
+      _rowText('boqDesc', 'Task description'),
       _rowText('location', 'Location'),
+      _rowNumber('plannedQty', 'Plan quantity'),
+      _rowNumber('batchedQty', 'Batched / placed quantity'),
+      _rowNumber('payableQty', 'Payable quantity (IPC)'),
+      _rowText('unit', 'Unit'),
     ],
   );
 
@@ -778,6 +1281,38 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     ],
   );
 
+  Widget _visitorsSection() => _reportRowsSection(
+    'Site visitors & inspections',
+    _visitorRows,
+    createRow: () => _ReportRow({
+      'visitor': '',
+      'organization': '',
+      'purpose': '',
+      'time': '',
+      'notes': '',
+    }),
+    addLabel: 'Add visitor',
+    fields: [
+      _rowText('visitor', 'Visitor name'),
+      _rowText('organization', 'Organization / authority'),
+      _rowText('purpose', 'Purpose of visit'),
+      _rowText('time', 'Time'),
+      _rowText('notes', 'Notes'),
+    ],
+  );
+
+  Widget _meetingsSection() => _reportRowsSection(
+    'Site meetings & toolbox talks',
+    _meetingRows,
+    createRow: () => _ReportRow({'topic': '', 'attendees': '', 'notes': ''}),
+    addLabel: 'Add meeting',
+    fields: [
+      _rowText('topic', 'Topic / subject'),
+      _rowText('attendees', 'Attendees'),
+      _rowText('notes', 'Key notes / decisions'),
+    ],
+  );
+
   Widget _reportRowsSection(
     String title,
     List<_ReportRow> rows, {
@@ -796,7 +1331,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           if (rows.length > 1)
             IconButton(
               tooltip: 'Remove row',
-              onPressed: () => setState(() => rows.removeAt(index).dispose()),
+              onPressed: _canEditCurrentReport
+                  ? () => setState(() => rows.removeAt(index).dispose())
+                  : null,
               icon: const Icon(Icons.remove_circle_outline),
             ),
         ],
@@ -805,7 +1342,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     Align(
       alignment: Alignment.centerLeft,
       child: TextButton.icon(
-        onPressed: () => setState(() => rows.add(createRow())),
+        onPressed: _canEditCurrentReport
+            ? () => setState(() => rows.add(createRow()))
+            : null,
         icon: const Icon(Icons.add),
         label: Text(addLabel),
       ),
@@ -816,6 +1355,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     key: key,
     build: (row, refresh) => TextFormField(
       controller: row.controllers[key],
+      enabled: _canEditCurrentReport,
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
@@ -827,6 +1367,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     key: key,
     build: (row, refresh) => TextFormField(
       controller: row.controllers[key],
+      enabled: _canEditCurrentReport,
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
         signed: true,
@@ -862,11 +1403,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                 DropdownMenuItem(value: entry.key, child: Text(entry.value)),
           )
           .toList(growable: false),
-      onChanged: (value) {
-        if (value == null) return;
-        row.selections[key] = value;
-        refresh(() {});
-      },
+      onChanged: _canEditCurrentReport
+          ? (value) {
+              if (value == null) return;
+              row.selections[key] = value;
+              refresh(() {});
+            }
+          : null,
     ),
   );
 
@@ -878,6 +1421,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     padding: const EdgeInsets.only(bottom: 8),
     child: TextFormField(
       controller: controller,
+      enabled: _canEditCurrentReport,
       minLines: lines,
       maxLines: lines == 1 ? 1 : 6,
       decoration: InputDecoration(
@@ -892,6 +1436,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         padding: const EdgeInsets.only(bottom: 8),
         child: TextFormField(
           controller: controller,
+          enabled: _canEditCurrentReport,
           keyboardType: const TextInputType.numberWithOptions(
             decimal: true,
             signed: true,
@@ -908,17 +1453,307 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       );
 
   String _safeError(Object error) => switch (error) {
+    RepositoryError(
+      kind: 'misconfigured',
+      message: 'Add report content before saving.',
+    ) =>
+      'Add work details, notes, or a photo before saving.',
     RepositoryError(:final kind) =>
-      'Save failed ($kind). Your draft is still on this device.',
+      'Save failed ($kind). Your entry is still open on this device.',
     FormatException() => 'Check the numeric values and try saving again.',
-    _ => 'Save failed. Your draft is still on this device.',
+    _ => 'Save failed. Your entry is still open on this device.',
   };
 }
 
+class _SyncAccessNotice extends StatelessWidget {
+  const _SyncAccessNotice({required this.issue, this.onSignInAgain});
+
+  final DailyReportSyncAccessIssue issue;
+  final VoidCallback? onSignInAgain;
+
+  @override
+  Widget build(BuildContext context) {
+    final authenticationRequired =
+        issue == DailyReportSyncAccessIssue.authenticationRequired;
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      key: const ValueKey('daily-report-sync-access-issue'),
+      decoration: BoxDecoration(
+        color: colors.errorContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.sync_problem_outlined,
+                  color: colors.onErrorContainer,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        authenticationRequired
+                            ? 'Sign-in required to sync'
+                            : 'Project access changed',
+                        style: Theme.of(context).textTheme.titleSmall
+                            ?.copyWith(color: colors.onErrorContainer),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        authenticationRequired
+                            ? 'Your report is saved locally. Sign in again to resume syncing.'
+                            : 'Your report is saved locally. Ask a project admin to restore access, then sync again.',
+                        style: TextStyle(color: colors.onErrorContainer),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (authenticationRequired && onSignInAgain != null) ...[
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.tonal(
+                  onPressed: onSignInAgain,
+                  child: const Text('Sign in again'),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AcceptedDailyReports extends StatelessWidget {
+  const _AcceptedDailyReports({
+    required this.reports,
+    required this.projects,
+    required this.photos,
+    required this.onEdit,
+  });
+
+  final List<Map<String, Object?>> reports;
+  final List<DailyReportProjectOption> projects;
+  final DailyReportPhotoPort? photos;
+  final ValueChanged<Map<String, Object?>> onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    if (reports.isEmpty) return const SizedBox.shrink();
+    final ordered = [...reports]
+      ..sort((a, b) => '${b['reportDate']}'.compareTo('${a['reportDate']}'));
+    return Card(
+      child: ExpansionTile(
+        title: Text('Synced daily reports (${ordered.length})'),
+        children: [
+          for (final report in ordered)
+            ListTile(
+              leading: const Icon(Icons.receipt_long_outlined),
+              title: Text('${report['number'] ?? 'Daily report'}'),
+              subtitle: Text(
+                '${_reportDateLabel(report['reportDate'])} · '
+                '${_projectLabel(projects, report['projectId'])} · '
+                '${report['status'] ?? 'synced'}',
+              ),
+              trailing: report['status'] == 'draft'
+                  ? IconButton(
+                      tooltip: 'Edit this report',
+                      icon: const Icon(Icons.edit_outlined),
+                      onPressed: () => onEdit(report),
+                    )
+                  : null,
+              onTap: () => _showReport(context, report, photos),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SavedDailyReports extends StatelessWidget {
+  const _SavedDailyReports({
+    required this.reports,
+    required this.projects,
+    required this.selectedId,
+    required this.onOpen,
+  });
+
+  final List<SavedDailyReport> reports;
+  final List<DailyReportProjectOption> projects;
+  final String? selectedId;
+  final ValueChanged<SavedDailyReport> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    if (reports.isEmpty) return const SizedBox.shrink();
+    return Card(
+      child: ExpansionTile(
+        title: Text('Saved on this device (${reports.length})'),
+        children: [
+          for (final report in reports)
+            ListTile(
+              selected: report.draft.clientUuid == selectedId,
+              leading: Icon(
+                const {'rejected', 'conflict'}.contains(report.operationState)
+                    ? Icons.sync_problem_outlined
+                    : Icons.description_outlined,
+              ),
+              title: Text(_reportDateLabel(report.draft.reportDate)),
+              subtitle: Text(
+                '${_projectLabel(projects, report.draft.projectId)} · '
+                '${_localReportState(report.operationState)}',
+              ),
+              onTap: () => onOpen(report),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+String _localReportState(String? state) => switch (state) {
+  'rejected' => 'Rejected · correction available',
+  'pending' => 'Saved · waiting to sync',
+  'in_flight' => 'Syncing',
+  'accepted' => 'Synced',
+  'conflict' => 'Conflict · review and copy',
+  'blocked' => 'Blocked · prerequisite required',
+  _ => 'Saved on this device',
+};
+
+String _projectLabel(List<DailyReportProjectOption> projects, Object? id) =>
+    projects.where((project) => project.id == id).firstOrNull?.label ?? '';
+
+String _reportDateLabel(Object? date) {
+  if (date is! String) return 'Date unavailable';
+  return date.length >= 10 ? date.substring(0, 10) : date;
+}
+
+Future<void> _showReport(
+  BuildContext context,
+  Map<String, Object?> report,
+  DailyReportPhotoPort? photos,
+) => showDialog<void>(
+  context: context,
+  builder: (context) => AlertDialog(
+    title: Text('${report['number'] ?? 'Daily report'}'),
+    content: SizedBox(
+      width: 520,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Date: ${_reportDateLabel(report['reportDate'])}'),
+            Text('Status: ${report['status'] ?? 'synced'}'),
+            if (report['weatherMorning'] case final value?
+                when '$value'.isNotEmpty)
+              Text('Morning weather: $value'),
+            if (report['weatherAfternoon'] case final value?
+                when '$value'.isNotEmpty)
+              Text('Afternoon weather: $value'),
+            if (report['weatherEvening'] case final value?
+                when '$value'.isNotEmpty)
+              Text('Evening weather: $value'),
+            for (final section in const [
+              ('Workforce', 'workforce'),
+              ('Work progress', 'workProgress'),
+              ('Equipment', 'equipmentUsed'),
+              ('Materials received', 'materialReceived'),
+              ('Materials consumed', 'materialConsumed'),
+              ('Site visits', 'siteVisits'),
+              ('Meetings', 'meetings'),
+            ])
+              if (report[section.$2] is List &&
+                  (report[section.$2] as List).isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(section.$1, style: Theme.of(context).textTheme.titleSmall),
+                for (final row in report[section.$2] as List)
+                  if (row is Map)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        row.entries
+                            .where(
+                              (entry) =>
+                                  entry.value != null &&
+                                  '${entry.value}'.isNotEmpty,
+                            )
+                            .map((entry) => '${entry.key}: ${entry.value}')
+                            .join(' · '),
+                      ),
+                    ),
+              ],
+            if ('${report['problems'] ?? ''}'.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text('Problems: ${report['problems']}'),
+            ],
+            if ('${report['safetyNotes'] ?? ''}'.isNotEmpty)
+              Text('Safety: ${report['safetyNotes']}'),
+            if ('${report['remarks'] ?? ''}'.isNotEmpty)
+              Text('Remarks: ${report['remarks']}'),
+            if (report['attachments'] is List)
+              for (final attachment in report['attachments'] as List)
+                if (attachment is Map) ...[
+                  const SizedBox(height: 12),
+                  Text('${attachment['fileName'] ?? 'Registered photo'}'),
+                  if (attachment['registeredPhotoId'] is String &&
+                      photos != null)
+                    Builder(
+                      builder: (context) {
+                        final bytes = photos.registeredBytes(
+                          attachment['registeredPhotoId'] as String,
+                        );
+                        return bytes == null
+                            ? const Text(
+                                'Photo is not available on this device yet.',
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.memory(
+                                  bytes,
+                                  height: 160,
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                      },
+                    ),
+                ],
+          ],
+        ),
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Close'),
+      ),
+    ],
+  ),
+);
+
 class _SyncHealthCard extends StatelessWidget {
-  const _SyncHealthCard({required this.health});
+  const _SyncHealthCard({
+    required this.health,
+    required this.feedCursors,
+    this.accessIssue,
+    this.onSignInAgain,
+  });
 
   final DeviceSyncHealth health;
+  final List<DailyReportFeedCursor> feedCursors;
+  final DailyReportSyncAccessIssue? accessIssue;
+  final VoidCallback? onSignInAgain;
 
   @override
   Widget build(BuildContext context) => Card(
@@ -934,6 +1769,13 @@ class _SyncHealthCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(health.synced ? 'No pending work' : 'Needs attention'),
+          if (accessIssue != null) ...[
+            const SizedBox(height: 8),
+            _SyncAccessNotice(
+              issue: accessIssue!,
+              onSignInAgain: onSignInAgain,
+            ),
+          ],
           Text('${health.pendingOperationCount} pending operation(s)'),
           if (health.oldestPendingAgeMs != null)
             Text('Oldest pending: ${_ageLabel(health.oldestPendingAgeMs!)}'),
@@ -947,8 +1789,18 @@ class _SyncHealthCard extends StatelessWidget {
             'Accepted feed cursors',
             style: Theme.of(context).textTheme.labelMedium,
           ),
+          if (feedCursors.isEmpty)
+            const Text('No accepted feed cursor recorded on this device yet.')
+          else
+            for (final cursor in feedCursors)
+              Text('project:${cursor.projectId}: ${cursor.cursor}'),
+          const SizedBox(height: 4),
+          Text(
+            'Accepted operation sequences',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
           if (health.lastAcceptedCursors.isEmpty)
-            const Text('No accepted cursor recorded on this device yet.')
+            const Text('No accepted operation recorded on this device yet.')
           else
             for (final cursor in health.lastAcceptedCursors)
               Text('${cursor.scope}: ${cursor.lastAcceptedSeq}'),

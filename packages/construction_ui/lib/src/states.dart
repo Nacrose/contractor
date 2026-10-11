@@ -218,10 +218,9 @@ class ConstructionBlueprintGrid extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => IgnorePointer(
-    child: ExcludeSemantics(
-      child: CustomPaint(painter: _BlueprintGridPainter(color), child: child),
-    ),
+  Widget build(BuildContext context) => CustomPaint(
+    painter: _BlueprintGridPainter(color),
+    child: child,
   );
 }
 
