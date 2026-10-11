@@ -10,6 +10,21 @@ The native callback is `com.nacrose.contractor.constructionclient://auth/callbac
 
 The preview and connected host now apply the same M04 SQLite migrations, including version 9 for the project cache. This prevents a database opened in preview from appearing to require a destructive downgrade when the connected host starts.
 
+## Native sign-in diagnostic
+
+The owner tried the connected iPhone sign-in flow; the browser returned to the
+login page instead of showing a completed session or returning to Contractor
+OS. Product source inspection found that the local Next dev-origin allowlist
+includes `localhost` and `127.0.0.1`, but not the Mac Wi-Fi host used by the
+iPhone (`192.168.1.66`). The login form submits through a client-side React
+handler and has no server form action. If the LAN-origin restriction prevents
+the login JavaScript from loading, the browser can fall back to a GET and
+reload the login page. This is the leading code-based diagnosis, not a proven
+runtime cause; browser network/console evidence is unavailable. The product
+repo requires explicit owner confirmation before edits, so the LAN-origin
+change remains pending approval. Native sign-in and live sync acceptance are
+still open.
+
 ## Local environment
 
 The signup PostgreSQL cluster is at `127.0.0.1:5433`, database `contractor_m04_signup`. The additive native PKCE and resumable photo journal migrations (`20261023100000_native_pkce_sessions` and `20261023110000_native_photo_upload`) applied successfully; existing account data was preserved. The local product server is running on port 3108 and uses this database. The LAN address for a device on the same Wi-Fi is `192.168.1.66:3108`.
