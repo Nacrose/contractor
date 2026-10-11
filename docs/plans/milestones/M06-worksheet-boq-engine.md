@@ -20,7 +20,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Volatile/random/time inputs and external references are characterized for agreement behavior, informing T03's definitions.
     - The report ends in an explicit recommendation: proceed toward a per-engine adoption ADR, or keep the TS authority with recorded evidence — either way the evidence is linked from this milestone.
 
-- [ ] **M06-T02** — Workbook model evolution: command semantics, structure transforms, names, formatting, formula registry
+- [x] **M06-T02** — Workbook model evolution: command semantics, structure transforms, names, formatting, formula registry (PR #67)
   - Depends on: M02-GATE · Output: versioned workbook-model migration design and implementation behind the existing engine boundary.
   - Scope: evolve the current workbook model, command semantics, structure transforms, names, formatting and formula registry; migrate positional references to stable collaboration identities without changing displayed A1 behavior (v3 §6 M06).
   - Acceptance:
