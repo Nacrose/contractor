@@ -103,6 +103,10 @@ and report acceptance remain unverified. The environment was supplied to the
 running process and was not written into the repository. The server process
 must be restarted with equivalent environment values if it exits.
 
+A local HTTP probe after relaunch returned 200 for `/login` through both
+loopback and the Mac's LAN address. This confirms the server accepts requests
+on that interface, not that the iPhone has reached it or completed sign-in.
+
 After that recovery, connected-mode compile checks succeeded for iOS release
 (`--no-codesign`), macOS release, and web release, each with
 `CONTRACTOR_SERVER_URL` set to the current local dev origin. No target was
