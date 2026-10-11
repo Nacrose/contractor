@@ -2,7 +2,7 @@
 
 - **Status:** snapshot bootstrap, durable resume, rejected-report correction, and connected registered-photo re-fetch are implemented locally; live product round-trip evidence is still missing.
 - **Current branch:** `codex/m04-connected-host`, with the connected restore follow-on in Contractor PR #55.
-- **Latest evidence:** full Flutter client suite — 205 passed; `flutter analyze --no-pub` — no issues. Focused snapshot/bootstrap, exact feed-cursor display, and rejection-correction tests are included.
+- **Latest evidence:** full Flutter client suite — 207 passed; `flutter analyze --no-pub` — no issues. Focused snapshot/bootstrap, exact feed-cursor display, saved-report recovery, and reopened rejection-correction tests are included.
 
 ## Implemented contract
 
@@ -27,6 +27,6 @@ The local snapshot and rejection paths do not claim authenticated server accepta
 
 The connected host now implements `HttpRegisteredAttachmentFetcher` and invokes `restoreRegistered` for registered photos in accepted report snapshots. It downloads by the registered `storageKey` through the existing authenticated `GET /api/files/[key]` route, which rechecks the caller’s tenant, source record, and project permission on each read. The Flutter manager compares both the served byte count and SHA-256 from the snapshot before marking a restored object complete; a failed or mismatched fetch stays incomplete and retryable. Product PR #170 adds those served digest/size fields to the project-scoped snapshot.
 
-The Flutter restore tests, focused transport tests, full 205-test suite, and prior iOS/macOS/web compilation pass. The M04 health card now reads the exact decimal watermark stored by snapshot bootstrap rather than deriving a feed cursor from outbox receipt sequences. Product PR #170 and its stacked prerequisites remain unmerged, and no live new-device restore has been exercised. T06 therefore remains open pending server-backed, cross-device evidence.
+The Flutter restore tests, focused transport tests, full 207-test suite, and iOS/macOS/web compilation pass. The M04 health card reads the exact decimal watermark stored by snapshot bootstrap rather than deriving a feed cursor from outbox receipt sequences. A saved rejected report can now be reopened after the screen is recreated, corrected into a new UUID, and retained alongside the immutable rejected operation. Product PR #170 and its stacked prerequisites remain unmerged, and no live new-device restore has been exercised. T06 therefore remains open pending server-backed, cross-device evidence.
 
 Product PRs #165, #166, #167, and #170 have a last recorded state of draft and unmerged; a fresh GitHub API check was unavailable. The user created a local account and confirmed the login page renders, but the native sign-in attempt reloaded the login page and did not establish a session. Authenticated download, live snapshot/feed reconcile, a real rejected-response correction, and second-device restore have not been exercised through Flutter.

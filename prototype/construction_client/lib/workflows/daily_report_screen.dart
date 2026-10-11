@@ -57,7 +57,7 @@ class DailyReportScreen extends StatefulWidget {
 class _DailyReportScreenState extends State<DailyReportScreen> {
   final _formKey = GlobalKey<FormState>();
   final _actionCoordinator = ConstructionActionCoordinator();
-  late final String _clientUuid = _uuid();
+  String _clientUuid = _uuid();
   late final TextEditingController _date = TextEditingController(
     text: _today(),
   );
@@ -111,6 +111,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   String? _projectId;
   String? _savedId;
   String? _photoReportId;
+  List<RegisteredDailyReportPhoto> _inheritedRegisteredPhotos = const [];
   String? _error;
   bool _saving = false;
   bool _saved = false;
@@ -295,35 +296,233 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           .where(
             (photo) =>
                 photo.dailyReportId ==
-                (_photoReportId ?? _savedId ?? _clientUuid),
+                    (_photoReportId ?? _savedId ?? _clientUuid) ||
+                (photo.complete &&
+                    photo.receipt != null &&
+                    _inheritedRegisteredPhotos.any(
+                      (reference) => reference.receipt == photo.receipt,
+                    )),
           )
           .toList(growable: false) ??
       const <AttachmentTransferRecord>[];
 
-  List<RegisteredDailyReportPhoto> get _registeredPhotoReferences =>
-      _reportPhotos
-          .where(
-            (photo) =>
-                photo.complete &&
-                photo.receipt != null &&
-                photo.digest != null &&
-                photo.bytes != null,
-          )
-          .map(
-            (photo) => RegisteredDailyReportPhoto(
-              // The product reference names the registered FieldPhoto row;
-              // the local journal UUID remains the capture/retry identity.
-              attachmentId: photo.receipt!,
-              receipt: photo.receipt!,
-              digest: photo.registeredDigest ?? photo.digest!,
-              bytes: photo.registeredBytes ?? photo.bytes!,
-            ),
-          )
-          .toList(growable: false);
+  List<RegisteredDailyReportPhoto> get _registeredPhotoReferences {
+    final byReceipt = <String, RegisteredDailyReportPhoto>{
+      for (final photo in _inheritedRegisteredPhotos) photo.receipt: photo,
+    };
+    for (final photo in _reportPhotos) {
+      if (!photo.complete ||
+          photo.receipt == null ||
+          photo.digest == null ||
+          photo.bytes == null) {
+        continue;
+      }
+      // The product reference names the registered FieldPhoto row; the local
+      // journal UUID remains the capture/retry identity.
+      byReceipt[photo.receipt!] = RegisteredDailyReportPhoto(
+        attachmentId: photo.receipt!,
+        receipt: photo.receipt!,
+        digest: photo.registeredDigest ?? photo.digest!,
+        bytes: photo.registeredBytes ?? photo.bytes!,
+      );
+    }
+    return byReceipt.values.toList(growable: false);
+  }
 
   bool get _canAddPhotos =>
       _savedId == null ||
       widget.store.canEditUnsent(widget.accountId, _savedId!);
+
+  bool get _canEditCurrentReport {
+    final savedId = _savedId;
+    if (savedId == null) return true;
+    return widget.store.operationState(widget.accountId, savedId) ==
+            'rejected' ||
+        widget.store.canEditUnsent(widget.accountId, savedId);
+  }
+
+  void _openSavedReport(SavedDailyReport saved) {
+    final draft = saved.draft;
+    void replaceRows(
+      List<_ReportRow> target,
+      List<Map<String, Object?>> values,
+      List<String> textKeys,
+      _ReportRow Function() emptyRow, {
+      Map<String, Map<String, String>> selectOptions = const {},
+    }) {
+      for (final row in target) {
+        row.dispose();
+      }
+      target
+        ..clear()
+        ..addAll(
+          values.map((value) {
+            final textValues = {
+              for (final key in textKeys) key: value[key]?.toString() ?? '',
+            };
+            final selections = <String, String>{};
+            for (final entry in selectOptions.entries) {
+              final valueForKey = value[entry.key]?.toString();
+              selections[entry.key] = entry.value.containsKey(valueForKey)
+                  ? valueForKey!
+                  : entry.value.keys.first;
+            }
+            return _ReportRow(textValues, selections: selections);
+          }),
+        );
+      if (target.isEmpty) target.add(emptyRow());
+    }
+
+    setState(() {
+      _savedId = draft.clientUuid;
+      _photoReportId = draft.clientUuid;
+      _inheritedRegisteredPhotos = draft.photos;
+      _projectId = draft.projectId;
+      _date.text = draft.reportDate;
+      _morning.text = draft.weatherMorning;
+      _midday.text = draft.weatherAfternoon;
+      _evening.text = draft.weatherEvening;
+      _minTemp.text = draft.minTempC;
+      _maxTemp.text = draft.maxTempC;
+      _rain.text = draft.rainfallMm;
+      _problems.text = draft.problems;
+      _safety.text = draft.safetyNotes;
+      _remarks.text = draft.remarks;
+      _saved = true;
+      _error = null;
+      replaceRows(
+        _workforceRows,
+        draft.workforce,
+        const ['company', 'trade', 'headcount', 'regHours', 'otHours'],
+        () => _ReportRow(
+          {
+            'company': '',
+            'trade': '',
+            'headcount': '',
+            'regHours': '',
+            'otHours': '',
+          },
+          selections: const {'skill': 'unskilled'},
+        ),
+        selectOptions: const {
+          'skill': {
+            'unskilled': 'Unskilled',
+            'semi': 'Semi-skilled',
+            'skilled': 'Skilled',
+          },
+        },
+      );
+      replaceRows(
+        _progressRows,
+        draft.workProgress,
+        const ['taskDescription', 'unit', 'actualQty', 'location'],
+        () => _ReportRow({
+          'taskDescription': '',
+          'unit': '',
+          'actualQty': '',
+          'location': '',
+        }),
+      );
+      replaceRows(
+        _equipmentRows,
+        draft.equipmentUsed,
+        const ['name', 'workingHours', 'fuel'],
+        () => _ReportRow(
+          {'name': '', 'workingHours': '', 'fuel': ''},
+          selections: const {'ownership': 'owned'},
+        ),
+        selectOptions: const {
+          'ownership': {'owned': 'Owned', 'hired': 'Hired'},
+        },
+      );
+      replaceRows(
+        _receivedRows,
+        draft.materialReceived,
+        const ['name', 'qty', 'unit', 'supplier', 'vehicle'],
+        () => _ReportRow({
+          'name': '',
+          'qty': '',
+          'unit': '',
+          'supplier': '',
+          'vehicle': '',
+        }),
+      );
+      replaceRows(_consumedRows, draft.materialConsumed, const [
+        'name',
+        'quantity',
+        'unit',
+      ], () => _ReportRow({'name': '', 'quantity': '', 'unit': ''}));
+    });
+  }
+
+  void _startNewReport() {
+    void resetRows(List<_ReportRow> target, List<_ReportRow> initial) {
+      for (final row in target) {
+        row.dispose();
+      }
+      target
+        ..clear()
+        ..addAll(initial);
+    }
+
+    setState(() {
+      _savedId = null;
+      _photoReportId = null;
+      _inheritedRegisteredPhotos = const [];
+      _clientUuid = _uuid();
+      _projectId = null;
+      _date.text = _today();
+      _morning.clear();
+      _midday.clear();
+      _evening.clear();
+      _minTemp.clear();
+      _maxTemp.clear();
+      _rain.clear();
+      _problems.clear();
+      _safety.clear();
+      _remarks.clear();
+      _saved = false;
+      _error = null;
+      resetRows(_workforceRows, [
+        _ReportRow(
+          {
+            'company': '',
+            'trade': '',
+            'headcount': '',
+            'regHours': '',
+            'otHours': '',
+          },
+          selections: const {'skill': 'unskilled'},
+        ),
+      ]);
+      resetRows(_progressRows, [
+        _ReportRow({
+          'taskDescription': '',
+          'unit': '',
+          'actualQty': '',
+          'location': '',
+        }),
+      ]);
+      resetRows(_equipmentRows, [
+        _ReportRow(
+          {'name': '', 'workingHours': '', 'fuel': ''},
+          selections: const {'ownership': 'owned'},
+        ),
+      ]);
+      resetRows(_receivedRows, [
+        _ReportRow({
+          'name': '',
+          'qty': '',
+          'unit': '',
+          'supplier': '',
+          'vehicle': '',
+        }),
+      ]);
+      resetRows(_consumedRows, [
+        _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+      ]);
+    });
+  }
 
   Future<void> _save() async {
     if (_reportPhotos.any((photo) => !photo.complete)) {
@@ -447,11 +646,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       _platform,
       _capabilities,
     );
-    final canSave = commandAvailability
-        .firstWhere(
-          (entry) => entry.command.id.value == 'daily-report.save-local',
-        )
-        .available;
+    final canSave =
+        commandAvailability
+            .firstWhere(
+              (entry) => entry.command.id.value == 'daily-report.save-local',
+            )
+            .available &&
+        _canEditCurrentReport;
     final opState = _savedId == null
         ? null
         : widget.store.operationState(widget.accountId, _savedId!);
@@ -514,6 +715,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
               label: Text(
                 opState == 'rejected'
                     ? 'Save corrected copy'
+                    : _saved && !_canEditCurrentReport
+                    ? 'Saved report'
                     : _saved
                     ? 'Update local draft'
                     : 'Save locally',
@@ -539,6 +742,24 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             projects: widget.projects,
             photos: widget.photos,
           ),
+          _SavedDailyReports(
+            reports: widget.store.savedReports(
+              widget.accountId,
+              widget.tenantId,
+            ),
+            projects: widget.projects,
+            selectedId: _savedId,
+            onOpen: _openSavedReport,
+          ),
+          if (_savedId != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: _startNewReport,
+                icon: const Icon(Icons.add),
+                label: const Text('New report'),
+              ),
+            ),
           SaveSyncStatusPanel(
             status: status,
             onNextAction: opState == 'pending' ? _syncNow : null,
@@ -571,20 +792,26 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   DropdownButtonFormField<String>(
                     initialValue: _projectId,
                     decoration: const InputDecoration(labelText: 'Project'),
-                    items: widget.projects
-                        .map(
-                          (project) => DropdownMenuItem(
-                            value: project.id,
-                            child: Text(
-                              project.label,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                    items: [
+                      ...widget.projects.map(
+                        (project) => DropdownMenuItem(
+                          value: project.id,
+                          child: Text(
+                            project.label,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        )
-                        .toList(),
-                    onChanged:
-                        (_savedId == null || opState == 'rejected') &&
-                            reportPhotos.isEmpty
+                        ),
+                      ),
+                      if (_projectId != null &&
+                          !widget.projects.any(
+                            (project) => project.id == _projectId,
+                          ))
+                        DropdownMenuItem(
+                          value: _projectId,
+                          child: Text('Unavailable project · $_projectId'),
+                        ),
+                    ],
+                    onChanged: _canEditCurrentReport && reportPhotos.isEmpty
                         ? (value) => setState(() => _projectId = value)
                         : null,
                     validator: (value) => value == null || value.isEmpty
@@ -593,6 +820,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   ),
                   TextFormField(
                     controller: _date,
+                    enabled: _canEditCurrentReport,
                     decoration: const InputDecoration(
                       labelText: 'Report date',
                       hintText: 'YYYY-MM-DD',
@@ -627,13 +855,26 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                         ),
                       ],
                     ),
-                    if (reportPhotos.isEmpty)
+                    if (_registeredPhotoReferences.isEmpty)
                       const ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(Icons.photo_outlined),
                         title: Text('No photos attached'),
                       ),
                     for (final photo in reportPhotos) _photoTile(photo),
+                    for (final reference in _registeredPhotoReferences.where(
+                      (reference) => !reportPhotos.any(
+                        (photo) => photo.receipt == reference.receipt,
+                      ),
+                    ))
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.cloud_done_outlined),
+                        title: Text('Registered photo ${reference.receipt}'),
+                        subtitle: Text(
+                          'Available on the server · ${reference.bytes} bytes',
+                        ),
+                      ),
                   ]),
                 _section('Weather', [
                   _field(_morning, 'Morning weather'),
@@ -826,7 +1067,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           if (rows.length > 1)
             IconButton(
               tooltip: 'Remove row',
-              onPressed: () => setState(() => rows.removeAt(index).dispose()),
+              onPressed: _canEditCurrentReport
+                  ? () => setState(() => rows.removeAt(index).dispose())
+                  : null,
               icon: const Icon(Icons.remove_circle_outline),
             ),
         ],
@@ -835,7 +1078,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     Align(
       alignment: Alignment.centerLeft,
       child: TextButton.icon(
-        onPressed: () => setState(() => rows.add(createRow())),
+        onPressed: _canEditCurrentReport
+            ? () => setState(() => rows.add(createRow()))
+            : null,
         icon: const Icon(Icons.add),
         label: Text(addLabel),
       ),
@@ -846,6 +1091,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     key: key,
     build: (row, refresh) => TextFormField(
       controller: row.controllers[key],
+      enabled: _canEditCurrentReport,
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
@@ -857,6 +1103,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     key: key,
     build: (row, refresh) => TextFormField(
       controller: row.controllers[key],
+      enabled: _canEditCurrentReport,
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
         signed: true,
@@ -892,11 +1139,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                 DropdownMenuItem(value: entry.key, child: Text(entry.value)),
           )
           .toList(growable: false),
-      onChanged: (value) {
-        if (value == null) return;
-        row.selections[key] = value;
-        refresh(() {});
-      },
+      onChanged: _canEditCurrentReport
+          ? (value) {
+              if (value == null) return;
+              row.selections[key] = value;
+              refresh(() {});
+            }
+          : null,
     ),
   );
 
@@ -908,6 +1157,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     padding: const EdgeInsets.only(bottom: 8),
     child: TextFormField(
       controller: controller,
+      enabled: _canEditCurrentReport,
       minLines: lines,
       maxLines: lines == 1 ? 1 : 6,
       decoration: InputDecoration(
@@ -922,6 +1172,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         padding: const EdgeInsets.only(bottom: 8),
         child: TextFormField(
           controller: controller,
+          enabled: _canEditCurrentReport,
           keyboardType: const TextInputType.numberWithOptions(
             decimal: true,
             signed: true,
@@ -1051,6 +1302,57 @@ class _AcceptedDailyReports extends StatelessWidget {
     );
   }
 }
+
+class _SavedDailyReports extends StatelessWidget {
+  const _SavedDailyReports({
+    required this.reports,
+    required this.projects,
+    required this.selectedId,
+    required this.onOpen,
+  });
+
+  final List<SavedDailyReport> reports;
+  final List<DailyReportProjectOption> projects;
+  final String? selectedId;
+  final ValueChanged<SavedDailyReport> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    if (reports.isEmpty) return const SizedBox.shrink();
+    return Card(
+      child: ExpansionTile(
+        title: Text('Saved on this device (${reports.length})'),
+        children: [
+          for (final report in reports)
+            ListTile(
+              selected: report.draft.clientUuid == selectedId,
+              leading: Icon(
+                report.operationState == 'rejected'
+                    ? Icons.sync_problem_outlined
+                    : Icons.description_outlined,
+              ),
+              title: Text(_reportDateLabel(report.draft.reportDate)),
+              subtitle: Text(
+                '${_projectLabel(projects, report.draft.projectId)} · '
+                '${_localReportState(report.operationState)}',
+              ),
+              onTap: () => onOpen(report),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+String _localReportState(String? state) => switch (state) {
+  'rejected' => 'Rejected · correction available',
+  'pending' => 'Saved · waiting to sync',
+  'in_flight' => 'Syncing',
+  'accepted' => 'Synced',
+  'conflict' => 'Conflict · review required',
+  'blocked' => 'Blocked · prerequisite required',
+  _ => 'Saved on this device',
+};
 
 String _projectLabel(List<DailyReportProjectOption> projects, Object? id) =>
     projects.where((project) => project.id == id).firstOrNull?.label ?? '';

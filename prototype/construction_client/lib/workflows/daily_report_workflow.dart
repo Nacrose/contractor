@@ -344,6 +344,9 @@ abstract interface class DailyReportWorkflowStore {
 
   String? operationState(String accountId, String clientUuid);
 
+  /// Locally persisted reports with their current outbox state, newest first.
+  List<SavedDailyReport> savedReports(String accountId, String tenantId);
+
   bool canEditUnsent(String accountId, String clientUuid);
 
   DeviceSyncHealth syncHealth(String accountId, String tenantId);
@@ -363,6 +366,18 @@ class DailyReportFeedCursor {
   const DailyReportFeedCursor({
     required this.projectId,
     required this.cursor,
+    required this.updatedAtMs,
+  });
+}
+
+class SavedDailyReport {
+  final DailyReportDraft draft;
+  final String? operationState;
+  final int updatedAtMs;
+
+  const SavedDailyReport({
+    required this.draft,
+    required this.operationState,
     required this.updatedAtMs,
   });
 }
@@ -534,6 +549,28 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   @override
   String? operationState(String accountId, String clientUuid) =>
       mount.pendingOps.getOp(accountId, clientUuid)?.state;
+
+  @override
+  List<SavedDailyReport> savedReports(
+    String accountId,
+    String tenantId,
+  ) => mount.driver
+      .prepare(
+        'SELECT r.client_uuid, r.payload, r.updated_at, p.state '
+        'FROM daily_report_local r '
+        'JOIN pending_op p ON p.id = r.client_uuid AND p.account_id = r.account_id '
+        'WHERE r.account_id = ? AND p.tenant_id = ? '
+        'ORDER BY r.report_date DESC, r.updated_at DESC, r.client_uuid DESC',
+      )
+      .all([accountId, tenantId])
+      .map(
+        (row) => SavedDailyReport(
+          draft: DailyReportDraft.decode('${row['payload']}'),
+          operationState: row['state'] as String?,
+          updatedAtMs: row['updated_at'] as int,
+        ),
+      )
+      .toList(growable: false);
 
   @override
   bool canEditUnsent(String accountId, String clientUuid) {

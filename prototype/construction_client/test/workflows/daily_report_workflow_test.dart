@@ -147,6 +147,60 @@ void main() {
     },
   );
 
+  test('saved report index is account-and-tenant-scoped with outbox state', () {
+    mounted = open();
+    final store = DailyReportLocalStore(mounted!);
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-a01'),
+    );
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-b01', remarks: 'Later report'),
+    );
+    store.save(
+      accountId: 'acct-2',
+      tenantId: 'tenant-2',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-x01'),
+    );
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-2',
+      role: 'field',
+      draft: draft(uuid: 'report-saved-y01'),
+    );
+    mounted!.pendingOps.markInFlight('report-saved-a01');
+    mounted!.pendingOps.recordRejected(
+      'report-saved-a01',
+      'Review this entry.',
+    );
+
+    final saved = store.savedReports('acct-1', 'tenant-1');
+    expect(saved.map((report) => report.draft.clientUuid), [
+      'report-saved-b01',
+      'report-saved-a01',
+    ]);
+    expect(saved.first.operationState, 'pending');
+    expect(saved.last.operationState, 'rejected');
+    expect(
+      store
+          .savedReports('acct-2', 'tenant-2')
+          .map((report) => report.draft.clientUuid),
+      ['report-saved-x01'],
+    );
+    expect(
+      store
+          .savedReports('acct-1', 'tenant-2')
+          .map((report) => report.draft.clientUuid),
+      ['report-saved-y01'],
+    );
+  });
+
   test('server rejection correction creates a new operation and preserves the rejected copy', () async {
     mounted = open();
     final store = DailyReportLocalStore(mounted!);

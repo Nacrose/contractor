@@ -195,6 +195,81 @@ void main() {
     expect(find.text('Date: 2026-10-10'), findsOneWidget);
   });
 
+  testWidgets('reopens a locally saved report after the screen is recreated', (
+    tester,
+  ) async {
+    final store = DailyReportLocalStore(mount!);
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: DailyReportDraft(
+        clientUuid: 'report-reopen-001',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        weatherMorning: 'Cloudy',
+        workforce: const [
+          {
+            'company': 'Acme',
+            'trade': 'Masonry',
+            'skill': 'skilled',
+            'headcount': 4.0,
+            'regHours': 8.0,
+            'otHours': 1.0,
+            'sortOrder': 0,
+          },
+        ],
+        remarks: 'Saved before leaving the screen',
+      ),
+    );
+
+    Widget screen() => MaterialApp(
+      home: DailyReportScreen(
+        store: store,
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        projects: const [
+          DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+        ],
+      ),
+    );
+
+    await tester.pumpWidget(screen());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Saved on this device (1)'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('2026-10-10').first);
+    await tester.pumpAndSettle();
+
+    final company = find.widgetWithText(TextFormField, 'Company');
+    await tester.dragUntilVisible(
+      company,
+      find.byType(ListView),
+      const Offset(0, -300),
+    );
+    expect(tester.widget<TextFormField>(company).controller?.text, 'Acme');
+    final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
+    await tester.dragUntilVisible(
+      remarks,
+      find.byType(ListView),
+      const Offset(0, -300),
+    );
+    expect(
+      tester.widget<TextFormField>(remarks).controller?.text,
+      'Saved before leaving the screen',
+    );
+
+    await tester.enterText(remarks, 'Corrected after reopening');
+    await tester.ensureVisible(find.text('Update local draft'));
+    await tester.tap(find.text('Update local draft'));
+    await tester.pumpAndSettle();
+    expect(
+      store.get('acct-1', 'report-reopen-001')?.remarks,
+      'Corrected after reopening',
+    );
+  });
+
   testWidgets('project selection and local save create an outbox item', (
     tester,
   ) async {
@@ -267,14 +342,45 @@ void main() {
               as String;
       mount!.pendingOps.markInFlight(oldId);
       mount!.pendingOps.recordRejected(oldId, 'Correct the report and retry.');
-      await tester.tap(find.byTooltip('Sync now'));
+
+      await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: DailyReportLocalStore(mount!),
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Saved on this device (1)'));
+      await tester.pumpAndSettle();
+      final savedDate = DailyReportLocalStore(mount!)
+          .savedReports('acct-1', 'tenant-1')
+          .single
+          .draft
+          .reportDate;
+      await tester.tap(find.text(savedDate).first);
       await tester.pumpAndSettle();
 
       expect(find.text('Save corrected copy'), findsOneWidget);
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Daily remarks'),
-        'Corrected report content',
+      final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
+      await tester.dragUntilVisible(
+        remarks,
+        find.byType(ListView),
+        const Offset(0, -300),
       );
+      expect(
+        tester.widget<TextFormField>(remarks).controller?.text,
+        'Original report content',
+      );
+      await tester.enterText(remarks, 'Corrected report content');
       await tester.ensureVisible(find.text('Save corrected copy'));
       await tester.tap(find.text('Save corrected copy'));
       await tester.pumpAndSettle();

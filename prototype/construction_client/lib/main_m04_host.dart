@@ -183,6 +183,9 @@ class _OfflinePreviewStore implements DailyReportWorkflowStore {
   String? operationState(String accountId, String clientUuid) =>
       local.operationState(accountId, clientUuid);
   @override
+  List<SavedDailyReport> savedReports(String accountId, String tenantId) =>
+      local.savedReports(accountId, tenantId);
+  @override
   bool canEditUnsent(String accountId, String clientUuid) =>
       local.canEditUnsent(accountId, clientUuid);
   @override

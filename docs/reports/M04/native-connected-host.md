@@ -31,11 +31,15 @@ Use `prototype/construction_client/`, not the separate `apps/construction_client
 ## 2026-10-11 follow-on
 
 After wiring orchestrator authentication/revocation events into the shared
-screen, the full Flutter suite passes (205 tests) and `flutter analyze
+screen, the full Flutter suite passes (207 tests) and `flutter analyze
 --no-pub` is clean. Current compile-only builds also pass for unsigned iOS
 release (`build/ios/iphoneos/Runner.app`), macOS debug
 (`build/macos/Build/Products/Debug/construction_client.app`), and web release
-(`build/web`). These builds compile the shared Flutter host; the iOS build is
+(`build/web`). The screen now lists account-and-tenant-scoped locally saved reports and
+reopens their fields after navigation or process restart; dispatched reports
+are read-only, while rejected reports can be corrected as a new operation.
+Widget coverage verifies reopened drafts and rejected corrections. These builds
+compile the shared Flutter host; the iOS build is
 unsigned and no platform app was launched or installed by the agent. The
 expired-sign-in and revoked-access notices are shown inside the shared device
 sync-health card and covered by separate widget tests; the mounted fault tests
