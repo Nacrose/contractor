@@ -102,3 +102,7 @@ The original WP-level register (superseded 2026-10-09 by the `[PLAN-AMEND]` refi
 ## Refinement contract
 
 Before the M04 gate PR opens, M05 is refined from work-package level to `M05-Tnn` tasks with scope, outputs, dependencies, and testable acceptance criteria via a `[PLAN-AMEND]` PR (protocol R9). Far-future milestones stay coarse until evidence supports their refinement.
+
+## Known implementation constraint
+
+Product PR #165 now provides `POST /api/native/sync` for `workflow.dailyReport.createFieldReport`, but the current product implementation validates a route-local sync envelope and calls the protected tRPC procedure directly. It does not mount `@contractor/native-adapter`, resolve the pinned `platform_contracts` version, or use the M03-T01 operation registry and declared guard pipeline. This is an integration-conformance gap, not a reduction of M04 scope. M04-T03 must resolve the binding against the ratified M03-T01 contract and still prove live acceptance, feed delivery, and second-device visibility before acceptance.
