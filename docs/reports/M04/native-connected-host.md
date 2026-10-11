@@ -76,10 +76,12 @@ returned HTTP 200 over both loopback and the Mac Wi-Fi address. The iOS build
 uses that Wi-Fi address so a physical iPhone can reach the local server.
 
 Subsequent M04 status work makes incomplete photo transfers count as retained
-work, exposes retry from the Save and sync panel, and adds an offline transport
-failure transcript through the mounted sync-health screen. The latest full
-Flutter suite passes **209 tests** and `flutter analyze --no-pub` is clean,
-including a conflict-state health transcript test.
+work, exposes retry from the Save and sync panel, and adds offline, conflict,
+rejection, and lost-ack transcripts through the mounted sync-health screen.
+The latest full Flutter suite passes **210 tests** and `flutter analyze
+--no-pub` is clean. The lost-ack screen test retries the same operation and
+recovers its original receipt after a simulated server commit/lost response;
+it remains fixture evidence, not a live server session.
 Those platform compile checks predate the status-only changes. No app was
 launched or screen inspected for that follow-on.
 

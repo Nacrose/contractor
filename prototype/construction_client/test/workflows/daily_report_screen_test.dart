@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:construction_client/mount/attachment_transfer.dart';
 import 'package:construction_client/mount/mount.dart';
 import 'package:construction_client/mount/ports.dart';
+import 'package:construction_client/mount/sync_orchestrator.dart';
 import 'package:construction_client/workflows/daily_report_screen.dart';
 import 'package:construction_client/workflows/daily_report_photo_port.dart';
 import 'package:construction_client/workflows/daily_report_workflow.dart';
@@ -352,6 +353,139 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets(
+    'lost acknowledgement stays pending on screen and retry records one server effect',
+    (tester) async {
+      tester.view.physicalSize = const Size(430, 932);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final receipts = <String, String>{};
+      var serverEffects = 0;
+      var requests = 0;
+      mount!.driver.close();
+      mount = openMount(
+        options: MountOptions(
+          dbPath: '${tmp.path}/outbox.db',
+          objectRoot: Directory('${tmp.path}/objects'),
+          extraMigrations: kM04WorkflowMigrations,
+        ),
+        credentials: _Credentials(),
+        transport: _Transport((envelope) async {
+          requests++;
+          final receipt = receipts[envelope.opId];
+          if (receipt != null) {
+            return SyncOutcome(
+              kind: SyncOutcomeKind.previouslyAccepted,
+              opId: envelope.opId,
+              receipt: receipt,
+              serverSeq: 42,
+            );
+          }
+          // Model the server committing once before its response is lost.
+          serverEffects++;
+          receipts[envelope.opId] = 'receipt-${envelope.opId}';
+          throw const SocketException('response lost after server commit');
+        }),
+      );
+      final store = DailyReportLocalStore(mount!);
+      store.save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: DailyReportDraft(
+          clientUuid: 'report-screen-lost-ack',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          remarks: 'Retain this report until its receipt is recovered',
+        ),
+      );
+      var nowMs = DateTime.now().millisecondsSinceEpoch + 1000;
+      mount!.drainTriggers.bind(
+        drain: (_) async {
+          await DailyLogSyncOrchestrator(
+            mount: mount!,
+            deviceId: 'device-1',
+            random: _FixedRandom(),
+            nowMs: () => nowMs,
+            backoffBaseMs: 10,
+            backoffCapMs: 100,
+          ).drain('acct-1');
+        },
+        isDraining: () => false,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: store,
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Saved on this device (1)'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('2026-10-10').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('More actions'));
+      await tester.pumpAndSettle();
+      expect(find.text('Sync now'), findsOneWidget);
+      await tester.tap(find.text('Sync now'));
+      await tester.pumpAndSettle();
+
+      expect(serverEffects, 1);
+      expect(requests, 1);
+      expect(
+        mount!.pendingOps.getOp('acct-1', 'report-screen-lost-ack')?.state,
+        'pending',
+      );
+      expect(find.text('Needs attention'), findsOneWidget);
+      expect(find.text('1 pending operation(s)'), findsOneWidget);
+      expect(
+        find.text('1 pending operation(s) not yet accepted'),
+        findsOneWidget,
+      );
+      final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
+      await tester.dragUntilVisible(
+        remarks,
+        find.byType(ListView),
+        const Offset(0, -300),
+      );
+      expect(
+        tester.widget<TextFormField>(remarks).controller?.text,
+        'Retain this report until its receipt is recovered',
+      );
+
+      nowMs += 60_000;
+      await tester.tap(find.byTooltip('More actions'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sync now'));
+      await tester.pumpAndSettle();
+
+      expect(serverEffects, 1);
+      expect(requests, 2);
+      expect(
+        mount!.pendingOps.getOp('acct-1', 'report-screen-lost-ack')?.state,
+        'accepted',
+      );
+      expect(
+        mount!.pendingOps
+            .getOp('acct-1', 'report-screen-lost-ack')
+            ?.acceptedReceipt,
+        'receipt-report-screen-lost-ack',
+      );
+      await tester.drag(find.byType(ListView), const Offset(0, 3000));
+      await tester.pumpAndSettle();
+      expect(find.text('No pending work'), findsOneWidget);
+    },
+  );
 
   testWidgets('conflicted report is retained and clearly surfaced for review', (
     tester,
@@ -852,9 +986,19 @@ class _Photos implements DailyReportPhotoPort {
 }
 
 class _Transport implements SyncTransportPort {
+  _Transport([this.handler]);
+
+  final Future<SyncOutcome> Function(SyncEnvelope envelope)? handler;
+
   @override
-  Future<SyncOutcome> send(SyncEnvelope envelope) async =>
-      throw StateError('test transport must not be called');
+  Future<SyncOutcome> send(SyncEnvelope envelope) async => handler == null
+      ? throw StateError('test transport must not be called')
+      : handler!(envelope);
+}
+
+class _FixedRandom implements OrchestratorRandomPort {
+  @override
+  double next() => 0.5;
 }
 
 class _Credentials implements SecureCredentialStore {

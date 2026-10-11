@@ -2,7 +2,7 @@
 
 - **Status:** snapshot bootstrap, durable resume, rejected-report correction, and connected registered-photo re-fetch are implemented locally; live product round-trip evidence is still missing.
 - **Current branch:** `codex/m04-connected-host`, with the connected restore follow-on in Contractor PR #55.
-- **Latest evidence:** full Flutter client suite — 209 passed; `flutter analyze --no-pub` — no issues. Focused snapshot/bootstrap, exact feed-cursor display, saved-report recovery, and reopened rejection-correction tests are included.
+- **Latest evidence:** full Flutter client suite — 210 passed; `flutter analyze --no-pub` — no issues. Focused snapshot/bootstrap, exact feed-cursor display, saved-report recovery, reopened rejection-correction, and lost-ack screen-retry tests are included.
 
 ## Implemented contract
 
