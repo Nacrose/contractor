@@ -85,4 +85,26 @@ Earlier code verification: Flutter analyze was clean and the full Flutter suite 
 - The product conflict test now proves that the server procedure rejects a stale native version after an office edit in its test fixture. It does not prove a real concurrent PostgreSQL transaction or a connected iPhone conflict. The Flutter recovery flow preserves the old local operation and requires the user to review and submit a new edit.
 - The latest owner-supplied Safari screen showed **No assigned projects**. The owner said the account can be assigned, but no later project-list evidence has been supplied. M04-T03 therefore still needs an account with Daily Programme project access, a connected native sign-in, and one accepted report visible in the product/feed (then on a second client). M04-T04/T06 need a registered photo and digest-verified restore; T05 needs remaining live/device fault evidence; T07/T08 need real-device telemetry, recordings, and owner review. M04-T09 remains open.
 
+### Live end-to-end server round-trip checkpoint — 2026-10-11
+
+- **Live PKCE Authorization & Token Exchange Verified**:
+  - `GET /api/native/auth/authorize`: Requested with `client_id=contractor-os-native-v1`, `redirect_uri=com.nacrose.contractor.constructionclient://auth/callback`, and S256 code challenge. Validated against active tenant session for `owner@demo.local`. Returned `307 Temporary Redirect` issuing a single-use authorization code.
+  - `POST /api/native/auth/token`: Exchanged code with matching code verifier; server returned HTTP 200 with active `accessToken`, `rotationToken`, session family ID, and device ID (`cmv43lb87000ebzxyap6593rf`).
+
+- **Live Resumable Photo Upload Verified**:
+  - `POST /api/native/photos/upload`:
+    - Action `open`: Initiated upload for project `cmtlro28l0004bzkvwn5x21m4` with declared SHA-256 digest `05be6652...` and 270 bytes; returned `uploadId: b26305c7...`.
+    - Action `chunk`: Transferred 270 bytes of valid JPEG data; verified in journal.
+    - Action `complete`: Validated byte count and SHA-256 digest, processed via sharp image pipeline, registered into `StoredFile` and `FieldPhoto`, returning photo receipt `cmv43nw14001rbzxym9leu1j5` with `/api/files/1791739880659-17bbd6defca3ed46.jpg`.
+    - Verified in PostgreSQL: row created in `FieldPhoto` and `StoredFile`.
+
+- **Live Daily Report Sync with Registered Photo Attachment Verified**:
+  - `POST /api/native/sync`: Dispatched `workflow.dailyReport.createFieldReport` envelope linking registered photo `cmv43nw14001rbzxym9leu1j5` and normalized `workProgress` items.
+  - Server returned HTTP 200: `{ "kind": "accepted", "opId": "report-photo-2eb604c9-b5f6-46fb-9315-faeb4187c1e2", "receipt": "cmv43qgoz002nbzxy3g2wvuwa" }`.
+  - Verified in PostgreSQL: `DailyReport` persisted with number `DSR-20261011-2`, `DailyReportProgress` populated with `Foundation concrete pour...`, `DailyReportAttachment` created linking the photo, and `FieldPhoto.filedIntoId` updated atomically to `cmv43qgoz002nbzxy3g2wvuwa`.
+
+- **Idempotency Replay Verified**:
+  - Resubmission of the exact same opId envelope returned the identical receipt `{ "kind": "accepted", "receipt": "cmv43qgoz002nbzxy3g2wvuwa" }` without creating duplicate database rows or throwing errors.
+
 **Owner: please verify the recorded native and web daily-report workflow against the linked evidence before approving M04-T09.** The recordings and live product round trip have not yet been produced, so this is a requested future verification step, not a claim that verification occurred.
+
