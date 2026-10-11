@@ -80,6 +80,8 @@ class DailyReportDraft {
   final List<Map<String, Object?>> equipmentUsed;
   final List<Map<String, Object?>> materialReceived;
   final List<Map<String, Object?>> materialConsumed;
+  final List<Map<String, Object?>> siteVisits;
+  final List<Map<String, Object?>> meetings;
   final String problems;
   final String safetyNotes;
   final String remarks;
@@ -100,6 +102,8 @@ class DailyReportDraft {
     this.equipmentUsed = const [],
     this.materialReceived = const [],
     this.materialConsumed = const [],
+    this.siteVisits = const [],
+    this.meetings = const [],
     this.problems = '',
     this.safetyNotes = '',
     this.remarks = '',
@@ -124,6 +128,8 @@ class DailyReportDraft {
       'equipmentUsed': jsonEncode(equipmentUsed),
       'materialReceived': jsonEncode(materialReceived),
       'materialConsumed': jsonEncode(materialConsumed),
+      'siteVisits': jsonEncode(siteVisits),
+      'meetings': jsonEncode(meetings),
       if (problems.trim().isNotEmpty) 'problems': problems.trim(),
       if (safetyNotes.trim().isNotEmpty) 'safetyNotes': safetyNotes.trim(),
       if (remarks.trim().isNotEmpty) 'remarks': remarks.trim(),
@@ -159,6 +165,8 @@ class DailyReportDraft {
       equipmentUsed: rows('equipmentUsed'),
       materialReceived: rows('materialReceived'),
       materialConsumed: rows('materialConsumed'),
+      siteVisits: rows('siteVisits'),
+      meetings: rows('meetings'),
       problems: input['problems'] as String? ?? '',
       safetyNotes: input['safetyNotes'] as String? ?? '',
       remarks: input['remarks'] as String? ?? '',
@@ -187,6 +195,8 @@ class DailyReportDraft {
     equipmentUsed: equipmentUsed,
     materialReceived: materialReceived,
     materialConsumed: materialConsumed,
+    siteVisits: siteVisits,
+    meetings: meetings,
     problems: problems,
     safetyNotes: safetyNotes,
     remarks: remarks,
@@ -240,7 +250,16 @@ class DailyReportDraft {
       (
         'workProgress',
         workProgress,
-        const ['taskDescription', 'actualQty', 'location'],
+        const [
+          'taskDescription',
+          'boqCode',
+          'boqDesc',
+          'plannedQty',
+          'actualQty',
+          'batchedQty',
+          'payableQty',
+          'location',
+        ],
       ),
       ('equipmentUsed', equipmentUsed, const ['name', 'workingHours', 'fuel']),
       (
@@ -249,6 +268,12 @@ class DailyReportDraft {
         const ['name', 'qty', 'supplier', 'vehicle'],
       ),
       ('materialConsumed', materialConsumed, const ['name', 'quantity']),
+      (
+        'siteVisits',
+        siteVisits,
+        const ['visitor', 'organization', 'purpose', 'time', 'notes'],
+      ),
+      ('meetings', meetings, const ['topic', 'attendees', 'notes']),
     ];
     for (final (name, rows, _) in sections) {
       final encoded = jsonEncode(rows);

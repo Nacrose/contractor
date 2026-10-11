@@ -81,9 +81,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   ];
   final List<_ReportRow> _progressRows = [
     _ReportRow({
-      'taskDescription': '',
+      'boqCode': '',
+      'boqDesc': '',
+      'plannedQty': '',
+      'batchedQty': '',
+      'payableQty': '',
       'unit': '',
-      'actualQty': '',
       'location': '',
     }),
   ];
@@ -104,6 +107,18 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   ];
   final List<_ReportRow> _consumedRows = [
     _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+  ];
+  final List<_ReportRow> _visitorRows = [
+    _ReportRow({
+      'visitor': '',
+      'organization': '',
+      'purpose': '',
+      'time': '',
+      'notes': '',
+    }),
+  ];
+  final List<_ReportRow> _meetingRows = [
+    _ReportRow({'topic': '', 'attendees': '', 'notes': ''}),
   ];
   late final TextEditingController _problems = TextEditingController();
   late final TextEditingController _safety = TextEditingController();
@@ -179,6 +194,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       ..._equipmentRows,
       ..._receivedRows,
       ..._consumedRows,
+      ..._visitorRows,
+      ..._meetingRows,
     ]) {
       row.dispose();
     }
@@ -222,19 +239,69 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         .toList(growable: false),
     workProgress: _progressRows
         .where(
-          (row) => row.hasText(['taskDescription', 'actualQty', 'location']),
+          (row) => row.hasText([
+            'boqCode',
+            'boqDesc',
+            'plannedQty',
+            'batchedQty',
+            'payableQty',
+            'location',
+          ]),
         )
         .indexed
         .map((entry) {
           final (index, row) = entry;
-          final quantity = row.number('actualQty');
+          final batchedQuantity = row.number('batchedQty');
+          final payableQuantity = row.value('payableQty').isEmpty
+              ? batchedQuantity
+              : row.number('payableQty');
+          final description = row.value('boqDesc');
           return {
-            'taskDescription': row.value('taskDescription'),
+            'boqCode': row.nullableValue('boqCode'),
+            'boqDesc': row.nullableValue('boqDesc'),
+            'taskDescription': description,
+            'plannedQty': row.number('plannedQty'),
+            'actualQty': batchedQuantity,
+            'batchedQty': batchedQuantity,
+            'payableQty': payableQuantity,
             'unit': row.nullableValue('unit'),
-            'actualQty': quantity,
-            'batchedQty': quantity,
-            'payableQty': quantity,
             'location': row.nullableValue('location'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    siteVisits: _visitorRows
+        .where(
+          (row) => row.hasText([
+            'visitor',
+            'organization',
+            'purpose',
+            'time',
+            'notes',
+          ]),
+        )
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'visitor': row.value('visitor'),
+            'organization': row.nullableValue('organization'),
+            'purpose': row.nullableValue('purpose'),
+            'time': row.nullableValue('time'),
+            'notes': row.nullableValue('notes'),
+            'sortOrder': index,
+          };
+        })
+        .toList(growable: false),
+    meetings: _meetingRows
+        .where((row) => row.hasText(['topic', 'attendees', 'notes']))
+        .indexed
+        .map((entry) {
+          final (index, row) = entry;
+          return {
+            'topic': row.value('topic'),
+            'attendees': row.nullableValue('attendees'),
+            'notes': row.nullableValue('notes'),
             'sortOrder': index,
           };
         })
@@ -416,12 +483,32 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       );
       replaceRows(
         _progressRows,
-        draft.workProgress,
-        const ['taskDescription', 'unit', 'actualQty', 'location'],
+        draft.workProgress
+            .map(
+              (row) => {
+                ...row,
+                'boqDesc': row['boqDesc'] ?? row['taskDescription'],
+                'batchedQty': row['batchedQty'] ?? row['actualQty'],
+                'payableQty': row['payableQty'] ?? row['actualQty'],
+              },
+            )
+            .toList(growable: false),
+        const [
+          'boqCode',
+          'boqDesc',
+          'plannedQty',
+          'batchedQty',
+          'payableQty',
+          'unit',
+          'location',
+        ],
         () => _ReportRow({
-          'taskDescription': '',
+          'boqCode': '',
+          'boqDesc': '',
+          'plannedQty': '',
+          'batchedQty': '',
+          'payableQty': '',
           'unit': '',
-          'actualQty': '',
           'location': '',
         }),
       );
@@ -454,6 +541,23 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         'quantity',
         'unit',
       ], () => _ReportRow({'name': '', 'quantity': '', 'unit': ''}));
+      replaceRows(
+        _visitorRows,
+        draft.siteVisits,
+        const ['visitor', 'organization', 'purpose', 'time', 'notes'],
+        () => _ReportRow({
+          'visitor': '',
+          'organization': '',
+          'purpose': '',
+          'time': '',
+          'notes': '',
+        }),
+      );
+      replaceRows(_meetingRows, draft.meetings, const [
+        'topic',
+        'attendees',
+        'notes',
+      ], () => _ReportRow({'topic': '', 'attendees': '', 'notes': ''}));
     });
   }
 
@@ -499,9 +603,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       ]);
       resetRows(_progressRows, [
         _ReportRow({
-          'taskDescription': '',
+          'boqCode': '',
+          'boqDesc': '',
+          'plannedQty': '',
+          'batchedQty': '',
+          'payableQty': '',
           'unit': '',
-          'actualQty': '',
           'location': '',
         }),
       ]);
@@ -522,6 +629,18 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       ]);
       resetRows(_consumedRows, [
         _ReportRow({'name': '', 'quantity': '', 'unit': ''}),
+      ]);
+      resetRows(_visitorRows, [
+        _ReportRow({
+          'visitor': '',
+          'organization': '',
+          'purpose': '',
+          'time': '',
+          'notes': '',
+        }),
+      ]);
+      resetRows(_meetingRows, [
+        _ReportRow({'topic': '', 'attendees': '', 'notes': ''}),
       ]);
     });
   }
@@ -938,6 +1057,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                 _equipmentSection(),
                 _receivedSection(),
                 _consumedSection(),
+                _visitorsSection(),
+                _meetingsSection(),
                 _section('Problems, safety & remarks', [
                   _field(_problems, 'Problems', lines: 3),
                   _field(_safety, 'Safety notes', lines: 3),
@@ -1030,20 +1151,26 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   );
 
   Widget _progressSection() => _reportRowsSection(
-    'Work progress',
+    'Plan vs. actual work progress',
     _progressRows,
     createRow: () => _ReportRow({
-      'taskDescription': '',
+      'boqCode': '',
+      'boqDesc': '',
+      'plannedQty': '',
+      'batchedQty': '',
+      'payableQty': '',
       'unit': '',
-      'actualQty': '',
       'location': '',
     }),
     addLabel: 'Add progress row',
     fields: [
-      _rowText('taskDescription', 'Task description'),
-      _rowText('unit', 'Unit'),
-      _rowNumber('actualQty', 'Actual quantity'),
+      _rowText('boqCode', 'BOQ code'),
+      _rowText('boqDesc', 'Task description'),
       _rowText('location', 'Location'),
+      _rowNumber('plannedQty', 'Plan quantity'),
+      _rowNumber('batchedQty', 'Batched / placed quantity'),
+      _rowNumber('payableQty', 'Payable quantity (IPC)'),
+      _rowText('unit', 'Unit'),
     ],
   );
 
@@ -1095,6 +1222,38 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       _rowText('name', 'Material name'),
       _rowNumber('quantity', 'Quantity'),
       _rowText('unit', 'Unit'),
+    ],
+  );
+
+  Widget _visitorsSection() => _reportRowsSection(
+    'Site visitors & inspections',
+    _visitorRows,
+    createRow: () => _ReportRow({
+      'visitor': '',
+      'organization': '',
+      'purpose': '',
+      'time': '',
+      'notes': '',
+    }),
+    addLabel: 'Add visitor',
+    fields: [
+      _rowText('visitor', 'Visitor name'),
+      _rowText('organization', 'Organization / authority'),
+      _rowText('purpose', 'Purpose of visit'),
+      _rowText('time', 'Time'),
+      _rowText('notes', 'Notes'),
+    ],
+  );
+
+  Widget _meetingsSection() => _reportRowsSection(
+    'Site meetings & toolbox talks',
+    _meetingRows,
+    createRow: () => _ReportRow({'topic': '', 'attendees': '', 'notes': ''}),
+    addLabel: 'Add meeting',
+    fields: [
+      _rowText('topic', 'Topic / subject'),
+      _rowText('attendees', 'Attendees'),
+      _rowText('notes', 'Key notes / decisions'),
     ],
   );
 

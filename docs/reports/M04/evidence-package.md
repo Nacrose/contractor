@@ -11,12 +11,12 @@
 |---|---|---|
 | M04-T01 | [Domain path trace](domain-path-trace.md); merged PR #44 | Complete per execution plan |
 | M04-T02 | [Flutter mount report](flutter-mount.md); merged PR #45 | Complete per execution plan |
-| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, saved-report screen recovery, typed row payload widget test, Chrome IndexedDB persistence probe, connected-host implementation in Contractor PR #55, and adapter-boundary integration in product PR #170 | Open: product PRs remain unmerged; connected auth, CDC pull, live server acceptance, and second-device visibility are unproven |
+| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, saved-report recovery, typed workforce/progress/equipment/material/site-visit/meeting payload coverage, Chrome IndexedDB persistence probe, connected-host implementation in Contractor PR #55, and adapter-boundary integration in product PR #170 | Open: product PRs remain unmerged; connected auth, CDC pull, live server acceptance, and second-device visibility are unproven |
 | M04-T04 | [Photo transfer progress](t04-photo-transfer-progress.md) | Open: product-backed registration/download and real-device session evidence remain missing |
 | M04-T05 | [Vertical fault matrix](fault-matrix-vertical.md) | Open: mounted fault legs now include visible disk-full recovery and a transport-rejection health/correction transcript; live office-conflict/current-server comparison, device reboot/hardware evidence, server-backed results, and device-recorded evidence remain missing |
 | M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md); mounted snapshot restore and rejected-report correction tests | Open: product endpoint PR is pushed but unmerged; product-backed attachment download, live restore, and second-device photo evidence remain missing |
 | M04-T07 | [Device telemetry](device-telemetry.md) | Open: the iPhone is available, but no real workflow telemetry or correlated server metrics have been captured |
-| M04-T08 | [Rule parity progress](daily-report-rule-parity-progress.md) | Open: local row editor parity improved; native and web workflow recordings, live-route fixture, complete T03–T07 evidence, and owner verification are missing |
+| M04-T08 | [Rule parity progress](daily-report-rule-parity-progress.md) | Open: expanded row-shape parity is covered by fixtures; native and web workflow recordings, live-route fixture, complete T03–T07 evidence, and owner verification are missing |
 | M04-T09 | This packet; task-level M05 refinement via merged Contractor PR #43 | M05 refinement prerequisite is satisfied; gate not reached until T01–T08 evidence is complete and the owner reviews and approves |
 
 ## Verification already run
@@ -70,5 +70,12 @@ Latest code verification: `flutter analyze --no-pub` clean; full Flutter suite *
 - The owner's separate screenshot reading `No assigned projects` shows Safari in its status/navigation area. It is browser evidence only; it does not establish the native app's project access or identity.
 - A connected debug launch was attempted with `CONTRACTOR_SERVER_URL` set, but the wireless Dart VM service was not discovered and the process was terminated. The owner later reported the report page open on iPhone but did not specify which build launched it. Do not infer connected or preview mode from that statement alone.
 - Consequently, page visibility is owner-reported; the exact active host, connected login, project loading, save-and-sync, and server acceptance are not yet verified. Do not ask the owner to repeat launch steps solely to prove page rendering.
+
+### Field-section parity follow-on — 2026-10-11
+
+- The approved parity change adds site visits, meetings, and BOQ/plan-versus-actual fields to the shared Flutter report editor. The product follow-up accepts visitor and meeting sections through the current report procedure and writes them via the existing normalization service.
+- Current Flutter verification: `flutter test --no-pub` — **216 passed**; `flutter analyze --no-pub` — **clean**; iOS release (`--no-codesign`), macOS release, and Flutter web release builds compile.
+- Current product verification: the two affected Vitest files pass **72 tests**; TypeScript passes; webpack production build generates all **73 routes**. The default Turbopack build is blocked because its PostCSS worker cannot bind a local port in this environment.
+- This is code-level parity evidence only. The product PR remains unmerged. The owner has said they can assign the iPhone account to a project; assignment and a project/report screen screenshot are still pending, as are connected acceptance, live photo restore, second-device visibility, telemetry, and recorded native/web workflow evidence.
 
 **Owner: please verify the recorded native and web daily-report workflow against the linked evidence before approving M04-T09.** The recordings and live product round trip have not yet been produced, so this is a requested future verification step, not a claim that verification occurred.

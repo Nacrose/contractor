@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:construction_client/mount/mount.dart';
 import 'package:construction_client/mount/ports.dart';
@@ -371,6 +372,67 @@ void main() {
           throwsA(isA<RepositoryError>()),
         );
       }
+    },
+  );
+
+  test(
+    'field report section arrays survive local encoding and sync mapping',
+    () {
+      final original = DailyReportDraft(
+        clientUuid: 'report-uuid-0010',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        workProgress: const [
+          {
+            'boqCode': 'B.01',
+            'boqDesc': 'Concrete pour',
+            'plannedQty': 20,
+            'actualQty': 12,
+            'batchedQty': 12,
+            'payableQty': 10,
+            'unit': 'm3',
+            'location': 'Zone A',
+          },
+        ],
+        siteVisits: const [
+          {
+            'visitor': 'Site engineer',
+            'organization': 'Client',
+            'purpose': 'Inspection',
+            'time': '10:30',
+            'notes': 'Slab accepted',
+            'sortOrder': 0,
+          },
+        ],
+        meetings: const [
+          {
+            'topic': 'Toolbox talk',
+            'attendees': 'Crew A',
+            'notes': 'Discussed site safety',
+            'sortOrder': 0,
+          },
+        ],
+      );
+
+      final local = DailyReportDraft.decode(original.encode());
+      final payload = local.toProcedureInput();
+      expect(
+        jsonDecode(payload['workProgress']! as String),
+        original.workProgress,
+      );
+      expect(jsonDecode(payload['siteVisits']! as String), original.siteVisits);
+      expect(jsonDecode(payload['meetings']! as String), original.meetings);
+      expect(
+        () => DailyReportDraft(
+          clientUuid: 'report-uuid-0011',
+          projectId: 'project-1',
+          reportDate: '2026-10-10',
+          siteVisits: const [
+            {'visitor': 'Client inspector'},
+          ],
+        ).toProcedureInput(),
+        returnsNormally,
+      );
     },
   );
 }

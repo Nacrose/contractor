@@ -350,6 +350,15 @@ void main() {
             'sortOrder': 0,
           },
         ],
+        workProgress: const [
+          {
+            'taskDescription': 'Legacy task',
+            'actualQty': 5.0,
+            'unit': 'm3',
+            'location': 'Zone B',
+            'sortOrder': 0,
+          },
+        ],
         remarks: 'Saved before leaving the screen',
       ),
     );
@@ -398,6 +407,14 @@ void main() {
     expect(
       store.get('acct-1', 'report-reopen-001')?.remarks,
       'Corrected after reopening',
+    );
+    expect(
+      store.get('acct-1', 'report-reopen-001')?.workProgress.single,
+      containsPair('boqDesc', 'Legacy task'),
+    );
+    expect(
+      store.get('acct-1', 'report-reopen-001')?.workProgress.single,
+      containsPair('batchedQty', 5.0),
     );
   });
 
@@ -837,9 +854,13 @@ void main() {
             ?.acceptedReceipt,
         'receipt-report-screen-lost-ack',
       );
-      await tester.drag(find.byType(ListView), const Offset(0, 3000));
-      await tester.pumpAndSettle();
-      expect(find.text('No pending work'), findsOneWidget);
+      final syncHealth = find.text('No pending work');
+      await tester.dragUntilVisible(
+        syncHealth,
+        find.byType(ListView),
+        const Offset(0, 300),
+      );
+      expect(syncHealth, findsOneWidget);
     },
   );
 
@@ -1072,12 +1093,32 @@ void main() {
       '8',
     );
     await tester.enterText(
+      find.widgetWithText(TextFormField, 'BOQ code'),
+      'B.01',
+    );
+    await tester.enterText(
       find.widgetWithText(TextFormField, 'Task description'),
       'Pour footing',
     );
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Actual quantity'),
+      find.widgetWithText(TextFormField, 'Plan quantity'),
+      '16',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Batched / placed quantity'),
       '12.5',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Payable quantity (IPC)'),
+      '11.5',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Unit').first,
+      'm3',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Location'),
+      'Zone A',
     );
     await tester.ensureVisible(
       find.widgetWithText(TextFormField, 'Equipment name'),
@@ -1134,6 +1175,29 @@ void main() {
       find.widgetWithText(TextFormField, 'Unit').last,
       'm3',
     );
+    final visitorName = find.widgetWithText(TextFormField, 'Visitor name');
+    await tester.ensureVisible(visitorName);
+    await tester.enterText(visitorName, 'Client inspector');
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Organization / authority'),
+      'Client',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Purpose of visit'),
+      'Joint inspection',
+    );
+    await tester.enterText(find.widgetWithText(TextFormField, 'Time'), '10:30');
+    final meetingTopic = find.widgetWithText(TextFormField, 'Topic / subject');
+    await tester.ensureVisible(meetingTopic);
+    await tester.enterText(meetingTopic, 'Toolbox talk');
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Attendees'),
+      'Site crew',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Key notes / decisions'),
+      'Reviewed safety controls',
+    );
     await tester.enterText(
       find.widgetWithText(TextFormField, 'Daily remarks'),
       'Crew on site',
@@ -1151,6 +1215,8 @@ void main() {
     final equipment = jsonDecode(payload['equipmentUsed'] as String) as List;
     final received = jsonDecode(payload['materialReceived'] as String) as List;
     final consumed = jsonDecode(payload['materialConsumed'] as String) as List;
+    final siteVisits = jsonDecode(payload['siteVisits'] as String) as List;
+    final meetings = jsonDecode(payload['meetings'] as String) as List;
     expect(workforce.single, {
       'company': 'Acme',
       'trade': 'Masonry',
@@ -1161,12 +1227,15 @@ void main() {
       'sortOrder': 0,
     });
     expect(progress.single, {
+      'boqCode': 'B.01',
+      'boqDesc': 'Pour footing',
       'taskDescription': 'Pour footing',
-      'unit': null,
+      'plannedQty': 16.0,
       'actualQty': 12.5,
       'batchedQty': 12.5,
-      'payableQty': 12.5,
-      'location': null,
+      'payableQty': 11.5,
+      'unit': 'm3',
+      'location': 'Zone A',
       'sortOrder': 0,
     });
     expect(equipment.single, {
@@ -1191,6 +1260,20 @@ void main() {
       'name': 'Aggregate',
       'quantity': 4.0,
       'unit': 'm3',
+      'sortOrder': 0,
+    });
+    expect(siteVisits.single, {
+      'visitor': 'Client inspector',
+      'organization': 'Client',
+      'purpose': 'Joint inspection',
+      'time': '10:30',
+      'notes': null,
+      'sortOrder': 0,
+    });
+    expect(meetings.single, {
+      'topic': 'Toolbox talk',
+      'attendees': 'Site crew',
+      'notes': 'Reviewed safety controls',
       'sortOrder': 0,
     });
   });

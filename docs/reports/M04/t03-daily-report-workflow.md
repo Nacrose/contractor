@@ -53,3 +53,13 @@ Current code checks: full Flutter suite **215 passed**; `flutter analyze` **no i
 These checks independently verify the Flutter client, current product routes, and M03 adapter contract. Product PR #170 now includes the adapter binding; it remains unmerged. Automated checks do not substitute for authenticated report acceptance, photo registration, or second-device restore on the owner's local server.
 
 The 2026-10-11 rerun on Contractor PR #55 commit `7d4da91` passed `flutter test --no-pub` — **215 tests** — and `flutter analyze --no-pub` — **no issues**. The latest additions cover visible disk-full recovery, rejection from the mounted sync transport, expired-session/revocation event delivery to the screen recovery notices, and offline/timeout retry through the mounted sync action to acceptance while retaining pending work after failure.
+
+## Field-section parity follow-on (2026-10-11)
+
+With the owner's approval, the shared Flutter editor now includes site visits and meetings, plus the current BOQ and plan-versus-actual progress fields: BOQ code and description, location, planned quantity, batched/placed quantity, payable quantity, and unit. Local drafts encode these as section rows. When reopening a legacy local draft, `taskDescription` and `actualQty` seed the newer description and quantity controls so existing work remains visible.
+
+The product PR follow-up extends the `createFieldReport` schema and forwards visitor and meeting rows into the existing `syncNormalizedTables` service. Focused route tests check payload forwarding, normalized writes, and invalid JSON rejection before writes. The PR remains unmerged, and the test does not prove live account acceptance.
+
+Latest verification on the current branch: `flutter test --no-pub` — **216 passed**; `flutter analyze --no-pub` — **no issues**; iOS release (`--no-codesign`), macOS release, and Flutter web release builds compiled. Product checks: the two affected Vitest files pass **72 tests**, `NODE_OPTIONS=--max-old-space-size=8192 npx tsc --noEmit` passes, and `NODE_OPTIONS=--max-old-space-size=8192 npx next build --webpack` compiles and generates all **73 routes**. Default Turbopack build remains unavailable in this environment because its PostCSS worker cannot bind its local port.
+
+M04-T03 remains open pending a successful authenticated native report acceptance, feed delivery, visibility on the existing web app and a second device, and the live photo workflow. The owner has said they can assign the test account to a project; that assignment and the resulting project/report screen evidence are still pending.
