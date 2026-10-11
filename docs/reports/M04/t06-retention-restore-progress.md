@@ -29,4 +29,4 @@ The connected host now implements `HttpRegisteredAttachmentFetcher` and invokes 
 
 The Flutter restore tests, focused transport tests, full 204-test suite, and iOS/macOS/web compilation pass. Product PR #170 and its stacked prerequisites remain unmerged, and no live new-device restore has been exercised. T06 therefore remains open pending server-backed, cross-device evidence.
 
-Product PRs #165, #166, #167, and #170 remain draft and unmerged. The user reported creating a local account and confirmed the login page renders, but authenticated download, live snapshot/feed reconcile, a real rejected-response correction, and second-device restore have not been exercised through Flutter.
+Product PRs #165, #166, #167, and #170 have a last recorded state of draft and unmerged; a fresh GitHub API check was unavailable. The user created a local account and confirmed the login page renders, but the native sign-in attempt reloaded the login page and did not establish a session. Authenticated download, live snapshot/feed reconcile, a real rejected-response correction, and second-device restore have not been exercised through Flutter.
