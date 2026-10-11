@@ -120,6 +120,34 @@ void main() {
     },
   );
 
+  test('sanitized server metadata survives reopening without replacing original bytes', () async {
+    final bytes = Uint8List.fromList([1, 2, 3, 4]);
+    final source = File('${tmp.path}/original.jpg');
+    await source.writeAsBytes(bytes, flush: true);
+    manager = AttachmentTransferManager(
+      mount: mount!,
+      registrar: _SanitizingRegistrar(),
+    );
+    final staged = manager.stageBytes(
+      accountId: 'acct-1',
+      id: 'sanitized-photo',
+      projectId: 'project-1',
+      sourcePath: source.path,
+      bytes: bytes,
+    );
+    manager.finalize('acct-1', staged.id);
+    await manager.register('acct-1', staged.id);
+    mount!.driver.close();
+    mount = _open(tmp);
+    manager = AttachmentTransferManager(mount: mount!, registrar: registrar);
+    final restored = manager.get('acct-1', staged.id)!;
+    expect(restored.complete, isTrue);
+    expect(restored.registeredDigest, List.filled(64, 'b').join());
+    expect(restored.registeredBytes, 2);
+    expect(restored.bytes, bytes.length);
+    expect(mount!.objects.getBytes(restored.objectKey!), bytes);
+  });
+
   test('a failed digest verification never marks a photo complete', () async {
     final bytes = Uint8List.fromList([1, 2, 3, 4]);
     final source = File('${tmp.path}/tamper-source.jpg');
@@ -205,6 +233,20 @@ ConstructionMount _open(Directory tmp) => openMount(
   credentials: _Credentials(),
   transport: _Transport(),
 );
+
+class _SanitizingRegistrar extends _Registrar
+    implements VerifiedAttachmentRegistrarPort {
+  @override
+  Future<VerifiedAttachmentRegistration> completeVerifiedUpload(
+    String uploadId,
+    String digest,
+    int bytes,
+  ) async => VerifiedAttachmentRegistration(
+    'stored-photo-receipt',
+    List.filled(64, 'b').join(),
+    2,
+  );
+}
 
 class _Registrar implements AttachmentRegistrarPort {
   Uint8List uploaded = Uint8List(0);

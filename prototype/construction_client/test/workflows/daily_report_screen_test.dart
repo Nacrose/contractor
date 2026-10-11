@@ -308,8 +308,8 @@ void main() {
         {
           'attachmentId': 'photo-registered',
           'receipt': 'receipt',
-          'digest': 'sha256',
-          'fileSize': 3,
+          'digest': 'served-sha256',
+          'fileSize': 2,
         },
       ]);
     },
@@ -382,6 +382,10 @@ class _Photos implements DailyReportPhotoPort {
         : null,
     digest: state == AttachmentTransferState.registered ? 'sha256' : null,
     bytes: state == AttachmentTransferState.registered ? 3 : null,
+    registeredDigest: state == AttachmentTransferState.registered
+        ? 'served-sha256'
+        : null,
+    registeredBytes: state == AttachmentTransferState.registered ? 2 : null,
     state: state,
     failureKind: state == AttachmentTransferState.failed
         ? AttachmentFailureKind.retryable
