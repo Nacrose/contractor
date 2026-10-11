@@ -330,13 +330,13 @@ abstract interface class DailyReportWorkflowStore {
 
   void editUnsent({required String accountId, required DailyReportDraft draft});
 
-  /// Saves a corrected copy with a new idempotency UUID. The rejected
-  /// operation and its immutable payload remain available for audit.
-  String saveCorrectedCopy({
+  /// Saves a recovery copy with a new idempotency UUID. The rejected or
+  /// conflicted operation and its immutable payload remain available for audit.
+  String saveRecoveryCopy({
     required String accountId,
     required String tenantId,
     required String role,
-    required String rejectedClientUuid,
+    required String sourceClientUuid,
     required DailyReportDraft draft,
   });
 
@@ -481,24 +481,25 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
   }
 
   @override
-  String saveCorrectedCopy({
+  String saveRecoveryCopy({
     required String accountId,
     required String tenantId,
     required String role,
-    required String rejectedClientUuid,
+    required String sourceClientUuid,
     required DailyReportDraft draft,
   }) {
-    final rejected = mount.pendingOps.getOp(accountId, rejectedClientUuid);
-    if (rejected == null || rejected.state != 'rejected') {
+    final source = mount.pendingOps.getOp(accountId, sourceClientUuid);
+    if (source == null ||
+        !const {'rejected', 'conflict'}.contains(source.state)) {
       throw RepositoryError(
         'illegal_transition',
-        'Only a server-rejected report can be copied for correction.',
+        'Only a rejected or conflicted report can be copied for recovery.',
       );
     }
-    if (draft.clientUuid == rejectedClientUuid) {
+    if (draft.clientUuid == sourceClientUuid) {
       throw RepositoryError(
         'illegal_transition',
-        'A corrected report must use a new client UUID.',
+        'A recovery copy must use a new client UUID.',
       );
     }
     final payload = draft.encode();

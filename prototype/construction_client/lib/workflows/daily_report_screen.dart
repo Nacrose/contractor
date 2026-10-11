@@ -336,8 +336,10 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   bool get _canEditCurrentReport {
     final savedId = _savedId;
     if (savedId == null) return true;
-    return widget.store.operationState(widget.accountId, savedId) ==
-            'rejected' ||
+    return const {
+          'rejected',
+          'conflict',
+        }.contains(widget.store.operationState(widget.accountId, savedId)) ||
         widget.store.canEditUnsent(widget.accountId, savedId);
   }
 
@@ -552,18 +554,20 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             draft: draft,
           );
           _savedId = draft.clientUuid;
-        } else if (widget.store.operationState(widget.accountId, _savedId!) ==
-            'rejected') {
-          final rejectedId = _savedId!;
+        } else if (const {
+          'rejected',
+          'conflict',
+        }.contains(widget.store.operationState(widget.accountId, _savedId!))) {
+          final sourceId = _savedId!;
           final corrected = draft.withClientUuid(_uuid());
-          widget.store.saveCorrectedCopy(
+          widget.store.saveRecoveryCopy(
             accountId: widget.accountId,
             tenantId: widget.tenantId,
             role: widget.role,
-            rejectedClientUuid: rejectedId,
+            sourceClientUuid: sourceId,
             draft: corrected,
           );
-          _photoReportId = rejectedId;
+          _photoReportId = sourceId;
           _savedId = corrected.clientUuid;
         } else {
           widget.store.editUnsent(accountId: widget.accountId, draft: draft);
@@ -733,6 +737,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
               label: Text(
                 opState == 'rejected'
                     ? 'Save corrected copy'
+                    : opState == 'conflict'
+                    ? 'Save reviewed copy'
                     : _saved && !_canEditCurrentReport
                     ? 'Saved report'
                     : _saved
@@ -805,6 +811,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             const SizedBox(height: 8),
             const Text(
               'This report was rejected by the server. Correct the fields and save a new copy; the rejected operation is retained for review.',
+            ),
+          ],
+          if (opState == 'conflict') ...[
+            const SizedBox(height: 8),
+            const Text(
+              'This report conflicts with server state. Review the synced daily reports above, reconcile these fields, then save a new copy. The original conflicted operation stays unchanged.',
             ),
           ],
           const SizedBox(height: 16),
@@ -1351,7 +1363,7 @@ class _SavedDailyReports extends StatelessWidget {
             ListTile(
               selected: report.draft.clientUuid == selectedId,
               leading: Icon(
-                report.operationState == 'rejected'
+                const {'rejected', 'conflict'}.contains(report.operationState)
                     ? Icons.sync_problem_outlined
                     : Icons.description_outlined,
               ),
@@ -1373,7 +1385,7 @@ String _localReportState(String? state) => switch (state) {
   'pending' => 'Saved · waiting to sync',
   'in_flight' => 'Syncing',
   'accepted' => 'Synced',
-  'conflict' => 'Conflict · review required',
+  'conflict' => 'Conflict · review and copy',
   'blocked' => 'Blocked · prerequisite required',
   _ => 'Saved on this device',
 };

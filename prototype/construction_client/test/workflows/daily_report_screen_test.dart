@@ -538,6 +538,47 @@ void main() {
       store.get('acct-1', 'report-conflict-visible1')?.remarks,
       'Keep this report for review',
     );
+
+    await tester.ensureVisible(find.text('Saved on this device (1)'));
+    await tester.tap(find.text('Saved on this device (1)'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('2026-10-10').first);
+    await tester.tap(find.text('2026-10-10').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Save reviewed copy'), findsOneWidget);
+    final conflictGuidance = find.textContaining(
+      'This report conflicts with server state.',
+    );
+    await tester.scrollUntilVisible(
+      conflictGuidance,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(conflictGuidance, findsOneWidget);
+    final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
+    await tester.dragUntilVisible(
+      remarks,
+      find.byType(ListView),
+      const Offset(0, -300),
+    );
+    await tester.enterText(remarks, 'Reviewed and reconciled report');
+    await tester.ensureVisible(find.text('Save reviewed copy'));
+    await tester.tap(find.text('Save reviewed copy'));
+    await tester.pumpAndSettle();
+
+    final original = mount!.pendingOps.getOp(
+      'acct-1',
+      'report-conflict-visible1',
+    )!;
+    expect(original.state, 'conflict');
+    expect(original.payload, contains('Keep this report for review'));
+    final recovered = mount!.pendingOps
+        .listDue('acct-1', DateTime.now().millisecondsSinceEpoch + 1000)
+        .single;
+    expect(recovered.state, 'pending');
+    expect(recovered.opId, isNot(original.opId));
+    expect(recovered.payload, contains('Reviewed and reconciled report'));
   });
 
   testWidgets(

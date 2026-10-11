@@ -163,17 +163,17 @@ class _OfflinePreviewStore implements DailyReportWorkflowStore {
     required DailyReportDraft draft,
   }) => local.editUnsent(accountId: accountId, draft: draft);
   @override
-  String saveCorrectedCopy({
+  String saveRecoveryCopy({
     required String accountId,
     required String tenantId,
     required String role,
-    required String rejectedClientUuid,
+    required String sourceClientUuid,
     required DailyReportDraft draft,
-  }) => local.saveCorrectedCopy(
+  }) => local.saveRecoveryCopy(
     accountId: accountId,
     tenantId: tenantId,
     role: role,
-    rejectedClientUuid: rejectedClientUuid,
+    sourceClientUuid: sourceClientUuid,
     draft: draft,
   );
   @override

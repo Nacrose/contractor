@@ -25,13 +25,21 @@ A conflict-health widget test now marks a saved operation as conflicted, checks
 that its local remarks remain intact, and verifies the shared screen says
 `Needs attention`, `1 conflict(s) need review`, and
 `1 conflicted operation(s) awaiting resolution`. This is a screen transcript,
-not an office-edit reproduction or a conflict-resolution action.
+not an office-edit reproduction or proof of the current server version.
+
+The conflict recovery action is now wired in the shared report editor. A user
+can reopen the retained conflict, compare against the synced reports listed in
+the same screen, edit the local copy, and save a new operation. The client
+keeps the original conflict state and payload unchanged. The widget test
+verifies that behavior and the explicit review guidance. This is a safe,
+user-directed local recovery path; the editor cannot yet prove the displayed
+server report is the exact version that caused the conflict.
 
 ## Results
 
 | Boundary | Engine | Invariant | Recovery | Result |
 |---|---|---|---|---|
-| Office edit conflicts with local report | Flutter mount + SQLite | I1/I4: local report retained; conflict is visible in sync health | Resolve against current server version, then retry | PARTIAL — local row and original remarks remain and conflict count is 1; the Flutter screen has no current-server-version review or correction action, so recovery is not demonstrated |
+| Office edit conflicts with local report | Flutter mount + SQLite | I1/I4: local report retained; conflict is visible in sync health | Review synced reports, reconcile a copy, then submit a new operation | PARTIAL — local row and immutable operation remain; screen now offers a reviewed-copy recovery action with a new UUID. No live office edit or exact current-server-version comparison is exercised |
 | Permission revoked during batch | Flutter mount + SQLite | I1/I3/I4: no later work is discarded or sent after revocation | Restore project access, then resume pending work | PASS — batch stops after one request and the later report remains pending |
 | Expired login during batch | Flutter mount + SQLite | I1/I4: report survives and batch stops | Reauthenticate, then retry | PASS — outcome is `authentication_required`; report and pending op remain |
 | Absent network | Flutter mount + SQLite + shared sync-health screen | I1/I4: report stays durable and pending | Restore connectivity, then retry | PASS — transport exception requeues the op; rendered health shows `Needs attention`, one pending op, and `1 pending operation(s) not yet accepted` |
@@ -48,7 +56,7 @@ not an office-edit reproduction or a conflict-resolution action.
 
 The ten matrix legs run mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. Offline, conflict, rejection, and lost acknowledgement now have shared-screen evidence. The rejection widget test checks the visible recent-rejection health reason and correction/resubmit path using a locally injected rejected state; it is not a product-server rejection. The new lost-ack screen test drives the mobile action menu through the mounted orchestrator, simulates a server commit followed by a lost response, checks retained local report/health state, then retries the same operation and verifies the original receipt is recovered with one server effect. This remains deterministic fixture evidence, not a live server session. Complete screen transcripts remain missing for other faults. Auth and revocation have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
 
-The conflict leg was strengthened on 2026-10-11: `flutter test --no-pub test/workflows/m04_fault_matrix_test.dart` passes all 10 tests, and the modeled conflict test now asserts the exact original operation payload, local report, `conflict` state, health reason, and conflict state after closing and reopening the mount. This remains deterministic fake-transport evidence, not an office-edit reproduction or a recovery action.
+The conflict leg was strengthened on 2026-10-11: `flutter test --no-pub test/workflows/m04_fault_matrix_test.dart` passes all 10 tests, and the modeled conflict test asserts the exact original operation payload, local report, `conflict` state, health reason, and conflict state after closing and reopening the mount. A separate shared-screen test now covers opening that report, editing the retained values, saving a new pending operation, and confirming the original conflict and payload remain unchanged. These remain deterministic fixture tests, not an office-edit reproduction or exact server-version comparison.
 
 The lost-ack leg now also has a mobile-sized screen transcript in `test/workflows/daily_report_screen_test.dart`. At a 430×932 logical viewport, it uses the same compact `More actions → Sync now` interaction as the phone, shows the saved report and pending health after the first response is lost, and returns to `No pending work` after retrying the stable operation ID and recovering its receipt. The deterministic fixture records one server effect across two requests. This does not replace real product-server or device evidence.
 

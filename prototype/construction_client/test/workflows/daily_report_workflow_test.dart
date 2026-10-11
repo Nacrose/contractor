@@ -220,11 +220,11 @@ void main() {
       uuid: 'report-uuid-0002',
       remarks: 'Corrected date and site notes',
     );
-    store.saveCorrectedCopy(
+    store.saveRecoveryCopy(
       accountId: 'acct-1',
       tenantId: 'tenant-1',
       role: 'field',
-      rejectedClientUuid: 'report-uuid-0001',
+      sourceClientUuid: 'report-uuid-0001',
       draft: corrected,
     );
 
