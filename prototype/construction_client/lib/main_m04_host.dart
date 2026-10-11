@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'mount/mount.dart';
+import 'mount/attachment_transfer.dart';
 import 'mount/ports.dart';
 import 'mount/system_browser.dart';
 import 'workflows/daily_report_screen.dart';
 import 'workflows/daily_report_workflow.dart';
+import 'connected_m04_host.dart';
 
 /// Native development host for the M04 daily-report workflow.
 ///
-/// Drafts persist on this device. Authentication, server sync, and registered
-/// photo upload are intentionally not represented as connected in this host.
+/// Drafts persist on this device. CONTRACTOR_SERVER_URL selects the connected
+/// identity, sync, and photo ports; omitting it selects the local preview.
 class ContractorOsApp extends StatelessWidget {
   const ContractorOsApp({super.key});
 
@@ -24,7 +26,13 @@ class ContractorOsApp extends StatelessWidget {
       colorSchemeSeed: const Color(0xFF176B5B),
       useMaterial3: true,
     ),
-    home: const _M04NativeHost(),
+    home: const String.fromEnvironment('CONTRACTOR_SERVER_URL').isEmpty
+        ? const _M04NativeHost()
+        : ConnectedM04Host(
+            server: Uri.parse(
+              const String.fromEnvironment('CONTRACTOR_SERVER_URL'),
+            ),
+          ),
   );
 }
 
@@ -51,7 +59,7 @@ class _M04NativeHostState extends State<_M04NativeHost> {
       options: MountOptions(
         dbPath: '${root.path}${Platform.pathSeparator}offline-drafts.sqlite',
         objectRoot: objects,
-        extraMigrations: const [kDailyReportLocalMigration],
+        extraMigrations: kM04WorkflowMigrations,
       ),
       transport: _OfflinePreviewTransport(),
       systemBrowser: systemBrowser,

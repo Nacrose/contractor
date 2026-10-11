@@ -51,6 +51,9 @@ const List<Migration> kM04WorkflowMigrations = [
     'ALTER TABLE attachment ADD COLUMN registered_digest TEXT',
     'ALTER TABLE attachment ADD COLUMN registered_bytes INTEGER',
   ]),
+  Migration(9, 'native_project_picker_cache', [
+    'CREATE TABLE native_project_cache (account_id TEXT NOT NULL, project_id TEXT NOT NULL, label TEXT NOT NULL, PRIMARY KEY(account_id, project_id))',
+  ]),
 ];
 
 const String _objectPrefix = 'attachments/';

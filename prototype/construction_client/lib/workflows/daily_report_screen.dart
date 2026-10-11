@@ -299,7 +299,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           )
           .map(
             (photo) => RegisteredDailyReportPhoto(
-              attachmentId: photo.id,
+              // The product reference names the registered FieldPhoto row;
+              // the local journal UUID remains the capture/retry identity.
+              attachmentId: photo.receipt!,
               receipt: photo.receipt!,
               digest: photo.registeredDigest ?? photo.digest!,
               bytes: photo.registeredBytes ?? photo.bytes!,

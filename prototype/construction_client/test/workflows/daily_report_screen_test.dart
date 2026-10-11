@@ -306,7 +306,7 @@ void main() {
       final payload = jsonDecode(op.payload) as Map<String, dynamic>;
       expect(payload['photos'], [
         {
-          'attachmentId': 'photo-registered',
+          'attachmentId': 'receipt',
           'receipt': 'receipt',
           'digest': 'served-sha256',
           'fileSize': 2,
