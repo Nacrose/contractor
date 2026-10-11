@@ -42,7 +42,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Material reconciliation results are computed server-side from the same inputs as the current app — parity pinned by test (differences would be listed and dispositioned, none silent).
     - The delivery writer set is dispositioned against the M00 inventories (migrated/excluded with reasons) per the M03-T04 audited-writer pattern.
 
-- [ ] **M05-T05** — Field photos through the full pipeline (native camera/files adapters)
+- [x] **M05-T05** — Field photos through the full pipeline (native camera/files adapters) (PR #60)
   - Depends on: M05-T01, M04-T04 · Output: capture → stage → finalize → register for every expansion workflow that attaches media, with tests.
   - Scope: native camera + OS file adapters bound to the M03-T06 protocol (one manager, one journal — no per-workflow transfer code); photos visible in office review surfaces (v3 §6 M05 bullet 4).
   - Acceptance:
