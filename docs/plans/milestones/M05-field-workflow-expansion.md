@@ -69,7 +69,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - The drain is idempotent and resumable — an interrupted migration re-runs without loss or duplication, with crash-safety evidence against the real browser store engine (no mocks as sole proof).
     - The PWA retirement path is documented in the report (what retires, what remains, rollback notes); actual retirement is M05-T09, not this task.
 
-- [ ] **M05-T08** — Contract suite pass: crash/replay/permission + native/web outcome tests per workflow
+- [x] **M05-T08** — Contract suite pass: crash/replay/permission + native/web outcome tests per workflow (PR #63)
   - Depends on: M05-T02, M05-T03, M05-T04, M05-T05, M05-T06 · Output: per-workflow suite runs + fault-matrix extension; evidence report `docs/reports/M05/contract-suite.md`.
   - Scope: the M03 contract suite (crash/replay/permission) extended to each expansion workflow; native/web outcome tests; the M03-T09 fault-matrix runner extended with the new workflow boundaries (v3 §6 M05 exit).
   - Acceptance:
