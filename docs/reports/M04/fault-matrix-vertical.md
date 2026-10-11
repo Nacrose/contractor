@@ -17,9 +17,15 @@ recovery copy and sign-in action. A further mounted offline test now drains a
 saved report through the failing transport, then verifies the rendered health
 surface says `Needs attention`, `1 pending operation(s)`, and
 `1 pending operation(s) not yet accepted`. The full Flutter client suite
-passes (208 tests), and `flutter analyze --no-pub` reports no issues. The new
+passes (209 tests), and `flutter analyze --no-pub` reports no issues. The new
 offline screen assertion is a reproducible health transcript for that leg;
 it does not count as device-recorded evidence.
+
+A conflict-health widget test now marks a saved operation as conflicted, checks
+that its local remarks remain intact, and verifies the shared screen says
+`Needs attention`, `1 conflict(s) need review`, and
+`1 conflicted operation(s) awaiting resolution`. This is a screen transcript,
+not an office-edit reproduction or a conflict-resolution action.
 
 ## Results
 
@@ -40,7 +46,7 @@ it does not count as device-recorded evidence.
 
 ## Limits and follow-up
 
-The ten matrix legs run mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. The offline leg now has a shared-screen transcript; conflict, rejection, and lost acknowledgement have model assertions, while complete screen transcripts are still missing for every fault. Auth and revocation have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
+The ten matrix legs run mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. The offline and conflict legs now have shared-screen transcripts; rejection and lost acknowledgement still have model assertions only, and complete screen transcripts remain missing for other faults. Auth and revocation have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
 
 The conflict leg was strengthened on 2026-10-11: `flutter test --no-pub test/workflows/m04_fault_matrix_test.dart` passes all 10 tests, and the modeled conflict test now asserts the exact original operation payload, local report, `conflict` state, health reason, and conflict state after closing and reopening the mount. This remains deterministic fake-transport evidence, not an office-edit reproduction or a recovery action.
 

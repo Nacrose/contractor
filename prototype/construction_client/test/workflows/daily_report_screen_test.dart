@@ -353,6 +353,59 @@ void main() {
     );
   });
 
+  testWidgets('conflicted report is retained and clearly surfaced for review', (
+    tester,
+  ) async {
+    final store = DailyReportLocalStore(mount!);
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: DailyReportDraft(
+        clientUuid: 'report-conflict-visible1',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        remarks: 'Keep this report for review',
+      ),
+    );
+    mount!.pendingOps.markConflict(
+      'report-conflict-visible1',
+      'server version changed',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: store,
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Device sync health'));
+
+    expect(find.text('Needs attention'), findsOneWidget);
+    expect(find.text('0 pending operation(s)'), findsOneWidget);
+    expect(find.text('1 conflict(s) need review'), findsOneWidget);
+    expect(
+      find.text('1 conflicted operation(s) awaiting resolution'),
+      findsOneWidget,
+    );
+    expect(
+      mount!.pendingOps.getOp('acct-1', 'report-conflict-visible1')?.state,
+      'conflict',
+    );
+    expect(
+      store.get('acct-1', 'report-conflict-visible1')?.remarks,
+      'Keep this report for review',
+    );
+  });
+
   testWidgets(
     'rejected report offers correction and saves a new immutable operation',
     (tester) async {
