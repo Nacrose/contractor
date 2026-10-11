@@ -42,6 +42,8 @@ it does not count as device-recorded evidence.
 
 The ten matrix legs run mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. The offline leg now has a shared-screen transcript; conflict, rejection, and lost acknowledgement have model assertions, while complete screen transcripts are still missing for every fault. Auth and revocation have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
 
+The conflict leg was strengthened on 2026-10-11: `flutter test --no-pub test/workflows/m04_fault_matrix_test.dart` passes all 10 tests, and the modeled conflict test now asserts the exact original operation payload, local report, `conflict` state, health reason, and conflict state after closing and reopening the mount. This remains deterministic fake-transport evidence, not an office-edit reproduction or a recovery action.
+
 ### Product conflict-semantics check (2026-10-11)
 
 The first matrix row is a deterministic fake-transport scenario; it does not

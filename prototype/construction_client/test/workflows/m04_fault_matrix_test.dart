@@ -62,7 +62,7 @@ void main() {
     backoffCapMs: 100,
   );
 
-  test('office edit conflict preserves the full local report and surfaces conflict health', () async {
+  test('modeled conflict preserves the report and survives reopen with conflict health', () async {
     getStore().save(
       accountId: 'acct-1',
       tenantId: 'tenant-1',
@@ -83,6 +83,31 @@ void main() {
     final result = await sync.drain('acct-1');
 
     expect(result.conflicts, ['report-conflict-01']);
+    expect(
+      getStore().get('acct-1', 'report-conflict-01')?.remarks,
+      'Crew poured footing',
+    );
+    final conflicted = mount!.pendingOps.getOp('acct-1', 'report-conflict-01')!;
+    expect(conflicted.state, 'conflict');
+    expect(conflicted.lastError, 'server version changed');
+    expect(conflicted.payload, contains('Crew poured footing'));
+    final health = getStore().syncHealth('acct-1', 'tenant-1');
+    expect(health.conflicts, 1);
+    expect(health.synced, isFalse);
+    expect(
+      health.reasons,
+      contains('1 conflicted operation(s) awaiting resolution'),
+    );
+
+    final originalPayload = conflicted.payload;
+    reopenWith(
+      _Transport(
+        (_) async => throw StateError('conflict must not be auto-retried'),
+      ),
+    );
+    final reopened = mount!.pendingOps.getOp('acct-1', 'report-conflict-01')!;
+    expect(reopened.state, 'conflict');
+    expect(reopened.payload, originalPayload);
     expect(
       getStore().get('acct-1', 'report-conflict-01')?.remarks,
       'Crew poured footing',
