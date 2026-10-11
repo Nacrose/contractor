@@ -83,11 +83,11 @@ uses that Wi-Fi address so a physical iPhone can reach the local server.
 Subsequent M04 status work makes incomplete photo transfers count as retained
 work, exposes retry from the Save and sync panel, and adds offline, conflict,
 rejection, lost-ack, and disk-full recovery transcripts through the shared
-screen. The latest full Flutter suite passes **213 tests** and `flutter analyze
+screen. The latest full Flutter suite passes **214 tests** and `flutter analyze
 --no-pub` is clean. The lost-ack screen test retries the same operation and
 recovers its original receipt after a simulated server commit/lost response;
-the expired-session screen test routes the mounted orchestrator's auth event to
-the sign-in recovery notice and confirms the report remains pending. Both remain
+the expired-session and revoked-access screen tests route mounted orchestrator
+events to the matching recovery notices and confirm the report remains pending. Both remain
 fixture evidence, not live server sessions.
 The connected iOS release (`--no-codesign`), macOS release, and web release
 were rebuilt after the recovery changes with `CONTRACTOR_SERVER_URL` set and
