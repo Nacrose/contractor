@@ -15,6 +15,10 @@ The earlier 2026-10-10 device inventory found macOS desktop and Chrome 154 only,
 - End-to-end crash-report sanitization from an installed app.
 - Measured throughput to support a capacity re-baseline proposal.
 
+## Server instrumentation audit
+
+The central M03-T08 `SyncMetrics` implementation is present in the product repo's vendored Contractor package. The current product `/api/native/sync` and resumable photo-upload routes do not call it, and no authorized session-metrics read route is wired. Therefore the required server outcome counters, feed lag, checkpoint age, and attachment retry/error counts cannot yet be correlated with a device session. Approval to wire this existing package into the product routes and expose a scoped metrics read is pending.
+
 The contractor-side Flutter test suite uses SQLite and a deterministic fake transport; those results are not device telemetry or server metrics. No effort bands are proposed for change without measurements. The owner has since provided `flutter doctor` output showing a paired iPhone 15 Pro Max on iOS 26.6.2. The current evidence gap is a verified connected native server session, followed by capturing a full device session and correlated server metrics.
 
 ## Current device/build checkpoint (2026-10-11)
