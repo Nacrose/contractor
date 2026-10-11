@@ -4,6 +4,8 @@ Date: 2026-10-08 (Asia/Kathmandu). Inspection baseline: `7d80083e` plus the curr
 
 Status: **Plan only. Implementation has not started.** The user requested this plan after selecting a direction of Flutter across installed apps and web, local SQLite, shared performance-critical engines, and the existing cloud backend. Technology adoption remains subject to the performance and interoperability gate below. This document does not certify performance, parity, synchronization, or backup readiness.
 
+**ArtCraft amendment — 2026-10-12.** Owner clarification in [ADR-0016](../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md) and the [master integration plan](artcraft-suite-master-integration-plan.md) supersedes the mandatory custom Flutter worksheet grid: reuse complete upstream editors with ribbons/tools and supported embedded capability components across GridCraft, CADCraft, PdfCraft, WordCraft and DeckCraft. Contractor adapters own domain/lifecycle boundaries. M06-T12 establishes tested upstream-release updates; M06/M07/M08/M12 files register implementation and qualification. Per-app adoption, platform parity, server authority and owner-only gate requirements remain. M12 scope is recorded in its milestone file.
+
 **Revision v3 — 2026-10-08.** Seven corrections from a second review; v1/v2 text otherwise preserved. Summary:
 
 1. **M01 fallback matrix split (§6):** implementation fallbacks remain pre-committed; product-scope changes (permanent separate React surfaces, platform-gated features, dropped browser targets) become evidence-and-proposal rows requiring an explicit user decision. The §1 parity gate holds until such a decision is recorded.
@@ -374,7 +376,8 @@ Dependencies: M02, M03; M01 file/compute feasibility accepted. May be developed 
 - Evolve the current workbook model, command semantics, structure transforms, names, formatting and formula registry. Define versioned migration of positional references into stable collaboration identities without changing displayed A1 behavior.
 - Implement a dependency graph, dirty propagation, cycle/error handling and bounded/cancellable recalculation. Define volatile functions, random/time inputs and external-reference behavior so server/native/web results agree.
 - Port calculation modules to the shared core only with differential fixtures and a verified server binding. Keep imported formulas/formatting and known unsupported features visible; no silent lossy export.
-- Implement one virtualized Flutter grid consuming engine viewport/layout output; no widget per workbook cell and no recalculation triggered by scrolling.
+- Reuse GridCraft UI in two modes: the full upstream workbook editor with ribbons/tools, and an embedded grid for applicable calculation/data-entry tables. Contractor adapters use supported upstream components/configuration; prove installed-app/browser hosts, protection and mode continuity. Retain virtualization and no recalculation on scrolling; a custom Flutter grid is no longer mandated.
+- Establish the shared ArtCraft release-update command with machine-readable immutable pins, actual release-to-release compatibility and rollback evidence; migrate applicable table consumers through stable domain commands (M06-T12/T13).
 - Add cell/structure operations, version checks, compensating undo, conflict review, workbook compaction/checkpoints and IPC/BoQ integration through existing financial services.
 - Preserve XLSX compatibility through byte round-trip tests and independently checked representative files. Existing Excel gaps remain tracked work, not silently declared solved by a port.
 
@@ -384,6 +387,7 @@ Exit: agreed feature matrix, native/web/server calculation parity, concurrent ed
 
 Dependencies: M02, M03 and M01 file/compute gate. Shares operation substrate with M06.
 
+- Reuse the full CADCraft drafting interface plus focused embedded drawing review/layer/redline/plot components; prove supported hosts and command/lifecycle boundaries without upstream source edits. Qualify release updates/rollback through M06-T12 (M07-T11).
 - Preserve the central command registry and input state machines: command line, aliases, numeric/relative input, cancel/repeat, selection, grips, snap, ortho, units, undo and layouts.
 - Implement robust shared topology primitives: segment/curve intersections, connectivity, splitting/joining, offsets, polygon validity, holes and tolerance policy. Include large survey coordinates, near-coincident points and degeneracies.
 - Add spatial indexing and invalidation; produce bounded visible geometry batches for the renderer. Benchmark text, hatches, blocks, dimensions, selection and snapping, not only simple lines.
@@ -397,6 +401,7 @@ Exit: command/geometry/plot fixture parity, file compatibility matrix, bounded m
 
 Dependencies: M02, M03; M06 BoQ linking contract; M07 reusable geometry primitives as needed, not the entire CAD UI.
 
+- Reuse the full PdfCraft editor plus focused embedded takeoff/annotation/preview components; prove supported hosts and lifecycle boundaries. Qualify release updates/rollback through M06-T12 (M08-T09).
 - Extend existing document sessions with renderer adapters, viewport tiling, bounded decoded-page cache, cancellation and explicit disposal. Never rasterize every page eagerly.
 - Persist revision/page/crop/rotation/calibration provenance and vector measurement geometry. Cover area with holes, polyline length, perimeter, unit conversion and counts; reject invalid geometry.
 - Establish a first-class takeoff-to-BoQ link using existing models where they fit. Quantity changes go through one domain integration path; no direct BoQ cell mutation from a drawing widget.

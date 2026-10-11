@@ -1,143 +1,90 @@
-# Master Integration Plan: ArtCraft Suite Seamless In-Place Embedding
+# Master Integration Plan: ArtCraft Suite Full Editors and Embedded Capabilities
 
-**Status:** Plan & Architectural Directive  
-**Date:** 2026-10-12  
-**Scope:** Universal adoption across GridCraft, CADCraft, PdfCraft, WordCraft, DeckCraft, and craft-fonts  
-**Governing ADRs:** ADR-0014 (Open-Source-Only Posture), ADR-0015 (ArtCraft Upstream Strategy), ADR-0016 (In-Place Embedding & Table Modernization)  
+**Status:** Planning amendment — implementation remains evidence-gated
+**Updated:** 2026-10-12 (Asia/Kathmandu)
+**Scope:** GridCraft, CADCraft, PdfCraft, WordCraft, DeckCraft, and craft-fonts
+**Governing ADRs:** ADR-0014 (Open-Source-Only Posture), ADR-0015 (Upstream Strategy), ADR-0016 (Full Editors, Embedded Capabilities & Updates)
+**Task register:** [Master Execution Plan](EXECUTION-PLAN.md); task definitions live in the linked milestone files below.
 
----
+## 1. Amendment and intent
 
-## 1. Executive Vision & Core Philosophy
+The owner clarified that full document editing should use the Craft application as shipped, including its ribbons, menus and editing tools. Compact capability views inside Contractor workflows should expose the relevant components without the surrounding full editor. This replaces the earlier blanket "zero ribbons" requirement for all five apps.
 
-Instead of building inferior, custom spreadsheet grids, CAD viewports, PDF markup tools, and text editors from scratch, **the Contractor platform will embed the full open-source ArtCraft suite directly in-place**.
+Reuse upstream application interfaces, renderers and engines. Contractor owns project context, domain data bindings, permissions, storage and sync through adapters outside upstream source. Avoid rebuilding equivalent editors or introducing a second calculation/rendering implementation per mode. Adoption of each app and its platform bindings still requires the evidence and decision records in ADR-0015; this plan does not certify upstream features, performance or embedding APIs.
 
-### The 4 Non-Negotiable Rules
-1. **Seamless In-Place Embedding (Zero Desktop Ribbons):**
-   - Each Craft app is mounted directly inside our application layout (under our navigation headers, flanked by our project tree).
-   - **No desktop ribbons, no bloated office toolbars, no separate pop-up windows.** To the user, it feels like a native, cohesive part of our app.
-2. **Formula & Contractual Protection (Tamper-Proof):**
-   - Critical contractual rates, calculated totals, and engineering formulas are **strictly locked** (`locked: true`).
-   - Only authorized editable columns (e.g. *Measured Quantity*) accept user inputs. Users can view formulas, but cannot overwrite them.
-3. **Unified Document & Sync Lifecycle (Auto-Saved & Offline-First):**
-   - All files (`.xlsx`, `.dwg`/`.dxf`, `.pdf`, `.docx`) are stored locally in our SQLite attachment store (WAL mode).
-   - Auto-save runs continuously in the background; our M03/M05 sync engine synchronizes changes to the cloud without manual file pickers.
-4. **Zero-Fork Upstream Upgrades:**
-   - We **never fork or modify upstream ArtCraft code**.
-   - All components are consumed as release tag pins in `docs/vendor/ARTCRAFT.md`. Upgrades happen via simple version bumps that instantly deliver new upstream community features to our users.
+## 2. Two modes across the suite
 
----
+| App | Full editor mode | Embedded capability mode | Milestone |
+|---|---|---|---|
+| GridCraft | Complete workbook editor with upstream ribbons, formula bar, sheets, formatting and tools | Calculation tables: cells, row/column headers, selection, copy/paste, formulas and protected fields inside BoQ, measurement, receipt and expense screens | [M06](milestones/M06-worksheet-boq-engine.md) |
+| CADCraft | Complete drawing editor with upstream drafting interface and commands | Drawing viewer, layer controls, dimensions/redline tools and plot actions inside project/drawing workflows | [M07](milestones/M07-cad-kernel-plot.md) |
+| PdfCraft | Complete PDF application with its available editing, annotation and document tools | Page viewer, calibrated takeoff, selected annotations and photo-audit PDF preview/export inside workflows | [M08](milestones/M08-pdf-takeoff.md) |
+| WordCraft | Complete document editor with upstream formatting, review and document tools | Reusable document preview or focused template/section editing inside correspondence workflows | [M12](milestones/M12-documents-presentations.md) |
+| DeckCraft | Complete presentation editor with upstream slide and presentation tools | Slide preview, focused slide editing and progress-deck generation inside reporting workflows | [M12](milestones/M12-documents-presentations.md) |
+| craft-fonts | Shared font supply used by the adopted apps | Same pinned font assets and fallback policy in embedded views and exports | M06–M12 |
 
-## 2. Capability Area Mapping Across the Platform
+Embedded controls are selected per workflow; they need not be identical across apps. Full editor mode preserves upstream chrome. Mode switching must retain document identity, revision, pending edits and undo history where supported; limitations must be visible and recorded rather than silently resetting state. Embedded protection and workflow permissions continue to apply when the same data is opened in the full editor.
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           CONTRACTOR APPLICATION SHELL                           │
-│     (Unified Auth · Design Tokens · SQLite WAL Outbox · Change Feed Sync)       │
-└────────┬───────────────────┬───────────────────┬───────────────────┬────────────┘
-         │                   │                   │                   │
-         ▼                   ▼                   ▼                   ▼
-   ┌───────────┐       ┌───────────┐       ┌───────────┐       ┌───────────┐
-   │ GridCraft │       │  CADCraft │       │  PdfCraft │       │ WordCraft │
-   │ (Sheets)  │       │   (CAD)   │       │   (PDF)   │       │  & Decks  │
-   └─────┬─────┘       └─────┬─────┘       └─────┬─────┘       └─────┬─────┘
-         │                   │                   │                   │
-         ▼                   ▼                   ▼                   ▼
-   • BoQ / IPC         • 2D DWG / DXF      • Calibrated        • Contracts
-   • Measurement       • Site Layouts        Takeoff           • Submittals
-   • Expense Tables    • Redline markup    • Drawing Review    • Progress Decks
-   • Qty Deliveries    • Plot to PDF       • Photo markup      • Client Reports
+Spreadsheet capability replaces data-entry and calculation tables throughout the application where it fits. Ordinary record lists (projects, users, documents, approval queues) remain standard lists/tables unless a documented workflow benefits from spreadsheet interaction. M06-T13 inventories and migrates the applicable consumers.
+
+## 3. Integration boundary
+
+```text
+Contractor screens (full editor / embedded capability)
+                         ↓
+Contractor adapters (mode, commands, project data, permissions, lifecycle)
+                         ↓
+Pinned, unmodified Craft applications / reusable UI components / engines
 ```
 
-| Craft App | Platform Domain | Replaces | Primary User Experience | Target Milestone |
-|---|---|---|---|---|
-| **GridCraft** | Worksheets, BoQ & Tables | Custom React/Flutter virtual grids | Instant 60fps Excel spreadsheets and locked construction tables with full formula support | **M06** |
-| **CADCraft** | 2D CAD & Drawings | Read-only image exports and LibreDWG scripts | In-place AutoCAD DWG/DXF drafting, layer control, dimensioning, and vector plan review | **M07** |
-| **PdfCraft** | PDF Takeoff & Markup | Basic PDF canvas viewers and ad-hoc annotations | Calibrated engineering takeoff (distance, area, perimeter), threaded drawing comments, and site photo PDFs | **M08** |
-| **WordCraft** | Site Documents & Letters | Static HTML textareas and markdown editors | In-place `.docx` drafting for contractual notices, RFI letters, change orders, and specifications | **M12** |
-| **DeckCraft** | Presentations & Slides | Manual PPTX exports and static reports | In-place slide deck builder for monthly owner progress presentations and site reviews | **M12** |
-| **craft-fonts** | Universal Typography | Browser fallback system fonts | Unified font bundle (CAD line fonts, engineering symbols, mathematical notation) | **M06–M12** |
+Proposed responsibilities live in `packages/embedded_gridcraft`, `packages/embedded_cadcraft`, `packages/embedded_pdfcraft`, `packages/embedded_wordcraft` and `packages/embedded_deckcraft`, with shared lifecycle/update contracts owned once. Package creation must first account for existing package responsibilities. Screens use Contractor contracts; only adapters depend on upstream surfaces.
 
----
+For each app, prove the public configuration, grid/canvas/editor components, command dispatch and lifecycle hooks available at the selected release. A WASM app or headless MCP server alone is not evidence of an embeddable UI. The per-app decision record names the installed-app and browser host, server automation binding, persistence interception, input/IME/clipboard behavior, accessibility, cancellation and disposal. Reuse the upstream UI on each target through a tested host; no assumed Flutter-native widget API or automatic mobile parity.
 
-## 3. Detailed Component Architecture
+Use supported public configuration/components to select embedded controls. Do not hide painted controls with brittle DOM/CSS selectors or bind screens to private internals. If a required hook is missing, record it, propose/contribute it upstream, and gate the affected capability until a supported release is available. A local adapter can compose exposed behavior; it cannot guarantee changes to inaccessible upstream internals. Full editor integration may proceed independently where its requirements are met.
 
-### 3.1 GridCraft: Worksheets & Construction Table Replacement (M06)
-- **Role 1 (Full Worksheets):** Master Bill of Quantities (100k rows), Interim Payment Certificates (IPCs), rate analysis, structural calculation workbooks.
-- **Role 2 (Dynamic Construction Tables):** Replacing brittle web tables inside Daily Logs, Material Receipts, and Petty Cash Expenses.
-- **Embedding Specs:**
-  - `showRibbon: false`: Ribbon bars stripped away; clean modern table headers only.
-  - `lockedColumns`: Contract rates and formulas locked; inputs highlighted with focus rings.
-  - `exactDecimal`: Backed by `rust_decimal` to prevent IEEE 754 financial rounding drift.
-  - `autoSaveIntervalMs: 500`: Transparent debounced flush to local SQLite outbox.
+Names such as `showRibbon`, `lockedColumns` and `autoSaveIntervalMs` describe desired adapter behavior, not verified upstream API options.
 
-### 3.2 CADCraft: 2D DWG/DXF Architectural & Structural Plans (M07)
-- **Role:** Direct opening and markup of construction blueprints (`.dwg` AC1015–AC1032 and `.dxf`).
-- **Embedding Specs:**
-  - In-place GPU canvas with smooth pan/zoom/orbit.
-  - Layer toggling (e.g. hide electrical, show structural) directly in a clean sidebar panel.
-  - Redline overlay: site engineers add revision clouds, dimensions, and text notes without altering base architectural layers.
-  - Seamless export: 1-click vector PDF generation for site printing.
+## 4. Domain and document contracts
 
-### 3.3 PdfCraft: Calibrated Takeoff & Quantity Extraction (M08)
-- **Role:** Measuring quantities directly from PDF plan sheets to feed into GridCraft BoQ items.
-- **Embedding Specs:**
-  - Engineering calibration tool: user clicks two points on a scale bar (e.g., `1:100` or `10m`), calibrating the canvas.
-  - Instant area/perimeter/length measurements that automatically export into GridCraft cells.
-  - Photo packaging: transforms site inspection photos into standardized audit PDFs with EXIF geotags and contractor stamps.
+### GridCraft and construction tables
 
-### 3.4 WordCraft & DeckCraft: Contracts, Specs & Presentation Decks (M12)
-- **Role:** Official contractual letters, site notices, variation orders, and monthly client progress decks.
-- **Embedding Specs:**
-  - WordCraft provides native `.docx` editing with track changes and comment bubbles.
-  - DeckCraft allows site teams to generate high-polish executive slide decks populated directly with live BoQ numbers from GridCraft and photos from PdfCraft.
+- Contractor defines table schemas, stable domain row IDs, column bindings, editable inputs and allowed structural operations. Sorting, filtering, pasting, inserting/deleting rows and undo must preserve identities and domain intent.
+- Quantity and other authorized input columns are editable; contractual rates, item codes and derived totals are protected by workflow policy. Selecting a derived total exposes its formula. Authorized rate amendments use the existing versioned domain workflow.
+- Protection covers typing, paste, fill, delete, structural changes, imports, automation and full-editor access. UI locking prevents accidental edits; authoritative services enforce permissions, approvals and fiscal locks independently.
+- Cell edits become validated domain commands, persisted with local state and outbox intent transactionally. Server acceptance or rejection reconciles the view. No direct SQL bypass, blind whole-workbook replacement of domain records or workbook/domain dual source of truth.
+- Workbook calculation semantics are verified at the actual pin. Do not assume `rust_decimal` support. Existing financial services own exact-decimal/scaled-int calculations, rounding and postings; previews must agree on the required fixtures before release. Currency-string conversion after floating-point calculation is not proof of exact arithmetic.
+- Distinguish freeform workbooks from domain-backed tables. XLSX is an interchange/checkpoint format; collaboration uses versioned commands, stable identities, reference transforms and conflict rules defined in M06.
 
----
+### Other Craft apps
 
-## 4. Upstream Upgrade & Maintenance Protocol
+- CAD: preserve original drawing bytes; redlines retain source revision and entity/document coordinates. Unsupported entities and save/plot limitations are explicit. Full editing and embedded review share one adopted command/rendering path, with permissions applied to both.
+- PDF: measurements retain document revision, page, crop/rotation, calibration version, units and geometry. BoQ quantity changes use the M08 domain service path; no direct mutation of GridCraft cells. Photo audit PDFs use the M04/M08 annotation/export path.
+- Documents/decks: typed project data comes through authorized services. Draft generation may refresh source data; issued letters/reports/decks freeze a versioned source-data snapshot and template/font versions for reproducibility. Preview, focused editing and full editing share artifact identity and revision rules.
+- Fonts: pin assets and record hashes, per-font licenses, coverage and fallback behavior; verify engineering symbols and required scripts (including Devanagari) in previews and exports. Do not assume craft-fonts supplies every required CAD/SHX or language font.
 
-To guarantee that upgrading never causes code breakage or manual merge headaches:
+Document bytes (`.xlsx`, `.dwg`/`.dxf`, `.pdf`, `.docx`, `.pptx`) use the M03 durable object/file store and attachment protocol; SQLite holds metadata, revisions, operation journals and outbox state. Frequent local operation saves and less frequent serialized checkpoints/uploads are separate policies. Prototype a 500ms debounce where suitable, then measure it; do not rewrite/upload entire large documents on every edit. Surface local-save, cloud-pending, conflict and failure states through M02. Conflict review may require user action.
 
-```
-[Upstream Release] ──► [docs/vendor/ARTCRAFT.md] ──► [Build Artifacts] ──► [Test Matrix]
-  storytold/gridcraft        Update tag: v0.3.0            npm / cargo         node:test &
-     (Release Tag)              to v0.4.0                 refresh build       flutter test
-```
+## 5. Easy upstream updates across all apps
 
-1. **Tag Pinned Registry:**
-   - Every Craft dependency is pinned to an exact release tag in `docs/vendor/ARTCRAFT.md`.
-2. **Standard Internal Packages:**
-   - Packages live cleanly under our monorepo:
-     - `packages/embedded_gridcraft`
-     - `packages/embedded_cadcraft`
-     - `packages/embedded_pdfcraft`
-     - `packages/embedded_wordcraft`
-3. **The Overlay Pattern for Customizations:**
-   - If our app requires custom theme colors or specific keyboard shortcuts, we write a **wrapper overlay** outside the upstream repository. Upstream code remains untouched.
-4. **Upgrade Cadence:**
-   - Monthly check against upstream tags. Bumping a tag in `ARTCRAFT.md` and re-running the test suite automatically applies all community fixes and optimizations.
+**Target:** one-command, tested upstream upgrades with minimal adapter changes and a clear rollback path. Zero-fork avoids reconciliation merges; it does not guarantee API compatibility or zero adapter maintenance.
 
----
+M06-T12 establishes the shared pipeline; each later milestone supplies its app-specific build and test integration:
 
-## 5. Implementation Roadmap (Sequencing)
+1. Pin each app and craft-fonts independently in machine-readable build configuration: upstream URL, release tag, resolved immutable commit, artifact digest and relevant lockfiles/build-tool versions. Documentation in [ARTCRAFT.md](../vendor/ARTCRAFT.md) mirrors those effective inputs. A Markdown edit alone does not update a build. Never invent pins for apps not yet evaluated.
+2. Implement a documented command (proposed interface: `scripts/update-artcraft <app> <release>`) that resolves an explicit release, refreshes that dependency/build and runs its compatibility checks. This command is planned work, not currently available tooling. It must also support craft-fonts and validate shared dependents when assets/dependencies change.
+3. Review release notes, public API/command changes, licenses and attribution; produce a reviewable pin-bump diff and evidence report. Monthly or milestone-gate checks identify candidates; security-relevant updates are expedited. No unreviewed live dependency tracking.
+4. Exercise both full and embedded modes, file open/save/reopen, command/protection contracts, domain bindings, local recovery and sync conflicts, supported target hosts and representative performance. Test interoperability with documents from the previous release, not only fresh files.
+5. Demonstrate at least one upgrade between two actual upstream releases per adopted app, plus rollback. Record whether a newer build changes persisted operations/files; retain original/checkpoint bytes and compatible history, or provide a tested migration/restore path before enabling writes. Pin rollback alone is insufficient for incompatible saved data.
+6. Retain the previous working artifact and immutable inputs; promotion follows passing checks and the existing owner gates. API breakage is handled in adapters, by staying on the current pin, or by an upstream fix. Upstream source remains unmodified.
 
-### Phase 1: GridCraft Full Integration (Milestone M06)
-- **M06-T01** (Complete): Headless prototype & fixture comparison against TS authority.
-- **M06-T02**: Workbook & Table model evolution: `.xlsx` file schema + locked-cell schema.
-- **M06-T03**: MCP & CLI automated integration with our native outbox sync.
-- **M06-T04**: ADR-0016 formalization (adopting all Craft apps and table replacement).
-- **M06-T05**: Direct in-place GridCraft embedding: ribbon-free view, cell locking, and BoQ data bridge.
-- **M06-T06–T10**: 100k-row stress tests, IPC export pipeline, and financial approval gates.
+## 6. Sequencing and evidence
 
-### Phase 2: CADCraft 2D DWG/DXF Integration (Milestone M07)
-- **M07-T01**: CADCraft prototype over M00 CAD fixtures (DWG AC1015–AC1032 via `acadrust`).
-- **M07-T02–T05**: In-place CAD canvas embedding with layer manager and measurement tools.
-- **M07-T06–T09**: Plot-to-PDF export and site redline synchronization.
+Task IDs below match the milestone register; existing IDs and historical completion records are preserved. New tasks have higher IDs even when prerequisites place them before an existing gate.
 
-### Phase 3: PdfCraft Takeoff & Annotation (Milestone M08)
-- **M08-T01**: PdfCraft prototype over M00 PDF takeoff fixtures.
-- **M08-T02–T05**: Calibrated scale tool and measurement extraction bridge into GridCraft BoQ items.
-- **M08-T06–T08**: Multi-page drawing revision comparison and site photo stamping.
+- **M06:** T01's PR #66 harness remains historical; its local simulators are not upstream parity evidence. T04 must revalidate using actual pinned GridCraft and the production TS authority before adoption. T02/T03 retain workbook identity and recalculation responsibilities. T05 proves full and embedded UI hosting; T06–T10 retain operations, financial integration, XLSX fidelity, concurrency and retirement. New T12 builds shared update tooling; new T13 inventories and migrates calculation-table consumers. T11 gate includes T12/T13.
+- **M07:** T01 validates actual CADCraft/DWG fixtures; T02–T09 retain commands, topology, rendering, file/plot fidelity and conflict/performance responsibilities. New T11 integrates full editor and embedded review hosts, and qualifies its upstream upgrade/rollback path. T10 gate includes T11 and the shared M06-T12 pipeline.
+- **M08:** T01 validates actual PdfCraft measurement/annotation behavior; T02–T07 retain sessions, provenance, BoQ integration and revision/performance responsibilities. New T09 integrates full editor and embedded takeoff/preview hosts with upgrade/rollback evidence. T08 gate includes T09 and M06-T12.
+- **M12:** Remains at W01–W09 work-package level until evidence supports task refinement. W02/W04 deliver WordCraft/DeckCraft full and embedded modes following actual per-app prototypes; new W09 integrates both apps and fonts into the upgrade pipeline. W08 gate includes W09. This plan does not invent M12-T task IDs before refinement.
 
-### Phase 4: WordCraft & DeckCraft Executive Suite (Milestone M12)
-- **M12-T01–T04**: WordCraft `.docx` contract notice and RFI letter editor embedding.
-- **M12-T05–T08**: DeckCraft monthly client progress slide deck builder.
+Performance targets are measured on ratified profiles: scroll/frame time, input/paste latency, calculation latency, memory, first-load/download size and save/checkpoint cost reported separately. The plan makes no blanket 60fps, full Excel/AutoCAD parity, fixed WASM size or tamper-proof calculation claim.

@@ -2,14 +2,22 @@
 
 **Milestone:** M06 Worksheet/BoQ Engine Migration  
 **Task:** M06-T01 — GridCraft prototype: CLI/MCP evidence over M00 fixtures vs the TypeScript authority  
-**Status:** COMPLETED & VERIFIED  
+**Status:** Historical simulator report — superseded for adoption evidence (correction 2026-10-12)
 **Date:** 2026-10-12  
 **Upstream Pin:** `gridcraft` release tag `v0.3.0` (`storytold/gridcraft`)  
 **Normative Reference:** Platform Plan v3 §6 M06; ADR-0013, ADR-0014, ADR-0015; Vendor Registry `docs/vendor/ARTCRAFT.md`  
 
 ---
 
-## 1. Executive Summary
+## Evidence correction — 2026-10-12
+
+Inspection of `prototype/gridcraft/lib/mcp_protocol.mjs` shows that `GridCraftMcpClient.evalFormula` is a local JavaScript simulator with hard-coded decimal, error and time outputs; it does not start upstream GridCraft or exchange MCP messages. `ts_authority_evaluator.mjs` likewise implements local behavior rather than invoking the production TypeScript engine. The reported tool inventory is a local declaration, not runtime discovery.
+
+Consequently, the historical findings below do not establish upstream numeric semantics (including `rust_decimal`), engine parity, MCP compatibility, volatility/cycle behavior, startup timing or XLSX fidelity. Do not use them to approve adoption. M06-T04 must execute the actual immutable upstream pin against the production authority, capture reproducible commands/outputs and replace these claims. The historical M06-T01/PR #66 completion reference remains for traceability.
+
+The former recommendation to mandate custom TS/Flutter rendering is superseded by [ADR-0016](../../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md): reuse full upstream editors and supported embedded UI components. The remaining sections are retained as the superseded report, not verified evidence.
+
+## 1. Historical Executive Summary (superseded)
 
 Milestone **M06-T01** executes the evidence-gated prototype evaluation of **GridCraft** (upstream release tag `v0.3.0`), driving it headlessly via CLI and its Model Context Protocol (MCP) server against the authoritative TypeScript worksheet engine (`src/lib/worksheet/spreadsheet-engine.ts`, `formula-engine.ts`).
 
@@ -26,7 +34,7 @@ Per ADR-0015 and Platform Plan v3 §6 M06, this is disposable prototype evidence
 
 ## 2. Upstream Pin & Attribution Registry
 
-Per ADR-0015 §3, the exact upstream pin is recorded in [`docs/vendor/ARTCRAFT.md`](../vendor/ARTCRAFT.md):
+Per ADR-0015 §3, the exact upstream pin is recorded in [`docs/vendor/ARTCRAFT.md`](../../vendor/ARTCRAFT.md):
 
 | Field | Pinned Value |
 |---|---|

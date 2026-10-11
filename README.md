@@ -15,6 +15,8 @@
 | [ADR-0011–0013](docs/adr/) | M00 change-feed mechanism, contract schema format (Protobuf/Buf), M01 stack decision (evidence-gated continuation). |
 | [ADR-0014](docs/adr/0014-open-source-only-dependency-posture.md) | Open-source-only dependency posture — no paid components. |
 | [ADR-0015](docs/adr/0015-artcraft-upstream-engine-strategy.md) | ArtCraft family (GridCraft/CADCraft/PdfCraft) as upstream-tracked candidate engines; tag pins, no forks. |
+| [ADR-0016](docs/adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md) | Full Craft editors, focused embedded capabilities and tested upstream updates across all five apps. |
+| [ArtCraft integration plan](docs/plans/artcraft-suite-master-integration-plan.md) | Cross-suite mode/lifecycle/update contracts; implementation tasks in M06/M07/M08/M12. |
 | [Vendor registry](docs/vendor/ARTCRAFT.md) | Pins, licenses and attribution for upstream ArtCraft components. |
 | [ADRs 0001–0009](docs/adr/) | Inherited from Construction_Manager; remain in force for server-side work. |
 
