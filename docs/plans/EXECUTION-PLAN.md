@@ -31,11 +31,11 @@
 | M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | In progress — T01 harness (PR #66), T02 workbook model (PR #67); real execution required in T04; dual modes + updates registered | 2/13 | M06-T11 `👤 GATE` — not reached |
 | M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | Task level — dual CAD modes + update qualification registered | 0/11 | M07-T10 `👤 GATE` — not reached |
 | M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | Blocked by M06/M07 contracts; dual PDF modes + update qualification registered | 0/9 | M08-T08 `👤 GATE` — not reached |
-| M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/7 | M09-T07 `👤 GATE` — not reached |
+| M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/9 | M09-W07 `👤 GATE` — not reached |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered 2026-10-09; dual editor/embedded modes + updates amended 2026-10-12 (WP level) | 0/9 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **70/137** | |
+| **Program total** | | | **70/139** | |
 
 ## Dependency graph
 
