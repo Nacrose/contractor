@@ -307,6 +307,52 @@ void main() {
     expect(rows.single.kind, 'workflow.dailyReport.createFieldReport');
   });
 
+  testWidgets('transport failure remains visible in the sync health surface', (
+    tester,
+  ) async {
+    final store = DailyReportLocalStore(mount!);
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: DailyReportDraft(
+        clientUuid: 'report-health-offline1',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        remarks: 'Pending until the network returns',
+      ),
+    );
+
+    await store.syncNow();
+
+    expect(
+      mount!.pendingOps.getOp('acct-1', 'report-health-offline1')?.state,
+      'pending',
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: store,
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Device sync health'));
+
+    expect(find.text('Needs attention'), findsOneWidget);
+    expect(find.text('1 pending operation(s)'), findsOneWidget);
+    expect(
+      find.text('1 pending operation(s) not yet accepted'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets(
     'rejected report offers correction and saves a new immutable operation',
     (tester) async {

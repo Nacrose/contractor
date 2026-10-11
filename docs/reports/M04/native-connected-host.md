@@ -62,6 +62,13 @@ verify auth-event delivery with the pending operation ID. The login route
 returned HTTP 200 over both loopback and the Mac Wi-Fi address. The iOS build
 uses that Wi-Fi address so a physical iPhone can reach the local server.
 
+Subsequent M04 status work makes incomplete photo transfers count as retained
+work, exposes retry from the Save and sync panel, and adds an offline transport
+failure transcript through the mounted sync-health screen. The latest full
+Flutter suite passes **208 tests** and `flutter analyze --no-pub` is clean.
+Those platform compile checks predate the status-only changes. No app was
+launched or screen inspected for that follow-on.
+
 ## Remaining M04 evidence
 
 A compile and mocked protocol suite do not prove the device round trip. Still required are a user-run native sign-in, accepted report visible in the web app and a second device, interrupted upload recovery on device, a new-device snapshot and registered-photo restore, the full mounted fault matrix, real-device latency/battery/background/crash telemetry, native-and-web recorded workflow evidence, the current-rule parity audit, and the owner's M04 gate after M05 refinement. No M04 task beyond T01 and T02 is marked complete by this report.

@@ -12,11 +12,14 @@ The connected Flutter host now subscribes to the mounted orchestrator's typed
 Device sync health card, expired authentication shows a sign-in action and
 revoked project access tells the user to contact an admin; both notices state
 that locally saved reports are retained. The fault-matrix assertions verify
-each event carries the stopped operation ID, and two screen tests verify the
-recovery copy and sign-in action. The full Flutter client suite passes (207
-tests), and `flutter analyze --no-pub` reports no issues. These checks cover the
-event and UI seams separately; they do not count as a device-recorded health
-transcript.
+each event carries the stopped operation ID, and screen tests verify the
+recovery copy and sign-in action. A further mounted offline test now drains a
+saved report through the failing transport, then verifies the rendered health
+surface says `Needs attention`, `1 pending operation(s)`, and
+`1 pending operation(s) not yet accepted`. The full Flutter client suite
+passes (208 tests), and `flutter analyze --no-pub` reports no issues. The new
+offline screen assertion is a reproducible health transcript for that leg;
+it does not count as device-recorded evidence.
 
 ## Results
 
@@ -25,7 +28,7 @@ transcript.
 | Office edit conflicts with local report | Flutter mount + SQLite | I1/I4: local report retained; conflict is visible in sync health | Resolve against current server version, then retry | PASS — conflict row and original remarks remain; conflict count is 1 |
 | Permission revoked during batch | Flutter mount + SQLite | I1/I3/I4: no later work is discarded or sent after revocation | Restore project access, then resume pending work | PASS — batch stops after one request and the later report remains pending |
 | Expired login during batch | Flutter mount + SQLite | I1/I4: report survives and batch stops | Reauthenticate, then retry | PASS — outcome is `authentication_required`; report and pending op remain |
-| Absent network | Flutter mount + SQLite | I1/I4: report stays durable and pending | Restore connectivity, then retry | PASS — transport exception requeues the op; health still reports one pending operation |
+| Absent network | Flutter mount + SQLite + shared sync-health screen | I1/I4: report stays durable and pending | Restore connectivity, then retry | PASS — transport exception requeues the op; rendered health shows `Needs attention`, one pending op, and `1 pending operation(s) not yet accepted` |
 | Server rejection | Flutter mount + SQLite | I1/I4: rejected report remains available with rejection health | Review rejection, correct, and resubmit | PASS — local row remains; op state is `rejected`; health exposes a rejection |
 | App process closes with operation in flight | Flutter mount + reopened SQLite file | I1/I2/I4: stable operation identity and original server receipt | Replay the same operation; server's previous-acceptance receipt is recorded | PASS — same op ID receives original receipt; local report remains |
 | Lost acknowledgement after server accepts | Flutter mount + reopened SQLite file + deterministic server fixture | I1/I2/I4: durable report and stable op identity; one server effect | Replay the same op ID; recover the original receipt | PASS — first response is lost after the fixture records one effect; replay has the same op ID and payload digest, records the original receipt, and clears pending health |
@@ -37,6 +40,6 @@ transcript.
 
 ## Limits and follow-up
 
-The ten tests run the mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. Health assertions exist for conflict, offline pending work, rejection, and lost acknowledgement; a complete health-surface transcript is not captured for every scenario. Auth and revocation now have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
+The ten matrix legs run mounted workflow repositories and attachment manager against a real on-disk SQLite file, but use deterministic transport and registrar fixtures; they do not establish product-server acceptance, second-device visibility, or actual hardware behavior. The restart legs close and reopen the database in one test process. The offline leg now has a shared-screen transcript; conflict, rejection, and lost acknowledgement have model assertions, while complete screen transcripts are still missing for every fault. Auth and revocation have event-delivery assertions and separate shared-screen tests, but no connected-host device transcript yet. The tampered restore digest case remains covered in the separate attachment suite. Device reboot evidence remains missing, so M04-T05 acceptance is still open.
 
 Product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165), [#166](https://github.com/Nacrose/Construction_Manager/pull/166), [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and [#170](https://github.com/Nacrose/Construction_Manager/pull/170) prepare the report adapter, feed/snapshot, native PKCE, and resumable photo/snapshot digest paths. Their last recorded state is draft and unmerged; a fresh GitHub API check was unavailable. The user created a local account and attempted native sign-in, but the login page reloaded. Server logs show no login POST or token exchange, so the account is not authenticated in Flutter. M04-T07/T08 will also require real device sessions and owner verification; this report does not substitute for them.
