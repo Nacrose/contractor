@@ -72,8 +72,10 @@ by the owner and reported rendering. The latest Safari evidence still showed
 no assigned projects; project assignment, authenticated native sign-in, an
 accepted report, and feed/second-device visibility have not been demonstrated.
 Current verification on Contractor PR #55 is 219 passing Flutter tests with
-clean `flutter analyze --no-pub`. M04-T03 remains open until the product stack
-is merged and a connected report round trip is shown.
+clean `flutter analyze --no-pub`. Connected-mode release compilation also
+passes for iOS (`--no-codesign`), macOS, and web with the local server origin.
+These builds did not install or launch an app. M04-T03 remains open until the
+product stack is merged and a connected report round trip is shown.
 
 ## Field-section parity follow-on (2026-10-11)
 
