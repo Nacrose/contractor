@@ -21,14 +21,15 @@ showed a different, explicit failure: Prisma could not find `DATABASE_URL`.
 That newer evidence means the login request reached the product server, and
 the missing server database configuration was the immediate blocker for that
 attempt. The local dev environment has since been restarted with a working
-database connection. Native sign-in, callback exchange, project loading, and
-live sync acceptance remain open because the owner has not retried sign-in
-after the environment correction. No server-side HTML form fallback was added
-or is claimed.
+database connection. The owner later reported that the iPhone opens the daily-
+report page. That establishes owner-reported screen visibility, but does not
+identify whether the build is local preview or connected mode, nor prove
+callback exchange, an assigned project, or live sync acceptance. No
+server-side HTML form fallback was added or is claimed.
 
 ## Local environment
 
-At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. At one 2026-10-11 check, the Wi-Fi forwarder at `192.168.1.66:3000` was not active. A later listener inspection found Node bound to `192.168.1.66:3000` and the product server bound to `*:3108`, but HTTP requests from the development sandbox could not connect to either port. This confirms neither iPhone reachability nor forwarding behavior. An HTTP 200 on the login page, when available, proves only that the page is served; it does not prove browser JavaScript hydration or a session. The owner reports the direct `:3108` sign-in attempt also reloaded the login page; no authenticated session is established.
+At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. At one 2026-10-11 check, the Wi-Fi forwarder at `192.168.1.66:3000` was not active. A later listener inspection found Node bound to `192.168.1.66:3000` and the product server bound to `*:3108`, but HTTP requests from the development sandbox could not connect to either port. This confirms neither iPhone reachability nor forwarding behavior. An HTTP 200 on the login page, when available, proves only that the page is served; it does not prove browser JavaScript hydration or a session. The owner first reported the direct `:3108` sign-in attempt reloading the login page, then later reported that the iPhone opens the daily-report page. Those reports establish screen visibility but do not identify the build mode or prove an authenticated session.
 
 ## Run the connected M04 app
 
@@ -58,7 +59,7 @@ The Xcode workspace remains `prototype/construction_client/ios/Runner.xcworkspac
 
 ## 2026-10-11 launch-mode correction
 
-The owner's screenshot showing the report editor with a `LOCAL PREVIEW` ribbon is evidence of the preview host, not the connected host. The owner separately reported that the iPhone opened the report editor after launching from Xcode. Since the default Xcode Run scheme does not set `CONTRACTOR_SERVER_URL`, this was the expected preview fallback. A later connected debug run included the server define but Flutter could not keep the wireless Dart VM service connection and terminated; no connected sign-in or sync is established by that run. The Safari screenshot reading `No assigned projects` is a browser page and is not evidence about the native app's project list. The release-mode command above is the next connected-device check; it has not yet been run by the owner.
+The owner's screenshot showing the report editor with a `LOCAL PREVIEW` ribbon is evidence of the preview host, not the connected host. The owner separately reported that the iPhone opened the report editor after launching from Xcode. Since the default Xcode Run scheme does not set `CONTRACTOR_SERVER_URL`, this was the expected preview fallback. A later connected debug run included the server define but Flutter could not keep the wireless Dart VM service connection and terminated; no connected sign-in or sync is established by that run. The Safari screenshot reading `No assigned projects` is a browser page and is not evidence about the native app's project list. The owner has since reported that the daily-report page is open in the iPhone app. This confirms reported page visibility; without a connected-mode state or accepted sync result, it does not distinguish preview from connected mode. Do not ask the owner to repeat launch steps just to prove the page renders.
 
 ## 2026-10-11 follow-on
 
@@ -98,8 +99,10 @@ service was stopped. The existing local database was retained, PostgreSQL was
 started, and the Next.js dev server was relaunched on port 3108 with a database
 URL and a process-local development auth secret. Prisma queries then executed
 successfully in the server process. This verifies database connectivity only;
-the owner has not retried native sign-in, so session creation, project loading,
-and report acceptance remain unverified. The environment was supplied to the
+the owner later reported the daily-report page open on iPhone, but did not
+identify the build mode or provide a connected-session result; session
+creation, project loading, and report acceptance therefore remain unverified.
+The environment was supplied to the
 running process and was not written into the repository. The server process
 must be restarted with equivalent environment values if it exits.
 
