@@ -6,6 +6,10 @@
 **Governing ADRs:** ADR-0014 (Open-Source-Only Posture), ADR-0015 (Upstream Strategy), ADR-0016 (Full Editors, Embedded Capabilities & Updates)
 **Task register:** [Master Execution Plan](EXECUTION-PLAN.md); task definitions live in the linked milestone files below.
 
+**Program-wide direction:** [ADR-0018](../adr/0018-upstream-capabilities-and-construction-integration.md) and the [platform integration strategy](open-source-platform-integration-strategy.md) preserve the original app's connected workflows while upstream projects provide generic capabilities. This suite plan supplies the Craft portion; M10 maps original custom tools, qualifies accounting and verifies cross-tool journeys.
+
+**Related scheduling integration:** [ADR-0017](../adr/0017-trueppm-scheduling-integration.md) selects TruePPM for [M09](milestones/M09-scheduling-engine.md), with full workspace/focused views and tested upstream updates. TruePPM is a separate dependency; its [registry](../vendor/TRUEPPM.md) can reuse shared release tooling without being counted as a Craft app.
+
 ## 1. Amendment and intent
 
 The owner clarified that full document editing should use the Craft application as shipped, including its ribbons, menus and editing tools. Compact capability views inside Contractor workflows should expose the relevant components without the surrounding full editor. This replaces the earlier blanket "zero ribbons" requirement for all five apps.

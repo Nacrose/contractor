@@ -5,6 +5,8 @@
 - **Deciders:** Repository owner (required under protocol R8)
 - **Related:** ADR-0012, ADR-0011, M01-T03…T16 evidence in `docs/reports/M01/`
 
+**Scheduling amendment (2026-10-12):** [ADR-0017](0017-trueppm-scheduling-integration.md) supersedes this record's CPM direction with owner-selected TruePPM integration. The TypeScript authority below describes the existing production baseline until M09 cutover, not the target implementation. Other decisions and evidence gates remain in force.
+
 ## Context
 
 M01 prototypes show that a Flutter client can exercise useful browser and desktop paths, and identify plausible Dart, TypeScript, PDF, and storage approaches. They do not establish a production cross-platform stack against all ratified hardware tiers and workloads. The T16 fallback matrix has six failed/not-demonstrated rows and one SQLite engine-level pass. Four failed rows require product-scope proposals that only the owner may decide. Cross-language parity failed, and no production Flutter PDF/DWG dependency is selected.

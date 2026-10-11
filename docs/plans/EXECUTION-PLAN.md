@@ -31,11 +31,11 @@
 | M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | In progress — T01 harness (PR #66), T02 workbook model (PR #67); real execution required in T04; dual modes + updates registered | 2/13 | M06-T11 `👤 GATE` — not reached |
 | M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | Task level — dual CAD modes + update qualification registered | 0/11 | M07-T10 `👤 GATE` — not reached |
 | M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | Blocked by M06/M07 contracts; dual PDF modes + update qualification registered | 0/9 | M08-T08 `👤 GATE` — not reached |
-| M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/9 | M09-W07 `👤 GATE` — not reached |
-| M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
+| M09 TruePPM scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | TruePPM selected; integration blocked by M03/M05/M06 (WP level) | 0/9 | M09-W07 `👤 GATE` — not reached |
+| M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Migration blocked by M04–M09; document/deck evidence from M12; mapping + accounting + connected journeys registered (WP level) | 0/9 | M10-W06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered 2026-10-09; dual editor/embedded modes + updates amended 2026-10-12 (WP level) | 0/9 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **70/139** | |
+| **Program total** | | | **70/142** | |
 
 ## Dependency graph
 
@@ -46,6 +46,7 @@ M00 ──► M01 ──► M02 ──► M03 ──► M04 ──► M05 ──
                  │       ├──► M07 ──────────► M10 │
                  │       ├──► M12 ◄─ M06/M08 (BoQ data + PDF export)
                  │              M09 ◄─ M05/M06 ─► M10
+                 │              M12 ── document/deck evidence ──► M10
                  └── backup/packaging groundwork starts after M01 (M11)
 ```
 
@@ -60,6 +61,22 @@ Exact dependencies per task are declared inside each milestone file; the v3 plan
 5. **Dashboard work: Defer / do not start** for the duration (v3 §6.0 maintenance posture).
 6. **Start with M00 only**, then M01. No screen rewrites, no speculative dependency installs (v3 §10).
 7. **ArtCraft full editors, embedded capabilities and tested updates** — GridCraft/CADCraft/PdfCraft/WordCraft/DeckCraft reuse upstream full interfaces with ribbons/tools plus focused reusable components inside workflows. All adoption remains evidence-gated; no upstream forks/source edits. Contractor adapters own domain/lifecycle bindings; M06-T12 owns machine-readable pins and the shared release-update command, later milestones qualify their apps. See [ADR-0016](../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md), [master integration plan](artcraft-suite-master-integration-plan.md), ADR-0015 and vendor registry; licenses per ADR-0014.
+8. **TruePPM selected for scheduling** — M09 integrates the OSS app/engine, full workspace and supported focused views through external adapters. Contractor retains domain/financial/approval authority. M09-W08 owns tested release updates; M09-W09 tracks upstream delivery and migration rather than a new vendor-selection exercise or custom CPM rewrite. See [ADR-0017](../adr/0017-trueppm-scheduling-integration.md) and [vendor registry](../vendor/TRUEPPM.md).
+9. **Upstream capabilities, connected construction product** — preserve original workflows and domain rules while reusing generic upstream engines/components. Inventory every original tool before replacement, maintain external adapters, one domain authority and tested releases. `flutter_accounting` is the intended library for M10-W08 qualification; its source/API/license remain unverified. See [ADR-0018](../adr/0018-upstream-capabilities-and-construction-integration.md) and [integration strategy](open-source-platform-integration-strategy.md).
+
+## Platform integration amendment — 2026-10-12
+
+- **What changed:** program-wide upstream reuse strategy added; unfinished specialist-engine tasks favor integration over reimplementation. M10-W07 maps original custom tools and retained rules; W08 qualifies/integrates accounting; W09 verifies connected workflows and upgrades. Existing specialist owners deliver their bindings; W07 mapping may prepare them before M10 rollout. M10 gate includes the new WPs and required M12 evidence for document/deck journeys.
+- **Why:** owner requested the original app's tight integration while community projects provide most generic capabilities and Contractor maintains the construction integration.
+- **Evidence:** owner chat directive; existing M00 inventory and ADR-0016/0017 integration boundaries. Accounting details are owner-supplied and await independent source/API/license verification; no accounting adoption fixture is claimed.
+- **Scope:** planning/ADR documentation only; three pending WPs added (142 total, 70 completed unchanged). No package installed, production cutover, completed-task reset or guaranteed upstream delivery.
+
+## TruePPM planning amendment — 2026-10-12
+
+- **What changed:** M09-W01–W06 now integrate TruePPM and preserve construction/domain contracts. New W08 registers pinned-release updates and restore; W09 registers capability delivery and legacy migration. W07 depends on both. ADR-0017 supersedes ADR-0013's target CPM implementation; the v3 plan and registries are synchronized.
+- **Why:** owner directed use of TruePPM, with releases adopted as Contractor develops.
+- **Evidence:** owner chat directive recorded in ADR-0017; linked upstream scheduler, license and roadmap documentation in the TruePPM registry. No actual engine execution, UI hosting or effective pin is claimed.
+- **Scope:** planning/ADR/vendor documentation only. Two pending WPs added; total 139, completed count unchanged at 70. Production cutover remains subject to M09 evidence and existing gates.
 
 ## ArtCraft planning amendment — 2026-10-12
 

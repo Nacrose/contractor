@@ -6,6 +6,8 @@
 > UI/update direction: [ADR-0016](../../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md) and the [master integration plan](../artcraft-suite-master-integration-plan.md) require the full upstream editor with its ribbons plus embedded calculation-table mode, reusing upstream UI components. T12 owns the suite update pipeline; T13 covers calculation-table consumers across M04/M05 and other applicable workflows. Added IDs preserve existing references; gate T11 depends on T12/T13.
 > Evidence correction (2026-10-12): T01 remains a historical completion record for PR #66. Its committed driver uses local simulators rather than actual upstream/production execution. Its parity, decimal and MCP claims are not adoption evidence; T04 must revalidate them.
 
+> Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-construction-integration.md) applies to unfinished tasks. Reuse upstream calculation, grid and file capabilities through adapters; retain Contractor domain/identity/sync contracts. Graph/operation work is not a mandate to duplicate upstream internals. Missing capabilities require documented gaps and registered work. T01/T02 remain historical completions.
+
 Exit (v3): agreed feature matrix, native/web/server calculation parity, concurrent edit/structure tests and 50k/100k-row workload evidence. Retire redundant production evaluators only after all consumers switch.
 
 ---
@@ -29,22 +31,22 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Names, formatting and formula registry entries survive round-trips with fixture coverage; no silent normalization.
     - No production consumer is switched in this task; the M02 save/sync model represents the migration state.
 
-- [ ] **M06-T03** — Dependency graph: dirty propagation, cycle/error handling, bounded/cancellable recalculation
-  - Depends on: M06-T02 · Output: dependency-graph implementation with recalculation policy and stress evidence.
-  - Scope: dirty propagation, cycle/error handling, bounded/cancellable recalculation; define volatile functions, random/time inputs and external-reference behavior so server/native/web agree (v3 §6 M06).
+- [ ] **M06-T03** — Qualify upstream dependency/recalculation behavior and adapter contracts
+  - Depends on: M06-T02 · Output: upstream dependency/recalculation mapping, adapter contract and stress evidence; no parallel evaluator.
+  - Scope: reuse actual pinned upstream dirty propagation, cycle/error handling and bounded/cancellable recalculation. Define volatile/random/time/external-reference behavior across targets; expose missing hooks in the gap register rather than implementing a substitute graph engine. Prototype bindings only before T04's adoption decision (v3 §6 M06).
   - Acceptance:
     - Cycle detection and error propagation have deterministic, fixture-tested semantics shared by all targets.
     - Recalculation is bounded and cancellable: a scheduled yield/cancel point exists, and cancellation leaves no half-propagated state.
     - Volatile/random/time inputs and external references are defined (M06-T01 evidence informs this); server/native/web results agree on the fixture set.
     - M00 profiling (fresh-evaluator scan behavior) informs the incremental boundary and is cited in the report.
 
-- [ ] **M06-T04** — Calculation port decision and shared-core port with differential fixtures + verified server binding
-  - Depends on: M06-T01, M06-T03 · Output: per-engine decision record update + ported calculation with differential fixture evidence.
-  - Scope: port calculation modules to the shared core only with differential fixtures and a verified server binding; the per-engine decision record honors the kernel governance duplication status (single impl / governed temporary duplicate / accepted exception) (v3 §4, §6 M06).
+- [ ] **M06-T04** — Upstream calculation adoption and shared binding with differential fixtures
+  - Depends on: M06-T01, M06-T03 · Output: per-engine decision record and adopted upstream binding with differential fixture evidence.
+  - Scope: integrate the selected upstream calculation engine behind shared contracts with verified server execution; no mandatory language port. The decision record honors single authority and governed preview duplication (v3 §4, §6 M06).
   - Acceptance:
     - Replace T01 simulation claims with actual pinned GridCraft execution versus the production TS authority. Record the resolved commit/artifact hash, invocation, actual MCP tool discovery and raw fixture outputs; simulators cannot satisfy parity, volatility, cycle or numeric evidence. Correct the prototype report and verify numeric representation and rounding without assuming `rust_decimal`.
     - The adoption ADR names the shared app/engine version, full/embedded UI surfaces, target hosts, server binding and supported extension points; missing hooks are recorded with an upstream contribution path before affected production binding.
-    - Differential fixtures cover the TS authority vs the ported implementation, including exact-decimal string/scaled-int crossings and degenerate/cycle stress fixtures from M00.
+    - Differential fixtures cover the TS baseline versus the actual upstream binding, including exact-decimal string/scaled-int crossings and degenerate/cycle stress fixtures from M00.
     - The server binding is verified (the authoritative path executes where the decision record says it does); no client-authorized financial results.
     - If GridCraft (or any ArtCraft engine) is selected beyond prototype evidence, a **per-engine adoption ADR** is approved first (ADR-0015 §1); otherwise the TS authority remains and the record says so.
     - Kernel governance duplication status is maintained and recorded (single implementation, governed temporary duplicate, or accepted exception with owner named).

@@ -7,6 +7,8 @@
 
 Exit (v3): identical measurement results and linked quantities across native/web/server, preserved source provenance, conflict behavior and representative large-PDF performance.
 
+Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-construction-integration.md) requires upstream rendering/measurement/annotation reuse before custom algorithms. T02/T04 integrate and qualify those capabilities; Contractor owns source provenance, revision invalidation, units and quantity acceptance. Reuse existing shared geometry where needed; document/register upstream gaps before implementing specialist replacements.
+
 ---
 
 - [ ] **M08-T01** — PdfCraft prototype: CLI/MCP measure/annot evidence over M00 fixtures vs PDF.js reference

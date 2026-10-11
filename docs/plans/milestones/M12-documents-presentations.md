@@ -9,6 +9,8 @@ Dependencies: M02 (contracts/tokens), M03 (synced artifact storage), M06-T12 (sh
 
 Exit: owner-ratified feature matrix for documents and decks; generated documents embed correct project data with preserved provenance; no financial arithmetic, permissions, or authoritative domain rules duplicated into the document layer; identical rendering results native/web/server where applicable; print/export fidelity evidence.
 
+Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-construction-integration.md) preserves original-app context and typed domain providers rather than standalone exports. M10-W09 consumes M12-W07's document/deck evidence for connected progress/schedule/report journeys; M12 does not depend on M10. Reuse upstream authoring/rendering/export, with Contractor templates and source bindings outside upstream.
+
 ---
 
 - [ ] **M12-W01** — Document data-flow and authority contract

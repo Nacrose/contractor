@@ -7,6 +7,8 @@
 
 Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, bounded memory and CAD interaction benchmarks on native/web. Broader AutoCAD parity remains gated by the full command/format matrix.
 
+Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-construction-integration.md) governs these tasks. Topology, spatial indexing, rendering and plotting reuse upstream capabilities before custom development; task outputs describe integrated behavior, not a parallel CAD kernel. Contractor owns construction coordinates/tolerances, revision/permission contracts and platform adapters. Missing specialist behavior requires documented gaps and registered work.
+
 ---
 
 - [ ] **M07-T01** — CADCraft prototype: CLI/MCP evidence over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess
@@ -28,8 +30,8 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - Selection/grip semantics preserved with interaction tests; undo semantics unchanged.
     - No production route cutover in this task.
 
-- [ ] **M07-T03** — Robust shared topology primitives
-  - Depends on: M07-T02 · Output: shared topology primitives with tolerance policy and degeneracy fixtures.
+- [ ] **M07-T03** — Integrate and qualify upstream topology primitives
+  - Depends on: M07-T02 · Output: shared upstream topology adapter with construction tolerance policy and degeneracy fixtures.
   - Scope: segment/curve intersections, connectivity, split/join, offsets, polygon validity, holes, tolerance policy; large survey coordinates, near-coincident points, degeneracies covered by fixtures (v3 §6 M07).
   - Acceptance:
     - Fixture set covers large survey coordinates, near-coincident points, tangent/parallel/degenerate cases with declared tolerance policy.

@@ -6,6 +6,8 @@ Status: **Plan only. Implementation has not started.** The user requested this p
 
 **ArtCraft amendment — 2026-10-12.** Owner clarification in [ADR-0016](../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md) and the [master integration plan](artcraft-suite-master-integration-plan.md) supersedes the mandatory custom Flutter worksheet grid: reuse complete upstream editors with ribbons/tools and supported embedded capability components across GridCraft, CADCraft, PdfCraft, WordCraft and DeckCraft. Contractor adapters own domain/lifecycle boundaries. M06-T12 establishes tested upstream-release updates; M06/M07/M08/M12 files register implementation and qualification. Per-app adoption, platform parity, server authority and owner-only gate requirements remain. M12 scope is recorded in its milestone file.
 
+**Whole-app integration amendment — 2026-10-12.** [ADR-0018](../adr/0018-upstream-capabilities-and-construction-integration.md) and the [platform integration strategy](open-source-platform-integration-strategy.md) make upstream reuse the first choice for generic capabilities while preserving original construction workflows and domain authority. Existing custom tools are retained, adapted or retired through a consumer-by-consumer disposition. M10-W07 prepares that mapping; W08 qualifies/integrates the intended accounting library; W09 verifies connected workflows and upgrades, including M12 document/deck evidence. This supersedes blanket custom-engine/port mandates below, without declaring a package verified or a gate passed.
+
 **Revision v3 — 2026-10-08.** Seven corrections from a second review; v1/v2 text otherwise preserved. Summary:
 
 1. **M01 fallback matrix split (§6):** implementation fallbacks remain pre-committed; product-scope changes (permanent separate React surfaces, platform-gated features, dropped browser targets) become evidence-and-proposal rows requiring an explicit user decision. The §1 parity gate holds until such a decision is recorded.
@@ -37,6 +39,8 @@ Status: **Plan only. Implementation has not started.** The user requested this p
 Deliver one construction product with shared workflows and UX on macOS (Apple Silicon and Intel), Windows, Linux, Android, iOS, and the browser. Installed apps must support durable local work and background synchronization. The browser must offer the same construction features and synchronized records without installation. Mobile layouts adapt to screen and input size without quietly omitting capabilities.
 
 The four priority engineering engines are CAD, worksheets/BoQ, PDF takeoff, and CPM scheduling. Field operations provide the first complete offline-to-cloud implementation. Existing contractor workflows, including billing, procurement, workforce, accounting, documents, and JV operations, remain part of final feature parity. Dashboard work stays last.
+
+Preserve that product behavior while upstream projects maintain reusable editors and specialist engines. Contractor owns construction rules, context, typed bindings, data lifecycle and integration quality. Shared identity, approvals and provenance connect the tools; isolated launches and manual file exchange alone do not satisfy parity. Component responsibilities and adoption status are mapped in the [integration strategy](open-source-platform-integration-strategy.md).
 
 Success means tested behavior on declared hardware and file fixtures, not claims of zero latency, unlimited scale, full AutoCAD/Excel equivalence, indestructible local storage, or unrestricted mobile background execution. Unsynchronized work cannot survive loss of its only device. Cloud synchronization and disaster-recovery backups are separate systems.
 
@@ -73,7 +77,7 @@ These are inspection findings, not a complete call-site or security audit. Recon
 | CAD commands/document state | `src/lib/cad/editor.ts`, `command-registry.ts`, `command-types.ts`, `entity-ops.ts`, `geom.ts`, `layout-types.ts`, `plot-engine.ts`; `src/lib/dxf/`; `src/components/cad/` | Retain command vocabulary, entity identity, layouts and undo semantics; extract portable contracts, robust topology and bounded rendering. Flutter views must send engine commands, not modify entities. |
 | Worksheet | `src/lib/worksheet/`: `spreadsheet-engine.ts`, `formula-engine.ts`, `workbook-recalc.ts`, `workbook-document.ts`, `workbook-structure.ts`, `virtual-grid.ts`, `workbook-excel.ts`, `workbook-save-queue.ts`; `src/components/worksheet/` | Preserve workbook format and tested editing semantics; introduce dependency-based recalculation and collaboration operations. `WorksheetDocument.version` is a starting point, not a complete collaborative protocol. |
 | Document/takeoff | `src/lib/document-engine/`: `contracts.ts`, `measurement.ts`, `annotations/model.ts`, `pdf-session.ts`, `session-registry.ts`, `job.ts`; `src/server/routers/document.ts`; Prisma `Drawing`, `DrawingRevision`, `DrawingMarkup` | Extend one document session and measurement engine with platform renderer adapters, revision-aware calibration, persisted takeoff links, cancellation and resource budgets. |
-| CPM and progress | `src/lib/cpm-engine.ts`, `calendar-snapshot.ts`, `nepal-calendar.ts`; `src/server/utils/gantt-cpm-engine.ts`; `src/server/services/scheduler/` | Preserve inclusive dates, calendars, lag-hour interpretation, constraints, actuals and retained logic; keep one calculation contract used by preview and authoritative server recalculation. |
+| CPM and progress | `src/lib/cpm-engine.ts`, `calendar-snapshot.ts`, `nepal-calendar.ts`; `src/server/utils/gantt-cpm-engine.ts`; `src/server/services/scheduler/` | Integrate owner-selected TruePPM per [ADR-0017](../adr/0017-trueppm-scheduling-integration.md). Preserve construction semantics through migration fixtures and explicit gap tracking; keep one accepted-result contract and Contractor progress/cost/approval authority. |
 | UX | `src/lib/ux/`; `src/components/ui/`; `docs/DESIGN_SYSTEM.md` | Define platform-neutral tokens and interaction contracts; implement one Flutter component library corresponding to the central React components. React components remain mandatory for existing React surfaces. |
 | Policy/lifecycle/finance | `src/server/engine/`, `src/server/trpc.ts`, `src/lib/authz.ts`, `src/lib/permission-engine.ts`, `src/lib/rls.ts`, `src/server/utils/state-machine.ts`, `financial-scopes.ts`, `financial-event-log.ts` | Share authenticated domain entry points across tRPC and native APIs. No direct native SQL access to cloud PostgreSQL and no bypass of capability/financial procedure guards. |
 | Field operations | `src/lib/field-entry-builders.ts`, `field-db.ts`, `field-outbox.ts`, `field-drafts.ts`, `field-photo.ts`; `src/server/routers/field-submission.ts`, `field-photos.ts`, `daily-report.ts`; `src/server/services/daily-report-sync.ts` | Keep existing submission and review semantics. Replace native persistence/replay with SQLite under a shared sync contract. `daily-report-sync.ts` normalizes report relations; it is not a device replication service. |
@@ -147,7 +151,7 @@ Two repositories participate: `Construction_Manager` (server, PostgreSQL access,
 
 ### Kernel governance (v3)
 
-**Dart-first remains the working hypothesis, not a gate.** New calculation kernels start from Dart, but language is a measured engineering decision per engine, and the deeper requirement is that each engine has exactly one authoritative calculation semantics wherever it runs.
+**Upstream reuse comes first (ADR-0018).** Evaluate existing supported engines/bindings before creating a calculation kernel. Do not rewrite an adopted engine just to use Dart. If a new custom kernel is justified by a documented gap and registered task, Dart-first remains a working hypothesis, not a gate; language is a measured decision. Each engine still has exactly one authoritative calculation semantics wherever it runs.
 
 **Selection is by bounded comparative prototype.** For each engine, within a timebox ratified in M00/M01, prototype the plausible candidates — e.g. (i) a focused Dart implementation, (ii) an existing library where one exists, (iii) a Rust port where profiling justifies — and score them against:
 
@@ -163,7 +167,7 @@ Two repositories participate: `Construction_Manager` (server, PostgreSQL access,
 - the **shared fixture set** that proves equivalence everywhere the engine runs;
 - **duplication status** — exactly one of: a single implementation for all targets; a temporary duplicate governed by instruction 9 (named owner, fixtures, removal gate); or an explicitly accepted permanent exception with recorded rationale.
 
-Expected outcome unchanged: the worksheet recalculation engine is the strongest binding-heavy candidate for a non-Dart kernel; CPM is expected to remain server-authoritative TypeScript with any client-side port governed as a temporary duplicate under instruction 9; adopting zero Rust kernels is an acceptable, pre-approved outcome if budgets are met.
+Scheduling direction amended 2026-10-12: [ADR-0017](../adr/0017-trueppm-scheduling-integration.md) selects TruePPM's engine as the target server authority, initially through its Python package and a Contractor service adapter. Existing TypeScript/Dart CPM paths are migration references until verified cutover, then retired; any upstream preview remains governed and reconciled under instruction 9. Other engine decisions remain subject to their own evidence records; adopting zero Rust kernels is still acceptable if budgets are met.
 
 ### Cross-platform rules
 
@@ -374,8 +378,8 @@ Exit: each workflow passes the same crash/replay/permission contract suite and n
 Dependencies: M02, M03; M01 file/compute feasibility accepted. May be developed before M05 completes, but integrated rollout waits for the shared sync gate.
 
 - Evolve the current workbook model, command semantics, structure transforms, names, formatting and formula registry. Define versioned migration of positional references into stable collaboration identities without changing displayed A1 behavior.
-- Implement a dependency graph, dirty propagation, cycle/error handling and bounded/cancellable recalculation. Define volatile functions, random/time inputs and external-reference behavior so server/native/web results agree.
-- Port calculation modules to the shared core only with differential fixtures and a verified server binding. Keep imported formulas/formatting and known unsupported features visible; no silent lossy export.
+- Integrate and qualify upstream dependency tracking, dirty propagation, cycle/error handling and bounded/cancellable recalculation through an adapter. Define volatile/random/time/external-reference contracts; record missing hooks rather than rebuilding the evaluator.
+- Bind the adopted calculation engine with differential fixtures and verified server execution; no mandatory language port or second formula engine. Keep imported formulas/formatting and known unsupported features visible; no silent lossy export.
 - Reuse GridCraft UI in two modes: the full upstream workbook editor with ribbons/tools, and an embedded grid for applicable calculation/data-entry tables. Contractor adapters use supported upstream components/configuration; prove installed-app/browser hosts, protection and mode continuity. Retain virtualization and no recalculation on scrolling; a custom Flutter grid is no longer mandated.
 - Establish the shared ArtCraft release-update command with machine-readable immutable pins, actual release-to-release compatibility and rollback evidence; migrate applicable table consumers through stable domain commands (M06-T12/T13).
 - Add cell/structure operations, version checks, compensating undo, conflict review, workbook compaction/checkpoints and IPC/BoQ integration through existing financial services.
@@ -389,10 +393,10 @@ Dependencies: M02, M03 and M01 file/compute gate. Shares operation substrate wit
 
 - Reuse the full CADCraft drafting interface plus focused embedded drawing review/layer/redline/plot components; prove supported hosts and command/lifecycle boundaries without upstream source edits. Qualify release updates/rollback through M06-T12 (M07-T11).
 - Preserve the central command registry and input state machines: command line, aliases, numeric/relative input, cancel/repeat, selection, grips, snap, ortho, units, undo and layouts.
-- Implement robust shared topology primitives: segment/curve intersections, connectivity, splitting/joining, offsets, polygon validity, holes and tolerance policy. Include large survey coordinates, near-coincident points and degeneracies.
-- Add spatial indexing and invalidation; produce bounded visible geometry batches for the renderer. Benchmark text, hatches, blocks, dimensions, selection and snapping, not only simple lines.
+- Reuse and qualify upstream topology primitives for intersections, connectivity, split/join, offsets, polygon validity and holes; Contractor supplies the construction tolerance/coordinate contract. Include large survey coordinates, near-coincident points and degeneracies. Custom algorithms require an evidenced upstream gap and registered work.
+- Reuse upstream spatial indexing/invalidation and rendering through bounded adapters. Benchmark text, hatches, blocks, dimensions, selection and snapping, not only simple lines; do not build a parallel CAD renderer.
 - Preserve entity IDs across imports/edits where defined. Import fidelity, unsupported objects and DWG conversion requirements are explicit; never claim AutoCAD parity from command labels alone. **(v2)** Consume the M01 DWG spike outcome; the DWG product limitation, if any, ships documented.
-- Implement model/paper space, viewports, scale, lineweights, fonts and vector PDF plot through one layout/plot engine and platform file/print adapters.
+- Integrate upstream model/paper space, viewports, scale, lineweights, fonts and vector PDF plot through one adopted layout/plot engine and platform file/print adapters.
 - Integrate entity/group operation revision checks and conflict resolution. Block topology-breaking partial group acceptance.
 
 Exit: command/geometry/plot fixture parity, file compatibility matrix, bounded memory and CAD interaction benchmarks on native/web. Broader AutoCAD parity remains gated by the full command/format matrix, including any missing 3D or advanced features.
@@ -404,6 +408,7 @@ Dependencies: M02, M03; M06 BoQ linking contract; M07 reusable geometry primitiv
 - Reuse the full PdfCraft editor plus focused embedded takeoff/annotation/preview components; prove supported hosts and lifecycle boundaries. Qualify release updates/rollback through M06-T12 (M08-T09).
 - Extend existing document sessions with renderer adapters, viewport tiling, bounded decoded-page cache, cancellation and explicit disposal. Never rasterize every page eagerly.
 - Persist revision/page/crop/rotation/calibration provenance and vector measurement geometry. Cover area with holes, polyline length, perimeter, unit conversion and counts; reject invalid geometry.
+- Reuse the adopted measurement/annotation engine and shared geometry where available; Contractor owns provenance and quantity acceptance, with missing specialist capabilities recorded before custom implementation.
 - Establish a first-class takeoff-to-BoQ link using existing models where they fit. Quantity changes go through one domain integration path; no direct BoQ cell mutation from a drawing widget.
 - Recalibration/revision changes mark affected measurements and downstream quantities for review. Prevent double counting repeated links or replayed measurements.
 - Validate multi-page, rotated, mixed-size and scanned blueprints; vector overlays do not imply automatic extraction of all PDF geometry.
@@ -414,19 +419,22 @@ Exit: identical measurement results and linked quantities across native/web/serv
 
 Dependencies: M03, M05, M06; portable core substrate from M01/M02.
 
-- Evolve `cpm-engine.ts` semantics through shared fixtures before porting: calendars/holidays, inclusive dates, milestones, FS/SS/FF/SF, lag hours, constraints, actuals, retained logic, float and leveling floors.
-- Treat calendars, data date, rates and progress as versioned calculation inputs. No ambient device timezone/holiday cache changes to authoritative results.
-- Reuse scheduler progress/cost/approval services and preserve contractual BoQ versus RA cost separation.
-- Implement one virtualized Gantt view and typed schedule operations. Offline schedules are local proposals until server acceptance; graph cycles/conflicting dependencies are surfaced.
-- Preserve immutable baseline/version concepts and explain recalculation changes before applying regulated/approved schedule updates.
+- Adopt TruePPM's OSS application and actual engine per [ADR-0017](../adr/0017-trueppm-scheduling-integration.md); integrate instead of continuing a custom CPM rewrite. Verify construction conventions against real upstream fixtures and current behavior before migration.
+- Host the full upstream workspace plus supported focused views inside workflows; prove native/web bindings without forking upstream or rebuilding a parallel Gantt stack.
+- Version calendars, data date, rates, progress and engine release. Preserve date-only construction values and explicitly map units; no ambient timezone/holiday cache changes authoritative results.
+- Keep Contractor's progress/cost/approval services, tenant isolation and change feed authoritative. Preserve contractual BoQ versus RA cost separation and idempotent posting; all upstream edits use the authorized acceptance path.
+- Offline schedules remain local proposals until server acceptance; reconcile previews and surface cycles/conflicts. Preserve immutable baselines and explain changes before applying approved revisions.
+- Develop alongside upstream releases through M09-W08's immutable pins, update command, compatibility checks and migration/restore evidence. M09-W09 tracks actual capability delivery and retires legacy CPM after cutover; roadmap dates do not replace evidence. See the [TruePPM registry](../vendor/TRUEPPM.md).
 
 Exit: native/web/server schedule results agree, progress cannot post twice, cash-flow uses the correct rate source and large-graph edits remain responsive.
 
 ### M10 — Full feature parity and web migration
 
-Dependencies: M04–M09 and the M00 inventory.
+Dependencies: M04–M09 and the M00 inventory; document/deck legs of M10-W09 also require M12-W07 evidence. M10-W07's bounded documentation mapping may prepare earlier milestones after its declared prerequisites; this does not start production migration early.
 
 - Migrate remaining contractor workflows through shared components and existing server domain services. Track every inventory item; four engineering engines alone are not full application parity.
+- Map original custom tools to retained construction rules, upstream replacements, adapters and retirement evidence before each wave (M10-W07). Qualify the intended `flutter_accounting` library and integrate through existing accounting services with one ledger authority (M10-W08); source/API/license remain unverified until that work.
+- Verify connected takeoff/BoQ/procurement/billing, delivery/journal/report and progress/schedule/document journeys using actual adopted components, including offline replay and upgrade/restore (M10-W09). Preserve stable context and approved/issued history across tool boundaries.
 - Introduce one route at a time with one active writer contract per entity/document version. Do not duplicate authoritative business logic or silently downgrade old clients.
 - Verify role-based visibility, imports/exports, print fidelity, file links, search, errors, keyboard behavior, accessibility, screen sizes and localization on both Flutter web and installed apps.
 - Validate deep links and session transitions between remaining Next.js areas and Flutter web. Keep deployment paths, asset caching and rollback explicit.
@@ -557,7 +565,7 @@ Automatic rejection criteria for implementation review:
 | M07 | Blocked by M02/M03 | CAD topology/command/render/plot evidence |
 | M08 | Blocked by required M06/M07 contracts | Revision-aware takeoff and BoQ linking |
 | M09 | Blocked by M03/M05/M06 | Schedule/progress/cash-flow parity |
-| M10 | Blocked by M04–M09 | Complete cross-platform feature matrix |
+| M10 | Migration blocked by M04–M09; document/deck integration evidence from M12 | Complete cross-platform feature matrix and connected upstream workflows |
 | M11 | Release blocked by M03–M10 | Recovery, signed installers and rollout evidence |
 
 **Standing constraint (v2):** every new server-side domain feature accepted from M03 onward must name, in its task packet, its change-feed integration and Flutter-parity path, or defer explicitly with a ledger entry.
