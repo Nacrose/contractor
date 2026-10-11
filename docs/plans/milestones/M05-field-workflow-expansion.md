@@ -51,7 +51,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - EXIF/geotag handling and server-side StoredFile digest dedup behave as the current app (M00 local-stores/asset inventory rows); any difference is listed and dispositioned explicitly, none silent.
     - The native camera/file adapter bindings honor the port contracts (real SHA-256 digest, fail-closed on store errors) — mount-level binding tests per the M04-T02 pattern; package semantics are not re-proved.
 
-- [ ] **M05-T06** — OS scheduling adapters with persisted scheduling state
+- [x] **M05-T06** — OS scheduling adapters with persisted scheduling state (PR #61)
   - Depends on: M05-T01 · Output: scheduling adapter bindings + durable scheduling state + tests.
   - Scope: background sync opportunities used where the OS provides them; **foreground recovery works when background execution never ran** (v3 §6 M05 bullet 4).
   - Acceptance:
