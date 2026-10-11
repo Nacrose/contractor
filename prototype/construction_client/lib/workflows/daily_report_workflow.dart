@@ -348,7 +348,23 @@ abstract interface class DailyReportWorkflowStore {
 
   DeviceSyncHealth syncHealth(String accountId, String tenantId);
 
+  /// Exact per-project feed watermarks committed by snapshot/bootstrap.
+  /// Keep the decimal cursor as a string to avoid precision loss on web.
+  List<DailyReportFeedCursor> feedCursors(String accountId, String tenantId);
+
   Future<void> syncNow();
+}
+
+class DailyReportFeedCursor {
+  final String projectId;
+  final String cursor;
+  final int updatedAtMs;
+
+  const DailyReportFeedCursor({
+    required this.projectId,
+    required this.cursor,
+    required this.updatedAtMs,
+  });
 }
 
 class DailyReportLocalStore implements DailyReportWorkflowStore {
@@ -531,6 +547,25 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
         mount.healthSource(accountId: accountId, tenantId: tenantId),
         HealthOptions(nowMs: DateTime.now().millisecondsSinceEpoch),
       );
+
+  @override
+  List<DailyReportFeedCursor> feedCursors(
+    String accountId,
+    String tenantId,
+  ) => mount.driver
+      .prepare(
+        'SELECT project_id, cursor, updated_at FROM daily_report_feed_cursor '
+        'WHERE account_id = ? AND tenant_id = ? ORDER BY project_id',
+      )
+      .all([accountId, tenantId])
+      .map(
+        (row) => DailyReportFeedCursor(
+          projectId: '${row['project_id']}',
+          cursor: '${row['cursor']}',
+          updatedAtMs: row['updated_at'] as int,
+        ),
+      )
+      .toList(growable: false);
 
   @override
   Future<void> syncNow() => mount.drainTriggers.manual();

@@ -13,7 +13,7 @@ Device sync health card, expired authentication shows a sign-in action and
 revoked project access tells the user to contact an admin; both notices state
 that locally saved reports are retained. The fault-matrix assertions verify
 each event carries the stopped operation ID, and two screen tests verify the
-recovery copy and sign-in action. The full Flutter client suite passes (204
+recovery copy and sign-in action. The full Flutter client suite passes (205
 tests), and `flutter analyze --no-pub` reports no issues. These checks cover the
 event and UI seams separately; they do not count as a device-recorded health
 transcript.

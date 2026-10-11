@@ -189,6 +189,9 @@ class _OfflinePreviewStore implements DailyReportWorkflowStore {
   DeviceSyncHealth syncHealth(String accountId, String tenantId) =>
       local.syncHealth(accountId, tenantId);
   @override
+  List<DailyReportFeedCursor> feedCursors(String accountId, String tenantId) =>
+      local.feedCursors(accountId, tenantId);
+  @override
   Future<void> syncNow() => Future.error(
     StateError(
       'This is local preview mode. Sign in to the connected product host to sync.',

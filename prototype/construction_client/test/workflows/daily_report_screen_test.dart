@@ -21,7 +21,7 @@ void main() {
       options: MountOptions(
         dbPath: '${tmp.path}/outbox.db',
         objectRoot: Directory('${tmp.path}/objects'),
-        extraMigrations: const [kDailyReportLocalMigration],
+        extraMigrations: kM04WorkflowMigrations,
       ),
       credentials: _Credentials(),
       transport: _Transport(),
@@ -57,6 +57,42 @@ void main() {
       expect(find.text('Save and sync'), findsOneWidget);
       expect(find.text('Workforce'), findsOneWidget);
       expect(find.text('Materials consumed'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'shows exact snapshot feed cursors separately from operation sequences',
+    (tester) async {
+      mount!.driver
+          .prepare(
+            'INSERT INTO daily_report_feed_cursor '
+            '(account_id, tenant_id, project_id, cursor, updated_at) '
+            'VALUES (?, ?, ?, ?, ?)',
+          )
+          .run(['acct-1', 'tenant-1', 'project-1', '9007199254740993', 123]);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: DailyReportLocalStore(mount!),
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Accepted feed cursors'), findsOneWidget);
+      expect(find.text('project:project-1: 9007199254740993'), findsOneWidget);
+      expect(find.text('Accepted operation sequences'), findsOneWidget);
+      expect(
+        find.text('No accepted operation recorded on this device yet.'),
+        findsOneWidget,
+      );
     },
   );
 
@@ -177,10 +213,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('P-01 — Bridge').last);
-    await tester.pumpAndSettle();
+    await _selectProject(tester);
 
     final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
     await tester.ensureVisible(remarks);
@@ -216,10 +249,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(DropdownButtonFormField<String>).first);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('P-01 — Bridge').last);
-      await tester.pumpAndSettle();
+      await _selectProject(tester);
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Daily remarks'),
         'Original report content',
@@ -282,10 +312,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('P-01 — Bridge').last);
-    await tester.pumpAndSettle();
+    await _selectProject(tester);
 
     await tester.enterText(
       find.widgetWithText(TextFormField, 'Company'),
@@ -446,10 +473,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(DropdownButtonFormField<String>).first);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('P-01 — Bridge').last);
-      await tester.pumpAndSettle();
+      await _selectProject(tester);
       await tester.ensureVisible(find.text('Choose photo'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Choose photo'));
@@ -476,7 +500,11 @@ void main() {
 
       photos.records.removeLast();
       final remarks = find.widgetWithText(TextFormField, 'Daily remarks');
-      await tester.ensureVisible(remarks);
+      await tester.dragUntilVisible(
+        remarks,
+        find.byType(ListView),
+        const Offset(0, -300),
+      );
       await tester.enterText(remarks, 'Report with registered photo');
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Save locally'));
@@ -495,6 +523,16 @@ void main() {
       ]);
     },
   );
+}
+
+Future<void> _selectProject(WidgetTester tester) async {
+  final projectSelector = find.byType(DropdownButtonFormField<String>).first;
+  await tester.ensureVisible(projectSelector);
+  await tester.pumpAndSettle();
+  await tester.tap(projectSelector);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('P-01 — Bridge').last);
+  await tester.pumpAndSettle();
 }
 
 class _Photos implements DailyReportPhotoPort {

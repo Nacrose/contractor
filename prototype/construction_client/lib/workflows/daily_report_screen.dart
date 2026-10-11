@@ -456,6 +456,10 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         ? null
         : widget.store.operationState(widget.accountId, _savedId!);
     final health = widget.store.syncHealth(widget.accountId, widget.tenantId);
+    final feedCursors = widget.store.feedCursors(
+      widget.accountId,
+      widget.tenantId,
+    );
     final reportPhotos = _reportPhotos;
     final attachmentState = reportPhotos.isEmpty
         ? AttachmentCompletionState.ATTACHMENT_COMPLETION_STATE_NOT_REQUIRED
@@ -541,6 +545,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           ),
           _SyncHealthCard(
             health: health,
+            feedCursors: feedCursors,
             accessIssue: widget.syncAccessIssue,
             onSignInAgain: widget.onSignInAgain,
           ),
@@ -1160,11 +1165,13 @@ Future<void> _showReport(
 class _SyncHealthCard extends StatelessWidget {
   const _SyncHealthCard({
     required this.health,
+    required this.feedCursors,
     this.accessIssue,
     this.onSignInAgain,
   });
 
   final DeviceSyncHealth health;
+  final List<DailyReportFeedCursor> feedCursors;
   final DailyReportSyncAccessIssue? accessIssue;
   final VoidCallback? onSignInAgain;
 
@@ -1202,8 +1209,18 @@ class _SyncHealthCard extends StatelessWidget {
             'Accepted feed cursors',
             style: Theme.of(context).textTheme.labelMedium,
           ),
+          if (feedCursors.isEmpty)
+            const Text('No accepted feed cursor recorded on this device yet.')
+          else
+            for (final cursor in feedCursors)
+              Text('project:${cursor.projectId}: ${cursor.cursor}'),
+          const SizedBox(height: 4),
+          Text(
+            'Accepted operation sequences',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
           if (health.lastAcceptedCursors.isEmpty)
-            const Text('No accepted cursor recorded on this device yet.')
+            const Text('No accepted operation recorded on this device yet.')
           else
             for (final cursor in health.lastAcceptedCursors)
               Text('${cursor.scope}: ${cursor.lastAcceptedSeq}'),

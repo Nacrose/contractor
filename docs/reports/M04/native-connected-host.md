@@ -31,7 +31,7 @@ Use `prototype/construction_client/`, not the separate `apps/construction_client
 ## 2026-10-11 follow-on
 
 After wiring orchestrator authentication/revocation events into the shared
-screen, the full Flutter suite passes (204 tests) and `flutter analyze
+screen, the full Flutter suite passes (205 tests) and `flutter analyze
 --no-pub` is clean. Current compile-only builds also pass for unsigned iOS
 release (`build/ios/iphoneos/Runner.app`), macOS debug
 (`build/macos/Build/Products/Debug/construction_client.app`), and web release
