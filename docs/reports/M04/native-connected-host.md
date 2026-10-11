@@ -19,8 +19,7 @@ includes `localhost` and `127.0.0.1`, but not the Mac Wi-Fi host used by the
 iPhone (`192.168.1.66`). The login form submits through a client-side React
 handler and has no server form action. If the LAN-origin restriction prevents
 the login JavaScript from loading, the browser can fall back to a GET and
-reload the login page. This is the leading code-based diagnosis, not a proven
-runtime cause; browser network/console evidence is unavailable. The product
+reload the login page. This is the leading code-based diagnosis; browser network/console evidence is unavailable. A local request comparison returned HTTP 200 for the login JavaScript bundle with same-origin headers and HTTP 403 when emulating a cross-site dev-asset request from `192.168.1.66`. This confirms the Next.js allowlist behavior, but does not prove which headers Safari sent. The product
 repo requires explicit owner confirmation before edits, so the LAN-origin
 requested LAN-origin allowance and server-handled fallback are awaiting owner approval. The owner reports the direct LAN `:3108` sign-in attempt also reloaded the login page. Native sign-in and live sync acceptance remain open.
 
