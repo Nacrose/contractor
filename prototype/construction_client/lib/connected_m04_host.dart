@@ -335,6 +335,7 @@ class _ConnectedServices {
         accountId: session.accountId,
         client: authorized,
         authorizationHeaders: () async => const {},
+        onAuthFailure: (kind) => onAuthEvent(kind, null),
       ),
     );
     final snapshotTransport = HttpDailyReportSnapshotTransport(

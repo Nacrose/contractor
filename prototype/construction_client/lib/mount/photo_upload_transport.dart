@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 import 'attachment_transfer.dart';
+import 'native_identity.dart';
 import 'ports.dart';
 
 /// One protocol for Flutter web and installed clients. The session owner
@@ -14,6 +15,7 @@ class HttpPhotoUploadRegistrar
   final Uri endpoint;
   final String accountId;
   final Future<Map<String, String>> Function() authorizationHeaders;
+  final void Function(String kind)? onAuthFailure;
   final http.Client client;
   final Duration timeout;
 
@@ -22,6 +24,7 @@ class HttpPhotoUploadRegistrar
     required this.accountId,
     required this.authorizationHeaders,
     required this.client,
+    this.onAuthFailure,
     this.timeout = const Duration(seconds: 30),
   });
 
@@ -129,19 +132,56 @@ class HttpPhotoUploadRegistrar
         return decoded;
       }
       final failure = switch (kind) {
-        'revoked' || 'authentication_required' => AttachmentFailureKind.revoked,
+        'revoked' ||
+        'authentication_required' ||
+        'session_revoked' ||
+        'session_expired' ||
+        'reuse_detected' ||
+        'unauthorized' => AttachmentFailureKind.revoked,
         'rejection' => AttachmentFailureKind.rejection,
         'digest_mismatch' => AttachmentFailureKind.digestMismatch,
         _ => AttachmentFailureKind.retryable,
       };
+      if (failure == AttachmentFailureKind.revoked) {
+        onAuthFailure?.call(
+          kind == 'revoked' ? 'revoked' : 'authentication_required',
+        );
+      }
       throw AttachmentRegistrarError(
         failure,
         failure == AttachmentFailureKind.revoked
-            ? 'Sign in and check project access before retrying.'
+            ? kind == 'revoked'
+                  ? 'Project access changed. Check access before retrying this photo.'
+                  : 'Sign in again, then retry this photo. The local photo is retained.'
             : 'Photo upload needs attention; the local photo is retained.',
       );
     } on AttachmentRegistrarError {
       rethrow;
+    } on NativeIdentityFailure catch (error) {
+      const expiredSessionKinds = {
+        'authentication_required',
+        'session_revoked',
+        'session_expired',
+        'reuse_detected',
+        'unauthorized',
+      };
+      final authenticationRequired = expiredSessionKinds.contains(error.kind);
+      final revoked = error.kind == 'revoked';
+      if (authenticationRequired || revoked) {
+        onAuthFailure?.call(
+          authenticationRequired ? 'authentication_required' : 'revoked',
+        );
+        throw AttachmentRegistrarError(
+          AttachmentFailureKind.revoked,
+          authenticationRequired
+              ? 'Sign in again, then retry this photo. The local photo is retained.'
+              : 'Project access changed. Check access before retrying this photo.',
+        );
+      }
+      throw AttachmentRegistrarError(
+        AttachmentFailureKind.retryable,
+        'Photo upload could not authenticate. Retry after checking the connection.',
+      );
     } catch (_) {
       throw const AttachmentRegistrarError(
         AttachmentFailureKind.retryable,
