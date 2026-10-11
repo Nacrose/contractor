@@ -49,3 +49,12 @@ declare module "node:path" {
 declare module "node:url" {
   export function fileURLToPath(url: string): string;
 }
+
+declare module "node:crypto" {
+  export interface Hash {
+    update(data: string): Hash;
+    digest(encoding: string): string;
+  }
+  export function createHash(algorithm: string): Hash;
+}
+

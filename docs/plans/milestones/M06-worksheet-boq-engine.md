@@ -63,7 +63,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - 50k/100k-row workloads report scrolling, input/paste, recalc, memory and serialization separately on ratified profiles; scrolling causes no recalc. Virtualization reuses the upstream grid rather than per-cell host widgets.
     - Production use remains gated by the adoption ADR and evidence; missing extension hooks are tracked upstream and block the affected embedded capability.
 
-- [ ] **M06-T06** — Cell/structure operations: version checks, compensating undo, conflict review, compaction/checkpoints
+- [x] **M06-T06** — Cell/structure operations: version checks, compensating undo, conflict review, compaction/checkpoints (PR #71)
   - Depends on: M06-T02, M06-T04 · Output: operation layer with versioning, undo and compaction evidence.
   - Scope: cell/structure operations with version checks, compensating undo, conflict review, workbook compaction/checkpoints (v3 §5.4 worksheet rows, §6 M06).
   - Acceptance:
