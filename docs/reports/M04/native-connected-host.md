@@ -27,7 +27,7 @@ still open.
 
 ## Local environment
 
-The signup PostgreSQL cluster is at `127.0.0.1:5433`, database `contractor_m04_signup`. The additive native PKCE and resumable photo journal migrations (`20261023100000_native_pkce_sessions` and `20261023110000_native_photo_upload`) applied successfully; existing account data was preserved. The local product server is running on port 3108 and uses this database. The LAN address for a device on the same Wi-Fi is `192.168.1.66:3108`.
+At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. On the current 2026-10-11 check, neither `127.0.0.1:3108` nor the LAN forwarder `192.168.1.66:3000` accepts connections. Start the local product server and its Wi-Fi forwarder before retrying device sign-in. The previous login-page reload remains the last device result; no authenticated session is established.
 
 ## Run the M04 app
 
