@@ -24,7 +24,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - The M00 inventories' attendance writers are audited and dispositioned (migrated → emit their change atomically per the M03-T04 pattern; excluded → reason recorded) — no silent writer; the Flutter-parity path is named (M02 `platform_contracts` generation pattern).
     - Approval remains a distinct server-side action where currently required; the native client cannot self-approve (permission guards enforced at the adapter, in GUARD_ORDER).
 
-- [ ] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history)
+- [x] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history) (PR #58)
   - Depends on: M05-T01 · Output: expense submission workflow running on native and web with tests.
   - Scope: existing `site-expense` resolvers reused (adapter seed binding `siteExpense.create` already names the full financial guard chain); approval distinctness preserved; original actor + edited payload audit history kept (v3 §6 M05 bullet 2).
   - Acceptance:
@@ -33,7 +33,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Original actor + edited payload audit history survives the sync path: an office edit does not overwrite who originally submitted or what they submitted (pinned by test against the real audit-log service).
     - Financial command receipts follow the M03-T04 §7 durable-receipt rules (never expiry-deleted; compaction keeps the replay gate fail-closed).
 
-- [ ] **M05-T04** — MRR / delivery submissions (office review flows reused)
+- [x] **M05-T04** — MRR / delivery submissions (office review flows reused) (PR #59)
   - Depends on: M05-T01 · Output: MRR/delivery submission workflow running on native and web with tests.
   - Scope: `field-submission.ts` office review flows reused; material reconciliation semantics unchanged — `daily-report-sync` normalization is not forked or re-implemented client-side (v3 §6 M05 bullet 2).
   - Acceptance:
@@ -42,7 +42,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Material reconciliation results are computed server-side from the same inputs as the current app — parity pinned by test (differences would be listed and dispositioned, none silent).
     - The delivery writer set is dispositioned against the M00 inventories (migrated/excluded with reasons) per the M03-T04 audited-writer pattern.
 
-- [ ] **M05-T05** — Field photos through the full pipeline (native camera/files adapters)
+- [x] **M05-T05** — Field photos through the full pipeline (native camera/files adapters) (PR #60)
   - Depends on: M05-T01, M04-T04 · Output: capture → stage → finalize → register for every expansion workflow that attaches media, with tests.
   - Scope: native camera + OS file adapters bound to the M03-T06 protocol (one manager, one journal — no per-workflow transfer code); photos visible in office review surfaces (v3 §6 M05 bullet 4).
   - Acceptance:
@@ -51,7 +51,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - EXIF/geotag handling and server-side StoredFile digest dedup behave as the current app (M00 local-stores/asset inventory rows); any difference is listed and dispositioned explicitly, none silent.
     - The native camera/file adapter bindings honor the port contracts (real SHA-256 digest, fail-closed on store errors) — mount-level binding tests per the M04-T02 pattern; package semantics are not re-proved.
 
-- [ ] **M05-T06** — OS scheduling adapters with persisted scheduling state
+- [x] **M05-T06** — OS scheduling adapters with persisted scheduling state (PR #61)
   - Depends on: M05-T01 · Output: scheduling adapter bindings + durable scheduling state + tests.
   - Scope: background sync opportunities used where the OS provides them; **foreground recovery works when background execution never ran** (v3 §6 M05 bullet 4).
   - Acceptance:
@@ -60,7 +60,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - OS scheduler bindings (Android WorkManager / iOS BGTaskScheduler class) live behind the mount ports — no scheduling logic inside workflow code.
     - OS constraints (battery/quota deferrals) surface honestly through the health read model — a blocked background window is visible, never silent.
 
-- [ ] **M05-T07** — Existing browser drafts/queues: explicit export/import or safe drain
+- [x] **M05-T07** — Existing browser drafts/queues: explicit export/import or safe drain (PR #62)
   - Depends on: M05-T02, M05-T03, M05-T04 · Output: migration tooling/flow with tests + drain evidence report `docs/reports/M05/browser-drain.md`.
   - Scope: explicit export/import or safe draining of existing browser drafts/queues (`cm-field-outbox` IndexedDB v3: `outbox`/`drafts`/`queries`; legacy `cm-offline-v2`) BEFORE retiring field PWA code; operation IDs preserved; no blanket IndexedDB deletion (v3 §6 M05 bullet 5).
   - Acceptance:
