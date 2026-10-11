@@ -550,7 +550,11 @@ export class DependencyGraph {
             const cell = s.cells[`${row.id}:${col.id}`];
             if (cell) {
               const val = cell.computed !== undefined ? cell.computed : cell.value;
-              return typeof val === 'number' ? String(val) : '0';
+              if (typeof val === 'number') return String(val);
+              if (typeof val === 'string' && val.trim() !== '' && !isNaN(Number(val))) {
+                return String(Number(val));
+              }
+              return '0';
             }
           }
         }

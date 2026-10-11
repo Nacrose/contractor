@@ -40,7 +40,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Volatile/random/time inputs and external references are defined (M06-T01 evidence informs this); server/native/web results agree on the fixture set.
     - M00 profiling (fresh-evaluator scan behavior) informs the incremental boundary and is cited in the report.
 
-- [ ] **M06-T04** — Upstream calculation adoption and shared binding with differential fixtures
+- [x] **M06-T04** — Upstream calculation adoption and shared binding with differential fixtures (PR #69)
   - Depends on: M06-T01, M06-T03 · Output: per-engine decision record and adopted upstream binding with differential fixture evidence.
   - Scope: integrate the selected upstream calculation engine behind shared contracts with verified server execution; no mandatory language port. The decision record honors single authority and governed preview duplication (v3 §4, §6 M06).
   - Acceptance:

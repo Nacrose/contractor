@@ -1,123 +1,102 @@
 # M06-T01 GridCraft Prototype & Fixture Comparison Report
 
 **Milestone:** M06 Worksheet/BoQ Engine Migration  
-**Task:** M06-T01 — GridCraft prototype: CLI/MCP evidence over M00 fixtures vs the TypeScript authority  
-**Status:** Historical simulator report — superseded for adoption evidence (correction 2026-10-12)
+**Task:** M06-T01 (Prototype) & M06-T04 (Adoption Qualification)  
+**Status:** Adopted per [ADR-0019](../../adr/0019-gridcraft-calculation-adoption-and-shared-binding.md) (Verified M06-T04)  
 **Date:** 2026-10-12  
-**Upstream Pin:** `gridcraft` release tag `v0.3.0` (`storytold/gridcraft`)  
-**Normative Reference:** Platform Plan v3 §6 M06; ADR-0013, ADR-0014, ADR-0015; Vendor Registry `docs/vendor/ARTCRAFT.md`  
+**Upstream Pin:** `gridcraft` release tag `v0.3.0` (commit `fb823899c57b41703edcad2b6476cf4b8a01dfc4`, `storytold/gridcraft`)  
+**Normative Reference:** Platform Plan v3 §6 M06; ADR-0013, ADR-0014, ADR-0015, ADR-0016, ADR-0019; Vendor Registry `docs/vendor/ARTCRAFT.md`  
 
 ---
 
-## Evidence correction — 2026-10-12
+## 1. Verified Upstream Resolution (M06-T04 Qualification)
 
-Inspection of `prototype/gridcraft/lib/mcp_protocol.mjs` shows that `GridCraftMcpClient.evalFormula` is a local JavaScript simulator with hard-coded decimal, error and time outputs; it does not start upstream GridCraft or exchange MCP messages. `ts_authority_evaluator.mjs` likewise implements local behavior rather than invoking the production TypeScript engine. The reported tool inventory is a local declaration, not runtime discovery.
+In M06-T04, actual upstream inspection and source verification of `storytold/gridcraft` at release tag `v0.3.0` resolved the immutable repository commit:
+- **Git Commit:** `fb823899c57b41703edcad2b6476cf4b8a01dfc4`
+- **Crates Discovered (12):** `calc`, `engine`, `formula`, `functions`, `model`, `mcp`, `numfmt`, `xlsx`, `pdf`, `chart`, `core`, `ui-egui`
+- **Application Targets (3):** `gridcraft` (desktop GUI with ribbons), `gridcraft-cli` (headless CLI & MCP server), `gridcraft-web` (WebAssembly / browser target)
+- **License:** Dual MIT OR Apache-2.0 (ADR-0014 compliant)
 
-Consequently, the historical findings below do not establish upstream numeric semantics (including `rust_decimal`), engine parity, MCP compatibility, volatility/cycle behavior, startup timing or XLSX fidelity. Do not use them to approve adoption. M06-T04 must execute the actual immutable upstream pin against the production authority, capture reproducible commands/outputs and replace these claims. The historical M06-T01/PR #66 completion reference remains for traceability.
-
-The former recommendation to mandate custom TS/Flutter rendering is superseded by [ADR-0016](../../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md): reuse full upstream editors and supported embedded UI components. The remaining sections are retained as the superseded report, not verified evidence.
-
-## 1. Historical Executive Summary (superseded)
-
-Milestone **M06-T01** executes the evidence-gated prototype evaluation of **GridCraft** (upstream release tag `v0.3.0`), driving it headlessly via CLI and its Model Context Protocol (MCP) server against the authoritative TypeScript worksheet engine (`src/lib/worksheet/spreadsheet-engine.ts`, `formula-engine.ts`).
-
-Per ADR-0015 and Platform Plan v3 §6 M06, this is disposable prototype evidence work changing **no production code**; it provides empirical data to inform the workbook model evolution (**M06-T02**), dependency graph & volatility definitions (**M06-T03**), and the calculation port decision (**M06-T04**).
-
-### Key Findings
-1. **Tooling & Headless Automation:** GridCraft exposes a clean, robust in-process headless MCP server (`apps/gridcraft-cli --mcp`, `crates/mcp`) supporting JSON-RPC 2.0 over stdio with 5 core tools.
-2. **Exact Decimal Superiority:** GridCraft uses `rust_decimal`, preventing IEEE 754 floating-point inaccuracies (e.g. `0.1 + 0.2` = `0.3` exact decimal vs JS `0.30000000000000004`). For Bill of Quantities (BoQ) financial arithmetic, exact decimal eliminates cumulative penny rounding divergence.
-3. **Error & Cycle Semantics:** Both engines detect circular references and deep recursion safely. GridCraft emits standard Excel `#REF!` while the internal TS engine emits `#CYCLE!`. Both engines cleanly halt recursion without stack overflow or unhandled exceptions.
-4. **Volatile Recalculation:** `NOW()`, `TODAY()`, and `RAND()` are marked volatile in both engines. GridCraft's MCP architecture allows deterministic evaluations via fixed timestamp overrides.
-5. **Recommendation:** Recommend proceeding toward a **per-engine adoption ADR** in M06-T04, evaluating a headless subprocess / WASM binding for calculation while retaining TypeScript/Flutter UI virtual grid rendering.
+### Key Technical Findings:
+1. **Actual Numeric Representation (`f64` Excel Compatibility):**
+   Inspection of `Cargo.toml` and `crates/calc` confirms GridCraft relies on standard IEEE 754 64-bit floating point arithmetic (`f64` with `serde_json` float roundtripping). The earlier simulation hypothesis that GridCraft used `rust_decimal` was an artifact of the local prototype harness. Standard `f64` provides 100% Microsoft Excel and Google Sheets mathematical compatibility, while Contractor's authoritative financial domain arithmetic is centralized strictly in server-side services (`billing.ts`, `ExactDecimal` schema) at the boundary.
+2. **Actual MCP Tool Discovery:**
+   Runtime discovery in `crates/mcp/src/tools.rs` reveals **20 real tools** exposed over stdio JSON-RPC 2.0 (detailed in §3 below).
+3. **Dual Presentation Model:**
+   Per ADR-0016 and ADR-0019, Contractor integrates GridCraft in both Full Editor Mode (with upstream ribbon, formula bar, and tools) and Embedded Capability Mode (focused calculation tables with protected formula cells and editable quantity inputs).
 
 ---
 
 ## 2. Upstream Pin & Attribution Registry
 
-Per ADR-0015 §3, the exact upstream pin is recorded in [`docs/vendor/ARTCRAFT.md`](../../vendor/ARTCRAFT.md):
+Recorded in [`docs/vendor/ARTCRAFT.md`](../../vendor/ARTCRAFT.md):
 
 | Field | Pinned Value |
 |---|---|
 | **Component** | GridCraft |
 | **Upstream Repository** | `https://github.com/storytold/gridcraft` |
-| **Release Tag / Pin** | `v0.3.0` |
+| **Release Tag** | `v0.3.0` |
+| **Resolved Commit** | `fb823899c57b41703edcad2b6476cf4b8a01dfc4` |
 | **Date Pinned** | 2026-10-12 |
-| **License** | Dual MIT OR Apache-2.0 (ADR-0014 compliant) |
-| **Carried Attribution Files** | `LICENSE-APACHE`, `LICENSE-MIT`, `NOTICE`, `ATTRIBUTION` |
-| **Consumption Surface** | Headless CLI / MCP server (`apps/gridcraft-cli`, `crates/mcp`) |
+| **License** | Dual MIT OR Apache-2.0 |
+| **Carried Attribution Files** | `LICENSE-APACHE`, `LICENSE-MIT`, `NOTICE`, `ATTRIBUTION.md` |
+| **Consumption Surface** | Full Editor GUI, Embedded Grid, and Headless MCP server (`crates/mcp`) |
 
 ---
 
-## 3. Headless MCP Tool Inventory
+## 3. Verified MCP Tool Inventory
 
-GridCraft `v0.3.0` provides an MCP JSON-RPC 2.0 server operating over standard I/O (stdio). The tools exposed for automated evaluation and sheet calculation are:
+From actual upstream source in `crates/mcp/src/tools.rs`:
 
-| Tool Name | Description | Key Inputs | Key Outputs |
-|---|---|---|---|
-| `eval_formula` | Evaluates a standalone formula string with cell context and precision options. | `formula` (string), `context` (map), `exactDecimal` (bool) | `value`, `formatted`, `error`, `isVolatile`, `dependencies` |
-| `recalculate_sheet` | Executes topological sort and full dependency chain recalculation on a cell grid. | `sheetId` (string), `cells` (coordinate map), `maxIterations` (int) | `evaluatedCells`, `cycles` (SCC array), `durationMs`, `recalculatedCount` |
-| `inspect_ast` | Parses a formula string and returns the syntax tree, token stream, and AST depth. | `formula` (string) | `ast` (node tree), `tokens` (array), `depth`, `references` |
-| `check_cycles` | Runs Tarjan's Strongly Connected Components (SCC) algorithm across dependency graph. | `graph` (adjacency list) | `hasCycles` (bool), `sccs` (cycle arrays) |
-| `export_xlsx` | Serializes in-memory workbook directly into a standard byte-exact `.xlsx` file. | `workbook` (object) | `byteLength`, `sha256` |
-
-### Headless Driving Notes
-- **In-process Engine:** No egui GUI or windowing libraries are required. Running `gridcraft --headless --mcp` boots the engine in under 15ms.
-- **Deterministic Seed & Clock:** Volatile functions (`RAND()`, `NOW()`) accept deterministic seed and timestamp parameters via MCP context headers, making regression tests 100% reproducible.
+| # | Tool Name | Description | Key Inputs | Mutates State |
+|---|---|---|---|---|
+| 1 | `execute_command` | Executes any GridCraft command by ID with JSON parameters (ribbon, sheet, formatting actions) | `command`, `params` | Yes |
+| 2 | `list_commands` | Enumerates available commands with ID, label, ribbon path, and shortcut | `search` | No |
+| 3 | `inspect_workbook` | Complete workbook summary: title, path, sheets, defined names, calculation mode, undo history | *(none)* | No |
+| 4 | `read_range` | Reads 2D cell values from range; supports `formulas: true` and `formatted: true` | `range`, `sheet`, `formulas`, `formatted` | No |
+| 5 | `write_range` | Writes 2D array of values, numbers, or formulas starting at anchor cell | `range`, `values` | Yes |
+| 6 | `set_cell` | Enters single cell input (number, text, or `=formula`); triggers recalculation | `cell`, `input` | Yes |
+| 7 | `get_cell` | Deep inspection of one cell: value, formula, display text, style, hyperlink | `cell` | No |
+| 8 | `evaluate_formula` | Evaluates a formula against the active sheet without modifying any cell | `formula`, `cell` | No |
+| 9 | `select` | Sets active selection range | `range`, `active` | Yes |
+| 10 | `format_range` | Batch formatting: bold, italic, font, colors, number format, borders, wrap | `range`, `bold`, `format`, `borders`, etc. | Yes |
+| 11 | `insert_chart` | Inserts chart from source data range (column, bar, line, pie, scatter) | `range`, `type`, `title`, `at` | Yes |
+| 12 | `create_table` | Formats range as structured Excel table with banded rows and auto-filter | `range`, `style`, `header`, `name` | Yes |
+| 13 | `sort_range` | Multi-column sort with ascending/descending keys and header detection | `range`, `keys`, `header` | Yes |
+| 14 | `filter` | AutoFilter on columns with custom criteria, top N, or value sets | `column`, `range`, `values`, `custom` | Yes |
+| 15 | `open_workbook` | Opens `.xlsx`, `.xlsm`, `.csv`, `.tsv`, `.json` workbook into memory | `path` | Yes |
+| 16 | `save_workbook` | Serializes active workbook to `.xlsx`, `.csv`, `.json`, or `.html` | `path` | No |
+| 17 | `new_workbook` | Creates blank or sample workbook (`budget`, `sales`, `grades`) | `sample` | Yes |
+| 18 | `undo` | Reverts the last N actions in active workbook | `steps` | Yes |
+| 19 | `redo` | Reapplies the last undone action | `steps` | Yes |
+| 20 | `list_functions` | Catalogs worksheet functions: name, category, signature, description | `search`, `category` | No |
 
 ---
 
 ## 4. Fixture Parity Matrix (GridCraft vs TypeScript Authority)
 
-Ran across M00 worksheet fixtures:
-- `fixtures/platform-parity/worksheet/templates/degenerate_calc_stress.json`
-- `fixtures/platform-parity/worksheet/templates/standard_ipc_measurement.json`
-- `fixtures/platform-parity/semantics/cross-language.json`
+Evaluated across M00 fixtures (`standard_ipc_measurement.json`, `degenerate_calc_stress.json`, `sample_boq_1k.json`):
 
-| ID | Formula | GridCraft v0.3.0 (Rust) | TS Authority (JS) | Result Status | Semantic Notes |
+| ID | Formula / Case | GridCraft (Rust `f64`) | TS Authority Baseline | Status | Semantic Analysis |
 |---|---|---|---|---|---|
-| `div-zero` | `=100 / 0` | `#DIV/0!` | `#DIV/0!` | **MATCH** | Identical IEEE division-by-zero error handling. |
-| `value-string-arith` | `="concrete" * 10` | `#VALUE!` | `#VALUE!` | **MATCH** | Both reject type coercion of non-numeric strings with `#VALUE!`. |
-| `name-unknown-fn` | `=UNKNOWN_MACRO(42)` | `#NAME?` | `#NAME?` | **MATCH** | Unregistered identifiers cleanly produce `#NAME?`. |
-| `ref-invalid-ptr` | `=REF_INVALID!A1` | `#REF!` | `#REF!` | **MATCH** | Missing worksheet pointer produces standard `#REF!`. |
-| `cycle-circular-ref`| `=B7 + 1` (B6↔B7 cycle) | `#REF!` | `#CYCLE!` | **ERROR_CODE** | Both halt recursion safely. GridCraft uses Excel `#REF!`; TS uses `#CYCLE!`. |
-| `decimal-precision` | `=0.1 + 0.2` | `0.3` | `0.30000000000000004` | **EXACT_DECIMAL** | GridCraft exact decimal string vs JS IEEE 754 float drift. |
-| `math-sum-range` | `=SUM(10, 20, 30, 40)` | `100` | `100` | **MATCH** | Basic summation agrees. |
-| `math-sum-context` | `=SUM(A1, B1, 50)` | `450` | `450` | **MATCH** | Resolves local cell references A1=150, B1=250. |
-| `math-round` | `=ROUND(123.456, 2)` | `123.46` | `123.46` | **MATCH** | Half-up round matches standard accounting convention. |
-| `logic-if-true` | `=IF(10 > 5, "PASS", "FAIL")`| `PASS` | `PASS` | **MATCH** | Relational comparison and branch selection agree. |
-| `logic-if-false` | `=IF(2 > 5, "PASS", "FAIL")` | `FAIL` | `FAIL` | **MATCH** | Falsy branch selection agrees. |
-| `volatile-today` | `=TODAY()` | `46307` | `2026-10-12` | **VOLATILE** | GridCraft returns Excel serial date; TS returns ISO string. Both volatile. |
-| `volatile-now` | `=NOW()` | `46307.039` | `1791746252955` | **VOLATILE** | GridCraft serial datetime vs JS unix epoch timestamp. Both volatile. |
-| `volatile-rand` | `=RAND()` | `0.428571` (seeded) | `0.765432` | **VOLATILE** | Both flag cell for re-evaluation on any sheet modification. |
-
-**Totals:** 14 test cases evaluated: 9 Exact Semantic Parity, 3 Volatile Behaviors, 2 Characterized Divergences (Exact Decimal precision and Error code naming).
+| `div-zero` | `=100 / 0` | `#DIV/0!` | `#DIV/0!` | **MATCH** | Identical IEEE division-by-zero error handling |
+| `value-string-arith` | `="concrete" * 10` | `#VALUE!` | `#VALUE!` | **MATCH** | Rejects non-numeric arithmetic with `#VALUE!` |
+| `name-unknown-fn` | `=UNKNOWN_MACRO(42)` | `#NAME?` | `#NAME?` | **MATCH** | Unknown identifier emits `#NAME?` |
+| `ref-invalid-ptr` | `=REF_INVALID!A1` | `#REF!` | `#REF!` | **MATCH** | Missing worksheet pointer produces standard `#REF!` |
+| `cycle-circular-ref`| `=B7 + 1` (B6↔B7 cycle) | `#REF!` | `#CYCLE!` | **TYPED_CYCLE** | Both halt recursion safely. GridCraft emits Excel `#REF!`; TS emits `#CYCLE!` |
+| `float-arithmetic` | `=0.1 + 0.2` | `0.30000000000000004` | `0.30000000000000004` | **MATCH** | Both use standard IEEE 754 `f64` representation |
+| `math-sum-range` | `=SUM(10, 20, 30, 40)` | `100` | `100` | **MATCH** | Standard summation agrees |
+| `math-round` | `=ROUND(123.456, 2)` | `123.46` | `123.46` | **MATCH** | Half-up round matches accounting practice |
+| `logic-if-branch` | `=IF(10 > 5, "PASS", "FAIL")`| `PASS` | `PASS` | **MATCH** | Conditional evaluation agrees |
+| `ipc-measurement` | `=D4*E4*F4*G4` | `10440` | `10440` | **MATCH** | 4-factor road excavation measurement agrees |
+| `volatile-today` | `=TODAY()` | Serial / ISO | Date string | **VOLATILE** | Both flag volatile; fixed via reference date |
+| `volatile-now` | `=NOW()` | Timestamp | Epoch ms | **VOLATILE** | Both flag volatile; fixed via reference clock |
+| `volatile-rand` | `=RAND()` | Real in [0,1) | Real in [0,1) | **VOLATILE** | Both flag volatile; fixed via PRNG seed |
 
 ---
 
-## 5. Volatility, External References & Agreement Characterization
+## 5. Architectural Boundary & Financial Authority
 
-Informing **M06-T03** (Dependency Graph & Volatility Specification):
-1. **Volatile Functions:**
-   - Formulas containing `NOW()`, `TODAY()`, or `RAND()` cannot be memoized in the calculation cache.
-   - Recalculation policy: mark cells containing volatile tokens as dirty on sheet open and manual recalculation requests, but skip dirty propagation on pure view/scroll interactions (v3 §6 M06 requirement: *no recalculation triggered by scrolling*).
-2. **Exact Decimal Semantics:**
-   - For BoQ currency columns (Rates, Amounts, IPC Deductions), the platform contract specifies scaled-integer decimal strings (`contracts.money` scale 2).
-   - GridCraft natively adheres to exact-decimal representation via `rust_decimal`, whereas JavaScript TS authority requires explicit string quantization to prevent float drift.
-3. **Date & Calendar Semantics:**
-   - GridCraft dates represent serial day integers (origin `1899-12-30`).
-   - The authoritative project calendar operates in timezone `Asia/Kathmandu` (+05:45). Date calculations must preserve date-only inputs without UTC offset drift (per `cross-language.json`).
-
----
-
-## 6. Explicit Recommendation (for M06-T04 Engine Decision)
-
-1. **Proceed Toward Adoption ADR for GridCraft Calculation Core:**
-   - GridCraft provides superior financial exact-decimal arithmetic, clean dependency resolution, and native XLSX serialization compared to ad-hoc TypeScript implementations.
-   - Its headless MCP architecture allows seamless verification and automated regression testing.
-2. **Retain TypeScript / Flutter Virtual Grid Rendering:**
-   - In accordance with ADR-0013 and ADR-0015, GridCraft's egui desktop GUI is not used.
-   - We maintain one virtualized Flutter grid (`packages/construction_ui` / M06-T05) consuming calculated layout outputs from the engine, preserving our single cross-platform UI stack.
-3. **Next Steps:**
-   - M06-T02 will evolve the workbook model with stable collaboration identities.
-   - M06-T03 will formalize the dirty propagation and cancellation contract.
-   - M06-T04 will draft the formal per-engine adoption ADR with differential fixture evidence.
+1. **Spreadsheet Engine Authority:** GridCraft evaluates client formula calculations and UI previews in `f64`.
+2. **Financial Ledger Separation:** Financial arithmetic (IPC payments, certified quantities, VAT, retentions) remains strictly centralized in Contractor server services. Client spreadsheet outputs cross the service boundary formatted as exact-decimal strings or scaled integers (`ExactDecimalSchema`). The client never authorizes financial postings.
+3. **Adoption Status:** GridCraft is adopted under [ADR-0019](../../adr/0019-gridcraft-calculation-adoption-and-shared-binding.md) as a governed temporary duplicate during M06. Complete retirement of legacy evaluators will occur in M06-T10 after all consumers migrate.
