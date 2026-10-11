@@ -14,6 +14,10 @@ The preview and connected host now apply the same M04 SQLite migrations, includi
 
 The signup PostgreSQL cluster is at `127.0.0.1:5433`, database `contractor_m04_signup`. The additive native PKCE and resumable photo journal migrations (`20261023100000_native_pkce_sessions` and `20261023110000_native_photo_upload`) applied successfully; existing account data was preserved. The local product server is running on port 3108 and uses this database. The LAN address for a device on the same Wi-Fi is `192.168.1.66:3108`.
 
+## Run the M04 app
+
+Use `prototype/construction_client/`, not the separate `apps/construction_client/` Flutter counter scaffold. From the Flutter client directory, run `flutter run -d <iPhone-UDID> --dart-define=CONTRACTOR_SERVER_URL=http://<Mac-Wi-Fi-IP>:3108`; for the Mac desktop, use `flutter run -d macos --dart-define=CONTRACTOR_SERVER_URL=http://127.0.0.1:3108`. The Xcode workspace is `prototype/construction_client/ios/Runner.xcworkspace`. Launch a debug build from Flutter tooling or Xcode, not from the iPhone Home Screen.
+
 ## Validation
 
 - Native identity, daily report editor, callback, attachment journal, snapshot bootstrap, and mounted fault fixture tests: 30 passed.
