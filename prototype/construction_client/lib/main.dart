@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'main_m04_host.dart';
 import 'storage/browser_storage_adapter.dart';
 import 'worksheet/worksheet_viewport.dart';
 import 'cad/cad_viewport.dart';
@@ -7,7 +8,7 @@ import 'pdf/pdf_viewport.dart';
 import 'worksheet/kernel/rust_bridge_benchmark.dart';
 
 void main() {
-  runApp(const ContractorPrototypeApp());
+  runApp(const ContractorOsApp());
 }
 
 class ContractorPrototypeApp extends StatelessWidget {
