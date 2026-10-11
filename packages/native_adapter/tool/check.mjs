@@ -22,6 +22,7 @@ run("node", [resolve(PKG, ".test-build/test/site_expense.test.js")]);
 run("node", [resolve(PKG, ".test-build/test/material_delivery.test.js")]);
 run("node", [resolve(PKG, ".test-build/test/field_photos.test.js")]);
 run("node", [resolve(PKG, ".test-build/test/browser_drain.test.js")]);
-console.log("native_adapter: contract, attendance, site expense, material delivery, field photos, and browser drain tests PASSED");
+run("node", [resolve(PKG, ".test-build/test/pwa_retirement.test.js")]);
+console.log("native_adapter: contract, attendance, site expense, material delivery, field photos, browser drain, and pwa retirement tests PASSED");
 
 

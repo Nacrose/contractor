@@ -78,7 +78,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Unsynchronized work cannot disappear during migration: the suite replays interrupted drains and asserts zero loss (the M05 exit sentence, pinned).
     - All evidence is produced against real engines (real SQLite; disposable PostgreSQL where server-concurrency legs are required) — no mocks as sole proof of a durability claim.
 
-- [ ] **M05-T09** — Field PWA code retirement gate (drain verified)
+- [x] **M05-T09** — Field PWA code retirement gate (drain verified) (PR #64)
   - Depends on: M05-T07, M05-T08 · Output: retirement changeset with rollback notes + evidence report.
   - Scope: retire field PWA code ONLY after drain completes and evidence is recorded; retirement is its own task with rollback notes (v3 §6 M05 bullet 5; WP sketch W08).
   - Acceptance:
