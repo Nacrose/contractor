@@ -83,7 +83,7 @@ uses that Wi-Fi address so a physical iPhone can reach the local server.
 Subsequent M04 status work makes incomplete photo transfers count as retained
 work, exposes retry from the Save and sync panel, and adds offline, conflict,
 rejection, lost-ack, and disk-full recovery transcripts through the shared
-screen. The latest full Flutter suite passes **215 tests** and `flutter analyze
+screen. The latest full Flutter suite passes **216 tests** and `flutter analyze
 --no-pub` is clean. The lost-ack screen test retries the same operation and
 recovers its original receipt after a simulated server commit/lost response;
 the expired-session and revoked-access screen tests route mounted orchestrator

@@ -17,7 +17,7 @@ recovery copy and sign-in action. A further mounted offline test now drains a
 saved report through the failing transport, then verifies the rendered health
 surface says `Needs attention`, `1 pending operation(s)`, and
 `1 pending operation(s) not yet accepted`. The full Flutter client suite
-passes (215 tests), and `flutter analyze --no-pub` reports no issues. The offline
+passes (216 tests), and `flutter analyze --no-pub` reports no issues. The offline
 and retryable-timeout screen tests invoke **More actions → Sync now**, confirm
 retained pending work and honest health status, then retry to acceptance. The
 lost-ack, expired-session, and revocation screen assertions are reproducible health transcripts;
