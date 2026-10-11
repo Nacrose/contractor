@@ -28,14 +28,14 @@
 | M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | **Complete** — T01–T09 (PRs #32–#40), T10 gate (PR #42) | 10/10 | M03-T10 `👤 GATE` — passed (PR #42), owner approved 2026-10-09 |
 | M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | In progress — T01 trace (PR #44), T02 mount (PR #45); T03 awaits M03-T01 adapter conformance and live product acceptance ([path correction](../reports/M04/product-path-correction.md)) | 2/9 | M04-T09 `👤 GATE` — not reached |
 | M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | **Complete** — T01–T09 (PRs #56–#64), T10 gate (PR #65) | 10/10 | M05-T10 `👤 GATE` — submitted for owner review (PR #65) |
-| M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | Blocked by M02/M03 (task level) | 0/11 | M06-T11 `👤 GATE` — not reached |
+| M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | In progress — T01 (PR #66) | 1/11 | M06-T11 `👤 GATE` — not reached |
 | M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | Blocked by M02/M03 (task level) | 0/10 | M07-T10 `👤 GATE` — not reached |
 | M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | Blocked by M06/M07 contracts (task level) | 0/8 | M08-T08 `👤 GATE` — not reached |
 | M09 Scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | Blocked by M03/M05/M06 (WP level) | 0/7 | M09-T07 `👤 GATE` — not reached |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Blocked by M04–M09 (WP level) | 0/6 | M10-T06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered by [PLAN-AMEND] 2026-10-09 (WP level) | 0/8 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **68/132** | |
+| **Program total** | | | **69/132** | |
 
 ## Dependency graph
 

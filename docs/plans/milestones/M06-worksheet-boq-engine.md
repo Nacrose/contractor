@@ -7,7 +7,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
 
 ---
 
-- [ ] **M06-T01** — GridCraft prototype: CLI/MCP evidence over M00 fixtures vs the TypeScript authority
+- [x] **M06-T01** — GridCraft prototype: CLI/MCP evidence over M00 fixtures vs the TypeScript authority (PR #66)
   - Depends on: M00-GATE (fixtures + baseline) · Output: prototype report `docs/reports/M06/gridcraft-prototype.md` + fixture/driver artifacts under `prototype/`; no production code change.
   - Scope: drive GridCraft pinned to an upstream release tag (start: `v0.3.0`) via its CLI and headless MCP server over the M00 worksheet fixtures; compare against the authoritative TypeScript worksheet/formula engine (`src/lib/worksheet/spreadsheet-engine.ts`, `formula-engine.ts` per ADR-0013/M01 authority map). This is disposable evidence work per the M01 prototype posture; it changes no production code and starts before the M02/M03 dependencies complete so its evidence can shape T04's engine decision.
   - Acceptance:

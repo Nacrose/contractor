@@ -8,7 +8,7 @@ Policy reminders (ADR-0015): exact tag/rev pins only, never branches; no edits t
 
 | Tool | Upstream | Consumed as | Pin (tag/rev) | Pinned on | License | Attribution to carry |
 |---|---|---|---|---|---|---|
-| GridCraft | https://github.com/storytold/gridcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
+| GridCraft | https://github.com/storytold/gridcraft | prototype CLI / headless MCP server | `v0.3.0` | 2026-10-12 | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | CADCraft | https://github.com/storytold/cadcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 (+ `acadrust` MPL-2.0) | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION; MPL notice for acadrust |
 | PdfCraft | https://github.com/storytold/pdfcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | craft-fonts | https://github.com/storytold/craft-fonts | *(with the first adopted engine)* | — | — | MIT OR Apache-2.0 (per-font licences in `fonts/`) | ATTRIBUTION.md, per-font licence dirs, manifest.txt |
@@ -29,6 +29,7 @@ Related upstream-published dependencies:
 |---|---|---|
 | 2026-10-09 | — | Registry created with ADR-0015; no pins yet (prototype tasks pending in M06/M07/M08 refinement). |
 | 2026-10-09 | M12 registration | Documents/decks capability area registered as milestone M12; WordCraft/DeckCraft rows updated from "unregistered" to "M12, prototype pending". |
+| 2026-10-12 | PR #66 | GridCraft pinned to release tag `v0.3.0` for M06-T01 prototype driver and fixture evidence. |
 
 ## Sync checklist (per pin-bump PR)
 
