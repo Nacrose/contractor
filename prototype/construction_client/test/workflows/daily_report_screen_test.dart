@@ -458,6 +458,10 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Device sync health'));
+      expect(find.text('Needs attention'), findsOneWidget);
+      expect(find.text('1 recent rejection(s) surfaced'), findsOneWidget);
+      await tester.ensureVisible(find.text('Saved on this device (1)'));
       await tester.tap(find.text('Saved on this device (1)'));
       await tester.pumpAndSettle();
       final savedDate = DailyReportLocalStore(mount!)
@@ -465,6 +469,7 @@ void main() {
           .single
           .draft
           .reportDate;
+      await tester.ensureVisible(find.text(savedDate).first);
       await tester.tap(find.text(savedDate).first);
       await tester.pumpAndSettle();
 
