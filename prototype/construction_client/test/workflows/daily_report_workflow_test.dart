@@ -87,6 +87,103 @@ void main() {
     },
   );
 
+  test(
+    'accepted report edits queue a versioned native update and survive restart',
+    () {
+      mounted = open();
+      final store = DailyReportLocalStore(mounted!);
+      final edit = DailyReportDraft(
+        clientUuid: 'report-update-0001',
+        projectId: 'project-1',
+        reportDate: '2026-10-10',
+        serverReportId: 'server-report-1',
+        expectedUpdatedAt: '2026-10-10T12:00:00.000Z',
+        remarks: 'Inspection complete',
+      );
+
+      store.save(
+        accountId: 'acct-1',
+        tenantId: 'tenant-1',
+        role: 'field',
+        draft: edit,
+      );
+
+      final op = mounted!.pendingOps.getOp('acct-1', edit.clientUuid)!;
+      final payload = jsonDecode(op.payload) as Map<String, Object?>;
+      expect(op.kind, 'workflow.dailyReport.updateFieldReport');
+      expect(payload['clientUuid'], edit.clientUuid);
+      expect(payload['projectId'], 'project-1');
+      expect(payload['reportId'], 'server-report-1');
+      expect(payload['expectedUpdatedAt'], '2026-10-10T12:00:00.000Z');
+      expect(payload['remarks'], 'Inspection complete');
+      expect(payload.containsKey('reportDate'), isFalse);
+      expect(
+        store.get('acct-1', edit.clientUuid)?.serverReportId,
+        'server-report-1',
+      );
+
+      mounted!.driver.close();
+      mounted = open();
+      final reopened = DailyReportLocalStore(mounted!);
+      expect(
+        reopened.get('acct-1', edit.clientUuid)?.expectedUpdatedAt,
+        '2026-10-10T12:00:00.000Z',
+      );
+      expect(
+        mounted!.pendingOps.getOp('acct-1', edit.clientUuid)?.payload,
+        op.payload,
+      );
+    },
+  );
+
+  test('conflict recovery creates a new versioned update without changing the conflicted command', () {
+    mounted = open();
+    final store = DailyReportLocalStore(mounted!);
+    final original = DailyReportDraft(
+      clientUuid: 'report-update-0002',
+      projectId: 'project-1',
+      reportDate: '2026-10-10',
+      serverReportId: 'server-report-1',
+      expectedUpdatedAt: '2026-10-10T12:00:00.000Z',
+      remarks: 'Mobile revision',
+    );
+    store.save(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      draft: original,
+    );
+    final originalPayload = mounted!.pendingOps
+        .getOp('acct-1', original.clientUuid)!
+        .payload;
+    mounted!.pendingOps.markInFlight(original.clientUuid);
+    mounted!.pendingOps.markConflict(
+      original.clientUuid,
+      'Report version changed.',
+    );
+
+    final recovery = original
+        .withClientUuid('report-update-0003')
+        .withExpectedUpdatedAt('2026-10-10T12:05:00.001Z');
+    store.saveRecoveryCopy(
+      accountId: 'acct-1',
+      tenantId: 'tenant-1',
+      role: 'field',
+      sourceClientUuid: original.clientUuid,
+      draft: recovery,
+    );
+
+    final oldOp = mounted!.pendingOps.getOp('acct-1', original.clientUuid)!;
+    final newOp = mounted!.pendingOps.getOp('acct-1', recovery.clientUuid)!;
+    final newPayload = jsonDecode(newOp.payload) as Map<String, Object?>;
+    expect(oldOp.state, 'conflict');
+    expect(oldOp.payload, originalPayload);
+    expect(newOp.state, 'pending');
+    expect(newOp.kind, 'workflow.dailyReport.updateFieldReport');
+    expect(newPayload['reportId'], 'server-report-1');
+    expect(newPayload['expectedUpdatedAt'], '2026-10-10T12:05:00.001Z');
+  });
+
   test('an outbox insertion failure rolls back the local report row', () {
     mounted = open();
     final store = DailyReportLocalStore(mounted!);

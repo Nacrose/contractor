@@ -326,6 +326,54 @@ void main() {
     expect(find.text('Date: 2026-10-10'), findsOneWidget);
   });
 
+  testWidgets(
+    'editing an accepted draft queues an update with its loaded version',
+    (tester) async {
+      final store = DailyReportLocalStore(mount!);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DailyReportScreen(
+            store: store,
+            accountId: 'acct-1',
+            tenantId: 'tenant-1',
+            role: 'field',
+            projects: const [
+              DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+            ],
+            acceptedReports: () => [
+              {
+                'id': 'server-report-1',
+                'projectId': 'project-1',
+                'number': 'DSR-20261010-1',
+                'reportDate': '2026-10-10T00:00:00.000Z',
+                'updatedAt': '2026-10-10T12:00:00.000Z',
+                'status': 'draft',
+                'remarks': 'Before edit',
+              },
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Synced daily reports (1)'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Edit this report'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Save locally'));
+      await tester.pumpAndSettle();
+
+      final operation = mount!.pendingOps
+          .listDue('acct-1', 9999999999999)
+          .single;
+      final payload = jsonDecode(operation.payload) as Map<String, Object?>;
+      expect(operation.kind, 'workflow.dailyReport.updateFieldReport');
+      expect(payload['reportId'], 'server-report-1');
+      expect(payload['expectedUpdatedAt'], '2026-10-10T12:00:00.000Z');
+      expect(payload['remarks'], 'Before edit');
+    },
+  );
+
   testWidgets('reopens a locally saved report after the screen is recreated', (
     tester,
   ) async {

@@ -246,6 +246,22 @@ test("daily report activation maps to its existing service with the declared gua
   ]);
 });
 
+test("daily report updates map to the versioned existing service", () => {
+  const binding = SEED_OPERATIONS["workflow.dailyReport.updateFieldReport"];
+  assert.ok(binding);
+  assert.equal(binding.kind, "mutation");
+  assert.equal(binding.service, "workflow.dailyReport.updateReport");
+  assert.deepEqual(binding.guards, [
+    "identity",
+    "tenantScope",
+    "rateLimit",
+    "projectMembership",
+    "projectPermission",
+    "inputReferences",
+    "idempotency",
+  ]);
+});
+
 test("adapterError always carries its tRPC mapping", () => {
   const e = adapterError("locked", "Fiscal year locked.");
   assert.equal(e.trpcCode, "CONFLICT");

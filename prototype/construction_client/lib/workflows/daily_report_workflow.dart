@@ -69,6 +69,8 @@ class DailyReportDraft {
   final String clientUuid;
   final String projectId;
   final String reportDate;
+  final String? serverReportId;
+  final String? expectedUpdatedAt;
   final String weatherMorning;
   final String weatherAfternoon;
   final String weatherEvening;
@@ -91,6 +93,8 @@ class DailyReportDraft {
     required this.clientUuid,
     required this.projectId,
     required this.reportDate,
+    this.serverReportId,
+    this.expectedUpdatedAt,
     this.weatherMorning = '',
     this.weatherAfternoon = '',
     this.weatherEvening = '',
@@ -137,7 +141,47 @@ class DailyReportDraft {
     };
   }
 
-  String encode() => jsonEncode(toProcedureInput());
+  String get operationKind => serverReportId == null
+      ? 'workflow.dailyReport.createFieldReport'
+      : 'workflow.dailyReport.updateFieldReport';
+
+  /// Stored locally with the report row so a remote edit target and its
+  /// expected version survive process restart and conflict recovery.
+  String encode() {
+    final input = toProcedureInput();
+    if (serverReportId != null) input['serverReportId'] = serverReportId;
+    if (expectedUpdatedAt != null) {
+      input['expectedUpdatedAt'] = expectedUpdatedAt;
+    }
+    return jsonEncode(input);
+  }
+
+  /// Versioned native patch, sent in the same durable outbox protocol as a
+  /// new report. Existing registered photos remain attached to the report.
+  Map<String, Object?> toUpdateProcedureInput() {
+    _validate();
+    final reportId = serverReportId;
+    final version = expectedUpdatedAt;
+    if (reportId == null ||
+        version == null ||
+        DateTime.tryParse(version) == null) {
+      throw RepositoryError(
+        'misconfigured',
+        'A server report id and its loaded version are required for updates.',
+      );
+    }
+    final fields = toProcedureInput()
+      ..remove('reportDate')
+      ..remove('photos');
+    return {
+      ...fields,
+      'reportId': reportId,
+      'expectedUpdatedAt': DateTime.parse(version).toUtc().toIso8601String(),
+    };
+  }
+
+  String get operationPayload =>
+      serverReportId == null ? encode() : jsonEncode(toUpdateProcedureInput());
 
   static DailyReportDraft decode(String json) {
     final input = jsonDecode(json) as Map<String, Object?>;
@@ -154,6 +198,8 @@ class DailyReportDraft {
       clientUuid: input['clientUuid']! as String,
       projectId: input['projectId']! as String,
       reportDate: input['reportDate']! as String,
+      serverReportId: input['serverReportId'] as String?,
+      expectedUpdatedAt: input['expectedUpdatedAt'] as String?,
       weatherMorning: input['weatherMorning'] as String? ?? '',
       weatherAfternoon: input['weatherAfternoon'] as String? ?? '',
       weatherEvening: input['weatherEvening'] as String? ?? '',
@@ -184,6 +230,8 @@ class DailyReportDraft {
     clientUuid: value,
     projectId: projectId,
     reportDate: reportDate,
+    serverReportId: serverReportId,
+    expectedUpdatedAt: expectedUpdatedAt,
     weatherMorning: weatherMorning,
     weatherAfternoon: weatherAfternoon,
     weatherEvening: weatherEvening,
@@ -202,6 +250,122 @@ class DailyReportDraft {
     remarks: remarks,
     photos: photos,
   );
+
+  DailyReportDraft withExpectedUpdatedAt(String value) => DailyReportDraft(
+    clientUuid: clientUuid,
+    projectId: projectId,
+    reportDate: reportDate,
+    serverReportId: serverReportId,
+    expectedUpdatedAt: value,
+    weatherMorning: weatherMorning,
+    weatherAfternoon: weatherAfternoon,
+    weatherEvening: weatherEvening,
+    maxTempC: maxTempC,
+    minTempC: minTempC,
+    rainfallMm: rainfallMm,
+    workforce: workforce,
+    workProgress: workProgress,
+    equipmentUsed: equipmentUsed,
+    materialReceived: materialReceived,
+    materialConsumed: materialConsumed,
+    siteVisits: siteVisits,
+    meetings: meetings,
+    problems: problems,
+    safetyNotes: safetyNotes,
+    remarks: remarks,
+    photos: photos,
+  );
+
+  static DailyReportDraft fromServerSnapshot(
+    Map<String, Object?> report, {
+    required String clientUuid,
+  }) {
+    List<Map<String, Object?>> rows(String key) {
+      final raw = report[key];
+      if (raw is List) {
+        return raw
+            .whereType<Map>()
+            .map((row) => Map<String, Object?>.from(row))
+            .toList(growable: false);
+      }
+      if (raw is String) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) {
+            return decoded
+                .whereType<Map>()
+                .map((row) => Map<String, Object?>.from(row))
+                .toList(growable: false);
+          }
+        } on FormatException {
+          return const [];
+        }
+      }
+      return const [];
+    }
+
+    final rawVersion = report['updatedAt'];
+    final version = rawVersion is DateTime
+        ? rawVersion.toUtc().toIso8601String()
+        : rawVersion is String
+        ? DateTime.parse(rawVersion).toUtc().toIso8601String()
+        : throw RepositoryError(
+            'protocol',
+            'The accepted report is missing its server version.',
+          );
+    final rawDate = report['reportDate'];
+    final date = rawDate is DateTime
+        ? rawDate.toIso8601String().substring(0, 10)
+        : rawDate is String
+        ? rawDate.substring(0, 10)
+        : throw RepositoryError(
+            'protocol',
+            'The accepted report is missing its date.',
+          );
+    final photos = (report['attachments'] as List<Object?>? ?? const [])
+        .whereType<Map>()
+        .where(
+          (attachment) =>
+              attachment['registeredPhotoId'] is String &&
+              attachment['servedSha256'] is String &&
+              attachment['servedSize'] is num &&
+              (attachment['servedSize'] as num) > 0,
+        )
+        .map(
+          (attachment) => RegisteredDailyReportPhoto(
+            attachmentId: attachment['registeredPhotoId'] as String,
+            receipt: attachment['registeredPhotoId'] as String,
+            digest: attachment['servedSha256'] as String,
+            bytes: (attachment['servedSize'] as num).toInt(),
+          ),
+        )
+        .toList(growable: false);
+
+    return DailyReportDraft(
+      clientUuid: clientUuid,
+      projectId: report['projectId']! as String,
+      reportDate: date,
+      serverReportId: report['id']! as String,
+      expectedUpdatedAt: version,
+      weatherMorning: report['weatherMorning'] as String? ?? '',
+      weatherAfternoon: report['weatherAfternoon'] as String? ?? '',
+      weatherEvening: report['weatherEvening'] as String? ?? '',
+      maxTempC: report['maxTempC']?.toString() ?? '',
+      minTempC: report['minTempC']?.toString() ?? '',
+      rainfallMm: report['rainfallMm']?.toString() ?? '',
+      workforce: rows('workforce'),
+      workProgress: rows('workProgress'),
+      equipmentUsed: rows('equipmentUsed'),
+      materialReceived: rows('materialReceived'),
+      materialConsumed: rows('materialConsumed'),
+      siteVisits: rows('siteVisits'),
+      meetings: rows('meetings'),
+      problems: report['problems'] as String? ?? '',
+      safetyNotes: report['safetyNotes'] as String? ?? '',
+      remarks: report['remarks'] as String? ?? '',
+      photos: photos,
+    );
+  }
 
   void _validate() {
     if (clientUuid.length < 8 || clientUuid.length > 128) {
@@ -424,7 +588,8 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
     required String role,
     required DailyReportDraft draft,
   }) {
-    final payload = draft.encode();
+    final localPayload = draft.encode();
+    final operationPayload = draft.operationPayload;
     final now = DateTime.now().millisecondsSinceEpoch;
     return mount.outbox.saveMutation(
       SaveMutationInput(
@@ -432,8 +597,8 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
         projectId: draft.projectId,
         op: PendingOpInput(
           opId: draft.clientUuid,
-          kind: 'workflow.dailyReport.createFieldReport',
-          payload: payload,
+          kind: draft.operationKind,
+          payload: operationPayload,
           tenantId: tenantId,
           role: role,
         ),
@@ -449,7 +614,7 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
                 accountId,
                 draft.projectId,
                 draft.reportDate,
-                payload,
+                localPayload,
                 now,
                 now,
               ]);
@@ -466,7 +631,8 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
     required String accountId,
     required DailyReportDraft draft,
   }) {
-    final payload = draft.encode();
+    final localPayload = draft.encode();
+    final operationPayload = draft.operationPayload;
     final op = mount.pendingOps.getOp(accountId, draft.clientUuid);
     if (op == null || op.state != 'pending' || op.attempts != 0) {
       throw RepositoryError(
@@ -485,7 +651,7 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
           .run([
             draft.projectId,
             draft.reportDate,
-            payload,
+            localPayload,
             now,
             draft.clientUuid,
             accountId,
@@ -495,7 +661,13 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
             "UPDATE pending_op SET project_id = ?, payload = ?, updated_at = ? "
             "WHERE id = ? AND account_id = ? AND state = 'pending' AND attempts = 0",
           )
-          .run([draft.projectId, payload, now, draft.clientUuid, accountId]);
+          .run([
+            draft.projectId,
+            operationPayload,
+            now,
+            draft.clientUuid,
+            accountId,
+          ]);
       if (reportUpdate.changes != 1 || opUpdate.changes != 1) {
         throw RepositoryError(
           'illegal_transition',
@@ -527,7 +699,8 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
         'A recovery copy must use a new client UUID.',
       );
     }
-    final payload = draft.encode();
+    final localPayload = draft.encode();
+    final operationPayload = draft.operationPayload;
     final now = DateTime.now().millisecondsSinceEpoch;
     return mount.outbox.saveMutation(
       SaveMutationInput(
@@ -535,8 +708,8 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
         projectId: draft.projectId,
         op: PendingOpInput(
           opId: draft.clientUuid,
-          kind: 'workflow.dailyReport.createFieldReport',
-          payload: payload,
+          kind: draft.operationKind,
+          payload: operationPayload,
           tenantId: tenantId,
           role: role,
         ),
@@ -552,7 +725,7 @@ class DailyReportLocalStore implements DailyReportWorkflowStore {
                 accountId,
                 draft.projectId,
                 draft.reportDate,
-                payload,
+                localPayload,
                 now,
                 now,
               ]);

@@ -125,6 +125,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   late final TextEditingController _remarks = TextEditingController();
   String? _projectId;
   String? _savedId;
+  String? _serverReportId;
+  String? _expectedUpdatedAt;
   String? _photoReportId;
   List<RegisteredDailyReportPhoto> _inheritedRegisteredPhotos = const [];
   String? _error;
@@ -207,6 +209,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     clientUuid: _savedId ?? _clientUuid,
     projectId: _projectId ?? '',
     reportDate: _date.text.trim(),
+    serverReportId: _serverReportId,
+    expectedUpdatedAt: _expectedUpdatedAt,
     weatherMorning: _morning.text.trim(),
     weatherAfternoon: _midday.text.trim(),
     weatherEvening: _evening.text.trim(),
@@ -397,10 +401,12 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   }
 
   bool get _canAddPhotos =>
-      _savedId == null ||
-      widget.store.canEditUnsent(widget.accountId, _savedId!);
+      _serverReportId == null &&
+      (_savedId == null ||
+          widget.store.canEditUnsent(widget.accountId, _savedId!));
 
   bool get _canEditCurrentReport {
+    if (_serverReportId != null) return true;
     final savedId = _savedId;
     if (savedId == null) return true;
     return const {
@@ -410,8 +416,27 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
         widget.store.canEditUnsent(widget.accountId, savedId);
   }
 
-  void _openSavedReport(SavedDailyReport saved) {
-    final draft = saved.draft;
+  void _openSavedReport(SavedDailyReport saved) =>
+      _loadDraft(saved.draft, savedId: saved.draft.clientUuid, saved: true);
+
+  void _openAcceptedReport(Map<String, Object?> report) {
+    if (report['status'] != 'draft') return;
+    try {
+      _loadDraft(
+        DailyReportDraft.fromServerSnapshot(report, clientUuid: _uuid()),
+        savedId: null,
+        saved: false,
+      );
+    } catch (error) {
+      setState(() => _error = _safeError(error));
+    }
+  }
+
+  void _loadDraft(
+    DailyReportDraft draft, {
+    required String? savedId,
+    required bool saved,
+  }) {
     void replaceRows(
       List<_ReportRow> target,
       List<Map<String, Object?>> values,
@@ -443,8 +468,11 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     }
 
     setState(() {
-      _savedId = draft.clientUuid;
-      _photoReportId = draft.clientUuid;
+      _clientUuid = draft.clientUuid;
+      _savedId = savedId;
+      _serverReportId = draft.serverReportId;
+      _expectedUpdatedAt = draft.expectedUpdatedAt;
+      _photoReportId = draft.serverReportId ?? savedId;
       _inheritedRegisteredPhotos = draft.photos;
       _projectId = draft.projectId;
       _date.text = draft.reportDate;
@@ -457,7 +485,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       _problems.text = draft.problems;
       _safety.text = draft.safetyNotes;
       _remarks.text = draft.remarks;
-      _saved = true;
+      _saved = saved;
       _error = null;
       replaceRows(
         _workforceRows,
@@ -573,6 +601,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
 
     setState(() {
       _savedId = null;
+      _serverReportId = null;
+      _expectedUpdatedAt = null;
       _photoReportId = null;
       _inheritedRegisteredPhotos = const [];
       _clientUuid = _uuid();
@@ -678,7 +708,26 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           'conflict',
         }.contains(widget.store.operationState(widget.accountId, _savedId!))) {
           final sourceId = _savedId!;
-          final corrected = draft.withClientUuid(_uuid());
+          var corrected = draft.withClientUuid(_uuid());
+          if (draft.serverReportId != null) {
+            final current = widget.acceptedReports
+                ?.call()
+                .where((report) => report['id'] == draft.serverReportId)
+                .firstOrNull;
+            final rawVersion = current?['updatedAt'];
+            final currentVersion = rawVersion is DateTime
+                ? rawVersion.toUtc().toIso8601String()
+                : rawVersion is String
+                ? DateTime.tryParse(rawVersion)?.toUtc().toIso8601String()
+                : null;
+            if (currentVersion == null) {
+              throw RepositoryError(
+                'conflict',
+                'Refresh the current server report before saving a reviewed copy.',
+              );
+            }
+            corrected = corrected.withExpectedUpdatedAt(currentVersion);
+          }
           widget.store.saveRecoveryCopy(
             accountId: widget.accountId,
             tenantId: widget.tenantId,
@@ -688,6 +737,9 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           );
           _photoReportId = sourceId;
           _savedId = corrected.clientUuid;
+          _clientUuid = corrected.clientUuid;
+          _serverReportId = corrected.serverReportId;
+          _expectedUpdatedAt = corrected.expectedUpdatedAt;
         } else {
           widget.store.editUnsent(accountId: widget.accountId, draft: draft);
         }
@@ -904,6 +956,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             reports: widget.acceptedReports?.call() ?? const [],
             projects: widget.projects,
             photos: widget.photos,
+            onEdit: _openAcceptedReport,
           ),
           _SavedDailyReports(
             reports: widget.store.savedReports(
@@ -979,7 +1032,10 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                           child: Text('Unavailable project · $_projectId'),
                         ),
                     ],
-                    onChanged: _canEditCurrentReport && reportPhotos.isEmpty
+                    onChanged:
+                        _serverReportId == null &&
+                            _canEditCurrentReport &&
+                            reportPhotos.isEmpty
                         ? (value) => setState(() => _projectId = value)
                         : null,
                     validator: (value) => value == null || value.isEmpty
@@ -988,7 +1044,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
                   ),
                   TextFormField(
                     controller: _date,
-                    enabled: _canEditCurrentReport,
+                    enabled: _serverReportId == null && _canEditCurrentReport,
                     decoration: const InputDecoration(
                       labelText: 'Report date',
                       hintText: 'YYYY-MM-DD',
@@ -1479,11 +1535,13 @@ class _AcceptedDailyReports extends StatelessWidget {
     required this.reports,
     required this.projects,
     required this.photos,
+    required this.onEdit,
   });
 
   final List<Map<String, Object?>> reports;
   final List<DailyReportProjectOption> projects;
   final DailyReportPhotoPort? photos;
+  final ValueChanged<Map<String, Object?>> onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -1503,6 +1561,13 @@ class _AcceptedDailyReports extends StatelessWidget {
                 '${_projectLabel(projects, report['projectId'])} · '
                 '${report['status'] ?? 'synced'}',
               ),
+              trailing: report['status'] == 'draft'
+                  ? IconButton(
+                      tooltip: 'Edit this report',
+                      icon: const Icon(Icons.edit_outlined),
+                      onPressed: () => onEdit(report),
+                    )
+                  : null,
               onTap: () => _showReport(context, report, photos),
             ),
         ],

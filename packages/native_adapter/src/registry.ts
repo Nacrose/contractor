@@ -13,6 +13,7 @@
 import { OperationMap } from "./contract.js";
 
 export const DAILY_REPORT_OPERATION = "workflow.dailyReport.createFieldReport" as const;
+export const DAILY_REPORT_UPDATE_OPERATION = "workflow.dailyReport.updateFieldReport" as const;
 
 export const SEED_OPERATIONS: OperationMap = {
   // M04-T03 activation — the product native-sync route calls the existing
@@ -21,6 +22,20 @@ export const SEED_OPERATIONS: OperationMap = {
   [DAILY_REPORT_OPERATION]: {
     kind: "mutation",
     service: "workflow.dailyReport.createFieldReport",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "inputReferences",
+      "idempotency",
+    ],
+  },
+
+  [DAILY_REPORT_UPDATE_OPERATION]: {
+    kind: "mutation",
+    service: "workflow.dailyReport.updateReport",
     guards: [
       "identity",
       "tenantScope",
