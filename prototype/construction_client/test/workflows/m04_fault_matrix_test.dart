@@ -51,11 +51,13 @@ void main() {
   DailyLogSyncOrchestrator engine(
     SyncTransportPort transport, {
     int Function()? nowMs,
+    AuthEventSink? authEvents,
   }) => DailyLogSyncOrchestrator(
     mount: mount!,
     deviceId: 'device-1',
     random: _FixedRandom(),
     nowMs: nowMs ?? () => 1000,
+    authEvents: authEvents,
     backoffBaseMs: 10,
     backoffCapMs: 100,
   );
@@ -114,11 +116,14 @@ void main() {
           );
         }),
       );
-      final sync = engine(mount!.transport);
+      final authEvents = _AuthEvents();
+      final sync = engine(mount!.transport, authEvents: authEvents);
 
       final result = await sync.drain('acct-1');
 
       expect(result.stoppedFor, 'revoked');
+      expect(authEvents.kinds, ['revoked']);
+      expect(authEvents.opIds, ['a-report-revoked']);
       expect(sends, 1);
       expect(
         getStore().get('acct-1', 'z-report-pending')?.remarks,
@@ -149,9 +154,12 @@ void main() {
           ),
         ),
       );
-      final sync = engine(mount!.transport);
+      final authEvents = _AuthEvents();
+      final sync = engine(mount!.transport, authEvents: authEvents);
       final result = await sync.drain('acct-1');
       expect(result.stoppedFor, 'authentication_required');
+      expect(authEvents.kinds, ['authentication_required']);
+      expect(authEvents.opIds, ['report-expired-login1']);
       expect(
         getStore().get('acct-1', 'report-expired-login1')?.remarks,
         'Crew poured footing',
@@ -470,6 +478,17 @@ class _Transport implements SyncTransportPort {
 class _FixedRandom implements OrchestratorRandomPort {
   @override
   double next() => 0.5;
+}
+
+class _AuthEvents implements AuthEventSink {
+  final kinds = <String>[];
+  final opIds = <String?>[];
+
+  @override
+  void onAuthEvent(String kind, String? opId) {
+    kinds.add(kind);
+    opIds.add(opId);
+  }
 }
 
 class _Credentials implements SecureCredentialStore {

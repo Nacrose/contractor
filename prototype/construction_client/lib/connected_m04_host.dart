@@ -33,6 +33,23 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
   Future<_ConnectedWorkspace>? _workspace;
   bool _busy = false;
   String? _error;
+  DailyReportSyncAccessIssue? _syncAccessIssue;
+
+  void _handleSyncAuthEvent(String kind, String? _) {
+    if (!mounted) return;
+    final issue = switch (kind) {
+      'authentication_required' =>
+        DailyReportSyncAccessIssue.authenticationRequired,
+      'revoked' => DailyReportSyncAccessIssue.revoked,
+      _ => null,
+    };
+    if (issue != null) setState(() => _syncAccessIssue = issue);
+  }
+
+  Future<_ConnectedWorkspace> _connect(
+    _ConnectedServices services,
+    NativeSessionIdentity session,
+  ) => services.connect(session, onAuthEvent: _handleSyncAuthEvent);
 
   Future<_ConnectedServices> _open() async {
     final support = await getApplicationSupportDirectory();
@@ -82,7 +99,7 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
       final callback = browser.sink.takeBuffered();
       if (callback != null) await identity.completeSignIn(callback);
       final session = await identity.restoreSession();
-      if (session != null) _workspace = services.connect(session);
+      if (session != null) _workspace = _connect(services, session);
       return services;
     } catch (_) {
       await browser.stopListening();
@@ -100,7 +117,10 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
     try {
       final session = await services.identity.signIn();
       if (!mounted) return;
-      setState(() => _workspace = services.connect(session));
+      setState(() {
+        _syncAccessIssue = null;
+        _workspace = _connect(services, session);
+      });
     } catch (error) {
       if (mounted) {
         setState(
@@ -162,7 +182,9 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
                     onPressed: () async {
                       final session = await services.identity.restoreSession();
                       if (mounted && session != null) {
-                        setState(() => _workspace = services.connect(session));
+                        setState(
+                          () => _workspace = _connect(services, session),
+                        );
                       }
                     },
                     child: const Text('Retry'),
@@ -202,6 +224,13 @@ class _ConnectedM04HostState extends State<ConnectedM04Host> {
                   projects: current.projects,
                   photos: current.photos,
                   refreshAcceptedReports: current.refreshAcceptedReports,
+                  syncAccessIssue: _syncAccessIssue,
+                  onSignInAgain: _busy ? null : () => _signIn(services),
+                  onSyncStarted: () {
+                    if (mounted && _syncAccessIssue != null) {
+                      setState(() => _syncAccessIssue = null);
+                    }
+                  },
                   acceptedReports: () => services.mount.driver
                       .prepare(
                         'SELECT report_id, payload FROM daily_report_replica '
@@ -281,7 +310,10 @@ class _ConnectedServices {
     this.mount,
   );
 
-  Future<_ConnectedWorkspace> connect(NativeSessionIdentity session) async {
+  Future<_ConnectedWorkspace> connect(
+    NativeSessionIdentity session, {
+    required void Function(String kind, String? opId) onAuthEvent,
+  }) async {
     final authorized = NativeAuthorizedClient(
       client,
       identity,
@@ -294,6 +326,7 @@ class _ConnectedServices {
     final orchestrator = DailyLogSyncOrchestrator(
       mount: mount,
       deviceId: session.deviceId,
+      authEvents: _CallbackAuthEventSink(onAuthEvent),
     );
     final manager = AttachmentTransferManager(
       mount: mount,
@@ -494,4 +527,12 @@ class _ConnectedTransport implements SyncTransportPort {
     }
     return active.send(envelope);
   }
+}
+
+class _CallbackAuthEventSink implements AuthEventSink {
+  final void Function(String kind, String? opId) callback;
+  const _CallbackAuthEventSink(this.callback);
+
+  @override
+  void onAuthEvent(String kind, String? opId) => callback(kind, opId);
 }

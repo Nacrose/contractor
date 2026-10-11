@@ -17,6 +17,8 @@ class DailyReportProjectOption {
   final String label;
 }
 
+enum DailyReportSyncAccessIssue { authenticationRequired, revoked }
+
 /// Shared native/web daily-report editor. The host supplies its signed-in
 /// scope, active projects, and durable M04 mount; this widget owns no auth or
 /// permission decision.
@@ -30,6 +32,9 @@ class DailyReportScreen extends StatefulWidget {
     this.photos,
     this.acceptedReports,
     this.refreshAcceptedReports,
+    this.syncAccessIssue,
+    this.onSignInAgain,
+    this.onSyncStarted,
     super.key,
   });
 
@@ -41,6 +46,9 @@ class DailyReportScreen extends StatefulWidget {
   final DailyReportPhotoPort? photos;
   final List<Map<String, Object?>> Function()? acceptedReports;
   final Future<void> Function()? refreshAcceptedReports;
+  final DailyReportSyncAccessIssue? syncAccessIssue;
+  final VoidCallback? onSignInAgain;
+  final VoidCallback? onSyncStarted;
 
   @override
   State<DailyReportScreen> createState() => _DailyReportScreenState();
@@ -372,6 +380,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
   }
 
   Future<void> _syncNow() async {
+    widget.onSyncStarted?.call();
     try {
       await widget.store.syncNow();
       await widget.refreshAcceptedReports?.call();
@@ -530,6 +539,13 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             status: status,
             onNextAction: opState == 'pending' ? _syncNow : null,
           ),
+          if (widget.syncAccessIssue != null) ...[
+            const SizedBox(height: 12),
+            _SyncAccessNotice(
+              issue: widget.syncAccessIssue!,
+              onSignInAgain: widget.onSignInAgain,
+            ),
+          ],
           _SyncHealthCard(health: health),
           if (_error != null) ...[
             const SizedBox(height: 12),
@@ -925,6 +941,73 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
     FormatException() => 'Check the numeric values and try saving again.',
     _ => 'Save failed. Your draft is still on this device.',
   };
+}
+
+class _SyncAccessNotice extends StatelessWidget {
+  const _SyncAccessNotice({required this.issue, this.onSignInAgain});
+
+  final DailyReportSyncAccessIssue issue;
+  final VoidCallback? onSignInAgain;
+
+  @override
+  Widget build(BuildContext context) {
+    final authenticationRequired =
+        issue == DailyReportSyncAccessIssue.authenticationRequired;
+    final colors = Theme.of(context).colorScheme;
+    return Card(
+      key: const ValueKey('daily-report-sync-access-issue'),
+      color: colors.errorContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.sync_problem_outlined,
+                  color: colors.onErrorContainer,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        authenticationRequired
+                            ? 'Sign-in required to sync'
+                            : 'Project access changed',
+                        style: Theme.of(context).textTheme.titleSmall
+                            ?.copyWith(color: colors.onErrorContainer),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        authenticationRequired
+                            ? 'Your report is saved locally. Sign in again to resume syncing.'
+                            : 'Your report is saved locally. Ask a project admin to restore access, then sync again.',
+                        style: TextStyle(color: colors.onErrorContainer),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (authenticationRequired && onSignInAgain != null) ...[
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.tonal(
+                  onPressed: onSignInAgain,
+                  child: const Text('Sign in again'),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _AcceptedDailyReports extends StatelessWidget {

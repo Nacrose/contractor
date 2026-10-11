@@ -60,6 +60,67 @@ void main() {
     },
   );
 
+  testWidgets('explains expired sign-in and offers a recovery action', (
+    tester,
+  ) async {
+    var signInAgainPressed = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: DailyReportLocalStore(mount!),
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+          syncAccessIssue: DailyReportSyncAccessIssue.authenticationRequired,
+          onSignInAgain: () => signInAgainPressed = true,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sign-in required to sync'), findsOneWidget);
+    expect(
+      find.text(
+        'Your report is saved locally. Sign in again to resume syncing.',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Sign in again'));
+    expect(signInAgainPressed, isTrue);
+  });
+
+  testWidgets('revoked project access explains that local work is retained', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DailyReportScreen(
+          store: DailyReportLocalStore(mount!),
+          accountId: 'acct-1',
+          tenantId: 'tenant-1',
+          role: 'field',
+          projects: const [
+            DailyReportProjectOption(id: 'project-1', label: 'P-01 — Bridge'),
+          ],
+          syncAccessIssue: DailyReportSyncAccessIssue.revoked,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Project access changed'), findsOneWidget);
+    expect(
+      find.text(
+        'Your report is saved locally. Ask a project admin to restore access, then sync again.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Sign in again'), findsNothing);
+  });
+
   testWidgets('shows accepted reports restored for assigned projects', (
     tester,
   ) async {
