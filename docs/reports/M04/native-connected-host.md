@@ -12,16 +12,19 @@ The preview and connected host now apply the same M04 SQLite migrations, includi
 
 ## Native sign-in diagnostic
 
-The owner tried the connected iPhone sign-in flow; the browser returned to the
-login page instead of showing a completed session or returning to Contractor
-OS. Product source inspection found that the local Next dev-origin allowlist
-includes `localhost` and `127.0.0.1`, but not the Mac Wi-Fi host used by the
-iPhone (`192.168.1.66`). The login form submits through a client-side React
-handler and has no server form action. If the LAN-origin restriction prevents
-the login JavaScript from loading, the browser can fall back to a GET and
-reload the login page. This is the leading code-based diagnosis; browser network/console evidence is unavailable. A local request comparison returned HTTP 200 for the login JavaScript bundle with same-origin headers and HTTP 403 when emulating a cross-site dev-asset request from `192.168.1.66`. This confirms the Next.js allowlist behavior, but does not prove which headers Safari sent. The product
-repo requires explicit owner confirmation before edits, so the LAN-origin
-requested LAN-origin allowance and server-handled fallback are awaiting owner approval. The owner reports the direct LAN `:3108` sign-in attempt also reloaded the login page. Native sign-in and live sync acceptance remain open.
+The first connected iPhone sign-in attempts returned to the login page. At
+that time, the LAN origin was absent from the Next dev allowlist and the
+development bundle could be blocked. The owner approved the LAN-origin fix;
+the product branch now includes the pre-hydration visibility and LAN-origin
+changes (latest local product commit `b0fa3372`). A later owner screenshot
+showed a different, explicit failure: Prisma could not find `DATABASE_URL`.
+That newer evidence means the login request reached the product server, and
+the missing server database configuration was the immediate blocker for that
+attempt. The local dev environment has since been restarted with a working
+database connection. Native sign-in, callback exchange, project loading, and
+live sync acceptance remain open because the owner has not retried sign-in
+after the environment correction. No server-side HTML form fallback was added
+or is claimed.
 
 ## Local environment
 
@@ -31,13 +34,13 @@ At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `
 
 Use `prototype/construction_client/`, not the separate `apps/construction_client/` Flutter counter scaffold. `ContractorOsApp` selects local preview whenever the compile-time `CONTRACTOR_SERVER_URL` define is absent. Opening `ios/Runner.xcworkspace` and pressing Xcode's default Run does not inherit a `--dart-define` passed to an earlier Flutter command; that build therefore opens the local preview directly on the report editor and cannot authenticate or sync.
 
-For the connected iPhone build, use Flutter tooling from the client directory and pass the server URL on the same command. If the local forwarder is running on port `3000`, keep it running; the intended path is the Mac Wi-Fi address on port `3000` to the product dev server on `3108`, but that path still needs verification from the iPhone. Prefer release mode for the wireless iPhone because the prior debug build installed but lost its Dart VM service connection:
+For the connected iPhone build, use Flutter tooling from the client directory and pass the direct Mac Wi-Fi server URL on the same command. The local dev server is currently listening on port `3108` with its database environment configured; the environment is process-local and must be supplied again if that process exits. Prefer release mode for the wireless iPhone because the prior debug build installed but lost its Dart VM service connection:
 
 ```sh
 cd prototype/construction_client
 MAC_WIFI_IP="$(ipconfig getifaddr en0)"
 flutter run --release -d <iPhone-UDID> \
-  --dart-define="CONTRACTOR_SERVER_URL=http://${MAC_WIFI_IP}:3000"
+  --dart-define="CONTRACTOR_SERVER_URL=http://${MAC_WIFI_IP}:3108"
 ```
 
 The Xcode workspace remains `prototype/construction_client/ios/Runner.xcworkspace`; running it without setting the same compile-time define is only a local-preview check. For macOS, use `flutter run -d macos --dart-define=CONTRACTOR_SERVER_URL=http://127.0.0.1:3108`. After native sign-in, confirm the assigned test project, save one test report locally, then sync it. Do not treat the Safari `No assigned projects` screen as native-app evidence.
@@ -46,8 +49,9 @@ The Xcode workspace remains `prototype/construction_client/ios/Runner.xcworkspac
 
 - Native identity, daily report editor, callback, attachment journal, snapshot bootstrap, and mounted fault fixture tests: 30 passed.
 - Flutter analysis of the connected host, identity client, migrations, and editor: no issues.
-- Connected iOS release build: succeeded (no code signing; not installed or launched).
-- Connected macOS debug build: succeeded (not launched in this checkpoint).
+- Connected iOS release build with `CONTRACTOR_SERVER_URL` set: succeeded (no code signing; not installed or launched).
+- Connected macOS release build with `CONTRACTOR_SERVER_URL` set: succeeded (not launched).
+- Connected web release build with `CONTRACTOR_SERVER_URL` set: succeeded (not launched in a browser).
 - Local login route returned HTTP 200; upload endpoint returned HTTP 401 without credentials, confirming auth is required.
 - Product schema reports all 89 migrations applied to the local signup database.
 - In this checkpoint, no app was opened and no screen was viewed or captured by the agent.
@@ -84,6 +88,25 @@ recovers its original receipt after a simulated server commit/lost response;
 it remains fixture evidence, not a live server session.
 Those platform compile checks predate the status-only changes. No app was
 launched or screen inspected for that follow-on.
+
+## 2026-10-11 local database configuration diagnosis
+
+The owner later supplied a login-page screenshot showing Prisma's
+`DATABASE_URL`-missing error. Inspection of the live local dev process confirmed
+that its environment did not contain `DATABASE_URL`; the local PostgreSQL
+service was stopped. The existing local database was retained, PostgreSQL was
+started, and the Next.js dev server was relaunched on port 3108 with a database
+URL and a process-local development auth secret. Prisma queries then executed
+successfully in the server process. This verifies database connectivity only;
+the owner has not retried native sign-in, so session creation, project loading,
+and report acceptance remain unverified. The environment was supplied to the
+running process and was not written into the repository. The server process
+must be restarted with equivalent environment values if it exits.
+
+After that recovery, connected-mode compile checks succeeded for iOS release
+(`--no-codesign`), macOS release, and web release, each with
+`CONTRACTOR_SERVER_URL` set to the current local dev origin. No target was
+installed or launched by the agent; the iOS artifact remains unsigned.
 
 ## Remaining M04 evidence
 
