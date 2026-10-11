@@ -22,7 +22,7 @@ The signup PostgreSQL cluster is at `127.0.0.1:5433`, database `contractor_m04_s
 - Connected macOS debug build: succeeded (not launched in this checkpoint).
 - Local login route returned HTTP 200; upload endpoint returned HTTP 401 without credentials, confirming auth is required.
 - Product schema reports all 89 migrations applied to the local signup database.
-- No user app or screen was opened or captured.
+- In this checkpoint, no app was opened and no screen was viewed or captured by the agent.
 
 ## 2026-10-11 follow-on
 
@@ -33,9 +33,11 @@ release (`build/ios/iphoneos/Runner.app`), macOS debug
 (`build/macos/Build/Products/Debug/construction_client.app`), and web release
 (`build/web`). These builds compile the shared Flutter host; the iOS build is
 unsigned and no platform app was launched or installed by the agent. The
-expired-sign-in and revoked-access notices are covered by separate widget
-tests, and the mounted fault tests verify auth-event delivery with the pending
-operation ID.
+expired-sign-in and revoked-access notices are shown inside the shared device
+sync-health card and covered by separate widget tests; the mounted fault tests
+verify auth-event delivery with the pending operation ID. The login route
+returned HTTP 200 over both loopback and the Mac Wi-Fi address. The iOS build
+uses that Wi-Fi address so a physical iPhone can reach the local server.
 
 ## Remaining M04 evidence
 
