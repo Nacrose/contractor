@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_workbook: all M06-T02 workbook model tests PASSED");
+console.log("native_workbook: all workbook model and dependency graph tests PASSED (M06-T02/T03)");

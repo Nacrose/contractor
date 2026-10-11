@@ -31,7 +31,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Names, formatting and formula registry entries survive round-trips with fixture coverage; no silent normalization.
     - No production consumer is switched in this task; the M02 save/sync model represents the migration state.
 
-- [ ] **M06-T03** — Qualify upstream dependency/recalculation behavior and adapter contracts
+- [x] **M06-T03** — Qualify upstream dependency/recalculation behavior and adapter contracts (PR #68)
   - Depends on: M06-T02 · Output: upstream dependency/recalculation mapping, adapter contract and stress evidence; no parallel evaluator.
   - Scope: reuse actual pinned upstream dirty propagation, cycle/error handling and bounded/cancellable recalculation. Define volatile/random/time/external-reference behavior across targets; expose missing hooks in the gap register rather than implementing a substitute graph engine. Prototype bindings only before T04's adoption decision (v3 §6 M06).
   - Acceptance:

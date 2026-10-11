@@ -10,3 +10,4 @@ export * from './transforms.js';
 export * from './formula_registry.js';
 export * from './defined_names.js';
 export * from './commands.js';
+export * from './dependency_graph.js';
