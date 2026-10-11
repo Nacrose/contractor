@@ -31,8 +31,9 @@ T08 remains open. The Flutter widget coverage checks the expanded section payloa
 Latest code checkpoint (2026-10-11): Contractor PR #55 (`c04eb897`) passes the
 full Flutter suite (**219 tests**) and `flutter analyze --no-pub`. Product PR
 #170 (`16408be2`) pins this client contract and adds versioned native edits;
-its focused daily-report router suite passes **63 tests**, ESLint for the
-changed test passes, and `npx tsc --noEmit` passes. The Webpack production
+the focused native-route, daily-report, and shared-adapter suite passes **106
+tests across 8 files**, ESLint for the changed test passes, and `npx tsc
+--noEmit` passes. The Webpack production
 build generated all 73 routes before the final test-only commit. A fresh
 remote check confirms both PRs are open drafts. These checks validate code and
 fixtures only; live sign-in, project assignment, server acceptance, feed

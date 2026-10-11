@@ -33,7 +33,7 @@ The current M04 plan's outcome and acceptance criteria remain unchanged. This co
 
 - Product worktree: `/private/tmp/construction-manager-m03-native-auth`, branch `codex/m04-resumable-photo-upload`, pushed commit `16408be2`.
 - Shared package pin: Contractor commit `c04eb897` (`codex/m04-connected-host`, PR #55).
-- The focused `daily-report.test.ts` suite passes 63 tests, including office/native stale-version conflict; ESLint for the changed test and `npx tsc --noEmit` pass. Earlier on the same implementation commit (before the final test-only commit), `npm run build -- --webpack` generated all 73 routes. The default Turbopack build's PostCSS worker could not bind a local port in this execution environment.
+- `npx vitest run src/app/api/native src/server/routers/__tests__/daily-report.test.ts vendor/contractor/packages/native_adapter/test/contract.test.ts` passes 106 tests across 8 files, including office/native stale-version conflict; ESLint for the changed test and `npx tsc --noEmit` pass. Earlier on the same implementation commit (before the final test-only commit), `npm run build -- --webpack` generated all 73 routes. The default Turbopack build's PostCSS worker could not bind a local port in this execution environment.
 - A fresh GitHub check confirms PR #170 is open as a draft at `16408be2`. The owner checked that `http://127.0.0.1:3110/login` renders. This does not establish native authentication, live server acceptance, CDC visibility, or a second-device round trip.
 
 ## Initial read-only evidence
