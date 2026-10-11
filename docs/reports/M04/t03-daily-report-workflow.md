@@ -52,4 +52,4 @@ Current code checks: full Flutter suite **213 passed**; `flutter analyze` **no i
 
 These checks independently verify the Flutter client, current product routes, and M03 adapter contract. Product PR #170 now includes the adapter binding; it remains unmerged. Automated checks do not substitute for authenticated report acceptance, photo registration, or second-device restore on the owner's local server.
 
-The 2026-10-11 rerun on the current Contractor PR #55 follow-on after `74fe803` passed `flutter test --no-pub` — **213 tests** — and `flutter analyze --no-pub` — **no issues**. The latest additions cover visible disk-full recovery, rejection from the mounted sync transport, and expired-session event delivery to the screen sign-in recovery notice while retaining the pending report.
+The 2026-10-11 rerun on Contractor PR #55 commit `7f35c18` passed `flutter test --no-pub` — **213 tests** — and `flutter analyze --no-pub` — **no issues**. The latest additions cover visible disk-full recovery, rejection from the mounted sync transport, and expired-session event delivery to the screen sign-in recovery notice while retaining the pending report.
