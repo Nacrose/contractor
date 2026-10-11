@@ -158,9 +158,28 @@ void main() {
     expect(find.text('Sign in again'), findsNothing);
   });
 
-  testWidgets(
-    'expired sync event reaches the screen and offers sign-in retry',
-    (tester) async {
+  for (final scenario in [
+    (
+      name: 'expired sync event reaches the screen and offers sign-in retry',
+      outcome: SyncOutcomeKind.authenticationRequired,
+      expectedIssue: DailyReportSyncAccessIssue.authenticationRequired,
+      expectedHeading: 'Sign-in required to sync',
+      expectedMessage:
+          'Your report is saved locally. Sign in again to resume syncing.',
+      expectedAction: 'Sign in again',
+      remarks: 'Retain while the session is renewed',
+    ),
+    (
+      name: 'revoked sync event reaches the screen and explains recovery',
+      outcome: SyncOutcomeKind.revoked,
+      expectedIssue: DailyReportSyncAccessIssue.revoked,
+      expectedHeading: 'Project access changed',
+      expectedMessage: 'Your report is saved locally. Ask a project admin to restore access, then sync again.',
+      expectedAction: null,
+      remarks: 'Retain while access is restored',
+    ),
+  ]) {
+    testWidgets(scenario.name, (tester) async {
       tester.view.physicalSize = const Size(430, 932);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
@@ -175,9 +194,11 @@ void main() {
         credentials: _Credentials(),
         transport: _Transport(
           (envelope) async => SyncOutcome(
-            kind: SyncOutcomeKind.authenticationRequired,
+            kind: scenario.outcome,
             opId: envelope.opId,
-            detail: 'session expired',
+            detail: scenario.outcome == SyncOutcomeKind.revoked
+                ? 'project access was revoked'
+                : 'session expired',
           ),
         ),
       );
@@ -230,7 +251,7 @@ void main() {
       await _selectProject(tester);
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Daily remarks'),
-        'Retain while the session is renewed',
+        scenario.remarks,
       );
       await tester.ensureVisible(find.text('Save locally'));
       await tester.tap(find.text('Save locally'));
@@ -240,33 +261,32 @@ void main() {
       await tester.tap(find.text('Sync now'));
       await tester.pumpAndSettle();
 
-      expect(issue, DailyReportSyncAccessIssue.authenticationRequired);
+      expect(issue, scenario.expectedIssue);
       expect(
         tester
             .widget<DailyReportScreen>(find.byType(DailyReportScreen))
             .syncAccessIssue,
-        DailyReportSyncAccessIssue.authenticationRequired,
+        scenario.expectedIssue,
       );
       expect(store.savedReports('acct-1', 'tenant-1'), hasLength(1));
       expect(
         store.savedReports('acct-1', 'tenant-1').single.draft.remarks,
-        'Retain while the session is renewed',
+        scenario.remarks,
       );
       expect(mount!.pendingOps.listDue('acct-1', 9999999999999), hasLength(1));
       await tester.dragUntilVisible(
-        find.text('Sign-in required to sync'),
+        find.text(scenario.expectedHeading),
         find.byKey(const ValueKey('daily-report-screen-list')),
         const Offset(0, 300),
       );
-      expect(
-        find.text(
-          'Your report is saved locally. Sign in again to resume syncing.',
-        ),
-        findsOneWidget,
-      );
-      expect(find.text('Sign in again'), findsOneWidget);
-    },
-  );
+      expect(find.text(scenario.expectedMessage), findsOneWidget);
+      if (scenario.expectedAction == null) {
+        expect(find.text('Sign in again'), findsNothing);
+      } else {
+        expect(find.text(scenario.expectedAction!), findsOneWidget);
+      }
+    });
+  }
 
   testWidgets('shows accepted reports restored for assigned projects', (
     tester,
