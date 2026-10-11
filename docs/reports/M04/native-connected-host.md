@@ -25,11 +25,22 @@ requested LAN-origin allowance and server-handled fallback are awaiting owner ap
 
 ## Local environment
 
-At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. On the current 2026-10-11 check, the product dev server responds with HTTP 200 on both `127.0.0.1:3108/login` and `192.168.1.66:3108/login`; the Wi-Fi forwarder at `192.168.1.66:3000` is not active. An HTTP 200 only proves the page is served. It does not prove browser JavaScript hydration or a session. The owner reports the direct `:3108` sign-in attempt also reloaded the login page; no authenticated session is established.
+At the earlier connected-host checkpoint, the signup PostgreSQL cluster was at `127.0.0.1:5433`, database `contractor_m04_signup`; the additive native PKCE and resumable-photo migrations applied successfully and preserved existing account data. At one 2026-10-11 check, the Wi-Fi forwarder at `192.168.1.66:3000` was not active. A later listener inspection found Node bound to `192.168.1.66:3000` and the product server bound to `*:3108`, but HTTP requests from the development sandbox could not connect to either port. This confirms neither iPhone reachability nor forwarding behavior. An HTTP 200 on the login page, when available, proves only that the page is served; it does not prove browser JavaScript hydration or a session. The owner reports the direct `:3108` sign-in attempt also reloaded the login page; no authenticated session is established.
 
-## Run the M04 app
+## Run the connected M04 app
 
-Use `prototype/construction_client/`, not the separate `apps/construction_client/` Flutter counter scaffold. From the Flutter client directory, run `flutter run -d <iPhone-UDID> --dart-define=CONTRACTOR_SERVER_URL=http://<Mac-Wi-Fi-IP>:3108`; for the Mac desktop, use `flutter run -d macos --dart-define=CONTRACTOR_SERVER_URL=http://127.0.0.1:3108`. The Xcode workspace is `prototype/construction_client/ios/Runner.xcworkspace`. Launch a debug build from Flutter tooling or Xcode, not from the iPhone Home Screen.
+Use `prototype/construction_client/`, not the separate `apps/construction_client/` Flutter counter scaffold. `ContractorOsApp` selects local preview whenever the compile-time `CONTRACTOR_SERVER_URL` define is absent. Opening `ios/Runner.xcworkspace` and pressing Xcode's default Run does not inherit a `--dart-define` passed to an earlier Flutter command; that build therefore opens the local preview directly on the report editor and cannot authenticate or sync.
+
+For the connected iPhone build, use Flutter tooling from the client directory and pass the server URL on the same command. If the local forwarder is running on port `3000`, keep it running; the intended path is the Mac Wi-Fi address on port `3000` to the product dev server on `3108`, but that path still needs verification from the iPhone. Prefer release mode for the wireless iPhone because the prior debug build installed but lost its Dart VM service connection:
+
+```sh
+cd prototype/construction_client
+MAC_WIFI_IP="$(ipconfig getifaddr en0)"
+flutter run --release -d <iPhone-UDID> \
+  --dart-define="CONTRACTOR_SERVER_URL=http://${MAC_WIFI_IP}:3000"
+```
+
+The Xcode workspace remains `prototype/construction_client/ios/Runner.xcworkspace`; running it without setting the same compile-time define is only a local-preview check. For macOS, use `flutter run -d macos --dart-define=CONTRACTOR_SERVER_URL=http://127.0.0.1:3108`. After native sign-in, confirm the assigned test project, save one test report locally, then sync it. Do not treat the Safari `No assigned projects` screen as native-app evidence.
 
 ## Validation
 
@@ -40,6 +51,10 @@ Use `prototype/construction_client/`, not the separate `apps/construction_client
 - Local login route returned HTTP 200; upload endpoint returned HTTP 401 without credentials, confirming auth is required.
 - Product schema reports all 89 migrations applied to the local signup database.
 - In this checkpoint, no app was opened and no screen was viewed or captured by the agent.
+
+## 2026-10-11 launch-mode correction
+
+The owner's screenshot showing the report editor with a `LOCAL PREVIEW` ribbon is evidence of the preview host, not the connected host. The owner separately reported that the iPhone opened the report editor after launching from Xcode. Since the default Xcode Run scheme does not set `CONTRACTOR_SERVER_URL`, this was the expected preview fallback. A later connected debug run included the server define but Flutter could not keep the wireless Dart VM service connection and terminated; no connected sign-in or sync is established by that run. The Safari screenshot reading `No assigned projects` is a browser page and is not evidence about the native app's project list. The release-mode command above is the next connected-device check; it has not yet been run by the owner.
 
 ## 2026-10-11 follow-on
 

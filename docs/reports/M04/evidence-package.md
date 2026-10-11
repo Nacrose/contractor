@@ -56,4 +56,19 @@ Latest code verification: `flutter analyze --no-pub` clean; full Flutter suite *
 
 ## Owner verification request
 
+### Continuation checkpoint — 2026-10-11
+
+- The owner reports that the iPhone currently opens the daily-report page. That is the M04 screen under test; it does not establish that a report was saved, accepted, or synced.
+- The isolated local database contains the assigned `M04 iPhone Test Project`, project membership, project access grants, and Daily Programme enabled. A read-only check found **0 daily reports and 0 registered photos** for this project at this checkpoint. No credentials or account identifiers are recorded here.
+- Latest Flutter verification on `codex/m04-connected-host`: `flutter test` — **209 passed**; `dart analyze` — **no issues**; `flutter build ios --release --no-codesign` — **success**; `flutter build web --release` — **success**; `flutter build macos --release` — **success** (with a dependency deprecation warning). These verify the current code and target compilation, not a live device round trip.
+- Latest Construction_Manager native endpoint verification on `codex/m04-resumable-photo-upload`: `npm test -- src/app/api/native` — **7 files / 32 tests passed**. The product branch contains local changes for LAN sign-in, PKCE, report sync, feed/snapshot, resumable photo upload, and digest metadata. GitHub was unreachable during the prior state check, so remote PR state is not freshly verified here.
+- Still unproven: durable save from this phone, accepted server sync, registered photo upload and restore, second-device visibility, actual reboot/telemetry evidence, native/web workflow recordings, and owner gate verification. The user action requested for the current device checkpoint is to save a dummy report and sync it; until then the zero-row database result remains authoritative.
+
+### Launch-mode clarification — 2026-10-11
+
+- The owner-supplied report-editor screenshot has a `LOCAL PREVIEW` ribbon. In `main_m04_host.dart`, omitting `CONTRACTOR_SERVER_URL` selects the local-only host. Xcode's default Run scheme does not inherit a Flutter CLI `--dart-define`; therefore that launch did not establish native authentication or server connectivity.
+- The owner's separate screenshot reading `No assigned projects` shows Safari in its status/navigation area. It is browser evidence only; it does not establish the native app's project access or identity.
+- A connected debug launch was attempted with `CONTRACTOR_SERVER_URL` set, but the wireless Dart VM service was not discovered and the process was terminated. No connected session is claimed. The revised runbook uses `flutter run --release` with the LAN forwarder to avoid requiring that debug VM connection. The owner has not yet run that release command.
+- Consequently, the report page observed on iPhone proves the M04 editor renders in local preview; it does not prove connected login, project loading, save-and-sync, or server acceptance.
+
 **Owner: please verify the recorded native and web daily-report workflow against the linked evidence before approving M04-T09.** The recordings and live product round trip have not yet been produced, so this is a requested future verification step, not a claim that verification occurred.
