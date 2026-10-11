@@ -89,7 +89,9 @@ recovers its original receipt after a simulated server commit/lost response;
 the expired-session screen test routes the mounted orchestrator's auth event to
 the sign-in recovery notice and confirms the report remains pending. Both remain
 fixture evidence, not live server sessions.
-Those platform compile checks predate the status-only changes. No app was
+The connected iOS release (`--no-codesign`), macOS release, and web release
+were rebuilt after the recovery changes with `CONTRACTOR_SERVER_URL` set and
+all three compiled successfully. The iOS artifact is unsigned. No app was
 launched or screen inspected for that follow-on.
 
 ## 2026-10-11 local database configuration diagnosis
