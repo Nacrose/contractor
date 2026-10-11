@@ -24,7 +24,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - The M00 inventories' attendance writers are audited and dispositioned (migrated → emit their change atomically per the M03-T04 pattern; excluded → reason recorded) — no silent writer; the Flutter-parity path is named (M02 `platform_contracts` generation pattern).
     - Approval remains a distinct server-side action where currently required; the native client cannot self-approve (permission guards enforced at the adapter, in GUARD_ORDER).
 
-- [ ] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history)
+- [x] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history) (PR #58)
   - Depends on: M05-T01 · Output: expense submission workflow running on native and web with tests.
   - Scope: existing `site-expense` resolvers reused (adapter seed binding `siteExpense.create` already names the full financial guard chain); approval distinctness preserved; original actor + edited payload audit history kept (v3 §6 M05 bullet 2).
   - Acceptance:
