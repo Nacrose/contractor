@@ -55,8 +55,26 @@ void main() {
     expect(calls.map((c) => c.method), ['save', 'load', 'delete', 'wipeAll']);
     expect(calls[0].arguments, {'ref': 'session.tokens', 'value': '{"session":{}}'});
     expect(calls[2].arguments, {'ref': 'pkce.inflight'});
+    expect(calls[3].arguments, isEmpty);
     expect(await store.load(CredentialRef.sessionTokens), '{"session":{}}');
     expect(await store.load(CredentialRef.deviceRegistration), isNull);
+  });
+
+  test('wipeAll clears credentials through the native argument-map contract', () async {
+    final credentials = <String, String>{'session.tokens': 'rejected-session'};
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+      // iOS and macOS reject every call whose arguments are not a map.
+      if (call.arguments is! Map) {
+        throw PlatformException(code: 'bad_request', message: 'arguments are required');
+      }
+      if (call.method == 'wipeAll') credentials.clear();
+      if (call.method == 'load') return credentials[call.arguments['ref']];
+      return null;
+    });
+
+    await store.wipeAll();
+    expect(await store.load(CredentialRef.sessionTokens), isNull);
   });
 
   test('FAIL-CLOSED: a missing host handler is CredentialStoreUnavailable on every operation', () async {
