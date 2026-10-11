@@ -266,3 +266,69 @@ test("adapterError always carries its tRPC mapping", () => {
   const e = adapterError("locked", "Fiscal year locked.");
   assert.equal(e.trpcCode, "CONFLICT");
 });
+
+test("M05 expansion: attendance.record declares guards in fixed pipeline order", () => {
+  const binding = SEED_OPERATIONS["attendance.record"];
+  assert.ok(binding);
+  assert.equal(binding.kind, "mutation");
+  assert.match(binding.service, /attendance submission engine/);
+  assert.deepEqual(binding.guards, [
+    "identity",
+    "tenantScope",
+    "rateLimit",
+    "projectMembership",
+    "projectPermission",
+    "inputReferences",
+    "idempotency",
+  ]);
+});
+
+test("M05 expansion: siteExpense.create enforces full financial guard chain in pipeline order", () => {
+  const binding = SEED_OPERATIONS["siteExpense.create"];
+  assert.ok(binding);
+  assert.equal(binding.kind, "mutation");
+  assert.deepEqual(binding.guards, [
+    "identity",
+    "tenantScope",
+    "rateLimit",
+    "projectMembership",
+    "projectPermission",
+    "capability",
+    "delegation",
+    "financial",
+    "fiscalLock",
+    "idempotency",
+  ]);
+});
+
+test("M05 expansion: material.delivery declares capability and idempotency guards", () => {
+  const binding = SEED_OPERATIONS["material.delivery"];
+  assert.ok(binding);
+  assert.equal(binding.kind, "mutation");
+  assert.deepEqual(binding.guards, [
+    "identity",
+    "tenantScope",
+    "rateLimit",
+    "projectMembership",
+    "projectPermission",
+    "capability",
+    "inputReferences",
+    "idempotency",
+  ]);
+});
+
+test("M05 expansion: fieldPhotos.upload declares input references and idempotency guards", () => {
+  const binding = SEED_OPERATIONS["fieldPhotos.upload"];
+  assert.ok(binding);
+  assert.equal(binding.kind, "mutation");
+  assert.deepEqual(binding.guards, [
+    "identity",
+    "tenantScope",
+    "rateLimit",
+    "projectMembership",
+    "projectPermission",
+    "inputReferences",
+    "idempotency",
+  ]);
+});
+
