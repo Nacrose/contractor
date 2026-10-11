@@ -2,8 +2,8 @@
 
 - **Status:** draft; M04 exit criteria are not satisfied.
 - **Date:** updated 2026-10-11.
-- **Flutter evidence branch:** `codex/m04-connected-host` (Contractor PR #55, latest M04 test commit `7d4da91`, stacked on the M04 photo workflow); current code includes the connected native host, daily-report workflow, and photo/restore client.
-- **Product prerequisites:** daily-report sync [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), CDC feed/snapshot [#166](https://github.com/Nacrose/Construction_Manager/pull/166), native PKCE [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and resumable photo upload/snapshot digest [#170](https://github.com/Nacrose/Construction_Manager/pull/170). The last confirmed GitHub check found these PRs open as drafts; live status could not be refreshed. The user has reported the daily-report page open on iPhone, but a connected authenticated sync and second-device round trip remain unverified.
+- **Flutter evidence branch:** `codex/m04-connected-host` (Contractor PR #55, latest M04 parity commit `3e9746d`, stacked on the M04 photo workflow); current code includes the connected native host, daily-report workflow, and photo/restore client.
+- **Product prerequisites:** daily-report sync [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), CDC feed/snapshot [#166](https://github.com/Nacrose/Construction_Manager/pull/166), native PKCE [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and resumable photo upload/snapshot digest [#170](https://github.com/Nacrose/Construction_Manager/pull/170), now updated through commit `17888dd9`. The last confirmed GitHub check found these PRs open as drafts; live status could not be refreshed. The user has reported the daily-report page open on iPhone, but a connected authenticated sync and second-device round trip remain unverified.
 
 ## Task evidence inventory
 
@@ -74,7 +74,7 @@ Latest code verification: `flutter analyze --no-pub` clean; full Flutter suite *
 ### Field-section parity follow-on — 2026-10-11
 
 - The approved parity change adds site visits, meetings, and BOQ/plan-versus-actual fields to the shared Flutter report editor. The product follow-up accepts visitor and meeting sections through the current report procedure and writes them via the existing normalization service.
-- Current Flutter verification: `flutter test --no-pub` — **216 passed**; `flutter analyze --no-pub` — **clean**; iOS release (`--no-codesign`), macOS release, and Flutter web release builds compile.
+- Current Flutter verification: `flutter test --no-pub` — **216 passed**; `flutter analyze --no-pub` — **clean**; connected iOS release (`--no-codesign`, `http://192.168.1.66:3000`), macOS release (`http://127.0.0.1:3108`), and Flutter web release (`http://127.0.0.1:3108`) builds compile.
 - Current product verification: the two affected Vitest files pass **72 tests**; TypeScript passes; webpack production build generates all **73 routes**. The default Turbopack build is blocked because its PostCSS worker cannot bind a local port in this environment.
 - This is code-level parity evidence only. The product PR remains unmerged. The owner has said they can assign the iPhone account to a project; assignment and a project/report screen screenshot are still pending, as are connected acceptance, live photo restore, second-device visibility, telemetry, and recorded native/web workflow evidence.
 

@@ -1,8 +1,8 @@
 # M04-T08 daily-report rule parity progress
 
 - **Status:** code-level comparison extended for the M04 field sections; full T08 acceptance remains open.
-- **Compared product checkout:** `/private/tmp/construction-manager-m03-native-auth`, branch `codex/m04-resumable-photo-upload`, commit `449f50ae` plus the current uncommitted route follow-up.
-- **Compared Flutter checkout:** `prototype/construction_client/lib/workflows/daily_report_workflow.dart` and `daily_report_screen.dart`, branch `codex/m04-connected-host`, commit `f7aa40c` plus the current uncommitted workflow follow-up.
+- **Compared product checkout:** `/private/tmp/construction-manager-m03-native-auth`, branch `codex/m04-resumable-photo-upload`, commit `17888dd9`.
+- **Compared Flutter checkout:** `prototype/construction_client/lib/workflows/daily_report_workflow.dart` and `daily_report_screen.dart`, branch `codex/m04-connected-host`, commit `3e9746d`.
 - **Sources:** product `src/lib/field-entry-builders.ts` (`reportCanSend`, `buildFieldPayload`), `src/server/routers/daily-report.ts` (`FieldReportCreateSchema`, `parseFieldSection`, `createFieldReport`), and `src/server/services/daily-report-sync.ts` (`syncNormalizedTables`).
 
 ## Rules compared
