@@ -47,6 +47,10 @@ const List<Migration> kM04WorkflowMigrations = [
     'CREATE INDEX idx_attachment_report ON attachment (account_id, daily_report_id, state)',
   ]),
   kDailyReportSnapshotMigration,
+  Migration(8, 'registered_photo_metadata', [
+    'ALTER TABLE attachment ADD COLUMN registered_digest TEXT',
+    'ALTER TABLE attachment ADD COLUMN registered_bytes INTEGER',
+  ]),
 ];
 
 const String _objectPrefix = 'attachments/';
@@ -86,6 +90,8 @@ class AttachmentTransferRecord {
   final String? receipt;
   final int createdAtMs;
   final int updatedAtMs;
+  final String? registeredDigest;
+  final int? registeredBytes;
 
   const AttachmentTransferRecord({
     required this.id,
@@ -105,6 +111,8 @@ class AttachmentTransferRecord {
     required this.receipt,
     required this.createdAtMs,
     required this.updatedAtMs,
+    this.registeredDigest,
+    this.registeredBytes,
   });
 
   bool get complete =>
@@ -138,6 +146,22 @@ abstract interface class AttachmentRegistrarPort {
   Future<int> putChunk(String uploadId, int offset, Uint8List chunk);
 
   Future<String> completeUpload(String uploadId, String digest, int bytes);
+}
+
+/// Sanitized server objects may differ from the locally staged original.
+class VerifiedAttachmentRegistration {
+  final String receipt;
+  final String digest;
+  final int bytes;
+  const VerifiedAttachmentRegistration(this.receipt, this.digest, this.bytes);
+}
+
+abstract interface class VerifiedAttachmentRegistrarPort {
+  Future<VerifiedAttachmentRegistration> completeVerifiedUpload(
+    String uploadId,
+    String digest,
+    int bytes,
+  );
 }
 
 /// Fetches a previously registered object. The server implementation must
@@ -418,21 +442,45 @@ class AttachmentTransferManager {
       );
       _event(accountId, id, 'upload_opened', {'uploadId': uploadId});
       var offset = await registrar.queryUpload(uploadId);
+      if (offset < 0 || offset > current.bytes!) {
+        throw const AttachmentRegistrarError(
+          AttachmentFailureKind.retryable,
+          'Server photo offset is invalid.',
+        );
+      }
       final bytes = _objects.getBytes(current.objectKey!);
       while (offset < current.bytes!) {
         final end = (offset + chunkBytes).clamp(0, current.bytes!);
         final chunk = Uint8List.sublistView(bytes, offset, end);
-        offset = await registrar.putChunk(uploadId, offset, chunk);
+        final acknowledged = await registrar.putChunk(uploadId, offset, chunk);
+        if (acknowledged < end || acknowledged > current.bytes!) {
+          throw const AttachmentRegistrarError(
+            AttachmentFailureKind.retryable,
+            'Server photo acknowledgment is invalid.',
+          );
+        }
+        offset = acknowledged;
         _event(accountId, id, 'chunk_ack', {
           'offset': offset,
           'chunkBytes': chunk.length,
         });
       }
-      final receipt = await registrar.completeUpload(
-        uploadId,
-        current.digest!,
-        current.bytes!,
-      );
+      final verifiedRegistrar = registrar;
+      final verified = verifiedRegistrar is VerifiedAttachmentRegistrarPort
+          ? await (verifiedRegistrar as VerifiedAttachmentRegistrarPort)
+                .completeVerifiedUpload(
+                  uploadId,
+                  current.digest!,
+                  current.bytes!,
+                )
+          : null;
+      final receipt =
+          verified?.receipt ??
+          await registrar.completeUpload(
+            uploadId,
+            current.digest!,
+            current.bytes!,
+          );
       if (receipt.isEmpty) {
         throw const AttachmentRegistrarError(
           AttachmentFailureKind.retryable,
@@ -442,6 +490,8 @@ class AttachmentTransferManager {
       mount.outbox.withImmediateTransaction(() {
         _setState(accountId, id, AttachmentTransferState.registered, {
           'receipt': receipt,
+          'registered_digest': verified?.digest ?? current.digest,
+          'registered_bytes': verified?.bytes ?? current.bytes,
           'failure_kind': null,
           'failure_step': null,
           'failure_detail': null,
@@ -850,6 +900,8 @@ class AttachmentTransferManager {
         receipt: row['receipt'] as String?,
         createdAtMs: row['created_at'] as int,
         updatedAtMs: row['updated_at'] as int,
+        registeredDigest: row['registered_digest'] as String?,
+        registeredBytes: row['registered_bytes'] as int?,
       );
 }
 

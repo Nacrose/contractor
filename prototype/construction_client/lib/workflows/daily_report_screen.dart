@@ -301,8 +301,8 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
             (photo) => RegisteredDailyReportPhoto(
               attachmentId: photo.id,
               receipt: photo.receipt!,
-              digest: photo.digest!,
-              bytes: photo.bytes!,
+              digest: photo.registeredDigest ?? photo.digest!,
+              bytes: photo.registeredBytes ?? photo.bytes!,
             ),
           )
           .toList(growable: false);
@@ -654,7 +654,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       ),
       subtitle: Text(
         photo.complete
-            ? 'Registered · ${photo.bytes ?? 0} bytes'
+            ? 'Registered · ${photo.registeredBytes ?? photo.bytes ?? 0} bytes'
             : photo.failureDetail ?? 'Transfer ${photo.state.name}',
       ),
       trailing: photo.state == AttachmentTransferState.failed
