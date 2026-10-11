@@ -2,9 +2,9 @@
 
 - **Task**: `M04-T01` — Daily-report domain path trace through the M03 adapter + side-effect inventory (PR #44)
 - **Depends on**: M03-T01 (PR #32), M03-T04 (PR #35) — both merged
-- **Status**: Corrected analysis deliverable · current product binding does not yet conform to the M03-T01 adapter boundary.
+- **Status**: Corrected analysis deliverable · product PR #170 now contains an M03-T01-conformant binding; live acceptance remains open.
 - **Original date**: 2026-10-09 · **Correction date**: 2026-10-11.
-- **Correction**: the original §2–§7 route description relied on a stale M00 inventory and incorrectly selected `fieldSubmission.submit`. This correction records the current daily-report path and distinguishes it from the M03-T01 adapter contract; it does not claim adapter conformance or live acceptance.
+- **Correction**: the original §2–§7 route description relied on a stale M00 inventory and incorrectly selected `fieldSubmission.submit`. The original correction recorded the daily-report path and adapter gap as of its review; the 2026-10-11 product adapter update below supersedes that gap statement for the PR branch. Neither update claims live acceptance.
 
 ---
 
@@ -17,7 +17,7 @@ The M03-T01 contract is the required native-facing boundary; the list below desc
 3. **Authoritative dispatch** — a binding names the existing server service or engine; business rules and permissions stay server-side.
 4. **Feed emission** — the audited M03-T04 pilot writers emit their sync-visible change atomically with their authoritative mutation through `publishAtomically` in the adapter binding — `sync-feed-pilot.md` §§3–5.
 
-**Current conformance gap:** product PR #165's `POST /api/native/sync` accepts a separate `syncProtocolVersion` envelope, performs route-local checks, creates a tRPC caller, and directly invokes `appRouter.workflow.dailyReport.createFieldReport`. It does not construct `AdapterRequest`, resolve the exact `platform_contracts` version, or dispatch through the `@contractor/native-adapter` operation registry and declared guard pipeline. The protected tRPC procedure still enforces its own authorization and transactional report rules, but that is not evidence that the M03 adapter contract is mounted. M04 must close this integration gap or explicitly amend the architecture before claiming the native operation runs through the adapter.
+**Historical implementation gap (before product PR #170):** product PR #165's `POST /api/native/sync` accepted a separate `syncProtocolVersion` envelope, performed route-local checks, created a tRPC caller, and directly invoked `appRouter.workflow.dailyReport.createFieldReport`. It did not construct `AdapterRequest`, resolve the exact `platform_contracts` version, or dispatch through the `@contractor/native-adapter` operation registry and declared guard pipeline. Product PR #170 now adds that adapter binding on the product PR branch; its implementation and tests are recorded below. The PR remains unmerged and live acceptance is still required.
 
 Sources of truth: `docs/reports/M00/inventory-routers.md`, `inventory-jobs-imports.md`, `inventory-local-stores.md` (M00-T07/T08 commit-pinned inventories); `docs/reports/M03/adapter-guard-inventory.md` (M03-T01); `docs/reports/M03/sync-feed-pilot.md` §3 (the audited writer list this report must cite); `docs/reports/M03/identity-device-design.md` (M03-T02 scope model); `docs/plans/native-web-platform-plan-v3.md` §6 M04 W01.
 
@@ -25,7 +25,7 @@ Sources of truth: `docs/reports/M00/inventory-routers.md`, `inventory-jobs-impor
 
 The M04 headline workflow is: select project → create/edit daily log → attach photo → save locally (durable, M03-T03 contract) → sync via the M03-T07 orchestrator → observe accepted state on the web app and a second device.
 
-The M00 inventory's statement that `daily-report.ts` is unmounted describes an older product revision and is not the current route. In the product checkout inspected on 2026-10-11, `_app.ts` mounts `workflowRouter`, `workflow.ts` mounts `dailyReportRouter` as `workflow.dailyReport`, and that router exposes `createFieldReport`. The current workflow operation is **`workflow.dailyReport.createFieldReport`**, which creates a `DailyReport` draft and normalized child rows. Product PR #165 adds `POST /api/native/sync` as the native transport binding to this existing procedure; that PR remains unmerged and live acceptance is still open. `fieldSubmission.create` accepts other submission kinds and is not a daily-report substitute. The `daily-report-sync` service remains a separate writer for those field-submission kinds; it is not called by `createFieldReport`.
+The M00 inventory's statement that `daily-report.ts` is unmounted describes an older product revision and is not the current route. In the product checkout inspected on 2026-10-11, `_app.ts` mounts `workflowRouter`, `workflow.ts` mounts `dailyReportRouter` as `workflow.dailyReport`, and that router exposes `createFieldReport`. The workflow operation is **`workflow.dailyReport.createFieldReport`**, which creates a `DailyReport` draft and normalized child rows. Product PR #165 added `POST /api/native/sync` as the native transport binding; product PR #170 now routes that binding through the shared M03 adapter on its unmerged branch. Live acceptance remains open. `fieldSubmission.create` accepts other submission kinds and is not a daily-report substitute. The `daily-report-sync` service remains a separate writer for those field-submission kinds; it is not called by `createFieldReport`.
 
 ## 3. Writer inventory → current product route → feed coverage
 
@@ -33,7 +33,7 @@ Daily-report writers touched by this vertical, their current routes, and the M03
 
 | # | Writer | Current M04 route / use | Authorization and side effects | M03-T04 feed coverage |
 |---|---|---|---|---|
-| 1 | `workflow.dailyReport.createFieldReport` | Intended M04 operation; product PR #165's `POST /api/native/sync` currently dispatches directly to `appRouter.workflow.dailyReport.createFieldReport` (not through `@contractor/native-adapter`) | Authenticated tRPC context; `assertDailyReportEdit` before and inside the transaction; `clientUuid` idempotency; validation and `DailyReport`/normalized-child/photo-reference writes remain in the existing procedure | `daily-report/daily_report` is the audited projection for daily-report writes; product feed visibility remains unverified |
+| 1 | `workflow.dailyReport.createFieldReport` | M04 operation; product PR #170 routes `POST /api/native/sync` through `@contractor/native-adapter` before dispatch to the existing procedure | Adapter guard binding preserves server identity, tenant/project scope, rate limiting, membership and edit checks; the procedure retains transactional validation, `clientUuid` idempotency, and `DailyReport`/normalized-child/photo-reference writes | `daily-report/daily_report` is the audited projection for daily-report writes; product feed visibility remains unverified |
 | 2 | `workflow.dailyReport.createReport` / `updateReport` | Existing office-side daily-report writers; **not called by the M04 field editor** | Existing server authorization and review behavior; M04 observes their accepted changes through sync | `daily-report/daily_report` |
 | 3 | `fieldPhotos.create` | M04-T04 upload completion in `POST /api/native/photos/upload` calls the existing procedure (product PR #170; unmerged); the registered reference is then filed by `createFieldReport` | Project authorization is rechecked; bytes are chunked, resumed, and SHA-256 verified before registration; report transaction rechecks photo receipt, project, size, and digest | The audited M03-T04 mapping for `fieldPhotos.create` is `field-submission/field_submission`; product-backed delivery remains unverified |
 | 4 | `service:daily-report-sync` | Separate server reconciliation for `FieldSubmission` rows; **not called by `createFieldReport`** | Triggered by the separate field-submission ingestion path; keeps that path's existing normalization semantics | `daily-report/daily_report` |
@@ -60,7 +60,11 @@ v3 §6 M04 W01 asks exactly one structural question: **does any side effect need
 | M03 sync feed | Product pull/snapshot routes expose committed server state; product feed implementation is in the stacked sync PRs | **REQUIRES LIVE VERIFICATION** — the M03-T04 audit maps this domain to `daily-report/daily_report`; the product endpoint/worker has not yet been merged and exercised end-to-end. Do not claim feed acceptance from local Flutter fixtures. |
 | Separate field-submission normalization | `daily-report-sync` runs for `FieldSubmission`, not for `createFieldReport` | **OUTSIDE THIS CALL PATH** — preserve that workflow and its feed coverage without routing daily reports through it. |
 
-**Summary of disposition:** the M04 client must call the existing `workflow.dailyReport.createFieldReport` procedure; it must not use the separate field-submission route. The current product binding preserves the procedure's transactional report write and replay behavior, but bypasses the M03-T01 adapter package and registry. That conformance gap remains open. Feed delivery is a cross-repository prerequisite and is not proven by the original M03 local feed tests.
+**Summary of disposition:** the M04 client uses the existing `workflow.dailyReport.createFieldReport` procedure through the M03 adapter binding in product PR #170; it must not use the separate field-submission route. The PR branch preserves the procedure's transactional report write and replay behavior. Feed delivery is a cross-repository prerequisite and is not proven by the original M03 local feed tests or the adapter route tests.
+
+## Product adapter status update — 2026-10-11
+
+Construction_Manager PR #170 now routes `POST /api/native/sync` through the shared M03 adapter version resolver, registry, and declared guard chain before dispatching to the existing daily-report procedure. The product branch pins Contractor commit `74fe803`; product commit `449f50ae` includes the binding and route tests. This resolves the conformance implementation gap in the unmerged PR branch. Live authenticated acceptance, CDC feed visibility, and a second-client round trip remain unproven, so M04-T03 is still open.
 
 The product sync binding and feed pull/snapshot work are in Construction_Manager PRs #165–#170. They remain unmerged, so this report identifies the intended, code-reviewed route and current feed mapping but does not claim a live accepted write.
 
@@ -70,7 +74,7 @@ The M03-T02 model: the session is opaque token evidence; `SessionIdentity` = `{s
 
 | Workflow action | Expected current-app authorization | Current product enforcement / gap |
 |---|---|---|
-| Field user creates a daily-log draft | Project user with `project.dailyProgramme.edit` or the equivalent `dailyProgramme` module edit grant | Native identity resolves to server session; the existing procedure calls `assertDailyReportEdit` before and inside the transaction; the native sync route compares tenant and project envelope values with the session organization and report payload. These checks preserve the procedure's access rules but are route-local, not the M03-T01 guard registry. |
+| Field user creates a daily-log draft | Project user with `project.dailyProgramme.edit` or the equivalent `dailyProgramme` module edit grant | On product PR #170, the M03 adapter guard binding resolves native identity from the server session and checks tenant/project scope, rate limit, membership, and edit permission; the existing procedure rechecks edit permission inside the transaction. |
 | Field user attaches a photo | Same project edit scope | Resumable upload rechecks identity/project access on each action; completion calls the existing `fieldPhotos.create` procedure; report filing revalidates the registered photo and its digest |
 | Office reviews / adjusts a submission | Manager/admin on the project (server web path today) | Server-side permission checks unchanged; field devices observe outcomes ONLY through the feed (they cannot mutate review state) |
 | Devices read accepted daily-log state | Project member, view scope | Feed pull: structural tenant partition + `canReadProject` port (revoked project ⇒ immediately stops flowing; re-grant ⇒ withheld changes resume, cursor never skips) |
@@ -84,7 +88,7 @@ The M03-T02 model: the session is opaque token evidence; `SessionIdentity` = `{s
 
 ## 7. Disposition-before-use statement
 
-The M04-T02 mount and M04-T03 workflow use the operation and side-effect dispositions above. The native operation is `workflow.dailyReport.createFieldReport`; `fieldSubmission.submit` creates a different record type and must not be used. The current product `/api/native/sync` route is not mounted through the central M03 adapter contract, so adapter conformance remains open alongside product feed behavior and authenticated acceptance.
+The M04-T02 mount and M04-T03 workflow use the operation and side-effect dispositions above. The native operation is `workflow.dailyReport.createFieldReport`; `fieldSubmission.submit` creates a different record type and must not be used. Product PR #170 mounts `/api/native/sync` through the central M03 adapter contract on its unmerged branch. Feed behavior and authenticated acceptance remain open.
 
 ## 8. Correction history and current evidence
 

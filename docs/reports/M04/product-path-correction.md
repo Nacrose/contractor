@@ -1,6 +1,6 @@
 # M04 daily-log product path correction
 
-- **Status:** current product route identified; M03-T01 adapter conformance and live acceptance remain open.
+- **Status:** current product route identified; adapter conformance is implemented in Construction_Manager PR #170, while merge and live acceptance remain open.
 - **Date:** 2026-10-11 update to the 2026-10-10 correction.
 - **Plan amendment:** corrects the M04-T01 path report and tracks the current product route against the already-ratified M03 adapter, feed, and Flutter acceptance criteria. No scope is reduced.
 
@@ -14,14 +14,14 @@ The original M04-T01 report said the daily-report router was unmounted and direc
 - `src/lib/field-entry-builders.ts` builds daily-log submissions for `workflow.dailyReport.createFieldReport`.
 - `fieldSubmission.create` accepts `material_inward`, `site_expense`, and `labour_log`, not daily reports.
 
-The existing daily-report procedure owns validation, project permission revalidation in the transaction, `clientUuid` idempotency, report and normalized child-row writes, photo registration, audit, and the office event. Product PR #165 now adds `POST /api/native/sync`; it validates its own sync envelope, creates a tRPC caller, and directly invokes `appRouter.workflow.dailyReport.createFieldReport`. That preserves the protected procedure's business and permission checks, but it does not mount the M03-T01 `@contractor/native-adapter` contract: there is no exact `platform_contracts` version resolution, adapter registry entry, or declared ordered guard chain in that route.
+The existing daily-report procedure owns validation, project permission revalidation in the transaction, `clientUuid` idempotency, report and normalized child-row writes, photo registration, audit, and the office event. At the initial product-path review, `POST /api/native/sync` called that procedure directly and did not mount the M03-T01 adapter. After explicit owner approval, Construction_Manager PR #170 now binds the route to the shared `@contractor/native-adapter` exact-version resolver, operation registry, and ordered guard pipeline. Its product binding maps the existing session identity, tenant/project scope, server rate limiter, project membership, and daily-report edit guard, then dispatches to the unchanged protected procedure. The replay precheck preserves the existing accepted-idempotency behavior before project guards; durable deduplication and write side effects remain in the existing transaction.
 
-Product PR #166 separately prepares the scoped change-feed pull/snapshot surface and the pgoutput CDC worker. The worker persists report projections using PostgreSQL commit LSNs after reading committed WAL. The route and feed code are local draft work and have not been proven through a live authenticated Flutter session. The server route therefore exists, but M04-T03's M03 adapter conformance and server acceptance criteria remain open.
+Product PR #166 separately prepares the scoped change-feed pull/snapshot surface and the pgoutput CDC worker. The worker persists report projections using PostgreSQL commit LSNs after reading committed WAL. The adapter route and feed code are in unmerged product PR branches and have not been proven through a live authenticated Flutter session. The adapter conformance implementation is present, but live server acceptance criteria remain open.
 
 ## Required implementation sequence
 
 1. Obtain explicit user approval before any Construction_Manager edit, as required by that repo's `.agents/AGENTS.md`.
-2. In the product-repo PR stack, reconcile the existing `/api/native/sync` binding with the ratified M03-T01 adapter boundary, or submit an owner-approved `[PLAN-AMEND]` that preserves M03 contract guarantees. Preserve server identity and permission revalidation, `clientUuid` idempotency, existing domain validation/side effects, and commit-LSN ordered CDC delivery. Add server evidence for accepted and replayed requests, permission revocation, and change-feed visibility. Do not redirect to `fieldSubmission.create`.
+2. In the product-repo PR stack, reconcile the existing `/api/native/sync` binding with the ratified M03-T01 adapter boundary, or submit an owner-approved `[PLAN-AMEND]` that preserves M03 contract guarantees. **Implemented in PR #170 at product commit `449f50ae`, pinned to Contractor commit `74fe803`.** Preserve server identity and permission revalidation, `clientUuid` idempotency, existing domain validation/side effects, and commit-LSN ordered CDC delivery. Add server evidence for accepted and replayed requests, permission revocation, and change-feed visibility. Do not redirect to `fieldSubmission.create`.
 3. In M04-T03's contractor PR, bind the shared Flutter workflow to that operation and demonstrate acceptance visible in the current web app and a second client.
 4. In M04-T04, route photo bytes through M03-T06 staging/finalization/registration and verify that incomplete transfers are not represented as complete.
 
@@ -29,7 +29,15 @@ Product PR #166 separately prepares the scoped change-feed pull/snapshot surface
 
 The current M04 plan's outcome and acceptance criteria remain unchanged. This correction records which existing procedure owns the daily-log behavior and the integration prerequisite needed to satisfy the already-ratified sync and visibility criteria. It does not reduce scope or change the authoritative product rules.
 
-## Read-only evidence
+## Source and verification update — 2026-10-11
+
+- Product worktree: `/private/tmp/construction-manager-m03-native-auth`, branch `codex/m04-resumable-photo-upload`, pushed commit `449f50ae`.
+- Shared package pin: Contractor commit `74fe803` (`codex/m04-connected-host`, PR #55).
+- `npm test -- src/app/api/native` — 7 files / 41 tests passed, including version pin, registry lookup, ordered guards, session/tenant/project checks, accepted replay, digest validation, and safe error mapping.
+- `NODE_OPTIONS=--max-old-space-size=8192 npx tsc --noEmit --pretty false` passed. `npm run build -- --webpack` passed and generated 73 routes. The default Turbopack build resolved the adapter imports but its PostCSS worker was blocked from binding a local port in this execution environment; the successful Webpack build verifies the complete source tree locally.
+- The adapter binding is pushed but unmerged. No authenticated native sync or second-device acceptance has been demonstrated.
+
+## Initial read-only evidence
 
 Inspected only; no Construction_Manager files were modified.
 
