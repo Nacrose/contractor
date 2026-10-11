@@ -11,11 +11,11 @@
 |---|---|---|
 | M04-T01 | [Domain path trace](domain-path-trace.md); merged PR #44 | Complete per execution plan |
 | M04-T02 | [Flutter mount report](flutter-mount.md); merged PR #45 | Complete per execution plan |
-| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, typed row payload widget test, Chrome IndexedDB persistence probe, native callback PR #52, and a locally inspected iPhone local-preview capture; product adapter/auth PRs prepared but not merged | Open: Flutter PKCE sign-in/exchange, CDC feed/pull deployment, live server acceptance, and second-device visibility are unproven |
+| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, typed row payload widget test, Chrome IndexedDB persistence probe, and the connected-host implementation in Contractor PR #55 | Open: product adapter/auth PRs remain unmerged; Flutter PKCE sign-in/exchange, CDC pull, live server acceptance, and second-device visibility are unproven |
 | M04-T04 | [Photo transfer progress](t04-photo-transfer-progress.md) | Open: product-backed registration/download and real-device session evidence remain missing |
-| M04-T05 | [Vertical fault matrix](fault-matrix-vertical.md) | Open: automated mounted legs exist; reboot/hardware/server evidence and complete health transcripts remain missing |
+| M04-T05 | [Vertical fault matrix](fault-matrix-vertical.md) | Open: automated mounted legs and auth/revocation recovery UI coverage exist; reboot/hardware/server evidence and complete health transcripts remain missing |
 | M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md); mounted snapshot restore and rejected-report correction tests | Open: product endpoint PR is pushed but unmerged; product-backed attachment download, live restore, and second-device photo evidence remain missing |
-| M04-T07 | [Device telemetry](device-telemetry.md) | Open: no Android/iOS device is available on the capture host; no real workflow telemetry or correlated server metrics were captured |
+| M04-T07 | [Device telemetry](device-telemetry.md) | Open: the iPhone is available, but no real workflow telemetry or correlated server metrics have been captured |
 | M04-T08 | [Rule parity progress](daily-report-rule-parity-progress.md) | Open: local row editor parity improved; native and web workflow recordings, live-route fixture, complete T03–T07 evidence, and owner verification are missing |
 | M04-T09 | This packet and the M05 task refinement are prerequisites | Not reached; the owner must review and approve the gate after all task evidence is complete |
 
@@ -39,9 +39,9 @@
 
 ## Current checkpoint (2026-10-11)
 
-The connected Flutter host and restore follow-on are pushed to Contractor PR #55 (latest commit `fd2af30`). Registered-photo snapshot digest metadata is pushed to Construction_Manager PR #170 (latest commit `abd31961`). The local login page at `http://127.0.0.1:3108/login` was checked by the owner and confirmed to render; this does not establish sign-in from Flutter or an accepted report. The user later reported creating a local account, superseding the older “account not configured” note above, but that account has not been used by this agent or validated through the app.
+The connected Flutter host and restore follow-on are pushed to Contractor PR #55 (latest commit `ac6c02a`). Registered-photo snapshot digest metadata is pushed to Construction_Manager PR #170 (latest commit `abd31961`). The local login page at `http://127.0.0.1:3108/login` was checked by the owner and confirmed to render; this does not establish sign-in from Flutter or an accepted report. The user later reported creating a local account, superseding the older “account not configured” note above, but that account has not been used by this agent or validated through the app.
 
-Latest code verification: Flutter analysis clean; full Flutter suite **201 passed**; iOS release build (`--no-codesign`), macOS debug build, and web release build succeeded. The agent did not open any app, inspect a screen, or launch the iPhone during this checkpoint. The owner’s device evidence, authenticated server round trip, live photo restore, telemetry, video/log packet, and explicit M04 gate approval remain outstanding. The app currently implements the M04 daily-report/photo vertical, not the later full feature-parity milestone.
+Latest code verification: `flutter analyze --no-pub` clean; full Flutter suite **203 passed**; iOS release build (`--no-codesign`) succeeded with the Mac LAN endpoint `http://192.168.1.66:3108`; macOS debug and web release builds succeeded with the loopback endpoint. The local login route returned HTTP 200 over loopback and LAN. The access-recovery UI and mounted auth-event assertions are included in `ac6c02a`. The iOS artifact is unsigned; the agent did not install or open any app, inspect a screen, or launch the iPhone during this checkpoint. The owner’s device evidence, authenticated server round trip, live photo restore, telemetry, video/log packet, and explicit M04 gate approval remain outstanding. The app currently implements the M04 daily-report/photo vertical, not the later full feature-parity milestone.
 
 ## Owner verification request
 

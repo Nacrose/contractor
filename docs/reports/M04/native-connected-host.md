@@ -19,10 +19,23 @@ The signup PostgreSQL cluster is at `127.0.0.1:5433`, database `contractor_m04_s
 - Native identity, daily report editor, callback, attachment journal, snapshot bootstrap, and mounted fault fixture tests: 30 passed.
 - Flutter analysis of the connected host, identity client, migrations, and editor: no issues.
 - Connected iOS release build: succeeded (no code signing; not installed or launched).
-- Connected macOS debug build: in progress at report creation.
+- Connected macOS debug build: succeeded (not launched in this checkpoint).
 - Local login route returned HTTP 200; upload endpoint returned HTTP 401 without credentials, confirming auth is required.
 - Product schema reports all 89 migrations applied to the local signup database.
 - No user app or screen was opened or captured.
+
+## 2026-10-11 follow-on
+
+After wiring orchestrator authentication/revocation events into the shared
+screen, the full Flutter suite passes (203 tests) and `flutter analyze
+--no-pub` is clean. Current compile-only builds also pass for unsigned iOS
+release (`build/ios/iphoneos/Runner.app`), macOS debug
+(`build/macos/Build/Products/Debug/construction_client.app`), and web release
+(`build/web`). These builds compile the shared Flutter host; the iOS build is
+unsigned and no platform app was launched or installed by the agent. The
+expired-sign-in and revoked-access notices are covered by separate widget
+tests, and the mounted fault tests verify auth-event delivery with the pending
+operation ID.
 
 ## Remaining M04 evidence
 
