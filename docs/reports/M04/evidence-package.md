@@ -17,7 +17,7 @@
 | M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md); mounted snapshot restore and rejected-report correction tests | Open: product endpoint PR is pushed but unmerged; product-backed attachment download, live restore, and second-device photo evidence remain missing |
 | M04-T07 | [Device telemetry](device-telemetry.md) | Open: the iPhone is available, but no real workflow telemetry or correlated server metrics have been captured |
 | M04-T08 | [Rule parity progress](daily-report-rule-parity-progress.md) | Open: local row editor parity improved; native and web workflow recordings, live-route fixture, complete T03–T07 evidence, and owner verification are missing |
-| M04-T09 | This packet and the M05 task refinement are prerequisites | Not reached; the owner must review and approve the gate after all task evidence is complete |
+| M04-T09 | This packet; task-level M05 refinement via merged Contractor PR #43 | M05 refinement prerequisite is satisfied; gate not reached until T01–T08 evidence is complete and the owner reviews and approves |
 
 ## Verification already run
 
@@ -43,6 +43,8 @@
 The connected Flutter host and restore follow-on are pushed to Contractor PR #55, including the photo-only report parity fix in `37f830c` and the refreshed M04 evidence packet. Registered-photo snapshot digest metadata is pushed to Construction_Manager PR #170 (latest known commit `abd31961`). The local login page at `http://127.0.0.1:3108/login` was checked by the owner and confirmed to render; this does not establish sign-in from Flutter or an accepted report. The user later created a local account and attempted native sign-in, but the login page reloaded; server logs show no login POST or token exchange. Thus a database-backed account exists, but no authenticated Flutter session has been established.
 
 The owner supplied an iPhone screenshot on 2026-10-11 showing the Contractor OS M04 daily-report editor with the `LOCAL PREVIEW` banner. The screen reports `This device: Not saved`, `Server: Not queued`, zero pending operations, and no accepted feed cursor. This confirms that the iOS UI renders on the device; it does not demonstrate local-save durability, authenticated sign-in, server acceptance, photo transfer, or cross-device visibility. The screenshot is not included in the PR.
+
+Remote state check on 2026-10-11: Contractor PR #55 is open as a draft, based on Contractor PR #54; the M05 refinement prerequisite is merged in Contractor PR #43. Construction_Manager PRs #165, #166, #167, and #170 are all open as drafts in their intended stack; PR #170's remote branch resolves to `36de9343`. These source changes are not merged, so their local build/test evidence is not live product acceptance.
 
 A later owner-supplied iPhone screenshot shows the connected-host `Sign in to Contractor OS` gate, confirming the app reached its native sign-in entry point. On the owner's next sign-in attempt, the login page reloaded without showing a signed-in state. Server logs confirm authorization reaches `/login` but show no `POST /api/auth/login` and no native token exchange; requests include `GET /login?`, and Next.js reported a blocked development-resource request from LAN origin `192.168.1.66`. This is not authenticated-session evidence. A product-side login fix is pending owner approval. The browser authorization, callback to the app, assigned-project loading, and report round trip remain unverified. The screenshot is not included in the PR.
 
