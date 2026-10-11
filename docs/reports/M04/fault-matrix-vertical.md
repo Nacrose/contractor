@@ -28,8 +28,9 @@ that its local remarks remain intact, and verifies the shared screen says
 not an office-edit reproduction or proof of the current server version.
 
 The conflict recovery action is now wired in the shared report editor. A user
-can reopen the retained conflict, compare against the synced reports listed in
-the same screen, edit the local copy, and save a new operation. The client
+can reopen the retained conflict, refresh accepted server reports with **Sync
+now**, compare those reports against the local copy, and save a new operation.
+The client
 keeps the original conflict state and payload unchanged. The widget test
 verifies that behavior and the explicit review guidance. This is a safe,
 user-directed local recovery path; the editor cannot yet prove the displayed

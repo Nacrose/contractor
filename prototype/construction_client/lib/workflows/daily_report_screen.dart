@@ -816,7 +816,7 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
           if (opState == 'conflict') ...[
             const SizedBox(height: 8),
             const Text(
-              'This report conflicts with server state. Review the synced daily reports above, reconcile these fields, then save a new copy. The original conflicted operation stays unchanged.',
+              'This report conflicts with server state. Tap Sync now to refresh synced reports above, compare the current version, then reconcile this copy and save it as a new operation. The original conflict stays unchanged.',
             ),
           ],
           const SizedBox(height: 16),

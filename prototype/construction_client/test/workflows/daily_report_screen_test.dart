@@ -548,7 +548,7 @@ void main() {
 
     expect(find.text('Save reviewed copy'), findsOneWidget);
     final conflictGuidance = find.textContaining(
-      'This report conflicts with server state.',
+      'Tap Sync now to refresh synced reports above',
     );
     await tester.scrollUntilVisible(
       conflictGuidance,
