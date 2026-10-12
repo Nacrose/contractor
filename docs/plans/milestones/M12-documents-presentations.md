@@ -13,7 +13,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
 
 ---
 
-- [ ] **M12-T01** — WordCraft prototype & headless MCP verification over .docx fixtures
+- [x] **M12-T01** — WordCraft prototype & headless MCP verification over .docx fixtures (PR #128)
   - Depends on: M01-T01, M06-T01, M08-T01 · Output: `docs/reports/M12/wordcraft-prototype-and-contract.md`, WordCraft MCP driver, fixture test suite.
   - Scope: drive pinned WordCraft upstream via CLI / headless MCP against an agreed .docx corpus (letters, engineering specifications, site memos, contractual notices) per ADR-0015. Verify commands, track changes, comments, and round-trip fidelity against reference outputs. Record MCP tool inventory and adoption trade-offs before production binding.
   - Acceptance:
