@@ -39,7 +39,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Geometry is stored in document space with declared units; conversion to display space is a rendering concern only.
     - Change-feed integration and Flutter-parity path named in the task packet (standing constraint 3).
 
-- [ ] **M08-T04** — Measurement coverage: area with holes, polyline length, perimeter, unit conversion, counts; invalid geometry rejected
+- [x] **M08-T04** — Measurement coverage: area with holes, polyline length, perimeter, unit conversion, counts; invalid geometry rejected (PR #93)
   - Depends on: M08-T03 · Output: measurement implementation with independent fixture evidence.
   - Scope: area with holes, polyline length, perimeter, unit conversion, counts; invalid geometry rejected with independent expected measurements as fixtures (v3 §8 documents row).
   - Acceptance:

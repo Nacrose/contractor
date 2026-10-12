@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_takeoff: all document session, renderer adapter, viewport tiling, bounded page cache, cancellation, disposal, provenance, and invalidation tests PASSED (M08-T02/T03)");
+console.log("native_takeoff: all document session, renderer adapter, viewport tiling, bounded page cache, cancellation, disposal, provenance, invalidation, and measurement coverage tests PASSED (M08-T02/T03/T04)");
