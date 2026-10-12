@@ -41,7 +41,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Closed fiscal period locking strictly prevents retroactive journal entries.
     - Idempotent posting eliminates duplicate journal entries on sync replay.
 
-- [ ] **M10-T05** — Deep links, session state transitions & asset caching between Next.js and Flutter Web
+- [x] **M10-T05** — Deep links, session state transitions & asset caching between Next.js and Flutter Web (PR #114)
   - Depends on: M02-T04, M10-T03 · Output: `docs/reports/M10/session-transitions-and-deep-links.md`, unified authentication and navigation shell.
   - Scope: establish bidirectional deep linking and seamless session state transitions between remaining Next.js areas and Flutter Web (derived from M10-W04). Maintain shared authentication token state, active project context, tenant isolation, and canvas viewport coordinates. Configure explicit asset caching, PWA service workers, deployment path routing, and instantaneous rollback mechanisms.
   - Acceptance:
