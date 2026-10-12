@@ -35,8 +35,12 @@ declare module "node:assert/strict" {
 }
 
 declare module "node:fs" {
+  export function readFileSync(path: string): Buffer;
   export function readFileSync(path: string, encoding: string): string;
+  export function writeFileSync(path: string, data: Uint8Array | string): void;
   export function readdirSync(path: string): string[];
+  export function existsSync(path: string): boolean;
+  export function mkdirSync(path: string, options?: { recursive?: boolean }): void;
 }
 
 declare module "node:path" {
@@ -52,9 +56,31 @@ declare module "node:url" {
 
 declare module "node:crypto" {
   export interface Hash {
-    update(data: string): Hash;
+    update(data: string | Uint8Array): Hash;
     digest(encoding: string): string;
   }
   export function createHash(algorithm: string): Hash;
 }
+
+declare module "node:zlib" {
+  export function deflateRawSync(buf: Uint8Array | Buffer): Buffer;
+  export function inflateRawSync(buf: Uint8Array | Buffer): Buffer;
+}
+
+interface Buffer extends Uint8Array {
+  readUInt16LE(offset: number): number;
+  readUInt32LE(offset: number): number;
+  writeUInt16LE(value: number, offset: number): number;
+  writeUInt32LE(value: number, offset: number): number;
+  copy(target: Buffer | Uint8Array, targetStart?: number, sourceStart?: number, sourceEnd?: number): number;
+  toString(encoding?: string, start?: number, end?: number): string;
+  subarray(start?: number, end?: number): Buffer;
+}
+
+declare const Buffer: {
+  alloc(size: number): Buffer;
+  from(str: string, encoding?: string): Buffer;
+  from(buffer: ArrayBufferLike, byteOffset?: number, length?: number): Buffer;
+  concat(list: readonly (Uint8Array | Buffer)[], totalLength?: number): Buffer;
+};
 

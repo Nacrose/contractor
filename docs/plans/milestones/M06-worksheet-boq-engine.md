@@ -81,7 +81,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Change-feed integration and Flutter-parity path named in the task packet (standing constraint 3).
     - Round-trip evidence: worksheet → service → worksheet reflects identical values and provenance.
 
-- [ ] **M06-T08** — XLSX compatibility: byte round-trip tests + independently checked representative files
+- [x] **M06-T08** — XLSX compatibility: byte round-trip tests + independently checked representative files (PR #73)
   - Depends on: M06-T02, M06-T04 · Output: XLSX round-trip fixture suite and fidelity matrix.
   - Scope: preserve XLSX compatibility through byte round-trip tests and independently checked representative files (v3 §6 M06); import/export fidelity matrix recorded.
   - Acceptance:
