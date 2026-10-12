@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-takeoff",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Document-session renderer adapters, viewport tiling, bounded decoded-page cache, cancellation, and explicit disposal (M08-T02).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
