@@ -31,11 +31,11 @@
 | M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | **Complete** — T01–T10, T12, T13 (PRs #66–#77), T11 gate (PR #78) | 13/13 | M06-T11 `👤 GATE` — submitted for owner review (PR #78) |
 | M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | **Complete** — T01–T09, T11 (PRs #79–#88), T10 gate (PR #89) | 11/11 | M07-T10 `👤 GATE` — passed (PR #89), owner approved 2026-10-12 |
 | M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | **Complete** — T01–T07, T09 (PRs #90–#97), T08 gate (PR #98) | 9/9 | M08-T08 `👤 GATE` — submitted for owner review (PR #98) |
-| M09 TruePPM scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | In progress — T01 prototype & contract (PR #100), T02 data bridge & schema versioning (PR #101), T03 service adapter & financial guards (PR #102), T04 workspace host adapter & focused views (PR #103), T05 immutable baselines & variance (PR #104), T06 release update & rollback pipeline (PR #105), T07 capability tracking & legacy migration (PR #106), T08 parity & benchmarks (PR #107) | 8/9 | M09-T09 `👤 GATE` — not reached |
+| M09 TruePPM scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | **Complete** — T01–T08 (PRs #100–#107), T09 gate (PR #108) | 9/9 | M09-T09 `👤 GATE` — submitted for owner review (PR #108) |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Migration blocked by M04–M09; document/deck evidence from M12; mapping + accounting + connected journeys registered (WP level) | 0/9 | M10-W06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered 2026-10-09; dual editor/embedded modes + updates amended 2026-10-12 (WP level) | 0/9 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **109/142** | |
+| **Program total** | | | **110/142** | |
 
 
 

@@ -97,7 +97,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Earned Value Management (EVM) metrics (BCWS, BCWP, ACWP, SPI, CPI) and monthly cash-flow distributions verified against analytical models.
     - Idempotent concurrency tests confirm zero double-posting under high load.
 
-- [ ] **M09-T09** — 👤 GATE — TruePPM integration and M09 exit evidence
+- [x] **M09-T09** — 👤 GATE — TruePPM integration and M09 exit evidence (PR #108)
   - Depends on: M09-T01…T08 · Output: `[M09-GATE]` evidence packet (`docs/reports/M09/m09-exit-gate.md`) and owner decision.
   - Acceptance:
     - Aggregate real execution evidence, dual presentation mode verification, baseline immutability, 10k/50k benchmarks, and upgrade/rollback proof.
