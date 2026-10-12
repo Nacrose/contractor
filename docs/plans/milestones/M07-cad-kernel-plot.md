@@ -99,7 +99,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Register CADCraft builds and checks in the M06-T12 command. Demonstrate two actual upstream releases plus rollback with previous-release DWG/DXF fixtures, plots, both modes, command/permission contracts and local recovery/sync. Newer saved files/operation histories require verified backward compatibility or migration/restore.
     - Record craft-fonts pins/hashes, per-font notices and relevant symbol/script/export tests; shared font changes trigger affected app checks. Missing UI hooks remain an upstream-tracked adoption gap.
 
-- [ ] **M07-T10** — 👤 GATE — M07 exit evidence
+- [x] **M07-T10** — 👤 GATE — M07 exit evidence (PR #89)
   - Depends on: M07-T01…T09, M07-T11 · Output: `[M07-GATE]` evidence packet and owner decision.
   - Acceptance:
     - Full editor and embedded review hosts plus an actual CADCraft release upgrade/rollback are evidenced under T11 and the M06-T12 pipeline.
