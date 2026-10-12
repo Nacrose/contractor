@@ -1,13 +1,17 @@
 # M07 — CAD kernel, topology, rendering and plot
 
 > Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M07, §3 CAD row. Dependencies: M02, M03 and the M01 file/compute gate. Shares the operation substrate with M06. This milestone is refined to task level under protocol R9 (refinement PR recorded in the register).
-> Prior art: [cad-viewer evaluation](../reports/M07/prior-art-cad-viewer.md) · [ArtCraft family evaluation](../reports/prior-art-artcraft-family.md) · Dependency posture: [ADR-0014](../../adr/0014-open-source-only-dependency-posture.md) — open-source-only, no paid components · Candidate engine: CADCraft (storytold) per [ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md). M07-T01 is the required CADCraft prototype task (CLI/MCP over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess); any adoption beyond the prototype requires a per-engine adoption ADR (ADR-0015 §1, §7).
+> Prior art: [cad-viewer evaluation](../../reports/M07/prior-art-cad-viewer.md) · [ArtCraft family evaluation](../../reports/prior-art-artcraft-family.md) · Dependency posture: [ADR-0014](../../adr/0014-open-source-only-dependency-posture.md) — open-source-only, no paid components · Candidate engine: CADCraft (storytold) per [ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md). M07-T01 is the required CADCraft prototype task (CLI/MCP over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess); any adoption beyond the prototype requires a per-engine adoption ADR (ADR-0015 §1, §7).
+
+> UI/update amendment (2026-10-12): [ADR-0016](../../adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md) requires the upstream full drawing editor plus embedded review/layer/redline/plot capability, sharing the adopted app and renderer. New T11 proves both hosts and uses the M06-T12 update pipeline; existing gate T10 depends on T11.
 
 Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, bounded memory and CAD interaction benchmarks on native/web. Broader AutoCAD parity remains gated by the full command/format matrix.
 
+Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-construction-integration.md) governs these tasks. Topology, spatial indexing, rendering and plotting reuse upstream capabilities before custom development; task outputs describe integrated behavior, not a parallel CAD kernel. Contractor owns construction coordinates/tolerances, revision/permission contracts and platform adapters. Missing specialist behavior requires documented gaps and registered work.
+
 ---
 
-- [ ] **M07-T01** — CADCraft prototype: CLI/MCP evidence over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess
+- [x] **M07-T01** — CADCraft prototype: CLI/MCP evidence over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess (PR #79)
   - Depends on: M00-GATE (fixtures + baseline), M01 DWG spike outcome · Output: prototype report `docs/reports/M07/cadcraft-prototype.md` + fixture/driver artifacts under `prototype/`; no production code change.
   - Scope: drive CADCraft pinned to an upstream release tag (start: `v0.3.0`) via its CLI and headless MCP server over the M00 DXF/DWG fixtures; compare 2D drafting semantics against the authoritative TypeScript CAD modules (`src/lib/cad/` per ADR-0013/M01 authority map). Exercise the `acadrust` (MPL-2.0, crates.io) DWG bridge behind their `dwg` crate for read **and** write round-trips, and compare fidelity against the LibreDWG subprocess baseline recorded in the M01 spike. Disposable evidence work per the M01 prototype posture; starts before the M02/M03 dependencies complete so its evidence shapes T03/T05/T08 design decisions.
   - Acceptance:
@@ -17,17 +21,17 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - The report includes the CADCraft MCP tool inventory (tool names, inputs, outputs) and notes on headless driving.
     - The report ends in an explicit recommendation: proceed toward a per-engine adoption ADR (replacing or complementing the LibreDWG fallback per ADR-0015 §7), or keep the recorded fallback — either way the evidence is linked from this milestone.
 
-- [ ] **M07-T02** — Preserve central command registry and input state machines
+- [x] **M07-T02** — Preserve central command registry and input state machines (PR #80)
   - Depends on: M02-GATE · Output: command registry and input state machines carried into the kernel boundary with contract tests.
-  - Scope: command line, aliases, numeric/relative input, cancel/repeat, selection, grips, snap, ortho, units, undo, layouts retained from `src/lib/cad/` (v3 §3, §6 M07); Flutter views send engine commands, never modify entities.
+  - Scope: command line, aliases, numeric/relative input, cancel/repeat, selection, grips, snap, ortho, units, undo, layouts retained from `src/lib/cad/` (v3 §3, §6 M07); Contractor hosts/adapters dispatch through the adopted command boundary, never modify entities directly.
   - Acceptance:
-    - The command registry remains the single command authority; Flutter views dispatch commands and render results only.
+    - The per-app adoption record maps Contractor command intent to one authoritative command registry; full and embedded hosts dispatch through it. Reuse upstream input/selection interfaces where supported rather than rebuilding drafting UI.
     - Input state machines (numeric/relative input, cancel/repeat, ortho/snap/units) have fixture tests identical to existing behavior.
     - Selection/grip semantics preserved with interaction tests; undo semantics unchanged.
     - No production route cutover in this task.
 
-- [ ] **M07-T03** — Robust shared topology primitives
-  - Depends on: M07-T02 · Output: shared topology primitives with tolerance policy and degeneracy fixtures.
+- [x] **M07-T03** — Integrate and qualify upstream topology primitives (PR #81)
+  - Depends on: M07-T02 · Output: shared upstream topology adapter with construction tolerance policy and degeneracy fixtures.
   - Scope: segment/curve intersections, connectivity, split/join, offsets, polygon validity, holes, tolerance policy; large survey coordinates, near-coincident points, degeneracies covered by fixtures (v3 §6 M07).
   - Acceptance:
     - Fixture set covers large survey coordinates, near-coincident points, tangent/parallel/degenerate cases with declared tolerance policy.
@@ -35,7 +39,7 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - Primitives are shared substrate for M06/M08 consumers (no private duplicates in other milestones).
     - Kernel governance duplication status recorded per v3 §4.
 
-- [ ] **M07-T04** — Spatial indexing, invalidation, bounded visible geometry batches
+- [x] **M07-T04** — Spatial indexing, invalidation, bounded visible geometry batches (PR #82)
   - Depends on: M07-T03 · Output: spatial index + batched renderer feed with benchmark evidence.
   - Scope: spatial indexing and invalidation; bounded visible geometry batches for the renderer (v3 §6 M07); pattern reference: cad-viewer evaluation (R-tree, batching/instancing).
   - Acceptance:
@@ -43,7 +47,7 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - Benchmarks cover text, hatches, blocks, dimensions, selection and snapping — not only simple lines (v3 §6 M07).
     - Memory bounded by viewport/zoom policy with evidence on the ratified device profile.
 
-- [ ] **M07-T05** — Import fidelity and entity identity preservation
+- [x] **M07-T05** — Import fidelity and entity identity preservation (PR #83)
   - Depends on: M07-T01, M07-T03 · Output: import pipeline with identity preservation and explicit unsupported-object reporting.
   - Scope: preserve entity IDs across imports/edits where defined; import fidelity, unsupported objects and DWG conversion requirements explicit; DWG product limitation (from M01 spike outcome and M07-T01 evidence) ships documented (v3 §6 M07); no AutoCAD-parity claims from command labels.
   - Acceptance:
@@ -52,7 +56,7 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - DWG capability statement reflects measured evidence (M01 spike + M07-T01 matrix); product limitation documented if any.
     - DXF-first path remains authoritative; DWG route per M07-T01 recommendation and ADR-0015 §7.
 
-- [ ] **M07-T06** — Model/paper space, viewports, scale, lineweights, fonts, vector PDF plot via one layout/plot engine
+- [x] **M07-T06** — Model/paper space, viewports, scale, lineweights, fonts, vector PDF plot via one layout/plot engine (PR #84)
   - Depends on: M07-T02, M07-T04 · Output: layout/plot engine with platform file/print adapters and plot fidelity fixtures.
   - Scope: model/paper space, viewports, scale, lineweights, fonts, vector PDF plot through one layout/plot engine + platform file/print adapters (v3 §6 M07); font supply evaluated via craft-fonts (ADR-0015 §1; Devanagari gap tracked).
   - Acceptance:
@@ -60,7 +64,7 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - Plot fidelity fixtures cover lineweights, scales, viewports, fonts (SHX/TTF handling stated).
     - Vector PDF output verified against expected-output fixtures; raster fallback explicit where vector is unsupported.
 
-- [ ] **M07-T07** — Entity/group operation revision checks and conflict resolution
+- [x] **M07-T07** — Entity/group operation revision checks and conflict resolution (PR #85)
   - Depends on: M07-T02, M07-T03 · Output: revision-check and conflict layer for entity/group operations.
   - Scope: entity/group operation revision checks and conflict resolution; topology-changing/group operations validate the whole affected set atomically (v3 §5.4 CAD row, §6 M07).
   - Acceptance:
@@ -68,7 +72,7 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - Version checks reject stale writers; conflicts preserve intent for review (v3 §5.4).
     - Atomic validation of the whole affected set has fixture evidence including failure cases.
 
-- [ ] **M07-T08** — File compatibility matrix
+- [x] **M07-T08** — File compatibility matrix (PR #86)
   - Depends on: M07-T05, M07-T06 · Output: DXF/DWG compatibility matrix + conversion requirements per platform.
   - Scope: DXF/DWG coverage per M00 fixtures + M01 spike + M07-T01 evidence; conversion requirements explicit per platform (v3 §6 M07).
   - Acceptance:
@@ -84,9 +88,21 @@ Exit (v3): command/geometry/plot fixture parity, file compatibility matrix, boun
     - Render, snap, and select latencies reported separately; memory bounded with evidence.
     - Web path exercised through the browser binding, not native-only.
 
-- [ ] **M07-T10** — 👤 GATE — M07 exit evidence
-  - Depends on: M07-T01…T09 · Output: `[M07-GATE]` evidence packet and owner decision.
+- [ ] **M07-T11** — CADCraft full editor, embedded drawing review and release-upgrade qualification
+  - Depends on: M07-T01…T09, M06-T12 · Output: CADCraft adapter/hosts, per-app adoption record and release upgrade/rollback evidence.
+  - Scope: reuse the full upstream drafting interface with its menus/tools and supported canvas/components for embedded drawing review, layer toggles, redlines and plot actions. Integrate with the shared Contractor lifecycle and upstream-update pipeline.
   - Acceptance:
+    - Record the selected release/commit, exposed UI/configuration/command hooks and installed-app/browser hosts. Full and embedded modes share the adopted app/render/command path; no upstream source edits or private-internal coupling. Production binding requires the per-app adoption ADR.
+    - Switching views preserves drawing identity/revision/pending edits with documented undo/selection behavior. Original bytes remain available; separate redline overlays retain source revision and coordinates. Domain permissions apply in both modes.
+    - File/save/plot commands use M03 attachment/revision contracts and M02 save/sync states; stale/group edits use T07 conflict rules. Unsupported entities or lossy saves are explicit before destructive changes.
+    - Demonstrate keyboard/pointer/touch focus, relevant IME/font/clipboard behavior, accessibility, cancellation/disposal, embedded-to-full transitions and T09 performance on supported hosts.
+    - Register CADCraft builds and checks in the M06-T12 command. Demonstrate two actual upstream releases plus rollback with previous-release DWG/DXF fixtures, plots, both modes, command/permission contracts and local recovery/sync. Newer saved files/operation histories require verified backward compatibility or migration/restore.
+    - Record craft-fonts pins/hashes, per-font notices and relevant symbol/script/export tests; shared font changes trigger affected app checks. Missing UI hooks remain an upstream-tracked adoption gap.
+
+- [ ] **M07-T10** — 👤 GATE — M07 exit evidence
+  - Depends on: M07-T01…T09, M07-T11 · Output: `[M07-GATE]` evidence packet and owner decision.
+  - Acceptance:
+    - Full editor and embedded review hosts plus an actual CADCraft release upgrade/rollback are evidenced under T11 and the M06-T12 pipeline.
     - Command/geometry/plot parity evidence aggregated; file compatibility matrix and benchmark evidence linked.
     - M08 geometry-primitive reuse contract confirmed (named primitives, no full-CAD-UI dependency).
     - Per-engine adoption ADR status recorded (CADCraft adopted with ADR reference, or LibreDWG/fallback retained with evidence per ADR-0015 §7).

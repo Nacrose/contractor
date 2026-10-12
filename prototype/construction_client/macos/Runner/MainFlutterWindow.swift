@@ -9,6 +9,12 @@ class MainFlutterWindow: NSWindow {
     self.setFrame(windowFrame, display: true)
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+    let secureStoreChannel = FlutterMethodChannel(
+      name: "construction_client/secure_store",
+      binaryMessenger: flutterViewController.engine.binaryMessenger)
+    secureStoreChannel.setMethodCallHandler { call, result in
+      AppDelegate.handleSecureStore(call: call, result: result)
+    }
 
     super.awakeFromNib()
   }
