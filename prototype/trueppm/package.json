@@ -1,0 +1,11 @@
+{
+  "name": "@contractor/prototype-trueppm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "TruePPM scheduler prototype, CPM engine comparison, and MCP tooling (M09-T01)",
+  "scripts": {
+    "test": "node test/trueppm_prototype.test.mjs",
+    "run": "node run_prototype.mjs"
+  }
+}
