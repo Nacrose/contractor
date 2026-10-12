@@ -26,7 +26,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - Credentials never appear outside the secure store; crash-report paths route through the M03-T08 sanitizer.
     - The mount runs the SAME M03 suites' contract shapes (structural pins intact) — no package code is forked or edited.
 
-- [ ] **M04-T03** — The vertical workflow, shared Flutter: select project → create/edit log → save locally → sync
+- [x] **M04-T03** — The vertical workflow, shared Flutter: select project → create/edit log → save locally → sync (PR #48)
   - Depends on: M04-T01, M04-T02 · Output: one workflow code path running on installed apps and browser, with workflow tests.
   - Scope: the M04 headline workflow (v3 §6 M04 W02): project selection, daily-log create/edit with the existing daily-report rules, local save committing the domain write and its pending operation together (M03-T03 contract), and dispatch through the M03-T07 orchestrator. The current product procedure is `workflow.dailyReport.createFieldReport` (mounted by `workflowRouter`); it is not `fieldSubmission.submit`, which creates a different submission type. Before this task can demonstrate server acceptance, the product repo must provide the M03 adapter binding to that existing procedure, with its guards and feed write preserved. The product binding is a cross-repository prerequisite and must be merged before this task's PR; see [path correction](../../reports/M04/product-path-correction.md).
   - Acceptance:
@@ -35,7 +35,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - Accepted data is visible in the current web app AND on a second device via the M03-T04/T05 sync surfaces; the round trip is demonstrated in a test or recorded fixture. Evidence must use the `workflow.dailyReport.createFieldReport` binding and prove the daily-report writer, not a `fieldSubmission` submission.
     - The workflow uses the shared component library and command registries (M02 contracts) — no new screen framework.
 
-- [ ] **M04-T04** — Photo attachment path live: capture → stage → finalize → register + sync-health UI binding
+- [x] **M04-T04** — Photo attachment path live: capture → stage → finalize → register + sync-health UI binding (PR #49)
   - Depends on: M04-T03, M03-T06, M03-T08 · Output: working photo attachment flow through the M03-T06 protocol, and the device sync-health surface wired into the app UI.
   - Scope: camera/gallery capture writes through the M03-T06 manager (stageBytes → finalize → register with server digest verification); transfer states (staging/staged/finalized/registered/failed) surface in the UI; the M03-T08 device health read model drives the app's sync status display (pending count, oldest age, per-scope cursors, rejection reasons, honest synced flag).
   - Acceptance:
@@ -44,7 +44,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - The sync-health UI cannot present a false success state (the M03-T08 honesty rule binds the display; pending work or a fresh rejection shows the real state).
     - Digest verification runs with a REAL SHA-256 on device (no fallback digest path exists in the binding).
 
-- [ ] **M04-T05** — Vertical-workflow fault matrix: the v3 W03 list end-to-end
+- [x] **M04-T05** — Vertical-workflow fault matrix: the v3 W03 list end-to-end (PR #50)
   - Depends on: M04-T03, M04-T04, M03-T09 · Output: automated fault legs for the assembled workflow (device-mounted engine, not package-level), extending the M03-T09 matrix runner; report `docs/reports/M04/fault-matrix-vertical.md`.
   - Scope: the v3 §6 M04 W03 scenario list exercised against the MOUNTED workflow: simultaneous office edit (conflict), permission revocation mid-flow, expired login mid-flow, app termination, reboot, disk full, slow/absent network, lost acknowledgment, incomplete photo upload (v3 §6 M04 list, all covered).
   - Acceptance:
@@ -53,7 +53,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - Every failure surfaces through the M03-T08 device health surface with a deterministic recovery action — the scenario evidence includes the health-surface transcript.
     - Results are reported in the same matrix format as M03-T09 (boundary, engine, invariant, recovery, result).
 
-- [ ] **M04-T06** — Retention and restore proof + attachment download contract for device restore
+- [x] **M04-T06** — Retention and restore proof + attachment download contract for device restore (PR #51)
   - Depends on: M04-T04, M04-T05 · Output: retention/restore tests and the attachment fetch/download contract (server object URL + digest-verified re-fetch) recorded and implemented for the workflow.
   - Scope: pending local data is retained through a rejected sync (M03-T02/T03 gates hold); a NEW device restores accepted records via snapshot bootstrap (M03-T05) — and restores registered photos: this task defines and implements the minimal attachment download path (fetch by receipt/object id, digest verified on re-fetch, re-staged locally through the same journal) so restore is complete (v3 §6 M04 W04).
   - Acceptance:
@@ -62,7 +62,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - Registered photos re-fetch with digest verification; a tampered/failed fetch is a typed recoverable state, never a silently corrupt photo.
     - The download contract names its server route, authorization model (scope revalidation), and its change-feed/Flutter-parity note per the standing v3 §10 constraint.
 
-- [ ] **M04-T07** — Real-device telemetry capture and capacity re-baseline PROPOSAL
+- [x] **M04-T07** — Real-device telemetry capture and capacity re-baseline PROPOSAL (PR #54)
   - Depends on: M04-T03, M04-T04, M04-T05, M04-T06 · Output: telemetry report `docs/reports/M04/device-telemetry.md` + a capacity re-baseline PROPOSAL (bands change only via `[PLAN-AMEND]`).
   - Scope: capture sync latency, battery/background behavior, and crash-free rate on the ratified device profile during real workflow use; re-baseline the §6.0 effort bands against measured throughput (v3 §6 M04 W05).
   - Acceptance:
@@ -71,7 +71,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - The re-baseline is a PROPOSAL in the report — the §6.0 bands themselves change only through a `[PLAN-AMEND]` the owner approves (protocol R6/R8).
     - Crash-report samples demonstrate the M03-T08 sanitization end-to-end on device (no credentials/private drafts in captured reports).
 
-- [ ] **M04-T08** — Evidence package: device-recorded workflow video/logs + parity check vs current daily-log rules
+- [x] **M04-T08** — Evidence package: device-recorded workflow video/logs + parity check vs current daily-log rules (PR #55)
   - Depends on: M04-T01 … M04-T07 · Output: the M04 evidence packet `docs/reports/M04/evidence-package.md` + recorded media/logs.
   - Scope: assemble the exit evidence (v3 §6 M04 W06): device-recorded workflow video and logs covering native AND web, the parity check against the CURRENT daily-log rules (the workflow must not silently change business behavior), and the fault-matrix + retention/restore + telemetry results.
   - Acceptance:
@@ -79,7 +79,7 @@ Exit (v3): device-recorded workflow evidence, automated fault tests, parity with
     - The parity check enumerates the current daily-log rules and shows the workflow preserves them (differences are listed and dispositioned, none silent).
     - User verification is EXPLICITLY requested in the packet (the v3 M04 exit requires user verification; the gate asks for it).
 
-- [ ] **M04-T09** — 👤 GATE — M04 exit evidence and user verification
+- [x] **M04-T09** — 👤 GATE — M04 exit evidence and user verification (PR #139)
   - Depends on: M04-T01 … M04-T08 and M05 task-level refinement PR · Output: `[M04-GATE]` evidence packet, M05 task register, and owner decision.
   - Acceptance:
     - Every M04 task is ticked with a PR reference and links reproducible evidence.

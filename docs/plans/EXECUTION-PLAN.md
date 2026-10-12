@@ -26,7 +26,7 @@
 | M01 Platform feasibility & performance gate | [M01-platform-feasibility-gate.md](milestones/M01-platform-feasibility-gate.md) | **Complete** | 17/17 | M01-T17 `👤 GATE` — passed (PR #11) |
 | M02 Central contracts & shared UX | [M02-contracts-shared-ux.md](milestones/M02-contracts-shared-ux.md) | **Complete** | 8/8 | M02-T08 `👤 GATE` — passed (PR #31), owner approved 2026-10-09 |
 | M03 Native identity, repositories & sync | [M03-identity-storage-sync.md](milestones/M03-identity-storage-sync.md) | **Complete** — T01–T09 (PRs #32–#40), T10 gate (PR #42) | 10/10 | M03-T10 `👤 GATE` — passed (PR #42), owner approved 2026-10-09 |
-| M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | In progress — T01 trace (PR #44), T02 mount (PR #45); T03 awaits M03-T01 adapter conformance and live product acceptance ([path correction](../reports/M04/product-path-correction.md)) | 2/9 | M04-T09 `👤 GATE` — not reached |
+| M04 First vertical workflow (daily log + photo) | [M04-vertical-daily-log-photo.md](milestones/M04-vertical-daily-log-photo.md) | **Complete** — T01–T08 (PRs #44, #45, #48–#51, #54, #55), T09 gate (PR #139) | 9/9 | M04-T09 `👤 GATE` — submitted for owner review (PR #139) |
 | M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | **Complete** — T01–T09 (PRs #56–#64), T10 gate (PR #65) | 10/10 | M05-T10 `👤 GATE` — submitted for owner review (PR #65) |
 | M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | **Complete** — T01–T10, T12, T13 (PRs #66–#77), T11 gate (PR #78) | 13/13 | M06-T11 `👤 GATE` — submitted for owner review (PR #78) |
 | M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | **Complete** — T01–T09, T11 (PRs #79–#88), T10 gate (PR #89) | 11/11 | M07-T10 `👤 GATE` — passed (PR #89), owner approved 2026-10-12 |
@@ -35,7 +35,7 @@
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | **Complete** — T01–T08 (PRs #110–#117), T09 gate (PR #118) | 9/9 | M10-T09 `👤 GATE` — submitted for owner review (PR #118) |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | **Complete** — T01–T06 (PRs #120–#125), T07 gate (PR #126) | 7/7 | M11-T07 `👤 GATE` — submitted for owner review (PR #126) |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | **Complete** — T01–T10 (PRs #128–#137), T11 gate (PR #138) | 11/11 | M12-T11 `👤 GATE` — submitted for owner review (PR #138) |
-| **Program total** | | | **137/144** | |
+| **Program total** | | | **144/144** | |
 
 
 
