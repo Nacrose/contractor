@@ -40,6 +40,9 @@ export class CadDocument {
     viewports: [],
   };
 
+  sourceVersion: string = 'AC1015';
+  unsupportedObjects: import('./types.js').UnsupportedObjectRecord[] = [];
+
   constructor(id: string = `cad_doc_${Math.random().toString(36).slice(2, 9)}`) {
     this.id = id;
   }
@@ -48,6 +51,13 @@ export class CadDocument {
     const handleHex = this.handleCounter.toString(16).toUpperCase();
     this.handleCounter++;
     return handleHex;
+  }
+
+  ensureHandleSeed(handleHex: string): void {
+    const parsed = parseInt(handleHex, 16);
+    if (!Number.isNaN(parsed) && parsed >= this.handleCounter) {
+      this.handleCounter = parsed + 1;
+    }
   }
 
   // --- Entity queries (safe read-only) ---

@@ -47,7 +47,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Benchmarks cover text, hatches, blocks, dimensions, selection and snapping — not only simple lines (v3 §6 M07).
     - Memory bounded by viewport/zoom policy with evidence on the ratified device profile.
 
-- [ ] **M07-T05** — Import fidelity and entity identity preservation
+- [x] **M07-T05** — Import fidelity and entity identity preservation (PR #83)
   - Depends on: M07-T01, M07-T03 · Output: import pipeline with identity preservation and explicit unsupported-object reporting.
   - Scope: preserve entity IDs across imports/edits where defined; import fidelity, unsupported objects and DWG conversion requirements explicit; DWG product limitation (from M01 spike outcome and M07-T01 evidence) ships documented (v3 §6 M07); no AutoCAD-parity claims from command labels.
   - Acceptance:

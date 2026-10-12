@@ -193,3 +193,34 @@ export interface CompensatingUndoAction {
   reapply: (doc: any) => void;
   description: string;
 }
+
+export interface UnsupportedObjectRecord {
+  type: string;
+  handle?: string;
+  layer?: string;
+  lineNumber?: number;
+  reason: string;
+  rawPayloadSnippet?: string;
+}
+
+export interface ImportReport {
+  format: 'DXF' | 'DWG';
+  version: string;
+  totalEntitiesRead: number;
+  importedEntityCount: number;
+  unsupportedEntityCount: number;
+  unsupportedObjects: UnsupportedObjectRecord[];
+  warnings: string[];
+  units: string;
+  handSeed?: string;
+}
+
+export interface RoundTripFidelityReport {
+  originalEntityCount: number;
+  exportedEntityCount: number;
+  preservedHandlesCount: number;
+  idPreservationRate: number; // 0.0 to 1.0 (1.0 = 100%)
+  unsupportedPreservedCount: number;
+  divergences: string[];
+  isFidelityPreserved: boolean;
+}
