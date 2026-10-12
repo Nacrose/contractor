@@ -49,3 +49,14 @@ declare module "node:crypto" {
   export function randomUUID(): string;
   export function randomBytes(size: number): any;
 }
+
+interface Buffer {
+  length: number;
+  toString(encoding?: string): string;
+}
+
+declare var Buffer: {
+  from(str: string | Uint8Array, encoding?: string): Buffer;
+  concat(list: Buffer[]): Buffer;
+  byteLength(str: string, encoding?: string): number;
+};

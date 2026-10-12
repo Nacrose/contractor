@@ -61,7 +61,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Dual mode switching preserves slide deck structure, customized annotations, and speaker notes.
     - Output validates cleanly against OpenXML PresentationML (.pptx) standards.
 
-- [ ] **M12-T07** — High-fidelity PDF export & vector print pipeline via shared PdfCraft path
+- [x] **M12-T07** — High-fidelity PDF export & vector print pipeline via shared PdfCraft path (PR #134)
   - Depends on: M08-T02, M12-T04, M12-T06 · Output: `docs/reports/M12/pdf-export-and-print-fidelity.md`, export bridge.
   - Scope: integrate WordCraft documents and DeckCraft presentations with the existing PdfCraft rendering pipeline (M08) for PDF export and high-fidelity vector printing (derived from M12-W05). Reuse the single unified PDF engine rather than bundling separate PDF export stacks. Validate header/footer letterheads, pagination, page numbering, bleed margins, and font embedding across web and native targets.
   - Acceptance:
