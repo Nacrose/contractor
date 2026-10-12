@@ -6,6 +6,10 @@ import 'cpm_kernel_interface.dart';
 /// Under Platform Plan v3 §4 and Instruction 9 Governance:
 /// Classified as a Temporary Client Duplicate for zero-latency Gantt preview.
 /// Contractual / authoritative calculations are verified against Server TypeScript.
+///
+/// @deprecated Legacy prototype kernel superseded by TruePPM integration (ADR-0017, M09-T07).
+/// Target production calculation authority is TruePPM hosted via `@contractor/native-scheduling`.
+@deprecated
 class DartCpmKernel implements CpmKernel {
   final Map<String, CpmTask> _tasks = {};
   final List<CpmDependency> _dependencies = [];

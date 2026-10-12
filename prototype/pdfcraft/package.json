@@ -1,0 +1,10 @@
+{
+  "name": "pdfcraft-prototype",
+  "version": "0.4.0",
+  "type": "module",
+  "description": "PdfCraft CLI / Headless MCP Prototype & ISO 32000-2 Measurement/Annotation Evidence against PDF.js Reference and TS Authority (M08-T01)",
+  "scripts": {
+    "test": "node test/driver.test.mjs",
+    "run": "node run_prototype.mjs"
+  }
+}
