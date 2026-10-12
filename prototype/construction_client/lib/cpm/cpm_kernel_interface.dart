@@ -202,6 +202,10 @@ class CpmScheduleResult {
 }
 
 /// Abstract contract for CPM scheduling engines (M01-T08)
+///
+/// @deprecated Legacy prototype interface superseded by TruePPM integration (ADR-0017, M09-T07).
+/// Target production authority is TruePPM hosted via `@contractor/native-scheduling`.
+@deprecated
 abstract class CpmKernel {
   void loadNetwork({
     required List<CpmTask> tasks,

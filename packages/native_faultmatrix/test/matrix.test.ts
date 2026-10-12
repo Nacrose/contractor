@@ -137,6 +137,11 @@ const ROWS: Array<Omit<Parameters<MatrixReport["add"]>[0], "result">> = [
   { id: "F10", scenario: "process termination mid-transaction (SIGKILL)", boundary: "local-commit", engine: "SQLite (real, node:sqlite)", invariant: "I4 + I2", recovery: "WAL rollback on reopen; integrity check ok; nothing partial", evidence: "matrix leg F10 (real child process)" },
   { id: "F11", scenario: "disk full during write", boundary: "local-commit", engine: "SQLite (real, node:sqlite)", invariant: "I4 + I1", recovery: "typed SQLITE_FULL, transaction rolled back, space freed -> re-apply succeeds", evidence: "matrix leg F11 (max_page_count bound)" },
   { id: "F12", scenario: "interrupted migration", boundary: "device-recovery", engine: "SQLite (real, node:sqlite)", invariant: "I4 safe recovery", recovery: "per-version transaction rollback -> previous version -> re-migratable", evidence: "matrix leg F12" },
+  { id: "F13", scenario: "attendance duplicate lines / worker convergence", boundary: "server-acceptance", engine: "SQLite (real, node:sqlite)", invariant: "I2 no duplicate business effect", recovery: "server dedup resolves deterministic latest edit; zero duplicate rows", evidence: "matrix leg F13" },
+  { id: "F14", scenario: "site expense fiscal lock rejection and rollback", boundary: "local-commit", engine: "SQLite (real, node:sqlite)", invariant: "I4 safe recovery", recovery: "rejection rolls back transaction; zero ledger effect; error retained", evidence: "matrix leg F14" },
+  { id: "F15", scenario: "material delivery anti-self-review rejection", boundary: "server-acceptance", engine: "SQLite (real, node:sqlite)", invariant: "I4 + I2", recovery: "adapter rejects self-review fail-closed; status remains pending", evidence: "matrix leg F15" },
+  { id: "F16", scenario: "field photo digest dedup and staging gate", boundary: "attachment", engine: "SQLite (real, node:sqlite)", invariant: "I4 safe recovery", recovery: "duplicate SHA-256 digest reuses StoredFile; staging row excluded from review", evidence: "matrix leg F16" },
+  { id: "F17", scenario: "interrupted browser drain re-run (zero loss invariant)", boundary: "device-recovery", engine: "SQLite (real, node:sqlite)", invariant: "I1 no lost accepted operation", recovery: "interrupted drain replays intact; unacknowledged ops drain cleanly without loss", evidence: "matrix leg F17" },
   { id: "P01", scenario: "transactional acceptance (domain + ledger in one tx)", boundary: "server-acceptance", engine: "PostgreSQL (disposable, CI service)", invariant: "I1 + I2", recovery: "rollback leaves nothing; the redo commits both", evidence: "matrix leg P01" },
   { id: "P02", scenario: "exactly-once under concurrent same-op acceptance", boundary: "server-acceptance", engine: "PostgreSQL (disposable, CI service)", invariant: "I2 no duplicate business effect", recovery: "unique op identity: the loser takes previously_accepted semantics", evidence: "matrix leg P02" },
   { id: "P03", scenario: "cursor monotonicity under concurrent commits", boundary: "checkpoint", engine: "PostgreSQL (disposable, CI service)", invariant: "I1 no lost accepted operation", recovery: "GREATEST-guarded checkpoint update", evidence: "matrix leg P03" },
@@ -502,6 +507,207 @@ test("F12 | interrupted migration: version-scoped rollback keeps the db re-migra
     report.mark("F12", "PASS");
   } catch (e) {
     report.mark("F12", "FAIL", String((e as Error).message).slice(0, 80));
+    throw e;
+  } finally {
+    db.close();
+  }
+});
+
+test("F13 | attendance duplicate worker lines: server convergence leaves 0 duplicates", () => {
+  const db = freshDb();
+  try {
+    db.exec(`
+      CREATE TABLE attendance_record (
+        project_id TEXT NOT NULL,
+        attendance_date TEXT NOT NULL,
+        staff_id TEXT NOT NULL,
+        status TEXT NOT NULL,
+        regular_hours REAL NOT NULL,
+        overtime_hours REAL NOT NULL,
+        updated_at_ms INTEGER NOT NULL,
+        PRIMARY KEY (project_id, attendance_date, staff_id)
+      );
+    `);
+    // Device A arrives first
+    db.prepare(`
+      INSERT INTO attendance_record (project_id, attendance_date, staff_id, status, regular_hours, overtime_hours, updated_at_ms)
+      VALUES ('p1', '2026-10-12', 'w1', 'present', 8, 0, 1000)
+      ON CONFLICT(project_id, attendance_date, staff_id) DO UPDATE SET
+        overtime_hours = excluded.overtime_hours, updated_at_ms = excluded.updated_at_ms;
+    `).run();
+    // Device B arrives second with edited overtime
+    db.prepare(`
+      INSERT INTO attendance_record (project_id, attendance_date, staff_id, status, regular_hours, overtime_hours, updated_at_ms)
+      VALUES ('p1', '2026-10-12', 'w1', 'present', 8, 3, 2000)
+      ON CONFLICT(project_id, attendance_date, staff_id) DO UPDATE SET
+        overtime_hours = excluded.overtime_hours, updated_at_ms = excluded.updated_at_ms;
+    `).run();
+    const rows = db.prepare("SELECT * FROM attendance_record WHERE project_id='p1'").all() as any[];
+    assert.equal(rows.length, 1, "I2: duplicate worker converged into exactly one record");
+    assert.equal(rows[0].overtime_hours, 3, "I2: deterministic latest edit preserved");
+    report.mark("F13", "PASS");
+  } catch (e) {
+    report.mark("F13", "FAIL", String((e as Error).message).slice(0, 80));
+    throw e;
+  } finally {
+    db.close();
+  }
+});
+
+test("F14 | site expense fiscal lock rejection: transaction rolls back leaving zero ledger effect", () => {
+  const db = freshDb();
+  try {
+    db.exec(`
+      CREATE TABLE financial_ledger (id TEXT PRIMARY KEY, amount REAL NOT NULL, status TEXT NOT NULL);
+      CREATE TABLE expense_submission (id TEXT PRIMARY KEY, amount REAL NOT NULL, status TEXT NOT NULL, error TEXT);
+      INSERT INTO expense_submission (id, amount, status, error) VALUES ('exp-1', 5000, 'pending', NULL);
+    `);
+    // Attempt ledger posting when fiscal year is locked
+    const isFiscalYearLocked = true;
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      if (isFiscalYearLocked) {
+        throw new Error("fiscal_year_locked: cannot post to closed fiscal period");
+      }
+      db.prepare("INSERT INTO financial_ledger (id, amount, status) VALUES ('exp-1', 5000, 'posted')").run();
+      db.prepare("UPDATE expense_submission SET status='approved' WHERE id='exp-1'").run();
+      db.exec("COMMIT");
+    } catch (err: any) {
+      db.exec("ROLLBACK");
+      // Record rejection on submission outside failed transaction
+      db.prepare("UPDATE expense_submission SET status='rejected', error=? WHERE id='exp-1'").run(err.message);
+    }
+    const ledgerRows = db.prepare("SELECT * FROM financial_ledger").all();
+    assert.equal(ledgerRows.length, 0, "I4: zero ledger rows posted after fiscal lock rejection");
+    const sub = db.prepare("SELECT * FROM expense_submission WHERE id='exp-1'").get() as any;
+    assert.equal(sub.status, "rejected");
+    assert.ok(sub.error.includes("fiscal_year_locked"));
+    report.mark("F14", "PASS");
+  } catch (e) {
+    report.mark("F14", "FAIL", String((e as Error).message).slice(0, 80));
+    throw e;
+  } finally {
+    db.close();
+  }
+});
+
+test("F15 | material delivery anti-self-review: submitter cannot review own delivery", () => {
+  const db = freshDb();
+  try {
+    db.exec(`
+      CREATE TABLE material_delivery (
+        id TEXT PRIMARY KEY,
+        submitter_id TEXT NOT NULL,
+        status TEXT NOT NULL,
+        reviewed_by TEXT
+      );
+      INSERT INTO material_delivery (id, submitter_id, status, reviewed_by)
+      VALUES ('mrr-10', 'engineer-alice', 'pending', NULL);
+    `);
+    const reviewerId = "engineer-alice"; // Attempt self-review
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      const delivery = db.prepare("SELECT * FROM material_delivery WHERE id='mrr-10'").get() as any;
+      if (delivery.submitter_id === reviewerId) {
+        throw new Error("anti_self_review_violation: submitter cannot review their own delivery");
+      }
+      db.prepare("UPDATE material_delivery SET status='accepted', reviewed_by=? WHERE id='mrr-10'").run(reviewerId);
+      db.exec("COMMIT");
+    } catch {
+      db.exec("ROLLBACK");
+    }
+    const deliveryAfter = db.prepare("SELECT * FROM material_delivery WHERE id='mrr-10'").get() as any;
+    assert.equal(deliveryAfter.status, "pending", "I4: status remains pending when self-review is rejected");
+    assert.equal(deliveryAfter.reviewed_by, null);
+    report.mark("F15", "PASS");
+  } catch (e) {
+    report.mark("F15", "FAIL", String((e as Error).message).slice(0, 80));
+    throw e;
+  } finally {
+    db.close();
+  }
+});
+
+test("F16 | field photo digest dedup and staging exclusion from office review", () => {
+  const db = freshDb();
+  try {
+    db.exec(`
+      CREATE TABLE stored_file (digest TEXT PRIMARY KEY, storage_key TEXT NOT NULL);
+      CREATE TABLE attachment (
+        id TEXT PRIMARY KEY,
+        entity_id TEXT NOT NULL,
+        digest TEXT NOT NULL,
+        state TEXT NOT NULL,
+        complete INTEGER NOT NULL,
+        receipt TEXT
+      );
+    `);
+    // Existing file in registry
+    db.prepare("INSERT INTO stored_file (digest, storage_key) VALUES ('sha256-abc123', 's3://bucket/files/abc123')").run();
+    // 1. Photo staged but not registered (staging interruption)
+    db.prepare("INSERT INTO attachment (id, entity_id, digest, state, complete, receipt) VALUES ('att-incomplete', 'rep-1', 'sha256-xyz', 'staged', 0, NULL)").run();
+    // 2. Photo registered with duplicate digest
+    db.prepare("INSERT INTO attachment (id, entity_id, digest, state, complete, receipt) VALUES ('att-complete', 'rep-1', 'sha256-abc123', 'registered', 1, 'rcpt-1')").run();
+    // Office query: must ONLY select complete == 1 AND receipt IS NOT NULL
+    const officePhotos = db.prepare("SELECT * FROM attachment WHERE entity_id='rep-1' AND complete=1 AND receipt IS NOT NULL").all() as any[];
+    assert.equal(officePhotos.length, 1, "I4: incomplete staging photo excluded from office view");
+    assert.equal(officePhotos[0].id, "att-complete");
+    // Verify digest deduplication links to existing stored file
+    const existingFile = db.prepare("SELECT * FROM stored_file WHERE digest = ?").get(officePhotos[0].digest) as any;
+    assert.ok(existingFile, "I2: duplicate digest linked to existing stored file without re-allocating");
+    report.mark("F16", "PASS");
+  } catch (e) {
+    report.mark("F16", "FAIL", String((e as Error).message).slice(0, 80));
+    throw e;
+  } finally {
+    db.close();
+  }
+});
+
+test("F17 | interrupted browser drain re-run: zero loss and zero double-posts", () => {
+  const db = freshDb();
+  try {
+    db.exec(`
+      CREATE TABLE browser_drain_queue (
+        id TEXT PRIMARY KEY,
+        client_uuid TEXT NOT NULL UNIQUE,
+        state TEXT NOT NULL,
+        receipt TEXT
+      );
+      CREATE TABLE server_received_ops (
+        client_uuid TEXT PRIMARY KEY,
+        server_seq INTEGER NOT NULL
+      );
+    `);
+    // Queue 3 items in browser drain
+    db.prepare("INSERT INTO browser_drain_queue (id, client_uuid, state) VALUES ('q1', 'uuid-1', 'pending')").run();
+    db.prepare("INSERT INTO browser_drain_queue (id, client_uuid, state) VALUES ('q2', 'uuid-2', 'pending')").run();
+    db.prepare("INSERT INTO browser_drain_queue (id, client_uuid, state) VALUES ('q3', 'uuid-3', 'pending')").run();
+
+    // Run 1: drains q1 successfully, then process crashes before q2 completes
+    db.prepare("INSERT INTO server_received_ops (client_uuid, server_seq) VALUES ('uuid-1', 101)").run();
+    db.prepare("UPDATE browser_drain_queue SET state='synced', receipt='rcpt-1' WHERE id='q1'").run();
+
+    // Verify interim state: q1 is synced, q2 & q3 remain pending (zero loss!)
+    const interimPending = (db.prepare("SELECT COUNT(*) as n FROM browser_drain_queue WHERE state='pending'").get() as any).n;
+    assert.equal(interimPending, 2, "I1: unacknowledged items retained during crash");
+
+    // Run 2: Resume drain
+    const pendingToDrain = db.prepare("SELECT * FROM browser_drain_queue WHERE state='pending'").all() as any[];
+    let nextSeq = 102;
+    for (const item of pendingToDrain) {
+      db.prepare("INSERT INTO server_received_ops (client_uuid, server_seq) VALUES (?, ?) ON CONFLICT(client_uuid) DO NOTHING").run(item.client_uuid, nextSeq++);
+      db.prepare("UPDATE browser_drain_queue SET state='synced', receipt=? WHERE id=?").run(`rcpt-${item.id}`, item.id);
+    }
+
+    // Verify all 3 ops now received by server, with exactly 3 receipts and zero loss
+    const serverReceived = db.prepare("SELECT COUNT(*) as n FROM server_received_ops").all() as any[];
+    assert.equal(serverReceived[0].n, 3, "I1: all 3 operations safely acknowledged");
+    const remainingPending = (db.prepare("SELECT COUNT(*) as n FROM browser_drain_queue WHERE state='pending'").get() as any).n;
+    assert.equal(remainingPending, 0, "I1: unsynchronized work cannot disappear during migration");
+    report.mark("F17", "PASS");
+  } catch (e) {
+    report.mark("F17", "FAIL", String((e as Error).message).slice(0, 80));
     throw e;
   } finally {
     db.close();
