@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-recovery",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Vault backup, independent restore drills, RPO/RTO metrics, disaster matrix, packaging, and signed update verification (M11).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
