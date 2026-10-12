@@ -3,7 +3,7 @@
   "title": "TruePPM Scheduling Engine Vendor Registry",
   "description": "Machine-readable configuration of upstream TruePPM application and scheduler components, effective pins, artifact digests, license attributions, and qualification lifecycle status.",
   "schemaVersion": "1.0.0",
-  "lastUpdated": "2026-10-12T12:48:05.823Z",
+  "lastUpdated": "2026-10-12T12:59:48.576Z",
   "governance": {
     "policy": "ADR-0017",
     "pinningRule": "exact_tag_and_immutable_commit_only",

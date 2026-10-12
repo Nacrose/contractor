@@ -8,7 +8,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
 
 ---
 
-- [ ] **M10-T01** — Original custom tool audit, upstream capability mapping & retained domain rules
+- [x] **M10-T01** — Original custom tool audit, upstream capability mapping & retained domain rules (PR #110)
   - Depends on: M00-T10, M02-T08 · Output: `docs/reports/M10/tool-audit-and-upstream-mapping.md`, inventory disposition matrix.
   - Scope: documentation-only audit of original sources and M00 inventory, including background jobs, imports, and background writers (derived from M10-W07). For each tool/route, name its consumers, behavior, retained construction domain rules, proposed upstream/API component, state owner, adapters, platform/fixture coverage, gaps, migration/restore, and retirement criteria. Assign implementation to owning milestones/tasks without rebuilding specialist capabilities already available upstream or retiring custom construction behavior by naive name matching.
   - Acceptance:
