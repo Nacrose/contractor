@@ -22,7 +22,9 @@ import UIKit
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
-    let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "SecureStoreChannel")
+    guard let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "SecureStoreChannel") else {
+      return
+    }
     let channel = FlutterMethodChannel(
       name: AppDelegate.channelName, binaryMessenger: registrar.messenger())
     channel.setMethodCallHandler { call, result in
@@ -53,8 +55,8 @@ import UIKit
       switch read(account: ref) {
       case .success(let data):
         result(data.flatMap { String(data: $0, encoding: .utf8) })
-      case .failure(let status):
-        result(FlutterError(code: "store_unavailable", message: "keychain status \(status)", details: nil))
+      case .failure(let error):
+        result(FlutterError(code: "store_unavailable", message: "keychain status \(error.status)", details: nil))
       }
     case "delete":
       guard let ref = args["ref"] as? String else {
@@ -98,14 +100,18 @@ import UIKit
     return SecItemAdd(query as CFDictionary, nil)
   }
 
-  private static func read(account: String) -> Result<Data?, OSStatus> {
+  private struct KeychainReadError: Error {
+    let status: OSStatus
+  }
+
+  private static func read(account: String) -> Result<Data?, KeychainReadError> {
     var query = baseQuery(account: account)
     query[kSecReturnData as String] = true
     query[kSecMatchLimit as String] = kSecMatchLimitOne
     var item: CFTypeRef?
     let status = SecItemCopyMatching(query as CFDictionary, &item)
     if status == errSecItemNotFound { return .success(nil) }
-    if status != errSecSuccess { return .failure(status) }
+    if status != errSecSuccess { return .failure(KeychainReadError(status: status)) }
     return .success(item as? Data)
   }
 }
