@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-scheduling",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Versioned TruePPM calculation inputs, schema tracking, date-only semantics, and Contractor data bridge (M09-T02).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
