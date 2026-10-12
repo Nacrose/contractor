@@ -77,7 +77,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Concurrent edits on same document detected and presented for manual review (no silent overwriting).
     - Issued letters and reports enforce immutable lock fail-closed against modification.
 
-- [ ] **M12-T09** — Cross-platform rendering parity, performance workloads & accessibility
+- [x] **M12-T09** — Cross-platform rendering parity, performance workloads & accessibility (PR #136)
   - Depends on: M10-T06, M12-T04, M12-T06 · Output: `docs/reports/M12/document-parity-and-workloads.md`, benchmark test suite.
   - Scope: evaluate document and presentation rendering fidelity and authoring performance across Flutter Web, desktop, and mobile targets (derived from M12-W07). Benchmark large document workloads (500-page specification manuals, 100-slide master decks). Validate WCAG 2.1 AA accessibility, keyboard navigation through toolbars/ribbons, screen-reader text flows, and craft-fonts font fallback (tracking Devanagari Unicode coverage).
   - Acceptance:
