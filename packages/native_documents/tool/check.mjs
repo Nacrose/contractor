@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_documents: all authority, WordCraft, DeckCraft, and sync durability tests PASSED (M12-T08)");
+console.log("native_documents: all authority, WordCraft, DeckCraft, and parity workload benchmark tests PASSED (M12-T09)");
