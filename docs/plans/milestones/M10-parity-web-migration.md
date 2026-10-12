@@ -67,7 +67,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Offline-created multi-tool chains replay and reconcile accurately upon reconnecting.
     - Upgrades of underlying tool engines (GridCraft, CadCraft, PdfCraft, TruePPM) preserve in-flight multi-tool journey state.
 
-- [ ] **M10-T08** — Superseded React UI retirement, clean decommissioning & rollback drill
+- [x] **M10-T08** — Superseded React UI retirement, clean decommissioning & rollback drill (PR #117)
   - Depends on: M10-T02, M10-T03, M10-T07 · Output: `docs/reports/M10/react-ui-retirement-and-rollback.md`, decommissioning manifest, rollback drill runbook.
   - Scope: retire superseded React components and routes only after documented feature equivalence, automated test coverage, and formal owner signoff (derived from M10-W05). Preserve Next.js backend API routes and domain services while decoupling deprecated frontend views. Execute a live rollback drill to prove emergency route fallback without data loss.
   - Acceptance:
