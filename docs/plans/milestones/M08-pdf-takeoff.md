@@ -82,7 +82,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - File open/save/export routes through M03 storage/attachment and M02 save/sync states; M04 photo-to-PDF sharing uses the same adopted path. Quantity changes remain service-mediated under T05, never direct GridCraft cell writes.
     - Register PdfCraft builds and checks in M06-T12. Demonstrate two actual releases plus rollback across full/embedded modes, previous-release annotated PDFs, calibrated measurements, photo audits, fonts/exports, permission/domain behavior and recovery/sync conflicts. Preserve source bytes/history or prove migration/restore for newer persisted formats.
 
-- [ ] **M08-T08** — 👤 GATE — M08 exit evidence
+- [x] **M08-T08** — 👤 GATE — M08 exit evidence (PR #98)
   - Depends on: M08-T01…T07, M08-T09 · Output: `[M08-GATE]` evidence packet and owner decision.
   - Acceptance:
     - Full editor and embedded takeoff/preview hosts plus an actual PdfCraft release upgrade/rollback are evidenced under T09 and the M06-T12 pipeline.
