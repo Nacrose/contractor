@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-documents",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Document authority contracts, read-only domain projections, template versioning, and provenance records for WordCraft and DeckCraft (M12).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
