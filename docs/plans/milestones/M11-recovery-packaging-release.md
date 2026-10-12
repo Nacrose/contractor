@@ -31,7 +31,7 @@ Exit (v3): measured recovery drill, validated platform packages, full parity evi
     - Application downgrade attempts fail-closed with structured update prompt.
     - Corrupted local databases trigger safe repair or clean remote re-sync without crashing.
 
-- [ ] **M11-T04** — Cross-platform packaging, code signing & notarization pipeline
+- [x] **M11-T04** — Cross-platform packaging, code signing & notarization pipeline (PR #123)
   - Depends on: M01-T02, M10-T06 · Output: `docs/reports/M11/packaging-and-signing-pipeline.md`, packaging workflows, distribution artifacts.
   - Scope: configure production build and signing pipelines for macOS (Intel/ARM64 universal DMGs, notarization with Apple), Windows (MSIX/NSIS signed installers), Linux (AppImage/deb), Android (AAB/APK signed with upload key), and iOS (IPA with provisioning profiles) (derived from M11-W04). Ensure signing secrets exist only in secure runner keychains, never in repository or build logs.
   - Acceptance:
