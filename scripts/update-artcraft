@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Wrapper for scripts/update-artcraft.mjs
+set -e
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec node "$DIR/update-artcraft.mjs" "$@"
