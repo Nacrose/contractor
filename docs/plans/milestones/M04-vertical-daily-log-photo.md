@@ -1,7 +1,7 @@
 # M04 — First vertical workflow: daily log and photo
 
 > Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M04. Dependencies: M03. Proves the system architecture — **not** a complete platform release (v3 §6 M04).
-> Photo markup approach ([ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md) §6, owner 2026-10-09): lightweight native overlay in-app; PdfCraft annotation/export path (photo → PDF → shapes/comments) for share/print. photocraft rejected for markup as too heavy.
+> Photo markup approach ([ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md) §6, owner 2026-10-09): lightweight native overlay in-app; PdfCraft annotation/export path (photo → PDF → shapes/comments) for share/print (evidenced in [M08-T01 prototype report](../reports/M08/pdfcraft-prototype.md#6-photo-to-pdf-markup--export-pipeline-m04-backing-path)). photocraft rejected for markup as too heavy.
 > **Refined to task level under protocol R9** by the `[PLAN-AMEND]` PR recorded in the register (2026-10-09, after M03-T09 merged, before the M03-T10 gate opened). The original WP sketches (W01–W07) are preserved as the `Refinement record` section at the bottom.
 
 Exit (v3): device-recorded workflow evidence, automated fault tests, parity with current daily-log rules and user verification.

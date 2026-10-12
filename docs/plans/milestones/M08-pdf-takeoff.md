@@ -11,7 +11,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
 
 ---
 
-- [ ] **M08-T01** — PdfCraft prototype: CLI/MCP measure/annot evidence over M00 fixtures vs PDF.js reference
+- [x] **M08-T01** — PdfCraft prototype: CLI/MCP measure/annot evidence over M00 fixtures vs PDF.js reference (PR #90)
   - Depends on: M00-GATE (PDF fixtures + baseline), M01 PDF spike outcome · Output: prototype report `docs/reports/M08/pdfcraft-prototype.md` + fixture/driver artifacts under `prototype/`; no production code change.
   - Scope: drive PdfCraft pinned to an upstream release tag (start: `v0.4.0`) via its CLI and headless MCP server over the M00 PDF fixtures; exercise its `measure` crate (ISO 32000-2 §12.9 calibrated distance/perimeter/area) and `annot` stack, comparing against the PDF.js reference renderer and the authoritative TypeScript document-session/measurement engine. Also exercise the **photo→PDF→annotate/export path** that backs the M04 site-photo markup approach (ADR-0015 §6): embed a photo in a PDF, add shapes/comments, export — record fidelity and limits. Disposable evidence work; starts before the M02/M03 dependencies complete so its evidence shapes T02–T05 decisions.
   - Acceptance:

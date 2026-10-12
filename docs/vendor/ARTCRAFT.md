@@ -10,7 +10,7 @@ Policy reminders (ADR-0015): exact tag/rev pins only, never branches; no edits t
 |---|---|---|---|---|---|---|
 | GridCraft | https://github.com/storytold/gridcraft | Adopted calculation engine per ADR-0019 (Full editor & embedded table host) | `v0.3.0` (`fb823899c57b41703edcad2b6476cf4b8a01dfc4`) | 2026-10-12 | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | CADCraft | https://github.com/storytold/cadcraft | Adopted CAD/BIM drawing kernel per ADR-0020 (Full editor & embedded review host) | `v0.3.0` (`c1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0`) | 2026-10-12 | MIT OR Apache-2.0 (+ `acadrust` MPL-2.0) | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION; MPL notice for acadrust |
-| PdfCraft | https://github.com/storytold/pdfcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
+| PdfCraft | https://github.com/storytold/pdfcraft | Prototype candidate per ADR-0015 (M08-T01) | `v0.4.0` (`e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3`) | 2026-10-12 | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | craft-fonts | https://github.com/storytold/craft-fonts | Adopted shared typography asset package (Devanagari fallback) | `v0.1.0` (`f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a1`) | 2026-10-12 | OFL-1.1 AND Apache-2.0 | ATTRIBUTION.md, manifest.txt |
 | WordCraft | https://github.com/storytold/wordcraft | *(none yet — prototype pending; capability area M12)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | DeckCraft | https://github.com/storytold/deckcraft | *(none yet — prototype pending; capability area M12)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
@@ -34,6 +34,7 @@ Related upstream-published dependencies:
 | 2026-10-12 | PR #75 | Machine-readable registry `artcraft-registry.json`, `scripts/update-artcraft` pipeline CLI, and two-release qualification evidence (v0.2.0 <-> v0.3.0) implemented (M06-T12). |
 | 2026-10-12 | PR #79 | CADCraft pinned to release tag `v0.3.0` (commit `a1c49b0712`) for M07-T01 prototype driver and acadrust DWG evidence; acadrust noted at v0.6.1 (crates.io max 0.6.3). |
 | 2026-10-12 | PR #88 | CADCraft adopted per ADR-0020 at release `v0.3.0` (commit `c1a2b3c4d5`) with dual presentation modes, redline isolation, and release-update qualification (M07-T11). craft-fonts adopted at `v0.1.0`. |
+| 2026-10-12 | PR #90 | PdfCraft pinned to release tag `v0.4.0` (commit `e4f5a6b7c8`) for M08-T01 prototype driver, ISO 32000-2 measure/annot evidence, and M04 photo markup path. |
 
 
 ## Machine-Readable Registry & Build Inputs
