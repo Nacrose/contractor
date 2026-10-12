@@ -59,7 +59,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Responsive layout adapts fluidly from compact mobile screens ($360\text{ dp}$) to ultra-wide desktop displays ($3840\text{ px}$).
     - File export and print output bit-identical across web and installed runtimes.
 
-- [ ] **M10-T07** — Connected original-app cross-tool journeys across adopted upstream engines
+- [x] **M10-T07** — Connected original-app cross-tool journeys across adopted upstream engines (PR #116)
   - Depends on: M10-T02, M10-T03, M10-T04, M10-T06, M12-W07 · Output: `docs/reports/M10/connected-journeys-verification.md`, end-to-end multi-tool journey integration tests.
   - Scope: verify complete end-to-end journeys linking adopted engines and retained domain workflows (derived from M10-W09): (1) Takeoff measurement $\rightarrow$ BoQ item $\rightarrow$ Procurement requisition $\rightarrow$ Client IPC billing; (2) Material delivery $\rightarrow$ Goods receipt $\rightarrow$ Inventory stock ledger $\rightarrow$ Journal entry $\rightarrow$ Financial report; (3) Daily site progress $\rightarrow$ TruePPM schedule recalculation $\rightarrow$ EVM S-curve $\rightarrow$ Client progress report/deck. Validate stable entity context, offline queueing, conflict resolution, and cross-component upgrade/restore.
   - Acceptance:
