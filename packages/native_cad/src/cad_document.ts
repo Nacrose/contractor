@@ -37,11 +37,66 @@ export class CadDocument {
     activeSpace: 'model',
     activeLayoutName: 'Model',
     layouts: ['Model', 'Layout1'],
+    layoutDefinitions: {
+      Model: {
+        name: 'Model',
+        paperSize: 'CUSTOM',
+        widthMm: 0,
+        heightMm: 0,
+        orientation: 'landscape',
+        viewports: [],
+      },
+      Layout1: {
+        name: 'Layout1',
+        paperSize: 'ISO_A1',
+        widthMm: 841,
+        heightMm: 594,
+        orientation: 'landscape',
+        viewports: [
+          {
+            id: 'VP1',
+            boundsOnPaperMm: { minX: 20, minY: 20, maxX: 821, maxY: 574 },
+            modelCenter: { x: 0, y: 0 },
+            scale: 0.01, // 1:100
+            targetSpace: 'model',
+          },
+        ],
+      },
+    },
     viewports: [],
   };
 
   sourceVersion: string = 'AC1015';
   unsupportedObjects: import('./types.js').UnsupportedObjectRecord[] = [];
+
+  setActiveSpace(space: import('./types.js').SpaceMode): void {
+    this.layoutState.activeSpace = space;
+    this.revision++;
+  }
+
+  setActiveLayout(layoutName: string): void {
+    if (!this.layoutState.layouts.includes(layoutName)) {
+      this.layoutState.layouts.push(layoutName);
+    }
+    this.layoutState.activeLayoutName = layoutName;
+    this.layoutState.activeSpace = layoutName === 'Model' ? 'model' : 'paper';
+    this.revision++;
+  }
+
+  addLayout(layout: import('./types.js').LayoutDefinition): void {
+    if (!this.layoutState.layoutDefinitions) {
+      this.layoutState.layoutDefinitions = {};
+    }
+    this.layoutState.layoutDefinitions[layout.name] = layout;
+    if (!this.layoutState.layouts.includes(layout.name)) {
+      this.layoutState.layouts.push(layout.name);
+    }
+    this.revision++;
+  }
+
+  getLayout(name: string): import('./types.js').LayoutDefinition | undefined {
+    return this.layoutState.layoutDefinitions?.[name];
+  }
 
   constructor(id: string = `cad_doc_${Math.random().toString(36).slice(2, 9)}`) {
     this.id = id;

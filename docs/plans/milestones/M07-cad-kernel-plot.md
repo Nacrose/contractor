@@ -56,7 +56,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - DWG capability statement reflects measured evidence (M01 spike + M07-T01 matrix); product limitation documented if any.
     - DXF-first path remains authoritative; DWG route per M07-T01 recommendation and ADR-0015 §7.
 
-- [ ] **M07-T06** — Model/paper space, viewports, scale, lineweights, fonts, vector PDF plot via one layout/plot engine
+- [x] **M07-T06** — Model/paper space, viewports, scale, lineweights, fonts, vector PDF plot via one layout/plot engine (PR #84)
   - Depends on: M07-T02, M07-T04 · Output: layout/plot engine with platform file/print adapters and plot fidelity fixtures.
   - Scope: model/paper space, viewports, scale, lineweights, fonts, vector PDF plot through one layout/plot engine + platform file/print adapters (v3 §6 M07); font supply evaluated via craft-fonts (ADR-0015 §1; Devanagari gap tracked).
   - Acceptance:

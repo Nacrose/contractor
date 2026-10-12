@@ -153,20 +153,79 @@ export interface OrthoSettings {
 
 export type SpaceMode = 'model' | 'paper';
 
+export type PaperSizeName =
+  | 'ISO_A0'
+  | 'ISO_A1'
+  | 'ISO_A2'
+  | 'ISO_A3'
+  | 'ISO_A4'
+  | 'ANSI_A'
+  | 'ANSI_B'
+  | 'ANSI_C'
+  | 'ANSI_D'
+  | 'ANSI_E'
+  | 'ARCH_C'
+  | 'ARCH_D'
+  | 'ARCH_E'
+  | 'CUSTOM';
+
 export interface ViewportConfig {
   id: string;
-  center: Point2D;
-  width: number;
-  height: number;
-  scale: number;
+  boundsOnPaperMm: Box2D; // Position on paper sheet in mm [minX, minY, maxX, maxY]
+  modelCenter: Point2D;   // Center coordinate in model space
+  scale: number;          // Drawing scale e.g. 0.01 = 1:100, 0.02 = 1:50, 1.0 = 1:1
+  rotation?: number;      // Radians
+  frozenLayers?: string[];
+  clipped?: boolean;
   targetSpace: SpaceMode;
+}
+
+export interface LayoutDefinition {
+  name: string;
+  paperSize: PaperSizeName;
+  widthMm: number;
+  heightMm: number;
+  orientation: 'landscape' | 'portrait';
+  viewports: ViewportConfig[];
+  plotStyleTable?: string; // e.g. "monochrome.ctb", "acad.ctb"
 }
 
 export interface LayoutState {
   activeSpace: SpaceMode;
   activeLayoutName: string;
   layouts: string[];
+  layoutDefinitions?: Record<string, LayoutDefinition>;
   viewports: ViewportConfig[];
+}
+
+export interface PlotOptions {
+  layoutName?: string;
+  paperSize?: PaperSizeName;
+  orientation?: 'landscape' | 'portrait';
+  monochrome?: boolean;
+  scaleLineweights?: boolean;
+  fallbackMode?: 'vector_with_raster_fallback' | 'strict_vector';
+  targetDpi?: number;
+}
+
+export interface PlotResult {
+  pdfBytes: Uint8Array;
+  pageCount: number;
+  widthPt: number;
+  heightPt: number;
+  layoutName: string;
+  vectorEntityCount: number;
+  rasterFallbackEntities: string[];
+  fontsUsed: string[];
+  devanagariFallbackApplied: boolean;
+}
+
+export interface PlotOutputResult {
+  success: boolean;
+  destination: string;
+  bytesEmitted: number;
+  platform: 'web' | 'desktop' | 'headless';
+  error?: string;
 }
 
 export interface CommandContext {
