@@ -32,7 +32,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Concurrent writes from superseded clients are rejected fail-closed with structured migration upgrade prompts, never corrupted.
     - Zero authoritative business logic duplicated between Flutter and Next.js layers.
 
-- [ ] **M10-T04** — Accounting library qualification (`flutter_accounting`) & service integration
+- [x] **M10-T04** — Accounting library qualification (`flutter_accounting`) & service integration (PR #113)
   - Depends on: M10-T01, M03-T02, M06-T03 · Output: `docs/reports/M10/accounting-qualification-and-integration.md`, `packages/native_accounting` integration module.
   - Scope: resolve actual `flutter_accounting` package identity, upstream source, version, and license per ADR-0014 (derived from M10-W08). Prove monetary precision (exact-decimal / integer cents), balanced atomic double-entry journals ($\sum\text{Debits} = \sum\text{Credits}$), period locks, reversal transactions, and reconciliation reports. Integrate through Contractor accounting/approval services with single ledger authority, stable project/JV dimensions, retry-safe idempotent posting, and M03 sync feed. Supply domain-specific Nepal construction chart of accounts (VDS, TDS, advance mobilization, retention).
   - Acceptance:
