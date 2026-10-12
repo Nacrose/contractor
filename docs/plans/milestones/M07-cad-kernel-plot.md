@@ -80,7 +80,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Any server-side conversion step names its trigger, cost and failure behavior.
     - No AutoCAD-parity claims beyond measured coverage.
 
-- [ ] **M07-T09** — Benchmarks on native and web: bounded memory + CAD interaction latencies
+- [x] **M07-T09** — Benchmarks on native and web: bounded memory + CAD interaction latencies (PR #87)
   - Depends on: M07-T04, M07-T06, M07-T08 · Output: benchmark report on ratified device profiles.
   - Scope: 100k/1m-entity fixtures per §7 with declared mixes; render/snap/select reported separately; web path exercised through the browser binding (v3 §6 M07).
   - Acceptance:

@@ -554,13 +554,14 @@ export class CadSpatialIndex {
 
   /**
    * Detailed spatial range search returning complete `SpatialItem` objects.
+   * Supports early exit when `maxResults` ceiling is reached.
    */
-  searchDetailed(box: Box2D): SpatialItem[] {
+  searchDetailed(box: Box2D, maxResults?: number): SpatialItem[] {
     const results: SpatialItem[] = [];
     if (this.itemMap.size === 0 || !boxesIntersect(this.root.box, box)) {
       return results;
     }
-    this.searchDetailedRecursive(this.root, box, results);
+    this.searchDetailedRecursive(this.root, box, results, maxResults);
     return results;
   }
 
@@ -595,19 +596,22 @@ export class CadSpatialIndex {
     }
   }
 
-  private searchDetailedRecursive(node: RTreeNode, box: Box2D, results: SpatialItem[]): void {
+  private searchDetailedRecursive(node: RTreeNode, box: Box2D, results: SpatialItem[], maxResults?: number): void {
+    if (maxResults !== undefined && results.length >= maxResults) return;
     if (!boxesIntersect(node.box, box)) return;
 
     if (node.isLeaf) {
       for (const child of node.children as SpatialItem[]) {
+        if (maxResults !== undefined && results.length >= maxResults) return;
         if (boxesIntersect(child.box, box)) {
           results.push(child);
         }
       }
     } else {
       for (const child of node.children as RTreeNode[]) {
+        if (maxResults !== undefined && results.length >= maxResults) return;
         if (boxesIntersect(child.box, box)) {
-          this.searchDetailedRecursive(child, box, results);
+          this.searchDetailedRecursive(child, box, results, maxResults);
         }
       }
     }

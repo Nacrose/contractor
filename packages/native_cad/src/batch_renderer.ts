@@ -128,8 +128,9 @@ export class CadBatchRendererFeed {
     const cullingThreshold = viewport.cullingPixelThreshold ?? 1.0;
     const maxEntities = viewport.maxBatchEntities ?? 50000;
 
-    // 1. Broad phase query via R-tree spatial index
-    const spatialItems: SpatialItem[] = (doc as any).spatialIndex?.searchDetailed(viewport.bounds) ?? [];
+    // 1. Broad phase query via R-tree spatial index (bounded by maxEntities * 2)
+    const spatialItems: SpatialItem[] =
+      (doc as any).spatialIndex?.searchDetailed(viewport.bounds, maxEntities * 2) ?? [];
     const queryEndTime = performance.now();
     const queryTimeMs = queryEndTime - startTime;
 
@@ -168,9 +169,6 @@ export class CadBatchRendererFeed {
       }
       queriedCount++;
 
-      const entity = doc.getEntity(item.id);
-      if (!entity || entity.visible === false) continue;
-
       // 2. Screen-space Level of Detail (LOD) & Culling Policy
       const box = item.box;
       const extentX = Math.max(0, box.maxX - box.minX);
@@ -181,6 +179,9 @@ export class CadBatchRendererFeed {
         culledCount++;
         continue;
       }
+
+      const entity = doc.getEntity(item.id);
+      if (!entity || entity.visible === false) continue;
 
       const colorInt = this.parseColor(entity.color);
       const lineweight = entity.lineweight ?? 25;

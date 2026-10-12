@@ -18,3 +18,6 @@ export * from './import_pipeline.js';
 export * from './layout_plot_engine.js';
 export * from './revision_and_conflict.js';
 export * from './compatibility_matrix.js';
+export * from './fixture_generator.js';
+export * from './browser_cad_binding.js';
+export * from './benchmark_harness.js';
