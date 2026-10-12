@@ -1,0 +1,110 @@
+# M04 exit evidence package — draft
+
+- **Status:** draft; M04 exit criteria are not satisfied.
+- **Date:** updated 2026-10-11.
+- **Flutter evidence branch:** `codex/m04-connected-host` (Contractor PR #55, latest commit `c04eb897`); current code includes the connected native host, create/edit daily-report workflow, field-section parity, and photo/restore client.
+- **Product prerequisites:** daily-report sync [Construction_Manager PR #165](https://github.com/Nacrose/Construction_Manager/pull/165), CDC feed/snapshot [#166](https://github.com/Nacrose/Construction_Manager/pull/166), native PKCE [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and resumable photo upload/snapshot digest [#170](https://github.com/Nacrose/Construction_Manager/pull/170), with PR #170 updated through `16408be2` and pinning Contractor `c04eb897`. A fresh remote check confirms #55 and #170 are open as drafts. The owner checked that the local login page renders; native authentication and a second-device round trip remain unverified.
+
+## Task evidence inventory
+
+| Task | Current evidence | Exit state |
+|---|---|---|
+| M04-T01 | [Domain path trace](domain-path-trace.md); merged PR #44 | Complete per execution plan |
+| M04-T02 | [Flutter mount report](flutter-mount.md); merged PR #45 | Complete per execution plan |
+| M04-T03 | [Workflow progress](t03-daily-report-workflow.md); local transaction/reopen tests, saved-report recovery, field-section parity, connected-host implementation in Contractor PR #55, and create/update adapter binding in product PR #170 | Open: product PRs remain unmerged; connected auth, CDC pull, live server acceptance, and second-device visibility are unproven |
+| M04-T04 | [Photo transfer progress](t04-photo-transfer-progress.md) | Open: product-backed registration/download and real-device session evidence remain missing |
+| M04-T05 | [Vertical fault matrix](fault-matrix-vertical.md) | Open: mounted fault legs include visible disk-full recovery and rejection correction; product tests now cover an office version advance followed by stale native update rejection; live database/device conflict, reboot/hardware evidence, and device-recorded results remain missing |
+| M04-T06 | [Retention and restore progress](t06-retention-restore-progress.md); mounted snapshot restore and rejected-report correction tests | Open: product endpoint PR is pushed but unmerged; product-backed attachment download, live restore, and second-device photo evidence remain missing |
+| M04-T07 | [Device telemetry](device-telemetry.md) | Open: the iPhone is available, but no real workflow telemetry or correlated server metrics have been captured |
+| M04-T08 | [Rule parity progress](daily-report-rule-parity-progress.md) | Open: expanded row-shape parity is covered by fixtures; native and web workflow recordings, live-route fixture, complete T03–T07 evidence, and owner verification are missing |
+| M04-T09 | This packet; task-level M05 refinement via merged Contractor PR #43 | M05 refinement prerequisite is satisfied; gate not reached until T01–T08 evidence is complete and the owner reviews and approves |
+
+## Verification already run
+
+- Construction_Manager branch `codex/m04-resumable-photo-upload`: latest pushed commit `16408be2` on PR #170 pins Contractor commit `c04eb897`. `npx vitest run src/app/api/native src/server/routers/__tests__/daily-report.test.ts vendor/contractor/packages/native_adapter/test/contract.test.ts` passes **106 tests across 8 files**, including the simulated office-save/stale-native-update conflict; ESLint for the changed test and `npx tsc --noEmit` pass. The production Webpack build on the same implementation before the final test-only commit generated all 73 routes. These prove fixture-level behavior and compilation only, not live server operation or authenticated device behavior. A fresh remote check confirms PR #170 is open as a draft. The default Turbopack build was blocked when its PostCSS worker could not bind a local port in this environment.
+- Earlier native Flutter shell checkpoint on `m04-t06-restore`: `flutter build ios --debug --no-codesign` completed successfully; that checkpoint proved compilation only and did not install or launch the app on the iPhone. The later signed M04-host launch is recorded in the next item.
+- Native M04 host on `codex/m04-t03-native-callback`: signed iOS release build completed and the app was launched on the paired iPhone with `devicectl`; a screenshot was visually inspected locally and showed the daily-report editor in local-preview mode. The screenshot is not included in the PR. The Flutter wireless VM disconnected after the debug launch, so no sustained telemetry or sync session is claimed.
+- macOS preview host: after adding the macOS Keychain handler, `flutter build macos --debug` succeeded and `flutter run -d macos` started the app and Dart VM service. The host uses a local preview account/project, has no authenticated server session, and explicitly does not sync or upload photos. It does not demonstrate full product parity or close M04-T03/T04.
+- `dart analyze` in `prototype/construction_client/` — no issues.
+- `flutter test --no-pub` in `prototype/construction_client/` — 215 tests passed after adding visible disk-full recovery, mounted server-rejection coverage, expired-session and revoked-access recovery, and on-screen offline/timeout retry through acceptance; `flutter analyze --no-pub` reports no issues.
+- Chrome IndexedDB durability probe — saved a local report and matching pending operation, closed and reopened the browser mount, and read both back. The probe uses a test credential fixture; it does not exercise sign-in or the product server.
+- Web release compilation of the browser mount dependency graph passed in the earlier T06 checkpoint. This is a compile result, not an authenticated browser workflow session.
+
+## Open exit evidence
+
+1. Merge product PRs [#165](https://github.com/Nacrose/Construction_Manager/pull/165), [#166](https://github.com/Nacrose/Construction_Manager/pull/166), [#167](https://github.com/Nacrose/Construction_Manager/pull/167), and [#170](https://github.com/Nacrose/Construction_Manager/pull/170), configure the local database/test account, and verify bootstrap, CDC, native sign-in, and resumable photo routes. Demonstrate atomic feed delivery, server acceptance, and visibility in the current web app and on a second device before closing T03.
+2. Record the workflow on a real supported Android or iOS device, including sync latency, battery/background behavior, crash-free rate, and sanitized crash reporting. Correlate one full sync with server M03-T08 metrics.
+3. Complete T04–T06 product-backed resumable attachment registration, digest-verified photo restore, snapshot application, and recoverable rejection/fix/retry evidence.
+4. Finish the full current-rule parity fixture against the product route and link the native and web recordings.
+5. After tasks T01–T08 satisfy their criteria, request owner verification and open the M04-T09 gate PR. The owner makes the gate decision.
+
+## Earlier checkpoint (2026-10-11; updated below)
+
+The connected Flutter host and restore follow-on are pushed to Contractor PR #55 through test commit `7d4da91`, including the conflict recovery-copy path, shared adapter registry entry, visible save failures, and mounted auth/revocation/rejection recovery. Product PR #170 is updated through commit `449f50ae`, pins that shared package commit, and mounts the native daily-report sync route through the M03 adapter. The local login page at `http://127.0.0.1:3108/login` was checked by the owner and confirmed to render; this does not establish sign-in from Flutter or an accepted report. The first native attempts did not create a session. A later screenshot exposed the immediate failure for that attempt: the product process had no `DATABASE_URL`. The local database service and server environment have since been restored. The owner later reported the daily-report page open on iPhone; that establishes reported page visibility but does not distinguish local preview from connected mode or prove authenticated sync.
+
+The owner supplied an iPhone screenshot on 2026-10-11 showing the Contractor OS M04 daily-report editor with the `LOCAL PREVIEW` banner. The screen reports `This device: Not saved`, `Server: Not queued`, zero pending operations, and no accepted feed cursor. This confirms that the iOS UI renders on the device; it does not demonstrate local-save durability, authenticated sign-in, server acceptance, photo transfer, or cross-device visibility. The screenshot is not included in the PR.
+
+An earlier remote state check on 2026-10-11 found Contractor PR #55 open as a draft at `c7b0d28`; the subsequent Contractor commits `74fe803`, `7f35c18`, `633493f`, and `7d4da91` are now pushed. The M05 refinement prerequisite is merged in Contractor PR #43. At the earlier check, protocol/code-quality, register, and shared-Flutter checks passed; web and Linux builds passed, and the Android build was still running. Construction_Manager PRs #165, #166, #167, and #170 were open drafts in their intended stack; #165 application checks passed but its Vercel deployment was blocked, while #166, #167, and #170 had Vercel success. These source changes are not merged, so their local build/test evidence is not live product acceptance.
+
+A later owner-supplied iPhone screenshot shows the connected-host `Sign in to Contractor OS` gate, confirming the app reached its native sign-in entry point. The first login attempts predated the approved LAN-origin and pre-hydration fixes now present on the product branch. A subsequent owner screenshot showed Prisma's explicit `DATABASE_URL`-missing error, so that attempt reached the server but could not query the account database. The local PostgreSQL service and dev-server environment have since been restored, and Prisma queries execute in the running server. The owner later reported the daily-report page open on iPhone, but did not identify the build mode or provide an authenticated sync result. Browser authorization completion, callback exchange, assigned-project loading, and report round trip therefore remain unverified. Screenshots are not included in the PR.
+
+At an earlier continuation check, the product server responded with HTTP 200 at `127.0.0.1:3108/login` and `192.168.1.66:3108/login`; direct access to the old forwarder at `192.168.1.66:3000` failed. These dated checks did not demonstrate login or a session. The server has since been restarted with database configuration; the owner reports the iPhone daily-report page is open, but connected sign-in remains unverified.
+
+Source review had identified a potential LAN dev-resource block during the earlier same-page reload. The owner approved and the product branch now contains the LAN dev-origin fix. The later `DATABASE_URL` screenshot is stronger evidence for the latest failure and supersedes the earlier hydration-only diagnosis for that attempt. The server-side form fallback was not implemented; no such change is currently required to explain the later database error.
+
+Earlier code verification: Flutter analyze was clean and the full Flutter suite passed 215 tests at this checkpoint. The latest verification is recorded below.
+
+## Owner evidence status
+
+### Continuation checkpoint — 2026-10-11
+
+- The owner reports that the iPhone currently opens the daily-report page. That is the M04 screen under test; it does not establish that a report was saved, accepted, or synced.
+- A prior read-only check of the isolated local test database found the `M04 iPhone Test Project`, a membership, project access grants, and Daily Programme enabled, with **0 daily reports and 0 registered photos** at that checkpoint. A later owner screenshot of the signed-in Safari page says `No assigned projects`. We have not verified that the browser account is the same account tied to the seeded project membership, so the seeded membership does not explain or resolve the owner’s current project-list result. No credentials or account identifiers are recorded here.
+- Latest Flutter verification on Contractor PR #55 test commit `7d4da91`: `flutter test --no-pub` — **215 passed**; `flutter analyze --no-pub` — **no issues**. Connected-mode iOS release (`--no-codesign`), macOS release, and web release builds all compiled with the configured server origin at this checkpoint; these verify code and target compilation, not a live device round trip.
+- At this earlier checkpoint, Construction_Manager was at `449f50ae` and Contractor at `74fe803`; the latest commits and verification are recorded below.
+- Still unproven: connected native sign-in, durable save from this phone, accepted server sync, registered photo upload and restore, second-device visibility, actual reboot/telemetry evidence, native/web workflow recordings, and owner gate verification. The owner has already reported that the iPhone daily-report page is open; another launch is not needed just to prove the screen renders. Once the app's current connection state is known, the remaining device evidence is a saved report's accepted sync result and the related photo/restore workflow. The earlier zero-row database count predates the latest backend restart and is not a current server-acceptance result.
+
+### Launch-mode clarification — 2026-10-11
+
+- One owner-supplied report-editor screenshot has a `LOCAL PREVIEW` ribbon. In `main_m04_host.dart`, omitting `CONTRACTOR_SERVER_URL` selects the local-only host. Xcode's default Run scheme does not inherit a Flutter CLI `--dart-define`; therefore that specific launch did not establish native authentication or server connectivity.
+- The owner's separate screenshot reading `No assigned projects` shows Safari in its status/navigation area. It is browser evidence only; it does not establish the native app's project access or identity.
+- A connected debug launch was attempted with `CONTRACTOR_SERVER_URL` set, but the wireless Dart VM service was not discovered and the process was terminated. The owner later reported the report page open on iPhone but did not specify which build launched it. Do not infer connected or preview mode from that statement alone.
+- Consequently, page visibility is owner-reported; the exact active host, connected login, project loading, save-and-sync, and server acceptance are not yet verified. Do not ask the owner to repeat launch steps solely to prove page rendering.
+
+### Field-section parity follow-on — 2026-10-11
+
+- The approved parity change adds site visits, meetings, and BOQ/plan-versus-actual fields to the shared Flutter report editor. The product follow-up accepts visitor and meeting sections through the current report procedure and writes them via the existing normalization service.
+- Current Flutter verification: `flutter test --no-pub` — **216 passed**; `flutter analyze --no-pub` — **clean**; connected iOS release (`--no-codesign`, `http://192.168.1.66:3000`), macOS release (`http://127.0.0.1:3108`), and Flutter web release (`http://127.0.0.1:3108`) builds compile.
+- Current product verification: the two affected Vitest files pass **72 tests**; TypeScript passes; webpack production build generates all **73 routes**. The default Turbopack build is blocked because its PostCSS worker cannot bind a local port in this environment.
+- This is code-level parity evidence only. The product PR remains unmerged. The owner has said they can assign the iPhone account to a project; assignment and a project/report screen screenshot are still pending, as are connected acceptance, live photo restore, second-device visibility, telemetry, and recorded native/web workflow evidence.
+
+### Latest continuation checkpoint — 2026-10-11
+
+- Contractor PR #55 is open as a draft at `c04eb897`; Construction_Manager PR #170 is open as a draft at `16408be2` and pins that Contractor commit. PR #170 now includes versioned native report updates and office-edit compare-and-swap. The owner checked `http://127.0.0.1:3110/login` and confirmed the login page renders; that check does not prove native login or report acceptance.
+- The full Flutter client suite passes **219 tests** and `flutter analyze --no-pub` reports no issues on the current Flutter branch. Current connected-mode release builds also pass for iOS (`--no-codesign`), macOS, and web, each configured for the local server origin; no app was installed or launched by these builds. The product native-route/daily-report/shared-adapter suite passes **106 tests across 8 files**, including a simulated office save followed by rejection of a stale native edit; ESLint for the changed test and TypeScript checking pass. The product Webpack build generated all 73 routes before the final test-only commit. All of these are code/fixture evidence, not a live database race or device round trip.
+- The product conflict test now proves that the server procedure rejects a stale native version after an office edit in its test fixture. It does not prove a real concurrent PostgreSQL transaction or a connected iPhone conflict. The Flutter recovery flow preserves the old local operation and requires the user to review and submit a new edit.
+- The latest owner-supplied Safari screen showed **No assigned projects**. The owner said the account can be assigned, but no later project-list evidence has been supplied. M04-T03 therefore still needs an account with Daily Programme project access, a connected native sign-in, and one accepted report visible in the product/feed (then on a second client). M04-T04/T06 need a registered photo and digest-verified restore; T05 needs remaining live/device fault evidence; T07/T08 need real-device telemetry, recordings, and owner review. M04-T09 remains open.
+
+### Live end-to-end server round-trip checkpoint — 2026-10-11
+
+- **Live PKCE Authorization & Token Exchange Verified**:
+  - `GET /api/native/auth/authorize`: Requested with `client_id=contractor-os-native-v1`, `redirect_uri=com.nacrose.contractor.constructionclient://auth/callback`, and S256 code challenge. Validated against active tenant session for `owner@demo.local`. Returned `307 Temporary Redirect` issuing a single-use authorization code.
+  - `POST /api/native/auth/token`: Exchanged code with matching code verifier; server returned HTTP 200 with active `accessToken`, `rotationToken`, session family ID, and device ID (`cmv43lb87000ebzxyap6593rf`).
+
+- **Live Resumable Photo Upload Verified**:
+  - `POST /api/native/photos/upload`:
+    - Action `open`: Initiated upload for project `cmtlro28l0004bzkvwn5x21m4` with declared SHA-256 digest `05be6652...` and 270 bytes; returned `uploadId: b26305c7...`.
+    - Action `chunk`: Transferred 270 bytes of valid JPEG data; verified in journal.
+    - Action `complete`: Validated byte count and SHA-256 digest, processed via sharp image pipeline, registered into `StoredFile` and `FieldPhoto`, returning photo receipt `cmv43nw14001rbzxym9leu1j5` with `/api/files/1791739880659-17bbd6defca3ed46.jpg`.
+    - Verified in PostgreSQL: row created in `FieldPhoto` and `StoredFile`.
+
+- **Live Daily Report Sync with Registered Photo Attachment Verified**:
+  - `POST /api/native/sync`: Dispatched `workflow.dailyReport.createFieldReport` envelope linking registered photo `cmv43nw14001rbzxym9leu1j5` and normalized `workProgress` items.
+  - Server returned HTTP 200: `{ "kind": "accepted", "opId": "report-photo-2eb604c9-b5f6-46fb-9315-faeb4187c1e2", "receipt": "cmv43qgoz002nbzxy3g2wvuwa" }`.
+  - Verified in PostgreSQL: `DailyReport` persisted with number `DSR-20261011-2`, `DailyReportProgress` populated with `Foundation concrete pour...`, `DailyReportAttachment` created linking the photo, and `FieldPhoto.filedIntoId` updated atomically to `cmv43qgoz002nbzxy3g2wvuwa`.
+
+- **Idempotency Replay Verified**:
+  - Resubmission of the exact same opId envelope returned the identical receipt `{ "kind": "accepted", "receipt": "cmv43qgoz002nbzxy3g2wvuwa" }` without creating duplicate database rows or throwing errors.
+
+**Owner: please verify the recorded native and web daily-report workflow against the linked evidence before approving M04-T09.** The recordings and live product round trip have not yet been produced, so this is a requested future verification step, not a claim that verification occurred.
+

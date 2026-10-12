@@ -1,0 +1,337 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-10-12T13:00:00.000Z",
+  "description": "Machine-readable migration waves and route tracking matrix for M10 full feature parity",
+  "summary": {
+    "totalWaves": 5,
+    "totalWorkflows": 41,
+    "totalNonRouterWriters": 23,
+    "orphanedWorkflows": 0
+  },
+  "waves": [
+    {
+      "waveId": "WAVE_1",
+      "name": "Procurement & Materials / Inventory",
+      "description": "Material requisitions, purchase orders, goods receipt notes, site delivery challans, stock ledgers, bin management, and FIFO/weighted-average inventory valuation.",
+      "entryCriteria": [
+        "M05 field material transaction sync verified",
+        "M06 BoQ material master code alignment complete",
+        "Contractor purchasing and stock service interfaces registered"
+      ],
+      "exitCriteria": [
+        "3-way matching (PO vs Challan vs GRN) verified on Flutter web and desktop",
+        "Warehouse stock balances match between server ledger and offline replica",
+        "Material consumption traces accurately to BoQ work package items",
+        "Rollback drill proves fallback to Next.js procurement routes in < 60s"
+      ],
+      "workflows": [
+        {
+          "id": "wf-proc-mr",
+          "name": "Material Requisitions (MR)",
+          "routes": ["/procurement/requisitions", "/m/requisitions"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "RequisitionService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Multi-tier approval thresholds", "Project budget ceiling assertion", "BoQ activity tagging"]
+        },
+        {
+          "id": "wf-proc-po",
+          "name": "Purchase Orders (PO)",
+          "routes": ["/procurement/orders"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "PurchaseOrderService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Approved vendor roster", "Payment milestone terms", "Tax breakdown validation"]
+        },
+        {
+          "id": "wf-proc-grn",
+          "name": "Site Goods Receipt Notes (GRN)",
+          "routes": ["/inventory/grn", "/m/receipts"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "GoodsReceiptService",
+          "upstreamBinding": "None",
+          "retainedRules": ["3-way matching", "QC inspection gate", "Warehouse bin allocation"]
+        },
+        {
+          "id": "wf-proc-direct-delivery",
+          "name": "Direct Site Material Delivery",
+          "routes": ["/inventory/delivery", "/m/log"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "MaterialTransactionService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Delivery challan tracking", "Natural key idempotency", "Stock balance update"]
+        },
+        {
+          "id": "wf-proc-stock-ledger",
+          "name": "Stock Ledger & Valuation",
+          "routes": ["/inventory/stock", "/inventory/valuation"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "StockValuationService",
+          "upstreamBinding": "GridCraft (embedded reporting view)",
+          "retainedRules": ["Weighted average / FIFO valuation", "Daily stock issuance reconciliation", "Minimum stock alerts"]
+        },
+        {
+          "id": "wf-proc-issue-tracking",
+          "name": "Material Issue & Consumption",
+          "routes": ["/inventory/issues", "/m/issues"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "MaterialIssueService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Task-level cost allocation", "Wastage tracking vs theoretical BoQ consumption"]
+        }
+      ]
+    },
+    {
+      "waveId": "WAVE_2",
+      "name": "Workforce, Daily Attendance & HR",
+      "description": "Site labor timekeeping, daily gang rosters, skilled/unskilled muster rolls, piece-rate wages, advances, and subcontractor labor verification.",
+      "entryCriteria": [
+        "M04 daily site report workforce entry verified",
+        "M05 field workforce roster sync passing",
+        "Contractor payroll and labor accounting interfaces registered"
+      ],
+      "exitCriteria": [
+        "Daily attendance capture operates fully offline on mobile with reliable SQLite sync",
+        "Muster roll wages balance with task-level piece-rate measurements and advances",
+        "Subcontractor labor headcount reconciliation matches site diary logs",
+        "Zero duplicate wage disbursement postings under sync retry"
+      ],
+      "workflows": [
+        {
+          "id": "wf-work-attendance",
+          "name": "Daily Labor Attendance & Roster",
+          "routes": ["/workforce/attendance", "/m/attendance"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "WorkforceService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Skilled/unskilled category tracking", "Gang-wise allocation to WBS", "Overtime verification"]
+        },
+        {
+          "id": "wf-work-muster-roll",
+          "name": "Muster Roll & Piece-Rate Wage",
+          "routes": ["/workforce/muster-roll", "/workforce/payroll"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "PayrollService",
+          "upstreamBinding": "GridCraft (payroll grid)",
+          "retainedRules": ["Daily wage rate standards", "Task completion piece-rate link", "Statutory social security"]
+        },
+        {
+          "id": "wf-work-advances",
+          "name": "Worker Advances & Deductions",
+          "routes": ["/workforce/advances"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "WorkerAdvanceService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Weekly advance caps", "Automated periodic wage recovery deduction"]
+        },
+        {
+          "id": "wf-work-subcontractor-labor",
+          "name": "Subcontractor Labor Verification",
+          "routes": ["/workforce/subcontractors"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "SubcontractorLaborService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Headcount audit vs gate register", "Safety induction compliance tracking"]
+        }
+      ]
+    },
+    {
+      "waveId": "WAVE_3",
+      "name": "Billing, IPC & Client Certifications",
+      "description": "Measurement sheets, Interim Payment Certificates (IPC), statutory withholdings (VAT, TDS, retention), price escalation formulas, and subcontractor billing.",
+      "entryCriteria": [
+        "M06 contractual BoQ item tree and measurement dimensioning operational",
+        "M08 takeoff-to-BoQ link service verified with provenance preservation",
+        "Fiscal year lock guards operational in financial services"
+      ],
+      "exitCriteria": [
+        "IPC valuations calculate exact cumulative vs previous certified amounts with exact decimals",
+        "Statutory deductions (13% VAT, 1.5% TDS, 5% retention) match Nepal PPA / FIDIC standards",
+        "Price adjustment formula produces identical results across web and server",
+        "Subcontractor running bills enforce contractual contra-charges and advance recoveries"
+      ],
+      "workflows": [
+        {
+          "id": "wf-bill-ipc-valuation",
+          "name": "Measurement-to-IPC Valuations",
+          "routes": ["/billing/ipc", "/billing/measurements"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "IpcCalculationService",
+          "upstreamBinding": "GridCraft & PdfCraft",
+          "retainedRules": ["Cumulative minus previous certified calculation", "Contractual unit rate binding", "Non-negative quantities"]
+        },
+        {
+          "id": "wf-bill-statutory-tax",
+          "name": "Statutory Withholding & Tax",
+          "routes": ["/billing/tax-summary"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "TaxCalculationService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Nepal PPA 13% VAT addition", "1.5% contract TDS withholding", "5% Retention deduction"]
+        },
+        {
+          "id": "wf-bill-price-escalation",
+          "name": "Price Adjustment (Escalation)",
+          "routes": ["/billing/price-adjustment"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "PriceAdjustmentService",
+          "upstreamBinding": "None",
+          "retainedRules": ["FIDIC / PPA formula P_n = P_0 [A + B(L_n/L_0) + C(M_n/M_0) + D(F_n/F_0)] - P_0", "Sum of weight coefficients = 1.0"]
+        },
+        {
+          "id": "wf-bill-subcontractor-bills",
+          "name": "Subcontractor Running Bills",
+          "routes": ["/billing/subcontractor-bills"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "SubcontractorBillService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Back-to-back retention deduction", "Advance recovery", "Material supply contra-charges"]
+        }
+      ]
+    },
+    {
+      "waveId": "WAVE_4",
+      "name": "Subcontractor & Joint Venture (JV) Operations",
+      "description": "Joint venture partner equity allocations, capital contribution calls, dedicated JV bank accounts, billing collection splits, and subcontractor work orders.",
+      "entryCriteria": [
+        "M03 multi-tenant isolation and organization policy guards active",
+        "M06 BoQ sub-bill assignment operational",
+        "Wave 3 billing certificates operational"
+      ],
+      "exitCriteria": [
+        "Partner equity splits enforce agreed consortium ratios (e.g. 60/40) on revenue and cost",
+        "Dedicated JV bank account transactions isolated from individual partner operating funds",
+        "Billing distributions apportion statutory withholding credits accurately across partners"
+      ],
+      "workflows": [
+        {
+          "id": "wf-jv-equity",
+          "name": "Partner Equity & Capital Contributions",
+          "routes": ["/jv/partners", "/jv/equity"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "JvPartnerService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Consortium shareholding ratio enforcement", "Capital call ledger", "Default partner dilution rules"]
+        },
+        {
+          "id": "wf-jv-billing-split",
+          "name": "Billing Splits & Profit Allocation",
+          "routes": ["/jv/distributions"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "JvBillingService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Client IPC collection apportionment", "Withholding tax credit distribution", "Inter-partner contra adjustments"]
+        },
+        {
+          "id": "wf-jv-banking",
+          "name": "JV Bank Accounts & Cash Management",
+          "routes": ["/jv/banking"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "JvBankingService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Dual-signatory authorization limits", "Restricted inter-company fund transfers"]
+        }
+      ]
+    },
+    {
+      "waveId": "WAVE_5",
+      "name": "Administrative, Compliance & System Operations",
+      "description": "Bank guarantee lifecycles, staff responsibility handover and approval delegation, fleet maintenance, system audit logs, and scheduled background sweeps.",
+      "entryCriteria": [
+        "Wave 1 through 4 cutovers passing initial verification",
+        "M03 audit log streaming and session management verified"
+      ],
+      "exitCriteria": [
+        "Bank guarantee expiration sweeps execute without tenant leakage",
+        "Staff delegation rules seamlessly reassign pending approvals without orphaned locks",
+        "System background maintenance sweeps run reliably in background daemon",
+        "All 41 inventory workflows verified operational on Flutter Web and native desktop"
+      ],
+      "workflows": [
+        {
+          "id": "wf-admin-bank-guarantees",
+          "name": "Bank Guarantee Tracking & Auto-Expiry",
+          "routes": ["/admin/bank-guarantees"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "BankGuaranteeService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Bid bond / performance bond validity monitoring", "Claim period grace days", "Automated status expiry sweep"]
+        },
+        {
+          "id": "wf-admin-handover",
+          "name": "Responsibility Handover & Delegation",
+          "routes": ["/admin/delegation", "/admin/handover"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "ResponsibilityHandoverService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Temporary approval delegation limits", "Pending task transfer on staff departure"]
+        },
+        {
+          "id": "wf-admin-maintenance",
+          "name": "Fleet Preventive Maintenance Schedules",
+          "routes": ["/equipment/maintenance"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "MaintenanceService",
+          "upstreamBinding": "None",
+          "retainedRules": ["Operating hour service thresholds", "Spare parts requisition linkage", "Machine lockout during maintenance"]
+        },
+        {
+          "id": "wf-admin-sweeps",
+          "name": "Background Sweeps & Maintenance Daemon",
+          "routes": ["/admin/system/sweeps"],
+          "disposition": "RETAIN_CUSTOM_DOMAIN",
+          "domainService": "BackgroundJobsDaemon",
+          "upstreamBinding": "None",
+          "retainedRules": ["Session expiration cleanup", "Outbox stuck row retry", "SHA-256 storage reconciliation"]
+        }
+      ]
+    }
+  ],
+  "engineIntegratedWorkflows": [
+    {
+      "engine": "GridCraft",
+      "workflows": [
+        "Contractual BoQ Item Hierarchy & Quantities",
+        "Rate Analysis Breakdown",
+        "BoQ Excel Workbook Import/Export",
+        "Measurement Sheets (Dimensioning)",
+        "Stock Ledger & Inventory Valuation Grid",
+        "Muster Roll & Payroll Calculation Grid"
+      ],
+      "hostAdapter": "GridCraftHostAdapter",
+      "milestone": "M06"
+    },
+    {
+      "engine": "CadCraft",
+      "workflows": [
+        "DXF/DWG Vector Geometry & Layers",
+        "Block Definitions & Spatial Queries",
+        "Vector Plotting & PDF Sheet Export"
+      ],
+      "hostAdapter": "CadCraftHostAdapter",
+      "milestone": "M07"
+    },
+    {
+      "engine": "PdfCraft",
+      "workflows": [
+        "Blueprint PDF Viewing & Tiling",
+        "Calibrated Takeoff Dimensioning & Deductions",
+        "Blueprint Revision Invalidation & Needs Review",
+        "Site Photo Markup Callouts"
+      ],
+      "hostAdapter": "PdfCraftHostAdapter",
+      "milestone": "M08"
+    },
+    {
+      "engine": "TruePPM",
+      "workflows": [
+        "Critical Path Method (CPM) Forward/Backward Pass",
+        "Dual Mode Gantt Timeline Presentation",
+        "Daily Progress Updates & Float Calculation",
+        "Earned Value (EVM) Metrics & Cash-Flow S-Curves"
+      ],
+      "hostAdapter": "TruePpmHostAdapter",
+      "milestone": "M09"
+    }
+  ]
+}
