@@ -6,7 +6,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
 
 ---
 
-- [ ] **M05-T01** — Expansion substrate: shared repositories, typed commands, and sync status for the workflow family
+- [x] **M05-T01** — Expansion substrate: shared repositories, typed commands, and sync status for the workflow family (PR #56)
   - Depends on: M04-T02, M04-T03 · Output: substrate extension code with tests — the per-domain operation bindings, command registrations, and sync-status wiring the expansion workflows share; no new screen framework.
   - Scope: extend the M04 mount (T02) and vertical workflow substrate (T03) so attendance, petty cash, MRR/delivery, and media workflows all run through the SAME repositories, typed commands, and sync-status components (v3 §6 M05 bullet 1) — one engine path, no per-workflow forks.
   - Acceptance:
@@ -15,7 +15,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Each workflow's adapter operation bindings (operationId + declared guard chain) are registered in the M03-T01 registry from the M00 router-inventory rows for that domain — a binding that cannot name its inventory row and guard chain cannot be registered.
     - Standing constraint (v3 §10): every writer added server-side for these workflows names its change-feed integration and Flutter-parity path in the per-workflow tasks below — none added silently.
 
-- [ ] **M05-T02** — Attendance submissions (duplicate rules central; server-authoritative time and sequence)
+- [x] **M05-T02** — Attendance submissions (duplicate rules central; server-authoritative time and sequence) (PR #57)
   - Depends on: M05-T01 · Output: attendance submission workflow running on native and web with tests; writer/feed disposition recorded in the task's evidence report.
   - Scope: attendance create/edit/post through the shared engine; duplicate attendance rules and field-capture timestamp semantics defined CENTRALLY; device time is never authoritative for posting sequence or approvals (v3 §6 M05 bullet 3).
   - Acceptance:
@@ -24,7 +24,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - The M00 inventories' attendance writers are audited and dispositioned (migrated → emit their change atomically per the M03-T04 pattern; excluded → reason recorded) — no silent writer; the Flutter-parity path is named (M02 `platform_contracts` generation pattern).
     - Approval remains a distinct server-side action where currently required; the native client cannot self-approve (permission guards enforced at the adapter, in GUARD_ORDER).
 
-- [ ] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history)
+- [x] **M05-T03** — Petty cash / site expense submissions (approval distinctness + audit history) (PR #58)
   - Depends on: M05-T01 · Output: expense submission workflow running on native and web with tests.
   - Scope: existing `site-expense` resolvers reused (adapter seed binding `siteExpense.create` already names the full financial guard chain); approval distinctness preserved; original actor + edited payload audit history kept (v3 §6 M05 bullet 2).
   - Acceptance:
@@ -33,7 +33,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Original actor + edited payload audit history survives the sync path: an office edit does not overwrite who originally submitted or what they submitted (pinned by test against the real audit-log service).
     - Financial command receipts follow the M03-T04 §7 durable-receipt rules (never expiry-deleted; compaction keeps the replay gate fail-closed).
 
-- [ ] **M05-T04** — MRR / delivery submissions (office review flows reused)
+- [x] **M05-T04** — MRR / delivery submissions (office review flows reused) (PR #59)
   - Depends on: M05-T01 · Output: MRR/delivery submission workflow running on native and web with tests.
   - Scope: `field-submission.ts` office review flows reused; material reconciliation semantics unchanged — `daily-report-sync` normalization is not forked or re-implemented client-side (v3 §6 M05 bullet 2).
   - Acceptance:
@@ -42,7 +42,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Material reconciliation results are computed server-side from the same inputs as the current app — parity pinned by test (differences would be listed and dispositioned, none silent).
     - The delivery writer set is dispositioned against the M00 inventories (migrated/excluded with reasons) per the M03-T04 audited-writer pattern.
 
-- [ ] **M05-T05** — Field photos through the full pipeline (native camera/files adapters)
+- [x] **M05-T05** — Field photos through the full pipeline (native camera/files adapters) (PR #60)
   - Depends on: M05-T01, M04-T04 · Output: capture → stage → finalize → register for every expansion workflow that attaches media, with tests.
   - Scope: native camera + OS file adapters bound to the M03-T06 protocol (one manager, one journal — no per-workflow transfer code); photos visible in office review surfaces (v3 §6 M05 bullet 4).
   - Acceptance:
@@ -51,7 +51,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - EXIF/geotag handling and server-side StoredFile digest dedup behave as the current app (M00 local-stores/asset inventory rows); any difference is listed and dispositioned explicitly, none silent.
     - The native camera/file adapter bindings honor the port contracts (real SHA-256 digest, fail-closed on store errors) — mount-level binding tests per the M04-T02 pattern; package semantics are not re-proved.
 
-- [ ] **M05-T06** — OS scheduling adapters with persisted scheduling state
+- [x] **M05-T06** — OS scheduling adapters with persisted scheduling state (PR #61)
   - Depends on: M05-T01 · Output: scheduling adapter bindings + durable scheduling state + tests.
   - Scope: background sync opportunities used where the OS provides them; **foreground recovery works when background execution never ran** (v3 §6 M05 bullet 4).
   - Acceptance:
@@ -60,7 +60,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - OS scheduler bindings (Android WorkManager / iOS BGTaskScheduler class) live behind the mount ports — no scheduling logic inside workflow code.
     - OS constraints (battery/quota deferrals) surface honestly through the health read model — a blocked background window is visible, never silent.
 
-- [ ] **M05-T07** — Existing browser drafts/queues: explicit export/import or safe drain
+- [x] **M05-T07** — Existing browser drafts/queues: explicit export/import or safe drain (PR #62)
   - Depends on: M05-T02, M05-T03, M05-T04 · Output: migration tooling/flow with tests + drain evidence report `docs/reports/M05/browser-drain.md`.
   - Scope: explicit export/import or safe draining of existing browser drafts/queues (`cm-field-outbox` IndexedDB v3: `outbox`/`drafts`/`queries`; legacy `cm-offline-v2`) BEFORE retiring field PWA code; operation IDs preserved; no blanket IndexedDB deletion (v3 §6 M05 bullet 5).
   - Acceptance:
@@ -69,7 +69,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - The drain is idempotent and resumable — an interrupted migration re-runs without loss or duplication, with crash-safety evidence against the real browser store engine (no mocks as sole proof).
     - The PWA retirement path is documented in the report (what retires, what remains, rollback notes); actual retirement is M05-T09, not this task.
 
-- [ ] **M05-T08** — Contract suite pass: crash/replay/permission + native/web outcome tests per workflow
+- [x] **M05-T08** — Contract suite pass: crash/replay/permission + native/web outcome tests per workflow (PR #63)
   - Depends on: M05-T02, M05-T03, M05-T04, M05-T05, M05-T06 · Output: per-workflow suite runs + fault-matrix extension; evidence report `docs/reports/M05/contract-suite.md`.
   - Scope: the M03 contract suite (crash/replay/permission) extended to each expansion workflow; native/web outcome tests; the M03-T09 fault-matrix runner extended with the new workflow boundaries (v3 §6 M05 exit).
   - Acceptance:
@@ -78,7 +78,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Unsynchronized work cannot disappear during migration: the suite replays interrupted drains and asserts zero loss (the M05 exit sentence, pinned).
     - All evidence is produced against real engines (real SQLite; disposable PostgreSQL where server-concurrency legs are required) — no mocks as sole proof of a durability claim.
 
-- [ ] **M05-T09** — Field PWA code retirement gate (drain verified)
+- [x] **M05-T09** — Field PWA code retirement gate (drain verified) (PR #64)
   - Depends on: M05-T07, M05-T08 · Output: retirement changeset with rollback notes + evidence report.
   - Scope: retire field PWA code ONLY after drain completes and evidence is recorded; retirement is its own task with rollback notes (v3 §6 M05 bullet 5; WP sketch W08).
   - Acceptance:
@@ -87,7 +87,7 @@ Exit (v3): each workflow passes the same crash/replay/permission contract suite 
     - Post-retirement checks pass: no field-workflow regression in the web app (office surfaces keep working); service worker/cache cleanup verified.
     - Evidence is recorded before the retirement PR merges; the tick cites the drain evidence and the retirement diff.
 
-- [ ] **M05-T10** — 👤 GATE — M05 exit evidence and owner decision
+- [x] **M05-T10** — 👤 GATE — M05 exit evidence and owner decision (PR #65)
   - Depends on: M05-T01…T09 · Output: `[M05-GATE]` evidence packet; downstream (M06/M09) refinement needs noted; owner decision.
   - Acceptance:
     - Every M05 task is ticked with a PR reference and links reproducible evidence; each workflow's crash/replay/permission results are presented per the exit sentence.
