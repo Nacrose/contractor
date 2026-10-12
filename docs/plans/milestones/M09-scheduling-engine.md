@@ -24,7 +24,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
 
 ---
 
-- [ ] **M09-T01** — TruePPM pinned engine spike, baseline contract & construction fixtures
+- [x] **M09-T01** — TruePPM pinned engine spike, baseline contract & construction fixtures (PR #100)
   - Depends on: M00-GATE, ADR-0017 · Output: prototype driver under `prototype/trueppm/`, MCP inventory, and prototype report `docs/reports/M09/trueppm-prototype-and-contract.md`.
   - Scope: execute the actual pinned `trueppm-scheduler` Python package against construction fixtures; evaluate the Python server runtime/subprocess bridge, provenance, calendars/holidays (Nepal standard Bikram Sambat / Saturday workweeks + Gregorian mapping), inclusive dates, milestones, dependency types (FS, SS, FF, SF), lag hours/days, constraints (SNET, SNLT, FNET, FNLT, MSO, MFO), actuals, retained logic vs progress override, total/free float, and leveling floors. Compare against existing TS CPM baseline. No simulated engine evidence; TruePPM is target calculation authority.
   - Acceptance:

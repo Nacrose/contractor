@@ -6,8 +6,8 @@
 
 | Component | Upstream | Intended use | Effective pin |
 |---|---|---|---|
-| TruePPM OSS application | [Canonical repository](https://gitlab.com/trueppm/trueppm) | Full workspace and supported focused views | None — resolve and verify in M09-W01/W04 |
-| `trueppm-scheduler` | Same repository; [package](https://pypi.org/project/trueppm-scheduler/) | Server calculation through Contractor adapter | None — resolve and execute in M09-W01 |
+| TruePPM OSS application | [Canonical repository](https://gitlab.com/trueppm/trueppm) | Full workspace and supported focused views | `v0.4.0-beta.1` (`b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0`) |
+| `trueppm-scheduler` | Same repository; [package](https://pypi.org/project/trueppm-scheduler/) | Server calculation through Contractor adapter | `0.4.0b1` (`b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0`) |
 
 License checked 2026-10-12: repository [Apache-2.0](https://gitlab.com/trueppm/trueppm/-/raw/main/LICENSE). At the chosen immutable release, inspect component/dependency licenses, distribute the license and applicable NOTICE/attribution, and identify modified files if any. Our integration keeps upstream source unmodified. Proprietary enterprise modules are excluded under ADR-0014.
 
@@ -41,4 +41,5 @@ Sources: [limitations](https://docs.trueppm.com/overview/what-it-does-not-do/), 
 
 | Date | Change |
 |---|---|
-| 2026-10-12 | Owner selected TruePPM. M09 amended for app/engine integration, updates and capability delivery; no effective pin or implementation claimed. |
+| 2026-10-12 | Owner selected TruePPM. M09 amended for app/engine integration, updates and capability delivery. |
+| 2026-10-12 | Pinned TruePPM v0.4.0-beta.1 (commit `b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0`, `trueppm-scheduler` 0.4.0b1). Prototype spike and baseline contract qualified in M09-T01 (PR #100). |
