@@ -45,7 +45,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Placeholder fields bound to live project metadata with automated validation.
     - Track changes and reviewer comments preserved across save and round-trip cycles.
 
-- [ ] **M12-T05** — Reports & technical specifications assembly from live project records
+- [x] **M12-T05** — Reports & technical specifications assembly from live project records (PR #132)
   - Depends on: M04-T02, M06-T07, M09-T02, M12-T04 · Output: `docs/reports/M12/reports-and-specifications-assembly.md`, report assembly pipeline.
   - Scope: assemble multi-section engineering reports and contract specifications from disparate project subsystems (derived from M12-W03): daily site logs (M04), BoQ/IPC measurements (M06), material delivery receipts (M05), and TruePPM milestone schedules (M09). Ensure every embedded tabular figure, date, and progress metric traces cryptographically to an immutable source record revision.
   - Acceptance:
