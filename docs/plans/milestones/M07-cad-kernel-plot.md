@@ -64,7 +64,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Plot fidelity fixtures cover lineweights, scales, viewports, fonts (SHX/TTF handling stated).
     - Vector PDF output verified against expected-output fixtures; raster fallback explicit where vector is unsupported.
 
-- [ ] **M07-T07** — Entity/group operation revision checks and conflict resolution
+- [x] **M07-T07** — Entity/group operation revision checks and conflict resolution (PR #85)
   - Depends on: M07-T02, M07-T03 · Output: revision-check and conflict layer for entity/group operations.
   - Scope: entity/group operation revision checks and conflict resolution; topology-changing/group operations validate the whole affected set atomically (v3 §5.4 CAD row, §6 M07).
   - Acceptance:

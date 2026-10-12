@@ -167,9 +167,20 @@ export class CadDocument {
     this.revision++;
   }
 
+  conflictRecords: import('./types.js').CadConflictRecord[] = [];
+
+  getEntityRevision(handle: string): number | undefined {
+    return this.entitiesByHandle.get(handle)?.revision;
+  }
+
+  addEntity(entity: CadEntity): void {
+    this._insertEntity(entity);
+  }
+
   // --- Internal mutations dispatched strictly via command boundary ---
 
   _insertEntity(entity: CadEntity): void {
+    entity.revision = entity.revision ?? 1;
     this.entitiesByHandle.set(entity.handle, entity);
     if (entity.layer) {
       this.layers.add(entity.layer);
@@ -206,6 +217,9 @@ export class CadDocument {
     if (!old) {
       throw new Error(`Cannot update non-existent entity with handle ${entity.handle}`);
     }
+    const currentRev = old.revision ?? 1;
+    entity.revision = currentRev + 1;
+
     const oldBox = computeEntityBounds(old);
     const newBox = computeEntityBounds(entity);
 

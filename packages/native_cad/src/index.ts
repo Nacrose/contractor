@@ -16,3 +16,4 @@ export * from './spatial_index.js';
 export * from './batch_renderer.js';
 export * from './import_pipeline.js';
 export * from './layout_plot_engine.js';
+export * from './revision_and_conflict.js';

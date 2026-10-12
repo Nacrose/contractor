@@ -39,6 +39,9 @@ export interface BaseCadEntity {
   linetype?: string;
   lineweight?: number; // mm in hundredths (e.g. 25 = 0.25mm)
   visible?: boolean;
+  revision?: number; // Entity revision counter (incremented on edit)
+  updatedBy?: string; // Author ID
+  updatedAt?: number; // Timestamp
 }
 
 export interface LineEntity extends BaseCadEntity {
@@ -283,3 +286,54 @@ export interface RoundTripFidelityReport {
   divergences: string[];
   isFidelityPreserved: boolean;
 }
+
+export interface EntityMutationSpec {
+  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  handle: string;
+  expectedRevision?: number; // Precondition check: must match current entity revision
+  entity?: CadEntity;
+}
+
+export interface CadGroupOperation {
+  id: string;
+  name: string;
+  authorId: string;
+  baseDocumentRevision: number;
+  mutations: EntityMutationSpec[];
+  requiresTopologyValidation?: boolean;
+  topologyValidationScope?: {
+    contourHandles: string[];
+    holeHandles?: string[][];
+  };
+}
+
+export interface CadConflictRecord {
+  conflictId: string;
+  operationId: string;
+  authorId: string;
+  timestamp: number;
+  reason:
+    | 'STALE_WRITER_CONFLICT'
+    | 'TOPOLOGY_VIOLATION'
+    | 'ENTITY_NOT_FOUND'
+    | 'DELETED_TARGET';
+  conflictingHandles: string[];
+  expectedRevisions: Record<string, number>;
+  actualRevisions: Record<string, number>;
+  rejectedMutations: EntityMutationSpec[];
+  topologyErrors?: string[];
+  status:
+    | 'PENDING_REVIEW'
+    | 'RESOLVED_OVERWRITE'
+    | 'RESOLVED_REBASE'
+    | 'RESOLVED_DISCARD';
+}
+
+export interface GroupOperationResult {
+  success: boolean;
+  operationId: string;
+  appliedDocumentRevision?: number;
+  affectedHandles: string[];
+  conflict?: CadConflictRecord;
+}
+
