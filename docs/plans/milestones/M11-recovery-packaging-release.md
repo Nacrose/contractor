@@ -40,7 +40,7 @@ Exit (v3): measured recovery drill, validated platform packages, full parity evi
     - Windows packages pass Authenticode signature verification.
     - Clean install, launch, upgrade, and uninstall tested on each platform.
 
-- [ ] **M11-T05** — Signed update verification, staged rollout channels & schema rollback recovery
+- [x] **M11-T05** — Signed update verification, staged rollout channels & schema rollback recovery (PR #124)
   - Depends on: M10-T03, M11-T04 · Output: `docs/reports/M11/signed-updates-and-rollback-recovery.md`, update verification engine.
   - Scope: cryptographic signature verification on auto-update packages before extraction (derived from M11-W05). Staged rollout rings (`Internal Canary` 5% $\rightarrow$ `Pilot Beta` 25% $\rightarrow$ `General Availability` 100%). Strict protocol and local database schema compatibility checks. Recovery path for failed updates ensuring rollback never destroys un-synced outbox commands or applies older binaries to upgraded schemas.
   - Acceptance:

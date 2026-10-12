@@ -33,9 +33,9 @@
 | M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | **Complete** — T01–T07, T09 (PRs #90–#97), T08 gate (PR #98) | 9/9 | M08-T08 `👤 GATE` — submitted for owner review (PR #98) |
 | M09 TruePPM scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | **Complete** — T01–T08 (PRs #100–#107), T09 gate (PR #108) | 9/9 | M09-T09 `👤 GATE` — submitted for owner review (PR #108) |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | **Complete** — T01–T08 (PRs #110–#117), T09 gate (PR #118) | 9/9 | M10-T09 `👤 GATE` — submitted for owner review (PR #118) |
-| M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | In progress — T01 vault restore drill (PR #120), T02 RPO/RTO & runbook (PR #121), T03 fresh bootstrap & failure matrix (PR #122), T04 packaging & signing (PR #123); T05–T06 defined, T07 gate | 4/7 | M11-T07 `👤 GATE` — not reached |
+| M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | In progress — T01 vault restore drill (PR #120), T02 RPO/RTO & runbook (PR #121), T03 fresh bootstrap & failure matrix (PR #122), T04 packaging & signing (PR #123), T05 update verification & rollback (PR #124); T06 defined, T07 gate | 5/7 | M11-T07 `👤 GATE` — not reached |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered 2026-10-09; dual editor/embedded modes + updates amended 2026-10-12 (WP level) | 0/9 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **123/142** | |
+| **Program total** | | | **124/142** | |
 
 
 
