@@ -52,7 +52,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Authorization guards: schedule updates require project-level permission (`schedule.update`) and reject unauthenticated or tenant-mismatched requests.
     - Fiscal lock adherence: fiscal year lock blocks schedule baseline changes.
 
-- [ ] **M09-T04** — Host the full TruePPM workspace and focused scheduling views
+- [x] **M09-T04** — Host the full TruePPM workspace and focused scheduling views (PR #103)
   - Depends on: M09-T02, ADR-0016, ADR-0017 · Output: dual presentation host adapter (`TruePpmHostAdapter`) and presentation shells.
   - Scope: host the full upstream TruePPM workspace for comprehensive scheduling, alongside focused scheduling components (embedded Gantt timeline, task breakdown, critical path highlight, dependency inspector) for Contractor workflows (daily log progress tracking, subcontractor work orders). Web and desktop hosting surfaces, session mapping, disposal, and permissions. Offline edits handled as typed local proposals with visual preview labeling until server acceptance; surface dependency graph cycles and constraint conflicts.
   - Acceptance:

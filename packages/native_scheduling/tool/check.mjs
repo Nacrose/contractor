@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_scheduling: all versioned input, schema tracking, date-only semantics, data bridge, security guards, financial separation, and progress posting tests PASSED (M09-T02/T03)");
+console.log("native_scheduling: all versioned input, schema tracking, date-only semantics, data bridge, security guards, financial separation, host presentation modes, and cycle detection tests PASSED (M09-T02/T03/T04)");
