@@ -9,7 +9,7 @@ Policy reminders (ADR-0015): exact tag/rev pins only, never branches; no edits t
 | Tool | Upstream | Consumed as | Pin (tag/rev) | Pinned on | License | Attribution to carry |
 |---|---|---|---|---|---|---|
 | GridCraft | https://github.com/storytold/gridcraft | Adopted calculation engine per ADR-0019 (Full editor & embedded table host) | `v0.3.0` (`fb823899c57b41703edcad2b6476cf4b8a01dfc4`) | 2026-10-12 | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
-| CADCraft | https://github.com/storytold/cadcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 (+ `acadrust` MPL-2.0) | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION; MPL notice for acadrust |
+| CADCraft | https://github.com/storytold/cadcraft | Prototype driver & fixture evidence (M07-T01) | `v0.3.0` (`a1c49b0712d93e1f0e4b8686d1a58bc9a803cf82`) | 2026-10-12 | MIT OR Apache-2.0 (+ `acadrust` MPL-2.0) | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION; MPL notice for acadrust |
 | PdfCraft | https://github.com/storytold/pdfcraft | *(none yet — prototype pending)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | craft-fonts | https://github.com/storytold/craft-fonts | *(with the first adopted engine)* | — | — | MIT OR Apache-2.0 (per-font licences in `fonts/`) | ATTRIBUTION.md, per-font licence dirs, manifest.txt |
 | WordCraft | https://github.com/storytold/wordcraft | *(none yet — prototype pending; capability area M12)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
@@ -32,6 +32,7 @@ Related upstream-published dependencies:
 | 2026-10-12 | PR #66 | GridCraft pinned to release tag `v0.3.0` for M06-T01 prototype driver and fixture evidence. |
 | 2026-10-12 | PR #69 | GridCraft adopted per ADR-0019 at commit `fb823899c57b41703edcad2b6476cf4b8a01dfc4` with actual 20-tool MCP inventory and f64 numeric characterization (M06-T04). |
 | 2026-10-12 | PR #75 | Machine-readable registry `artcraft-registry.json`, `scripts/update-artcraft` pipeline CLI, and two-release qualification evidence (v0.2.0 <-> v0.3.0) implemented (M06-T12). |
+| 2026-10-12 | PR #79 | CADCraft pinned to release tag `v0.3.0` (commit `a1c49b0712`) for M07-T01 prototype driver and acadrust DWG evidence; acadrust noted at v0.6.1 (crates.io max 0.6.3). |
 
 ## Machine-Readable Registry & Build Inputs
 

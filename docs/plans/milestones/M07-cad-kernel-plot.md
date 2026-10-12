@@ -11,7 +11,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
 
 ---
 
-- [ ] **M07-T01** — CADCraft prototype: CLI/MCP evidence over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess
+- [x] **M07-T01** — CADCraft prototype: CLI/MCP evidence over M00 fixtures; acadrust DWG round-trip vs LibreDWG subprocess (PR #79)
   - Depends on: M00-GATE (fixtures + baseline), M01 DWG spike outcome · Output: prototype report `docs/reports/M07/cadcraft-prototype.md` + fixture/driver artifacts under `prototype/`; no production code change.
   - Scope: drive CADCraft pinned to an upstream release tag (start: `v0.3.0`) via its CLI and headless MCP server over the M00 DXF/DWG fixtures; compare 2D drafting semantics against the authoritative TypeScript CAD modules (`src/lib/cad/` per ADR-0013/M01 authority map). Exercise the `acadrust` (MPL-2.0, crates.io) DWG bridge behind their `dwg` crate for read **and** write round-trips, and compare fidelity against the LibreDWG subprocess baseline recorded in the M01 spike. Disposable evidence work per the M01 prototype posture; starts before the M02/M03 dependencies complete so its evidence shapes T03/T05/T08 design decisions.
   - Acceptance:
