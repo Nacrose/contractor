@@ -88,7 +88,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Migration adapter converts legacy TS CPM schedule graphs to TruePPM input format with verified equivalence on M00 fixtures.
     - Deprecation markers added to legacy CPM paths with documented cutover milestones.
 
-- [ ] **M09-T08** — Cross-platform parity, financial correctness, 10k/50k performance & stress benchmarks
+- [x] **M09-T08** — Cross-platform parity, financial correctness, 10k/50k performance & stress benchmarks (PR #107)
   - Depends on: M09-T03, M09-T04, M09-T07 · Output: cross-platform parity matrix, cash-flow verification suite, and 10k/50k performance benchmarks.
   - Scope: verify identical calculation results across native desktop, web browser, and server runtimes. Benchmark 10,000 tasks and 50,000 dependencies per Platform Plan v3 §7 on ratified hardware profiles ($<1,500\text{ ms}$ calculation budget, $<16.7\text{ ms}$ 60 Hz Gantt viewport panning). Validate cash-flow S-curves using correct contractual BoQ rate sources vs internal resource rates; ensure retries and concurrent updates cannot double-post progress.
   - Acceptance:

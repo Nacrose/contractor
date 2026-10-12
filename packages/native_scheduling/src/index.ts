@@ -14,3 +14,5 @@ export * from './scheduling_service_adapter.js';
 export * from './trueppm_host_adapter.js';
 export * from './baseline_and_variance.js';
 export * from './legacy_migration.js';
+export * from './cashflow_evm.js';
+export * from './benchmarks.js';

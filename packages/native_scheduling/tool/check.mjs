@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_scheduling: all versioned input, schema tracking, date-only semantics, data bridge, security guards, financial separation, host presentation modes, cycle detection, immutable baselines, variance, and legacy migration tests PASSED (M09-T02/T03/T04/T05/T07)");
+console.log("native_scheduling: all versioned input, schema tracking, date-only semantics, data bridge, security guards, financial separation, host presentation modes, cycle detection, immutable baselines, variance, legacy migration, 10k/50k benchmarks, and EVM tests PASSED (M09-T02/T03/T04/T05/T07/T08)");

@@ -62,3 +62,5 @@ declare module "node:fs" {
   export function writeFileSync(path: string, data: string, encoding?: string): void;
   export function existsSync(path: string): boolean;
 }
+
+declare const process: any;
