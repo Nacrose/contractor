@@ -53,7 +53,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Cryptographic provenance chain verifies every table entry and figure back to source entity.
     - Stale data alerts prompt regeneration when underlying project records change.
 
-- [ ] **M12-T06** — Client presentation deck authoring in dual UI modes via DeckCraft
+- [x] **M12-T06** — Client presentation deck authoring in dual UI modes via DeckCraft (PR #133)
   - Depends on: M02-T05, M09-T08, M12-T02, M12-T03 · Output: `docs/reports/M12/client-decks-deckcraft.md`, DeckCraft host adapter, slide templates.
   - Scope: implement dual UI modes for client presentations per ADR-0016 (derived from M12-W04): (1) `full_editor` mode preserving DeckCraft slide canvas, master layouts, shapes, and toolbars; (2) `embedded_view` mode providing one-click progress deck generation and slide preview. Bind TruePPM EVM S-curves, milestone timelines, financial billings, and site progress photos into standardized slide templates.
   - Acceptance:
