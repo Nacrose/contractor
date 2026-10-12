@@ -15,7 +15,13 @@
 | [ADR-0011–0013](docs/adr/) | M00 change-feed mechanism, contract schema format (Protobuf/Buf), M01 stack decision (evidence-gated continuation). |
 | [ADR-0014](docs/adr/0014-open-source-only-dependency-posture.md) | Open-source-only dependency posture — no paid components. |
 | [ADR-0015](docs/adr/0015-artcraft-upstream-engine-strategy.md) | ArtCraft family (GridCraft/CADCraft/PdfCraft) as upstream-tracked candidate engines; tag pins, no forks. |
+| [ADR-0016](docs/adr/0016-artcraft-suite-in-place-embedding-and-table-modernization.md) | Full Craft editors, focused embedded capabilities and tested upstream updates across all five apps. |
+| [ADR-0017](docs/adr/0017-trueppm-scheduling-integration.md) | TruePPM selected for scheduling; Contractor adapters and tested upstream updates. |
+| [ADR-0018](docs/adr/0018-upstream-capabilities-and-construction-integration.md) | Original construction workflows integrated with reusable upstream capabilities. |
+| [Platform integration strategy](docs/plans/open-source-platform-integration-strategy.md) | Whole-app capability ownership, original-tool disposition, accounting qualification and connected workflows. |
+| [ArtCraft integration plan](docs/plans/artcraft-suite-master-integration-plan.md) | Cross-suite mode/lifecycle/update contracts; implementation tasks in M06/M07/M08/M12. |
 | [Vendor registry](docs/vendor/ARTCRAFT.md) | Pins, licenses and attribution for upstream ArtCraft components. |
+| [TruePPM registry](docs/vendor/TRUEPPM.md) | Scheduling pins, capability watchlist and upgrade contract for M09. |
 | [ADRs 0001–0009](docs/adr/) | Inherited from Construction_Manager; remain in force for server-side work. |
 
 ## How this repository works
