@@ -70,6 +70,31 @@ export class CadSelectionEngine {
 
     const newlySelected: string[] = [];
 
+    // Fast-path: use spatial index if populated
+    if (doc.spatialIndex && doc.spatialIndex.size() > 0) {
+      const candidateHandles = doc.spatialIndex.search(box);
+      for (const handle of candidateHandles) {
+        const entity = doc.getEntity(handle);
+        if (!entity) continue;
+        const eBox = this.computeEntityBounds(entity);
+        if (!eBox) continue;
+
+        if (isCrossing) {
+          if (this.boxesIntersect(box, eBox)) {
+            this.selectedHandles.add(entity.handle);
+            newlySelected.push(entity.handle);
+          }
+        } else {
+          if (this.boxContains(box, eBox)) {
+            this.selectedHandles.add(entity.handle);
+            newlySelected.push(entity.handle);
+          }
+        }
+      }
+      return newlySelected;
+    }
+
+    // Fallback: full document linear scan
     for (const entity of doc.getAllEntities()) {
       const eBox = this.computeEntityBounds(entity);
       if (!eBox) continue;
@@ -96,6 +121,26 @@ export class CadSelectionEngine {
    * Point pick selection.
    */
   selectAtPoint(doc: CadDocument, pt: Point2D, tolerance: number = 0.5): string | null {
+    if (doc.spatialIndex && doc.spatialIndex.size() > 0) {
+      const candidateHandles = doc.spatialIndex.searchPoint(pt, tolerance);
+      for (const handle of candidateHandles) {
+        const entity = doc.getEntity(handle);
+        if (!entity) continue;
+        const eBox = this.computeEntityBounds(entity);
+        if (!eBox) continue;
+        if (
+          pt.x >= eBox.minX - tolerance &&
+          pt.x <= eBox.maxX + tolerance &&
+          pt.y >= eBox.minY - tolerance &&
+          pt.y <= eBox.maxY + tolerance
+        ) {
+          this.selectedHandles.add(entity.handle);
+          return entity.handle;
+        }
+      }
+      return null;
+    }
+
     for (const entity of doc.getAllEntities()) {
       const eBox = this.computeEntityBounds(entity);
       if (!eBox) continue;

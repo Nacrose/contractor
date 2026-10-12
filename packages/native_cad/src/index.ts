@@ -12,3 +12,5 @@ export * from './selection_and_grips.js';
 export * from './input_state_machine.js';
 export * from './command_registry.js';
 export * from './topology.js';
+export * from './spatial_index.js';
+export * from './batch_renderer.js';

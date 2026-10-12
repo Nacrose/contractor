@@ -6,6 +6,12 @@
  */
 
 import type { CadEntity, LayoutState, UnitSettings, OrthoSettings } from './types.js';
+import {
+  CadSpatialIndex,
+  CadInvalidationTracker,
+  computeEntityBounds,
+  type SpatialItem,
+} from './spatial_index.js';
 
 export class CadDocument {
   readonly id: string;
@@ -13,6 +19,9 @@ export class CadDocument {
   private entitiesByHandle: Map<string, CadEntity> = new Map();
   private layers: Set<string> = new Set(['0']);
   private handleCounter: number = 1;
+
+  readonly spatialIndex: CadSpatialIndex = new CadSpatialIndex();
+  readonly invalidationTracker: CadInvalidationTracker = new CadInvalidationTracker();
 
   units: UnitSettings = {
     format: 'decimal',
@@ -67,6 +76,32 @@ export class CadDocument {
     this.layers.add(layer);
   }
 
+  /**
+   * Bulk loads a collection of entities, utilizing STR R-tree bulk loading.
+   */
+  bulkLoad(entities: CadEntity[]): void {
+    const spatialItems: SpatialItem[] = [];
+    for (const e of entities) {
+      this.entitiesByHandle.set(e.handle, e);
+      if (e.layer) this.layers.add(e.layer);
+      const b = computeEntityBounds(e);
+      if (b) {
+        spatialItems.push({
+          id: e.handle,
+          box: b,
+          type: e.type,
+          layer: e.layer,
+        });
+      }
+    }
+    this.spatialIndex.load(spatialItems);
+    const bounds = this.spatialIndex.getBounds();
+    if (bounds) {
+      this.invalidationTracker.markDirty(bounds);
+    }
+    this.revision++;
+  }
+
   // --- Internal mutations dispatched strictly via command boundary ---
 
   _insertEntity(entity: CadEntity): void {
@@ -74,23 +109,58 @@ export class CadDocument {
     if (entity.layer) {
       this.layers.add(entity.layer);
     }
+    const box = computeEntityBounds(entity);
+    if (box) {
+      this.spatialIndex.insert({
+        id: entity.handle,
+        box,
+        type: entity.type,
+        layer: entity.layer,
+      });
+      this.invalidationTracker.markDirty(box, entity.handle);
+    }
     this.revision++;
   }
 
   _removeEntity(handle: string): CadEntity | undefined {
     const existing = this.entitiesByHandle.get(handle);
     if (existing) {
+      const box = computeEntityBounds(existing);
       this.entitiesByHandle.delete(handle);
+      this.spatialIndex.remove(handle);
+      if (box) {
+        this.invalidationTracker.markDirty(box, handle);
+      }
       this.revision++;
     }
     return existing;
   }
 
   _updateEntity(entity: CadEntity): void {
-    if (!this.entitiesByHandle.has(entity.handle)) {
+    const old = this.entitiesByHandle.get(entity.handle);
+    if (!old) {
       throw new Error(`Cannot update non-existent entity with handle ${entity.handle}`);
     }
+    const oldBox = computeEntityBounds(old);
+    const newBox = computeEntityBounds(entity);
+
     this.entitiesByHandle.set(entity.handle, entity);
+
+    if (newBox) {
+      this.spatialIndex.update({
+        id: entity.handle,
+        box: newBox,
+        type: entity.type,
+        layer: entity.layer,
+      });
+    } else {
+      this.spatialIndex.remove(entity.handle);
+    }
+
+    if (oldBox) this.invalidationTracker.markDirty(oldBox, entity.handle);
+    if (newBox) this.invalidationTracker.markDirty(newBox, entity.handle);
+
     this.revision++;
   }
 }
+

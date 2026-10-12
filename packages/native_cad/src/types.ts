@@ -82,6 +82,8 @@ export interface HatchEntity extends BaseCadEntity {
   patternName: string;
   solid: boolean;
   boundaryHandles: string[];
+  boundaryVertices?: Point2D[];
+  bounds?: Box2D;
 }
 
 export interface InsertEntity extends BaseCadEntity {

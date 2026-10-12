@@ -12,7 +12,7 @@
  *  - Object snapping (endpoint, midpoint, center)
  */
 
-import type { Point2D, SnapResult, SnapMode } from './types.js';
+import type { Point2D, SnapResult, SnapMode, CadEntity } from './types.js';
 import type { CadDocument } from './cad_document.js';
 
 export type InputMode = 'COMMAND_PROMPT' | 'AWAITING_POINT' | 'AWAITING_DISTANCE' | 'AWAITING_SELECTION';
@@ -232,7 +232,15 @@ export class CadInputStateMachine {
     let bestSnap: SnapResult | null = null;
     let minDistance = tolerance;
 
-    for (const ent of doc.getAllEntities()) {
+    const entitiesToScan =
+      doc.spatialIndex && doc.spatialIndex.size() > 0
+        ? doc.spatialIndex
+            .searchPoint(queryPoint, tolerance)
+            .map((h) => doc.getEntity(h))
+            .filter((e): e is CadEntity => !!e)
+        : doc.getAllEntities();
+
+    for (const ent of entitiesToScan) {
       switch (ent.type) {
         case 'LINE': {
           if (modes.includes('endpoint')) {
@@ -277,6 +285,69 @@ export class CadInputStateMachine {
                 minDistance = dq;
                 bestSnap = { point: { x: qx, y: qy }, mode: 'quadrant', distance: dq, entityHandle: ent.handle };
               }
+            }
+          }
+          break;
+        }
+        case 'LWPOLYLINE': {
+          if (ent.vertices) {
+            if (modes.includes('endpoint')) {
+              for (const v of ent.vertices) {
+                const dv = Math.hypot(queryPoint.x - v.x, queryPoint.y - v.y);
+                if (dv < minDistance) {
+                  minDistance = dv;
+                  bestSnap = { point: { ...v }, mode: 'endpoint', distance: dv, entityHandle: ent.handle };
+                }
+              }
+            }
+            if (modes.includes('midpoint')) {
+              for (let vi = 0; vi < ent.vertices.length - 1; vi++) {
+                const v1 = ent.vertices[vi];
+                const v2 = ent.vertices[vi + 1];
+                const mx = (v1.x + v2.x) / 2;
+                const my = (v1.y + v2.y) / 2;
+                const dm = Math.hypot(queryPoint.x - mx, queryPoint.y - my);
+                if (dm < minDistance) {
+                  minDistance = dm;
+                  bestSnap = { point: { x: mx, y: my }, mode: 'midpoint', distance: dm, entityHandle: ent.handle };
+                }
+              }
+            }
+          }
+          break;
+        }
+        case 'DIMENSION': {
+          if (modes.includes('endpoint')) {
+            const d1 = Math.hypot(queryPoint.x - ent.defPoint1.x, queryPoint.y - ent.defPoint1.y);
+            if (d1 < minDistance) {
+              minDistance = d1;
+              bestSnap = { point: { ...ent.defPoint1 }, mode: 'endpoint', distance: d1, entityHandle: ent.handle };
+            }
+            const d2 = Math.hypot(queryPoint.x - ent.defPoint2.x, queryPoint.y - ent.defPoint2.y);
+            if (d2 < minDistance) {
+              minDistance = d2;
+              bestSnap = { point: { ...ent.defPoint2 }, mode: 'endpoint', distance: d2, entityHandle: ent.handle };
+            }
+          }
+          break;
+        }
+        case 'INSERT': {
+          if (modes.includes('endpoint') || modes.includes('center')) {
+            const d = Math.hypot(queryPoint.x - ent.insertionPoint.x, queryPoint.y - ent.insertionPoint.y);
+            if (d < minDistance) {
+              minDistance = d;
+              bestSnap = { point: { ...ent.insertionPoint }, mode: 'endpoint', distance: d, entityHandle: ent.handle };
+            }
+          }
+          break;
+        }
+        case 'TEXT':
+        case 'MTEXT': {
+          if (modes.includes('endpoint')) {
+            const d = Math.hypot(queryPoint.x - ent.position.x, queryPoint.y - ent.position.y);
+            if (d < minDistance) {
+              minDistance = d;
+              bestSnap = { point: { ...ent.position }, mode: 'endpoint', distance: d, entityHandle: ent.handle };
             }
           }
           break;

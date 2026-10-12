@@ -39,7 +39,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Primitives are shared substrate for M06/M08 consumers (no private duplicates in other milestones).
     - Kernel governance duplication status recorded per v3 §4.
 
-- [ ] **M07-T04** — Spatial indexing, invalidation, bounded visible geometry batches
+- [x] **M07-T04** — Spatial indexing, invalidation, bounded visible geometry batches (PR #82)
   - Depends on: M07-T03 · Output: spatial index + batched renderer feed with benchmark evidence.
   - Scope: spatial indexing and invalidation; bounded visible geometry batches for the renderer (v3 §6 M07); pattern reference: cad-viewer evaluation (R-tree, batching/instancing).
   - Acceptance:
