@@ -48,7 +48,7 @@ Exit (v3): measured recovery drill, validated platform packages, full parity evi
     - Local outbox mutations preserved without loss during application updates.
     - Schema migration version incompatibility strictly prevents destructive binary downgrades.
 
-- [ ] **M11-T06** — Cross-platform observability, crash telemetry & sync health dashboards
+- [x] **M11-T06** — Cross-platform observability, crash telemetry & sync health dashboards (PR #125)
   - Depends on: M03-T05, M10-T05, M11-T05 · Output: `docs/reports/M11/release-channel-observability.md`, monitoring metrics suite.
   - Scope: confirm production observability across release channels (derived from M11-W06): Sentry/crash telemetry per platform, crash-free session tracking ($> 99.5\%$ target), server sync latency and outbox lag metrics, rejected mutation alerts, and real-device Himalayan connectivity restrictions.
   - Acceptance:
