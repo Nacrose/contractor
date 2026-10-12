@@ -14,7 +14,7 @@ Exit (v3): measured recovery drill, validated platform packages, full parity evi
     - Strict cross-tenant data isolation verified; cross-tenant references fail-closed.
     - Zero orphaned records or missing attachment blobs.
 
-- [ ] **M11-T02** — Measured RPO/RTO, key escrow, retention policies, failed-backup alerts & operator runbook
+- [x] **M11-T02** — Measured RPO/RTO, key escrow, retention policies, failed-backup alerts & operator runbook (PR #121)
   - Depends on: M11-T01 · Output: `docs/reports/M11/rpo-rto-and-operator-runbook.md`, automated backup monitor, disaster recovery runbook.
   - Scope: define and benchmark Recovery Point Objective ($\text{RPO} \le 15\text{ min}$) and Recovery Time Objective ($\text{RTO} \le 60\text{ min}$) under simulated disaster conditions (derived from M11-W02). Implement KMS/key escrow policies, tiered retention schedules (7-day daily, 4-week weekly, 1-year annual), automated failed-backup alerting, and detailed step-by-step operator recovery procedures.
   - Acceptance:
