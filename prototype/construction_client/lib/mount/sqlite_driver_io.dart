@@ -56,6 +56,9 @@ class _NativeSqliteDriver implements MountSqliteDriver {
 
   @override
   void close() => _db.dispose();
+
+  @override
+  Future<void> flushDurability() async {}
 }
 
 class _NativeStatement implements SqlStatement {

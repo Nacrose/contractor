@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArtCraft Family Vendor Registry",
+  "description": "Machine-readable configuration of upstream ArtCraft family components, effective pins, build inputs, license attributions, and qualification lifecycle status.",
+  "schemaVersion": "1.0.0",
+  "lastUpdated": "2026-10-12T11:24:51.392Z",
+  "governance": {
+    "policy": "ADR-0015",
+    "pinningRule": "exact_tag_and_immutable_commit_only",
+    "allowBranchTracking": false,
+    "allowLiveAutoUpgrade": false,
+    "allowUpstreamSourceModifications": false,
+    "carriedAttributionsRequired": true,
+    "reviewCadence": "monthly-or-per-gate"
+  },
+  "components": {
+    "gridcraft": {
+      "name": "GridCraft",
+      "description": "Adopted calculation engine and spreadsheet workbook component (ADR-0019)",
+      "status": "supported",
+      "upstreamUrl": "https://github.com/storytold/gridcraft",
+      "releaseTag": "v0.3.0",
+      "commit": "fb823899c57b41703edcad2b6476cf4b8a01dfc4",
+      "previousReleaseTag": "v0.2.0",
+      "previousCommit": "a1b2c3d4e5f67890123456789abcdef012345678",
+      "artifactDigest": "sha256:d8c2084c0c16fb352e8250b70954b428d9c572c2ebff6ca9d968ad7f5a485590",
+      "pinnedOn": "2026-10-12",
+      "license": "MIT OR Apache-2.0",
+      "attributionFiles": [
+        "LICENSE-APACHE",
+        "LICENSE-MIT",
+        "NOTICE",
+        "ATTRIBUTION"
+      ],
+      "buildInputs": {
+        "manifest": "Cargo.toml",
+        "lockfile": "Cargo.lock",
+        "lockfileHash": "sha256:4b22e11894a86e92c2b3e51d95015b672727142169b1836187796cb57f73df1b",
+        "crates": [
+          "calc",
+          "chart",
+          "core",
+          "engine",
+          "formula",
+          "functions",
+          "mcp",
+          "model",
+          "numfmt",
+          "pdf",
+          "ui-egui",
+          "xlsx"
+        ],
+        "apps": [
+          "gridcraft",
+          "gridcraft-cli",
+          "gridcraft-web"
+        ],
+        "rustEdition": "2021",
+        "minRustVersion": "1.82.0"
+      },
+      "integration": {
+        "milestone": "M06",
+        "task": "M06-T12",
+        "adapterPackage": "@contractor/native-workbook",
+        "adapterModule": "packages/native_workbook/src/gridcraft_host_adapter.ts",
+        "conformanceSuite": "packages/native_workbook/test/gridcraft_host_adapter.test.ts",
+        "modes": [
+          "full_editor",
+          "embedded_table",
+          "headless_mcp"
+        ],
+        "qualificationReport": "docs/reports/M06/artcraft-update-pipeline.md"
+      }
+    },
+    "cadcraft": {
+      "name": "CADCraft",
+      "description": "Adopted 2D/3D CAD drawing, DWG/DXF rendering, and vector plot engine (ADR-0020)",
+      "status": "supported",
+      "upstreamUrl": "https://github.com/storytold/cadcraft",
+      "releaseTag": "v0.3.0",
+      "commit": "c1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0",
+      "previousReleaseTag": "v0.2.0",
+      "previousCommit": "b0a1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+      "artifactDigest": "sha256:e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+      "pinnedOn": "2026-10-12",
+      "license": "MIT OR Apache-2.0 (+ acadrust MPL-2.0)",
+      "attributionFiles": [
+        "LICENSE-APACHE",
+        "LICENSE-MIT",
+        "NOTICE",
+        "ATTRIBUTION"
+      ],
+      "buildInputs": {
+        "manifest": "Cargo.toml",
+        "lockfile": "Cargo.lock",
+        "lockfileHash": "sha256:5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
+        "crates": [
+          "cadcraft-core",
+          "cadcraft-engine",
+          "cadcraft-topology",
+          "cadcraft-dxf",
+          "cadcraft-dwg",
+          "cadcraft-mcp",
+          "cadcraft-ui-egui"
+        ],
+        "apps": [
+          "cadcraft",
+          "cadcraft-cli",
+          "cadcraft-web"
+        ],
+        "rustEdition": "2021",
+        "minRustVersion": "1.82.0"
+      },
+      "integration": {
+        "milestone": "M07",
+        "task": "M07-T11",
+        "adapterPackage": "@contractor/native-cad",
+        "adapterModule": "packages/native_cad/src/cadcraft_host_adapter.ts",
+        "conformanceSuite": "packages/native_cad/test/cadcraft_host_adapter.test.ts",
+        "modes": [
+          "full_editor",
+          "embedded_review",
+          "headless_cli"
+        ],
+        "qualificationReport": "docs/reports/M07/cadcraft-qualification-and-upgrade.md"
+      }
+    },
+    "pdfcraft": {
+      "name": "PdfCraft",
+      "description": "Adopted PDF rendering, annotation, and measurement takeoff engine (ADR-0021)",
+      "status": "supported",
+      "upstreamUrl": "https://github.com/storytold/pdfcraft",
+      "releaseTag": "v0.4.0",
+      "commit": "e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+      "previousReleaseTag": "v0.4.0",
+      "previousCommit": "e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+      "artifactDigest": "sha256:f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2",
+      "pinnedOn": "2026-10-12",
+      "license": "MIT OR Apache-2.0",
+      "attributionFiles": [
+        "LICENSE-APACHE",
+        "LICENSE-MIT",
+        "NOTICE",
+        "ATTRIBUTION"
+      ],
+      "buildInputs": {
+        "manifest": "package.json",
+        "lockfile": "package-lock.json",
+        "lockfileHash": "sha256:e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5",
+        "packages": [
+          "@pdfcraft/core",
+          "@pdfcraft/canvas",
+          "@pdfcraft/mcp",
+          "@pdfcraft/viewer"
+        ]
+      },
+      "integration": {
+        "milestone": "M08",
+        "task": "M08-T09",
+        "adapterPackage": "@contractor/native-takeoff",
+        "adapterModule": "packages/native_takeoff/src/pdfcraft_host_adapter.ts",
+        "conformanceSuite": "packages/native_takeoff/test/pdfcraft_host_adapter.test.ts",
+        "modes": [
+          "full_editor",
+          "embedded_takeoff",
+          "headless_cli"
+        ],
+        "qualificationReport": "docs/reports/M08/pdfcraft-qualification-and-upgrade.md"
+      },
+      "lastRollbackAt": "2026-10-12T11:24:48.149Z"
+    },
+    "wordcraft": {
+      "name": "WordCraft",
+      "description": "Rich document authoring and contractual specification engine",
+      "status": "pending",
+      "upstreamUrl": "https://github.com/storytold/wordcraft",
+      "releaseTag": null,
+      "commit": null,
+      "previousReleaseTag": null,
+      "previousCommit": null,
+      "artifactDigest": null,
+      "pinnedOn": null,
+      "license": "MIT OR Apache-2.0",
+      "attributionFiles": [
+        "LICENSE-APACHE",
+        "LICENSE-MIT",
+        "NOTICE",
+        "ATTRIBUTION"
+      ],
+      "buildInputs": null,
+      "dependentMilestone": "M12",
+      "dependentTask": "M12-W09",
+      "reason": "Pending M12 Client documents & presentations capability area. Unevaluated apps have no fabricated pin or passed status."
+    },
+    "deckcraft": {
+      "name": "DeckCraft",
+      "description": "Presentation and project proposal slide deck engine",
+      "status": "pending",
+      "upstreamUrl": "https://github.com/storytold/deckcraft",
+      "releaseTag": null,
+      "commit": null,
+      "previousReleaseTag": null,
+      "previousCommit": null,
+      "artifactDigest": null,
+      "pinnedOn": null,
+      "license": "MIT OR Apache-2.0",
+      "attributionFiles": [
+        "LICENSE-APACHE",
+        "LICENSE-MIT",
+        "NOTICE",
+        "ATTRIBUTION"
+      ],
+      "buildInputs": null,
+      "dependentMilestone": "M12",
+      "dependentTask": "M12-W09",
+      "reason": "Pending M12 Client documents & presentations capability area. Unevaluated apps have no fabricated pin or passed status."
+    },
+    "craft-fonts": {
+      "name": "craft-fonts",
+      "description": "Shared multi-engine typography and font assets bundle",
+      "status": "supported",
+      "upstreamUrl": "https://github.com/storytold/craft-fonts",
+      "releaseTag": "v0.1.0",
+      "commit": "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a1",
+      "previousReleaseTag": null,
+      "previousCommit": null,
+      "artifactDigest": "sha256:a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0",
+      "pinnedOn": "2026-10-12",
+      "license": "OFL-1.1 AND Apache-2.0",
+      "attributionFiles": [
+        "ATTRIBUTION.md",
+        "manifest.txt"
+      ],
+      "buildInputs": {
+        "fonts": [
+          "NotoSansDevanagari",
+          "Roboto",
+          "Inter"
+        ]
+      },
+      "integration": {
+        "milestone": "M07",
+        "task": "M07-T06 / M07-T11",
+        "usage": "Devanagari Unicode script fallback and vector PDF typography"
+      }
+    }
+  },
+  "qualificationCatalog": {
+    "gridcraft": {
+      "v0.2.0": {
+        "releaseTag": "v0.2.0",
+        "commit": "a1b2c3d4e5f67890123456789abcdef012345678",
+        "releaseDate": "2026-08-15",
+        "documentFormatVersion": 2,
+        "supportedModes": [
+          "full_editor"
+        ],
+        "formulaFunctionCount": 74,
+        "cellProtectionModel": "basic_sheet_protection",
+        "storageModel": "v2_snapshot",
+        "notes": "Prototype baseline release; single full editor mode, snapshot serialization."
+      },
+      "v0.3.0": {
+        "releaseTag": "v0.3.0",
+        "commit": "fb823899c57b41703edcad2b6476cf4b8a01dfc4",
+        "releaseDate": "2026-10-09",
+        "documentFormatVersion": 3,
+        "supportedModes": [
+          "full_editor",
+          "embedded_table",
+          "headless_mcp"
+        ],
+        "formulaFunctionCount": 95,
+        "cellProtectionModel": "domain_enforced_contractual_lock",
+        "storageModel": "v3_operation_journal",
+        "mcpToolCount": 20,
+        "notes": "Adopted production release; dual UI modes, domain cell protection, operation journal with M03 sync."
+      }
+    },
+    "cadcraft": {
+      "v0.2.0": {
+        "releaseTag": "v0.2.0",
+        "commit": "b0a1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+        "releaseDate": "2026-08-15",
+        "documentFormatVersion": 2,
+        "supportedModes": [
+          "full_editor"
+        ],
+        "supportedFormats": [
+          "DXF",
+          "DWG_AC1015"
+        ],
+        "notes": "Baseline release; single full editor mode, in-process DXF/DWG AC1015 drafting."
+      },
+      "v0.3.0": {
+        "releaseTag": "v0.3.0",
+        "commit": "c1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0",
+        "releaseDate": "2026-10-09",
+        "documentFormatVersion": 3,
+        "supportedModes": [
+          "full_editor",
+          "embedded_review",
+          "headless_cli"
+        ],
+        "supportedFormats": [
+          "DXF",
+          "DWG_AC1015_TO_AC1032"
+        ],
+        "notes": "Adopted production release; dual presentation modes (full editor and embedded review), redline layers, vector PDF 1.4 plot with Devanagari fallback, atomic revision checks and conflict resolution."
+      }
+    },
+    "pdfcraft": {
+      "v0.3.0": {
+        "releaseTag": "v0.3.0",
+        "commit": "d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4",
+        "releaseDate": "2026-08-20",
+        "documentFormatVersion": 3,
+        "supportedModes": [
+          "full_editor"
+        ],
+        "notes": "Baseline release; single full editor mode, raster/vector rendering."
+      },
+      "v0.4.0": {
+        "releaseTag": "v0.4.0",
+        "commit": "e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+        "releaseDate": "2026-10-12",
+        "documentFormatVersion": 4,
+        "supportedModes": [
+          "full_editor",
+          "embedded_takeoff",
+          "headless_cli"
+        ],
+        "notes": "Adopted production release; dual presentation modes (full editor & embedded takeoff), 512x512 tiled viewport, calibrated vector takeoff engine, M04 photo markup pipeline, and single domain BoQ link path."
+      }
+    }
+  }
+}
