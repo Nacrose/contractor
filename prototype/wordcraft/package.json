@@ -1,0 +1,10 @@
+{
+  "name": "wordcraft-prototype",
+  "version": "0.3.0",
+  "type": "module",
+  "description": "WordCraft CLI / Headless MCP Prototype & OpenXML DOCX Correspondence/Specification Engine (M12-T01)",
+  "scripts": {
+    "test": "node test/driver.test.mjs",
+    "run": "node run_prototype.mjs"
+  }
+}
