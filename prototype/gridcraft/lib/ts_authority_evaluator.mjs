@@ -1,7 +1,11 @@
 /**
  * Authoritative TypeScript Worksheet Engine Evaluator (M06-T01).
- * Represents the production TS engine (src/lib/worksheet/spreadsheet-engine.ts,
+ * Represents the historical production TS engine (src/lib/worksheet/spreadsheet-engine.ts,
  * formula-engine.ts) per ADR-0013 and Platform Plan v3 §6 M06.
+ *
+ * @deprecated RETIRED in M06-T10 (PR #77) following complete consumer migration in M06-T13.
+ * All calculation, formula evaluation, and domain table hosting is now handled by
+ * `@contractor/native-workbook` (GridCraftHostAdapter, DependencyGraph, FormulaRegistry).
  */
 
 export class TsAuthorityEvaluator {

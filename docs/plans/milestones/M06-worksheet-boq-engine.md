@@ -99,7 +99,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Evidence uses real SQLite + disposable PostgreSQL paths (M03); mocks may supplement but never substitute.
     - Recovery from interrupted structure operations is demonstrated (checkpoint replay, no corruption).
 
-- [ ] **M06-T10** — Redundant production evaluator retirement (consumer-switch complete)
+- [x] **M06-T10** — Redundant production evaluator retirement (consumer-switch complete) (PR #77)
   - Depends on: M06-T04…T09, M06-T13 · Output: pre-gate consumer-sweep record + retirement change.
   - Scope: retire redundant production evaluators only after all consumers switch (v3 §2 instruction 10).
   - Acceptance:

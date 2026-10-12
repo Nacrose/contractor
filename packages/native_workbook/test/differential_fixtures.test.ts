@@ -118,17 +118,22 @@ test('exact decimal boundary crossing: floating-point preview vs scaled-int ledg
   assert.equal(clientAuthorized, false, 'Client UI must never have direct posting authority');
 });
 
-test('kernel governance: governed temporary duplicate record maintained', () => {
+test('kernel governance: redundant production evaluator retirement status recorded', () => {
   const governanceRecord = {
     engine: 'GridCraft',
     upstreamVersion: 'v0.3.0',
     commit: 'fb823899c57b41703edcad2b6476cf4b8a01dfc4',
-    duplicationStatus: 'governed_temporary_duplicate',
+    duplicationStatus: 'retired_production_evaluator',
     legacyEngine: 'TypeScript (src/lib/worksheet/spreadsheet-engine.ts)',
     retirementMilestone: 'M06-T10',
     consumerMigrationMilestone: 'M06-T13',
+    allConsumersSwitched: true,
+    retirementReport: 'docs/reports/M06/evaluator-consumer-sweep-retirement.md',
+    rollbackPath: 'git revert (single atomic commit)',
   };
 
-  assert.equal(governanceRecord.duplicationStatus, 'governed_temporary_duplicate');
-  assert.ok(governanceRecord.retirementMilestone);
+  assert.equal(governanceRecord.duplicationStatus, 'retired_production_evaluator');
+  assert.equal(governanceRecord.allConsumersSwitched, true);
+  assert.ok(governanceRecord.retirementReport);
+  assert.ok(governanceRecord.rollbackPath);
 });
