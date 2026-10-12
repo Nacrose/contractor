@@ -85,7 +85,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - 500-page document loads in $< 1.5\text{ s}$; scrolling maintains $\ge 60\text{ fps}$ without frame drops.
     - Keyboard navigation and screen reader accessibility meet WCAG 2.1 AA requirements.
 
-- [ ] **M12-T10** — WordCraft, DeckCraft & craft-fonts release-update qualification
+- [x] **M12-T10** — WordCraft, DeckCraft & craft-fonts release-update qualification (PR #137)
   - Depends on: M06-T12, M11-T05, M12-T04, M12-T06 · Output: `docs/reports/M12/wordcraft-deckcraft-update-qualification.md`, update scripts, vendor registry updates.
   - Scope: integrate WordCraft, DeckCraft, and craft-fonts into Contractor's unified upstream update command (`update-artcraft.mjs`) per ADR-0015/ADR-0016 (derived from M12-W09). Execute live version upgrades and rollbacks between two pinned upstream releases for both engines independently. Verify compatibility of existing DOCX/PPTX files across upgrades, template persistence, and font notice compliance without requiring engine forks.
   - Acceptance:
