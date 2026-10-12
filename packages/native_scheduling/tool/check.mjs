@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_scheduling: all versioned input, schema tracking, date-only semantics, data bridge, and change feed tests PASSED (M09-T02)");
+console.log("native_scheduling: all versioned input, schema tracking, date-only semantics, data bridge, security guards, financial separation, and progress posting tests PASSED (M09-T02/T03)");

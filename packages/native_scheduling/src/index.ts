@@ -10,3 +10,4 @@ export * from './models.js';
 export * from './calculation_record.js';
 export * from './trueppm_bridge.js';
 export * from './sync_feed_adapter.js';
+export * from './scheduling_service_adapter.js';

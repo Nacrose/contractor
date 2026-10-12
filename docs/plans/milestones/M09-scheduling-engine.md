@@ -43,7 +43,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Date-only semantics verified across simulated client timezones (UTC+05:45 Nepal, UTC-08:00 PST, UTC+00:00 GMT); zero ambient timezone shifts.
     - Change feed integration and Flutter-parity DTO generation named and verified (Standing Constraint 3).
 
-- [ ] **M09-T03** — Connect TruePPM to existing progress, cost, approval & financial services
+- [x] **M09-T03** — Connect TruePPM to existing progress, cost, approval & financial services (PR #102)
   - Depends on: M09-T02, M05-GATE, M06-GATE · Output: scheduling service adapter integrating Contractor progress, cost, and approval services.
   - Scope: server recalculation invokes pinned TruePPM through Contractor service contract; authorization, approvals, change feed, and idempotent progress posting remain Contractor-owned. Preserve contractual BoQ rate vs Running Account (RA) cost separation and exact financial arithmetic (exact-decimal serialization). All schedule updates route through authorized acceptance path; external writes cannot bypass financial guards or approved baseline rules.
   - Acceptance:
