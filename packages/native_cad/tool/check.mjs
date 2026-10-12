@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_cad: all CAD command registry, input state, topology, spatial batches, import fidelity, layout/plot, and revision/conflict tests PASSED (M07-T02/T03/T04/T05/T06/T07)");
+console.log("native_cad: all CAD command registry, input state, topology, spatial batches, import fidelity, layout/plot, revision/conflict, and compatibility matrix tests PASSED (M07-T02/T03/T04/T05/T06/T07/T08)");

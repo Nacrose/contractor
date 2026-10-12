@@ -72,7 +72,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Version checks reject stale writers; conflicts preserve intent for review (v3 §5.4).
     - Atomic validation of the whole affected set has fixture evidence including failure cases.
 
-- [ ] **M07-T08** — File compatibility matrix
+- [x] **M07-T08** — File compatibility matrix (PR #86)
   - Depends on: M07-T05, M07-T06 · Output: DXF/DWG compatibility matrix + conversion requirements per platform.
   - Scope: DXF/DWG coverage per M00 fixtures + M01 spike + M07-T01 evidence; conversion requirements explicit per platform (v3 §6 M07).
   - Acceptance:

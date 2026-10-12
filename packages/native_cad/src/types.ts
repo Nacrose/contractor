@@ -337,3 +337,44 @@ export interface GroupOperationResult {
   conflict?: CadConflictRecord;
 }
 
+export interface ConversionRequirement {
+  required: boolean;
+  trigger: string;
+  engine: string;
+  license: string;
+  latencyBudgetMs: number;
+  memoryBudgetMb: number;
+  failureBehavior: string;
+  isolatedBoundary: string;
+}
+
+export interface VersionCompatibilityEntry {
+  versionCode: string;
+  releaseName: string;
+  format: 'DXF' | 'DWG';
+  tier: 'TIER_1_IN_PROCESS' | 'TIER_2_SUBPROCESS_FALLBACK' | 'UNSUPPORTED';
+  supportedRead: boolean;
+  supportedWrite: boolean;
+  desktopSupport: 'NATIVE_IN_PROCESS' | 'SUBPROCESS_BRIDGE' | 'UNSUPPORTED';
+  webSupport: 'WASM_IN_PROCESS' | 'SERVER_CONVERSION' | 'UNSUPPORTED';
+  headlessSupport: 'NATIVE_IN_PROCESS' | 'SUBPROCESS_BRIDGE' | 'UNSUPPORTED';
+  supportedEntityTypes: string[];
+  unsupportedEntityTypes: string[];
+  conversionRequirement?: ConversionRequirement;
+  fixtureLink?: string;
+  productLimitation?: string;
+}
+
+export interface CompatibilityEvaluationResult {
+  isSupported: boolean;
+  versionCode: string;
+  format: 'DXF' | 'DWG';
+  platform: 'desktop' | 'web' | 'headless';
+  action: 'read' | 'write';
+  executionMode: 'in_process' | 'server_conversion' | 'unsupported';
+  unsupportedEntitiesPresent: string[];
+  warnings: string[];
+  conversionRequirement?: ConversionRequirement;
+  parityStatement: string;
+}
+
