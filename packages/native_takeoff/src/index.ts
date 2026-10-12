@@ -12,3 +12,7 @@ export * from "./viewport_tiling.js";
 export * from "./pdfjs_renderer_adapter.js";
 export * from "./pdfcraft_renderer_adapter.js";
 export * from "./document_session.js";
+export * from "./provenance.js";
+export * from "./geometry_storage.js";
+export * from "./invalidation_engine.js";
+export * from "./sync_feed_adapter.js";

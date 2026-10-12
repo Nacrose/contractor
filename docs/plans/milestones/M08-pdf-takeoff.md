@@ -30,7 +30,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Adapter never owns calibration, markup persistence, authorization, or BoQ links (M01 authority map).
     - The renderer choice (PDF.js reference vs candidate) follows the M01 spike and M08-T01 evidence; no silent renderer switch.
 
-- [ ] **M08-T03** — Persist revision/page/crop/rotation/calibration provenance and vector measurement geometry
+- [x] **M08-T03** — Persist revision/page/crop/rotation/calibration provenance and vector measurement geometry (PR #92)
   - Depends on: M08-T02 · Output: provenance model + versioned measurement geometry storage.
   - Scope: persist revision/page/crop/rotation/calibration provenance and vector measurement geometry; measurement and calibration versioned together (v3 §5.4 takeoff row, §6 M08).
   - Acceptance:
