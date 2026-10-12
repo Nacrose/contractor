@@ -118,7 +118,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Demonstrate rollback using retained build artifacts and compatible operation history/files or a tested migration/restore. Preserve original/checkpoint bytes; incompatible newer saved data blocks promotion until recovery is proven.
     - Document monthly/per-gate review, expedited security updates and promotion through existing approval gates. Zero-fork is not represented as zero adapter maintenance.
 
-- [ ] **M06-T13** — Calculation-table consumer inventory, pilot and workflow migration
+- [x] **M06-T13** — Calculation-table consumer inventory, pilot and workflow migration (PR #76)
   - Depends on: M06-T05, M06-T07, M06-T08, M06-T09, M06-T12 · Output: consumer inventory, a working domain-backed pilot and migration/retirement evidence for applicable tables.
   - Scope: inventory BoQ/IPC, measurement, daily-log, material-delivery/receipt, expense and other application calculation/data-entry tables; migrate applicable consumers through the shared GridCraft adapter. Coordinate M04/M05 consumers without changing their historical task completions.
   - Acceptance:

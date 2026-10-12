@@ -16,3 +16,4 @@ export * from './operations.js';
 export * from './boq_ipc_bridge.js';
 export * from './xlsx.js';
 export * from './sync_storage.js';
+export * from './domain_table.js';
