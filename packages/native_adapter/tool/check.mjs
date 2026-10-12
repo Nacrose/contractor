@@ -17,4 +17,12 @@ function run(cmd, args, opts = {}) {
 
 run("npx", ["-y", `-p`, `typescript@${TSC_VERSION}`, "tsc", "--project", "tsconfig.json"]);
 run("node", [resolve(PKG, ".test-build/test/contract.test.js")]);
-console.log("native_adapter: contract tests PASSED");
+run("node", [resolve(PKG, ".test-build/test/attendance.test.js")]);
+run("node", [resolve(PKG, ".test-build/test/site_expense.test.js")]);
+run("node", [resolve(PKG, ".test-build/test/material_delivery.test.js")]);
+run("node", [resolve(PKG, ".test-build/test/field_photos.test.js")]);
+run("node", [resolve(PKG, ".test-build/test/browser_drain.test.js")]);
+run("node", [resolve(PKG, ".test-build/test/pwa_retirement.test.js")]);
+console.log("native_adapter: contract, attendance, site expense, material delivery, field photos, browser drain, and pwa retirement tests PASSED");
+
+
