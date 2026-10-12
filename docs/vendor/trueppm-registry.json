@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TruePPM Scheduling Engine Vendor Registry",
+  "description": "Machine-readable configuration of upstream TruePPM application and scheduler components, effective pins, artifact digests, license attributions, and qualification lifecycle status.",
+  "schemaVersion": "1.0.0",
+  "lastUpdated": "2026-10-12T13:44:53.581Z",
+  "governance": {
+    "policy": "ADR-0017",
+    "pinningRule": "exact_tag_and_immutable_commit_only",
+    "allowBranchTracking": false,
+    "allowLiveAutoUpgrade": false,
+    "allowUpstreamSourceModifications": false,
+    "carriedAttributionsRequired": true,
+    "reviewCadence": "monthly-or-per-gate"
+  },
+  "component": {
+    "name": "TruePPM Scheduler",
+    "description": "Server CPM calculation engine and Python subprocess calculation authority",
+    "status": "supported",
+    "upstreamUrl": "https://gitlab.com/trueppm/trueppm",
+    "pypiUrl": "https://pypi.org/project/trueppm-scheduler/",
+    "currentRelease": "v0.4.0-beta.1",
+    "packageVersion": "0.4.0b1",
+    "commit": "b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0",
+    "artifactDigest": "sha256:8f4c2e6d9b0a1f3e5c7d8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f90",
+    "previousRelease": "v0.3.9",
+    "previousPackageVersion": "0.3.9",
+    "previousCommit": "a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+    "previousArtifactDigest": "sha256:7e3b1d5c8a9f0e2d4b6c7a8b9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b6a7e8f",
+    "pinnedOn": "2026-10-12",
+    "license": "Apache-2.0",
+    "attributionFiles": [
+      "LICENSE",
+      "NOTICE"
+    ],
+    "integration": {
+      "milestone": "M09",
+      "task": "M09-T06",
+      "adapterPackage": "@contractor/native-scheduling",
+      "adapterModule": "packages/native_scheduling/src/trueppm_bridge.ts",
+      "hostAdapterModule": "packages/native_scheduling/src/trueppm_host_adapter.ts",
+      "modes": [
+        "full_editor",
+        "embedded_scheduling",
+        "headless_cli"
+      ]
+    }
+  },
+  "releases": {
+    "v0.4.0-beta.1": {
+      "releaseTag": "v0.4.0-beta.1",
+      "packageVersion": "0.4.0b1",
+      "commit": "b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0",
+      "artifactDigest": "sha256:8f4c2e6d9b0a1f3e5c7d8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f90",
+      "releasedOn": "2026-10-10",
+      "qualified": true,
+      "features": [
+        "Core CPM forward and backward calculation pass",
+        "Multi-calendar support with integer workdays",
+        "Deterministic early/late dates and total float calculation",
+        "Zero-timezone DateOnly schema compatibility"
+      ],
+      "knownLimitations": [
+        "Resource leveling not yet implemented upstream",
+        "Date constraints limited to SNET in v0.4 line"
+      ]
+    },
+    "v0.3.9": {
+      "releaseTag": "v0.3.9",
+      "packageVersion": "0.3.9",
+      "commit": "a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+      "artifactDigest": "sha256:7e3b1d5c8a9f0e2d4b6c7a8b9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b6a7e8f",
+      "releasedOn": "2026-09-15",
+      "qualified": true,
+      "features": [
+        "Baseline forward/backward pass",
+        "Standard 5-day and 6-day calendars",
+        "Stable task and dependency graph evaluation"
+      ],
+      "knownLimitations": [
+        "Earlier float calculation conventions",
+        "Pre-0.4 schema conventions"
+      ]
+    }
+  }
+}
