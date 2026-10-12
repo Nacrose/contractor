@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_documents: all document authority, WordCraft host adapter, and correspondence tests PASSED (M12-T04)");
+console.log("native_documents: all authority, WordCraft adapter, and multi-source report assembly tests PASSED (M12-T05)");
