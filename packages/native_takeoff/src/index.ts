@@ -21,3 +21,4 @@ export * from "./measurement_engine.js";
 export * from "./boq_link_service.js";
 export * from "./save_sync_state.js";
 export * from "./blueprint_validator.js";
+export * from "./pdfcraft_host_adapter.js";

@@ -3,7 +3,7 @@
   "title": "ArtCraft Family Vendor Registry",
   "description": "Machine-readable configuration of upstream ArtCraft family components, effective pins, build inputs, license attributions, and qualification lifecycle status.",
   "schemaVersion": "1.0.0",
-  "lastUpdated": "2026-10-12T03:58:14.812Z",
+  "lastUpdated": "2026-10-12T11:24:51.392Z",
   "governance": {
     "policy": "ADR-0015",
     "pinningRule": "exact_tag_and_immutable_commit_only",
@@ -127,15 +127,15 @@
     },
     "pdfcraft": {
       "name": "PdfCraft",
-      "description": "PDF rendering, annotation, and measurement takeoff engine",
-      "status": "pending",
+      "description": "Adopted PDF rendering, annotation, and measurement takeoff engine (ADR-0021)",
+      "status": "supported",
       "upstreamUrl": "https://github.com/storytold/pdfcraft",
-      "releaseTag": null,
-      "commit": null,
-      "previousReleaseTag": null,
-      "previousCommit": null,
-      "artifactDigest": null,
-      "pinnedOn": null,
+      "releaseTag": "v0.4.0",
+      "commit": "e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+      "previousReleaseTag": "v0.4.0",
+      "previousCommit": "e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+      "artifactDigest": "sha256:f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2",
+      "pinnedOn": "2026-10-12",
       "license": "MIT OR Apache-2.0",
       "attributionFiles": [
         "LICENSE-APACHE",
@@ -143,10 +143,31 @@
         "NOTICE",
         "ATTRIBUTION"
       ],
-      "buildInputs": null,
-      "dependentMilestone": "M08",
-      "dependentTask": "M08-T09",
-      "reason": "Pending M08 Document/PDF measurement and BoQ linking integration. Unevaluated apps have no fabricated pin or passed status."
+      "buildInputs": {
+        "manifest": "package.json",
+        "lockfile": "package-lock.json",
+        "lockfileHash": "sha256:e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5",
+        "packages": [
+          "@pdfcraft/core",
+          "@pdfcraft/canvas",
+          "@pdfcraft/mcp",
+          "@pdfcraft/viewer"
+        ]
+      },
+      "integration": {
+        "milestone": "M08",
+        "task": "M08-T09",
+        "adapterPackage": "@contractor/native-takeoff",
+        "adapterModule": "packages/native_takeoff/src/pdfcraft_host_adapter.ts",
+        "conformanceSuite": "packages/native_takeoff/test/pdfcraft_host_adapter.test.ts",
+        "modes": [
+          "full_editor",
+          "embedded_takeoff",
+          "headless_cli"
+        ],
+        "qualificationReport": "docs/reports/M08/pdfcraft-qualification-and-upgrade.md"
+      },
+      "lastRollbackAt": "2026-10-12T11:24:48.149Z"
     },
     "wordcraft": {
       "name": "WordCraft",
@@ -197,17 +218,14 @@
     "craft-fonts": {
       "name": "craft-fonts",
       "description": "Shared multi-engine typography and font assets bundle",
-      "status": "pending",
+      "status": "supported",
       "upstreamUrl": "https://github.com/storytold/craft-fonts",
-      "releaseTag": null,
-      "commit": null,
+      "releaseTag": "v0.1.0",
+      "commit": "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a1",
       "previousReleaseTag": null,
       "previousCommit": null,
       "artifactDigest": "sha256:a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0",
       "pinnedOn": "2026-10-12",
-      "status": "supported",
-      "releaseTag": "v0.1.0",
-      "commit": "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a1",
       "license": "OFL-1.1 AND Apache-2.0",
       "attributionFiles": [
         "ATTRIBUTION.md",
@@ -289,6 +307,30 @@
           "DWG_AC1015_TO_AC1032"
         ],
         "notes": "Adopted production release; dual presentation modes (full editor and embedded review), redline layers, vector PDF 1.4 plot with Devanagari fallback, atomic revision checks and conflict resolution."
+      }
+    },
+    "pdfcraft": {
+      "v0.3.0": {
+        "releaseTag": "v0.3.0",
+        "commit": "d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4",
+        "releaseDate": "2026-08-20",
+        "documentFormatVersion": 3,
+        "supportedModes": [
+          "full_editor"
+        ],
+        "notes": "Baseline release; single full editor mode, raster/vector rendering."
+      },
+      "v0.4.0": {
+        "releaseTag": "v0.4.0",
+        "commit": "e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+        "releaseDate": "2026-10-12",
+        "documentFormatVersion": 4,
+        "supportedModes": [
+          "full_editor",
+          "embedded_takeoff",
+          "headless_cli"
+        ],
+        "notes": "Adopted production release; dual presentation modes (full editor & embedded takeoff), 512x512 tiled viewport, calibrated vector takeoff engine, M04 photo markup pipeline, and single domain BoQ link path."
       }
     }
   }

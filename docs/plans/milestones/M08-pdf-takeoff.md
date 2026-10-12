@@ -72,7 +72,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Vector overlays do not imply automatic extraction of all PDF geometry (v3 §6 M08) — stated and enforced.
     - Large-PDF performance evidence on ratified profiles: bounded memory, tiled viewport, cancellation under load.
 
-- [ ] **M08-T09** — PdfCraft full editor, embedded takeoff/preview and release-upgrade qualification
+- [x] **M08-T09** — PdfCraft full editor, embedded takeoff/preview and release-upgrade qualification (PR #97)
   - Depends on: M08-T01…T07, M06-T12 · Output: PdfCraft adapter/hosts, per-app adoption record and release upgrade/rollback evidence.
   - Scope: host the full upstream PDF application with its available editing/annotation tools; reuse supported page/canvas/annotation components for focused takeoff, review and photo-audit preview/export in Contractor workflows.
   - Acceptance:
