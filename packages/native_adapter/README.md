@@ -20,6 +20,10 @@ domain services:
 - **Operation registry discipline** — every operation binding MUST name the
   existing authoritative service it dispatches to. Seed exemplars in
   `src/registry.ts` are sourced from the M00-T07 router inventory.
+- The M04 daily-report activation registers
+  `workflow.dailyReport.createFieldReport` against the existing server
+  procedure, with the project, rate-limit, input-reference, and idempotency
+  guard stages declared in order.
 
 ## What this package is NOT
 
