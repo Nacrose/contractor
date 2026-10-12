@@ -24,7 +24,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Zero orphaned workflows; four engineering engines (GridCraft, CadCraft, PdfCraft, TruePPM) integrated into application-level workflows.
     - Machine-readable parity matrix validates status of each route and feature.
 
-- [ ] **M10-T03** — Single active writer contract per entity/document version & route-by-route cutover adapter
+- [x] **M10-T03** — Single active writer contract per entity/document version & route-by-route cutover adapter (PR #112)
   - Depends on: M10-T01, M03-T04 · Output: `packages/native_runtime` cutover gateway / routing adapters, route-level concurrency guards.
   - Scope: enforce the "one route at a time; one active writer contract per entity/document version" rule across client and server boundaries (derived from M10-W02). Ensure no duplicated authoritative business logic exists across Dart/TypeScript. Block silent downgrades of older clients via strict protocol version negotiation.
   - Acceptance:
