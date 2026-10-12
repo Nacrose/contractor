@@ -41,6 +41,26 @@ declare module "node:fs" {
   export function readdirSync(path: string): string[];
   export function existsSync(path: string): boolean;
   export function mkdirSync(path: string, options?: { recursive?: boolean }): void;
+  export function mkdtempSync(prefix: string): string;
+  export function rmSync(path: string, options?: { recursive?: boolean; force?: boolean }): void;
+}
+
+declare module "node:os" {
+  export function tmpdir(): string;
+}
+
+declare module "node:sqlite" {
+  export interface StatementSync {
+    run(...params: unknown[]): { changes: number; lastInsertRowid: number };
+    all(...params: unknown[]): Record<string, unknown>[];
+    get(...params: unknown[]): Record<string, unknown> | undefined;
+  }
+  export class DatabaseSync {
+    constructor(location: string, options?: { open?: boolean });
+    exec(sql: string): void;
+    prepare(sql: string): StatementSync;
+    close(): void;
+  }
 }
 
 declare module "node:path" {
@@ -82,5 +102,9 @@ declare const Buffer: {
   from(str: string, encoding?: string): Buffer;
   from(buffer: ArrayBufferLike, byteOffset?: number, length?: number): Buffer;
   concat(list: readonly (Uint8Array | Buffer)[], totalLength?: number): Buffer;
+};
+
+declare const process: {
+  env: Record<string, string | undefined>;
 };
 

@@ -90,7 +90,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - If GridCraft import/export is used, it runs behind the same fixture suite at the pinned version; failures block adoption, not visibility.
     - Formula/formatting/date fidelity verified against independently produced expected files.
 
-- [ ] **M06-T09** — Concurrent edit + structure test evidence
+- [x] **M06-T09** — Concurrent edit + structure test evidence (PR #74)
   - Depends on: M06-T06, M06-T07 · Output: concurrency/structure test evidence using real sync plumbing.
   - Scope: concurrent edit and structure-operation evidence under the M03 sync engine (v3 §5.4).
   - Acceptance:
