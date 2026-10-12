@@ -50,7 +50,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Asset caching policies ensure predictable offline loading and instant cache invalidation on deployment.
     - Explicit rollback mechanism switches traffic back to legacy route if web runtime faults occur.
 
-- [ ] **M10-T06** — Cross-cutting verification matrix across Flutter Web and installed native apps
+- [x] **M10-T06** — Cross-cutting verification matrix across Flutter Web and installed native apps (PR #115)
   - Depends on: M10-T02, M10-T05 · Output: `docs/reports/M10/cross-cutting-verification-matrix.md`, automated cross-platform E2E verification suite.
   - Scope: evaluate cross-cutting non-functional requirements across Flutter Web and desktop/mobile installed apps (derived from M10-W03): RBAC role-based visibility, file imports/exports (CSV, DXF, PDF, XLSX, DOCX), print/vector fidelity, file linking, global search, error handling, keyboard shortcuts, screen-reader accessibility (a11y), responsive screen sizes (mobile, tablet, desktop, 4K), and localization (English/Nepali).
   - Acceptance:
