@@ -1,7 +1,7 @@
 # M04 — First vertical workflow: daily log and photo
 
 > Source of scope: [platform plan v3](../native-web-platform-plan-v3.md) §6 M04. Dependencies: M03. Proves the system architecture — **not** a complete platform release (v3 §6 M04).
-> Photo markup approach ([ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md) §6, owner 2026-10-09): lightweight native overlay in-app; PdfCraft annotation/export path (photo → PDF → shapes/comments) for share/print. photocraft rejected for markup as too heavy.
+> Photo markup approach ([ADR-0015](../../adr/0015-artcraft-upstream-engine-strategy.md) §6, owner 2026-10-09): lightweight native overlay in-app; PdfCraft annotation/export path (photo → PDF → shapes/comments) for share/print (evidenced in [M08-T01 prototype report](../reports/M08/pdfcraft-prototype.md#6-photo-to-pdf-markup--export-pipeline-m04-backing-path)). photocraft rejected for markup as too heavy.
 > **Refined to task level under protocol R9** by the `[PLAN-AMEND]` PR recorded in the register (2026-10-09, after M03-T09 merged, before the M03-T10 gate opened). The original WP sketches (W01–W07) are preserved as the `Refinement record` section at the bottom.
 
 Exit (v3): device-recorded workflow evidence, automated fault tests, parity with current daily-log rules and user verification.
@@ -102,3 +102,9 @@ The original WP-level register (superseded 2026-10-09 by the `[PLAN-AMEND]` refi
 ## Refinement contract
 
 Before the M04 gate PR opens, M05 is refined from work-package level to `M05-Tnn` tasks with scope, outputs, dependencies, and testable acceptance criteria via a `[PLAN-AMEND]` PR (protocol R9). Far-future milestones stay coarse until evidence supports their refinement.
+
+## Product binding checkpoint — 2026-10-11
+
+Construction_Manager PR #170 mounts `POST /api/native/sync` through the shared `@contractor/native-adapter` version resolver, operation registry, and ordered guard pipeline for both daily-report create and versioned update operations. Office and native edits use `updatedAt` compare-and-swap; a product router test simulates an office write and confirms a stale native update is rejected without a second write. The integration preserves session-derived tenant/account checks, server rate limits, project membership and edit checks, the existing transactional procedures, and idempotent replay behavior. The product branch pins Contractor commit `c04eb897`; PR #170 is pushed at `16408be2` and remains open as a draft. The owner confirmed the local product login page renders, but that does not establish native authentication or live acceptance.
+
+This resolves the route-conformance and versioned-update implementation gaps on the product PR branch. M04-T03 remains open until the product stack is merged and an authenticated native report is accepted, delivered through the feed, and visible on a second client. The M04 scope is unchanged.

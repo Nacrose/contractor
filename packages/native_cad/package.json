@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-cad",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Central CAD command registry, input state machines, selection, grips, ortho/snap constraints, and compensating undo (M07-T02). Authoritative command boundary for Contractor full and embedded CAD surfaces.",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}

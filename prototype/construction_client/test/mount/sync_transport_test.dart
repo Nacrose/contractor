@@ -53,7 +53,7 @@ void main() {
   });
 
   SyncEnvelope envelope(String opId) => SyncEnvelope(
-        syncProtocolVersion: kSyncProtocolVersion,
+        protocolVersion: kNativeAdapterProtocolVersion,
         opId: opId,
         deviceId: 'device-1',
         accountId: 'acc',
@@ -118,7 +118,7 @@ void main() {
       final transport = HttpSyncTransport(endpoint: endpoint);
       await transport.send(envelope('wire-check'));
       final received = receivedBodies['wire-check']!;
-      expect(received['syncProtocolVersion'], kSyncProtocolVersion);
+      expect(received['protocolVersion'], kNativeAdapterProtocolVersion);
       expect(received['opId'], 'wire-check');
       expect(received['deviceId'], 'device-1');
       expect(received['accountId'], 'acc');
@@ -165,7 +165,7 @@ void main() {
         role: 'lead',
       );
       final env = buildSyncEnvelope(op: op, deviceId: 'device-1', attempt: 1, nowMs: 999, digest: digest);
-      expect(env.syncProtocolVersion, kSyncProtocolVersion);
+      expect(env.protocolVersion, kNativeAdapterProtocolVersion);
       expect(env.opId, 'op-1');
       expect(env.deviceId, 'device-1');
       expect(env.kind, 'fieldSubmission.submit');

@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-workbook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Workbook model evolution, command semantics, structure transforms, names, formatting, and formula registry (M06-T02). Reversible stable collaboration identities with displayed A1 fidelity, deterministic reference transforms for server replay and client preview, M02 save/sync state tracking.",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
