@@ -21,7 +21,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Photo-markup evidence path recorded with fidelity findings and explicit limits, linked from the M04 header note (ADR-0015 §6).
     - The report includes the PdfCraft MCP tool inventory (tool names, inputs, outputs) and ends in an explicit recommendation: proceed toward a per-engine adoption ADR, or keep the TS engine/PDF.js reference — either way the evidence is linked from this milestone.
 
-- [ ] **M08-T02** — Document-session renderer adapters: viewport tiling, bounded decoded-page cache, cancellation, explicit disposal
+- [x] **M08-T02** — Document-session renderer adapters: viewport tiling, bounded decoded-page cache, cancellation, explicit disposal (PR #91)
   - Depends on: M02-GATE · Output: renderer adapter layer extending existing document sessions.
   - Scope: extend existing document sessions (v3 §3) with renderer adapters, viewport tiling, bounded decoded-page cache, cancellation and explicit disposal (v3 §6 M08).
   - Acceptance:
