@@ -25,6 +25,7 @@ declare module "node:assert/strict" {
     predicateOrMessage?: RegExp | string | ((err: any) => boolean) | (new (...args: never[]) => Error),
     message?: string
   ): Promise<void>;
+  export function doesNotThrow(fn: () => unknown, message?: string): void;
   const assert: {
     ok: typeof ok;
     equal: typeof equal;
@@ -33,6 +34,7 @@ declare module "node:assert/strict" {
     match: typeof match;
     doesNotMatch: typeof doesNotMatch;
     throws: typeof throws;
+    doesNotThrow: typeof doesNotThrow;
     rejects: typeof rejects;
   };
   export default assert;

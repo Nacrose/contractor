@@ -22,7 +22,7 @@ Exit (v3): measured recovery drill, validated platform packages, full parity evi
     - RTO benchmarked under complete cold-restore drill ($\le 60\text{ min}$ operational recovery).
     - Backup failure alerts trigger high-priority paging within $< 60\text{ s}$ of missed snapshot.
 
-- [ ] **M11-T03** — Fresh-device bootstrap & comprehensive disaster/failure matrix
+- [x] **M11-T03** — Fresh-device bootstrap & comprehensive disaster/failure matrix (PR #122)
   - Depends on: M03-T04, M10-T03, M11-T01 · Output: `docs/reports/M11/fresh-device-and-failure-matrix.md`, automated edge-case test suite.
   - Scope: verify fresh-device sync bootstrap from snapshot + incremental change feed (derived from M11-W03). Test edge-case failure matrix: migration interruption (mid-migration crash/kill), application downgrade rejection, local storage corruption detection, revoked device token isolation, and expired change-feed cursor resync.
   - Acceptance:
