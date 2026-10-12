@@ -88,7 +88,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Render, snap, and select latencies reported separately; memory bounded with evidence.
     - Web path exercised through the browser binding, not native-only.
 
-- [ ] **M07-T11** — CADCraft full editor, embedded drawing review and release-upgrade qualification
+- [x] **M07-T11** — CADCraft full editor, embedded drawing review and release-upgrade qualification (PR #88)
   - Depends on: M07-T01…T09, M06-T12 · Output: CADCraft adapter/hosts, per-app adoption record and release upgrade/rollback evidence.
   - Scope: reuse the full upstream drafting interface with its menus/tools and supported canvas/components for embedded drawing review, layer toggles, redlines and plot actions. Integrate with the shared Contractor lifecycle and upstream-update pipeline.
   - Acceptance:

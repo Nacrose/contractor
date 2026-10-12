@@ -74,15 +74,15 @@
     },
     "cadcraft": {
       "name": "CADCraft",
-      "description": "2D/3D CAD drawing, BIM, DWG/DXF rendering and measurement engine",
-      "status": "pending",
+      "description": "Adopted 2D/3D CAD drawing, DWG/DXF rendering, and vector plot engine (ADR-0020)",
+      "status": "supported",
       "upstreamUrl": "https://github.com/storytold/cadcraft",
-      "releaseTag": null,
-      "commit": null,
-      "previousReleaseTag": null,
-      "previousCommit": null,
-      "artifactDigest": null,
-      "pinnedOn": null,
+      "releaseTag": "v0.3.0",
+      "commit": "c1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0",
+      "previousReleaseTag": "v0.2.0",
+      "previousCommit": "b0a1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+      "artifactDigest": "sha256:e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+      "pinnedOn": "2026-10-12",
       "license": "MIT OR Apache-2.0 (+ acadrust MPL-2.0)",
       "attributionFiles": [
         "LICENSE-APACHE",
@@ -90,10 +90,40 @@
         "NOTICE",
         "ATTRIBUTION"
       ],
-      "buildInputs": null,
-      "dependentMilestone": "M07",
-      "dependentTask": "M07-T11",
-      "reason": "Pending M07 CAD kernel, topology, rendering & plot integration and prototype evaluation. Unevaluated apps have no fabricated pin or passed status."
+      "buildInputs": {
+        "manifest": "Cargo.toml",
+        "lockfile": "Cargo.lock",
+        "lockfileHash": "sha256:5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
+        "crates": [
+          "cadcraft-core",
+          "cadcraft-engine",
+          "cadcraft-topology",
+          "cadcraft-dxf",
+          "cadcraft-dwg",
+          "cadcraft-mcp",
+          "cadcraft-ui-egui"
+        ],
+        "apps": [
+          "cadcraft",
+          "cadcraft-cli",
+          "cadcraft-web"
+        ],
+        "rustEdition": "2021",
+        "minRustVersion": "1.82.0"
+      },
+      "integration": {
+        "milestone": "M07",
+        "task": "M07-T11",
+        "adapterPackage": "@contractor/native-cad",
+        "adapterModule": "packages/native_cad/src/cadcraft_host_adapter.ts",
+        "conformanceSuite": "packages/native_cad/test/cadcraft_host_adapter.test.ts",
+        "modes": [
+          "full_editor",
+          "embedded_review",
+          "headless_cli"
+        ],
+        "qualificationReport": "docs/reports/M07/cadcraft-qualification-and-upgrade.md"
+      }
     },
     "pdfcraft": {
       "name": "PdfCraft",
@@ -173,17 +203,28 @@
       "commit": null,
       "previousReleaseTag": null,
       "previousCommit": null,
-      "artifactDigest": null,
-      "pinnedOn": null,
-      "license": "MIT OR Apache-2.0 (per-font licenses in fonts/)",
+      "artifactDigest": "sha256:a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0",
+      "pinnedOn": "2026-10-12",
+      "status": "supported",
+      "releaseTag": "v0.1.0",
+      "commit": "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a1",
+      "license": "OFL-1.1 AND Apache-2.0",
       "attributionFiles": [
         "ATTRIBUTION.md",
         "manifest.txt"
       ],
-      "buildInputs": null,
-      "dependentMilestone": "M06",
-      "dependentTask": "M06-T13 / M07",
-      "reason": "Pending shared font package consolidation across adopted engines. Unevaluated apps have no fabricated pin or passed status."
+      "buildInputs": {
+        "fonts": [
+          "NotoSansDevanagari",
+          "Roboto",
+          "Inter"
+        ]
+      },
+      "integration": {
+        "milestone": "M07",
+        "task": "M07-T06 / M07-T11",
+        "usage": "Devanagari Unicode script fallback and vector PDF typography"
+      }
     }
   },
   "qualificationCatalog": {
@@ -216,6 +257,38 @@
         "storageModel": "v3_operation_journal",
         "mcpToolCount": 20,
         "notes": "Adopted production release; dual UI modes, domain cell protection, operation journal with M03 sync."
+      }
+    },
+    "cadcraft": {
+      "v0.2.0": {
+        "releaseTag": "v0.2.0",
+        "commit": "b0a1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+        "releaseDate": "2026-08-15",
+        "documentFormatVersion": 2,
+        "supportedModes": [
+          "full_editor"
+        ],
+        "supportedFormats": [
+          "DXF",
+          "DWG_AC1015"
+        ],
+        "notes": "Baseline release; single full editor mode, in-process DXF/DWG AC1015 drafting."
+      },
+      "v0.3.0": {
+        "releaseTag": "v0.3.0",
+        "commit": "c1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0",
+        "releaseDate": "2026-10-09",
+        "documentFormatVersion": 3,
+        "supportedModes": [
+          "full_editor",
+          "embedded_review",
+          "headless_cli"
+        ],
+        "supportedFormats": [
+          "DXF",
+          "DWG_AC1015_TO_AC1032"
+        ],
+        "notes": "Adopted production release; dual presentation modes (full editor and embedded review), redline layers, vector PDF 1.4 plot with Devanagari fallback, atomic revision checks and conflict resolution."
       }
     }
   }

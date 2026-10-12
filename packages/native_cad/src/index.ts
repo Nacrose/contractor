@@ -21,3 +21,4 @@ export * from './compatibility_matrix.js';
 export * from './fixture_generator.js';
 export * from './browser_cad_binding.js';
 export * from './benchmark_harness.js';
+export * from './cadcraft_host_adapter.js';

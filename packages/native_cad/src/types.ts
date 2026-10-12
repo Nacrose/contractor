@@ -235,6 +235,7 @@ export interface CommandContext {
   userId?: string;
   timestamp?: number;
   sourceMode?: 'full_editor' | 'embedded_review' | 'headless_cli';
+  activeLayer?: string;
 }
 
 export interface CommandExecutionResult {
@@ -316,7 +317,8 @@ export interface CadConflictRecord {
     | 'STALE_WRITER_CONFLICT'
     | 'TOPOLOGY_VIOLATION'
     | 'ENTITY_NOT_FOUND'
-    | 'DELETED_TARGET';
+    | 'DELETED_TARGET'
+    | 'PERMISSION_DENIED';
   conflictingHandles: string[];
   expectedRevisions: Record<string, number>;
   actualRevisions: Record<string, number>;
@@ -328,6 +330,9 @@ export interface CadConflictRecord {
     | 'RESOLVED_REBASE'
     | 'RESOLVED_DISCARD';
 }
+
+export type ConflictResolutionStrategy = 'OVERWRITE' | 'REBASE' | 'DISCARD';
+
 
 export interface GroupOperationResult {
   success: boolean;
@@ -377,4 +382,35 @@ export interface CompatibilityEvaluationResult {
   conversionRequirement?: ConversionRequirement;
   parityStatement: string;
 }
+
+export type CadCraftPresentationMode = 'full_editor' | 'embedded_review' | 'headless_cli';
+
+export type CadCraftDomainPermission = 'view_only' | 'markup_only' | 'full_authoring';
+
+export type RedlineMarkupType = 'CLOUD' | 'LEADER' | 'CALLOUT' | 'NOTE' | 'MEASUREMENT';
+
+export interface RedlineMarkupSpec {
+  markupType: RedlineMarkupType;
+  points: Point2D[];
+  text?: string;
+  color?: string | number;
+  authorId?: string;
+  comment?: string;
+  measurementValue?: number;
+}
+
+export interface CadCraftHostState {
+  mode: CadCraftPresentationMode;
+  permission: CadCraftDomainPermission;
+  documentId: string;
+  entityCount: number;
+  redlineCount: number;
+  revision: number;
+  activeLayout: string;
+  selectedCount: number;
+  undoDepth: number;
+  canUndo: boolean;
+  canRedo: boolean;
+}
+
 
