@@ -6,7 +6,7 @@ Exit (v3): measured recovery drill, validated platform packages, full parity evi
 
 ---
 
-- [ ] **M11-T01** — Complete backup coverage & independent vault retrieval/restore drill
+- [x] **M11-T01** — Complete backup coverage & independent vault retrieval/restore drill (PR #120)
   - Depends on: M03-T02, M10-T04 · Output: `docs/reports/M11/vault-retrieval-and-restore-drill.md`, backup/restore verification harnesses.
   - Scope: database (PostgreSQL/SQLite) + object storage (drawings, PDF blueprints, photos) vault backup and restore into an isolated environment (derived from M11-W01). Validate tenant isolation and referential integrity. Ensure independent vault verification: prove cloud-accepted records alone do not substitute for an independently retrieved vault backup.
   - Acceptance:
