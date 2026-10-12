@@ -16,7 +16,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Retained construction domain rules (BoQ measurement linkage, RA cost separation, Nepal tax/withholding, retention deductions) explicitly identified per workflow.
     - State ownership and writer authorities assigned to existing services without duplicate logic.
 
-- [ ] **M10-T02** — Inventory migration waves & wave-by-wave tracking matrix
+- [x] **M10-T02** — Inventory migration waves & wave-by-wave tracking matrix (PR #111)
   - Depends on: M10-T01, M04–M09 · Output: `docs/reports/M10/migration-waves-matrix.md`, automated parity tracking fixture.
   - Scope: group all M00 inventory workflows into structured migration waves (derived from M10-W01): Wave 1 (Procurement & Materials/Inventory), Wave 2 (Workforce, Daily Attendance & HR), Wave 3 (Billing, IPC & Client Certifications), Wave 4 (Subcontractor & Joint Venture Management), Wave 5 (Administrative & System Operations). Establish per-wave platform evidence criteria, ensuring domain behavior is preserved while replacing generic implementations with upstream adapters.
   - Acceptance:
