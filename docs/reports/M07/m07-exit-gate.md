@@ -152,8 +152,11 @@ graph TD
 
 ---
 
-## 6. Gate Recommendation & Request
+## 6. Gate Decision & Owner Ratification
 
 Milestone M07 has satisfied all requirements of Platform Plan v3 §6 M07, ADR-0015, ADR-0016, and ADR-0020. All 11 tasks (T01–T09, T11, T10) are complete, evidenced, and verified.
 
-**Submitted for Owner Review & Ratification under Protocol R8.**
+- **Gate Status:** PASSED
+- **Owner Approval:** Ratified by Owner under Protocol R8 on 2026-10-12.
+- **Proceed:** Formally unblocks Milestone M08 (PDF & BoQ-linked takeoff engine).
+
