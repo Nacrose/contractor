@@ -64,7 +64,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Repeated links and replayed measurements (M03 feed replay) cannot double count — idempotency fixture-proven.
     - Review state is visible in the shared save/sync model (M02-T05) and clears only through the domain path.
 
-- [ ] **M08-T07** — Multi-page, rotated, mixed-size and scanned blueprint validation + large-PDF performance evidence
+- [x] **M08-T07** — Multi-page, rotated, mixed-size and scanned blueprint validation + large-PDF performance evidence (PR #96)
   - Depends on: M08-T02, M08-T04 · Output: blueprint validation matrix + performance evidence.
   - Scope: multi-page, rotated, mixed-size and scanned blueprints; large-PDF performance per §7 (v3 §6 M08).
   - Acceptance:

@@ -30,12 +30,12 @@
 | M05 Field workflow expansion | [M05-field-workflow-expansion.md](milestones/M05-field-workflow-expansion.md) | **Complete** — T01–T09 (PRs #56–#64), T10 gate (PR #65) | 10/10 | M05-T10 `👤 GATE` — submitted for owner review (PR #65) |
 | M06 Worksheet/BoQ engine | [M06-worksheet-boq-engine.md](milestones/M06-worksheet-boq-engine.md) | **Complete** — T01–T10, T12, T13 (PRs #66–#77), T11 gate (PR #78) | 13/13 | M06-T11 `👤 GATE` — submitted for owner review (PR #78) |
 | M07 CAD kernel, topology, rendering & plot | [M07-cad-kernel-plot.md](milestones/M07-cad-kernel-plot.md) | **Complete** — T01–T09, T11 (PRs #79–#88), T10 gate (PR #89) | 11/11 | M07-T10 `👤 GATE` — passed (PR #89), owner approved 2026-10-12 |
-| M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | In progress — T01 prototype (PR #90), T02 renderer adapters (PR #91), T03 provenance storage (PR #92), T04 measurement coverage (PR #93), T05 takeoff-to-BoQ link (PR #94), T06 invalidation/deduplication (PR #95); dual PDF modes + update qualification registered | 6/9 | M08-T08 `👤 GATE` — not reached |
+| M08 PDF & BoQ-linked takeoff | [M08-pdf-takeoff.md](milestones/M08-pdf-takeoff.md) | In progress — T01 prototype (PR #90), T02 renderer adapters (PR #91), T03 provenance storage (PR #92), T04 measurement coverage (PR #93), T05 takeoff-to-BoQ link (PR #94), T06 invalidation/deduplication (PR #95), T07 blueprint validation & performance (PR #96); dual PDF modes + update qualification registered | 7/9 | M08-T08 `👤 GATE` — not reached |
 | M09 TruePPM scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | TruePPM selected; integration blocked by M03/M05/M06 (WP level) | 0/9 | M09-W07 `👤 GATE` — not reached |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | Migration blocked by M04–M09; document/deck evidence from M12; mapping + accounting + connected journeys registered (WP level) | 0/9 | M10-W06 `👤 GATE` — not reached |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | Blocked by M03–M10 (WP level) | 0/7 | M11-T07 `👤 GATE` — not reached |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | Registered 2026-10-09; dual editor/embedded modes + updates amended 2026-10-12 (WP level) | 0/9 | M12-W08 `👤 GATE` — not reached |
-| **Program total** | | | **98/142** | |
+| **Program total** | | | **99/142** | |
 
 
 

@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_takeoff: all document session, renderer adapter, viewport tiling, bounded page cache, cancellation, disposal, provenance, invalidation, measurement coverage, takeoff-to-BoQ link, and invalidation/deduplication tests PASSED (M08-T02/T03/T04/T05/T06)");
+console.log("native_takeoff: all document session, renderer adapter, viewport tiling, bounded page cache, cancellation, disposal, provenance, invalidation, measurement coverage, takeoff-to-BoQ link, invalidation/deduplication, and blueprint validation tests PASSED (M08-T02/T03/T04/T05/T06/T07)");
