@@ -13,3 +13,4 @@ export * from './commands.js';
 export * from './dependency_graph.js';
 export * from './gridcraft_host_adapter.js';
 export * from './operations.js';
+export * from './boq_ipc_bridge.js';

@@ -72,7 +72,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Compaction/checkpoints bound document history growth with recovery tests from a checkpoint.
     - Version checks reject stale writers with an explicit review path.
 
-- [ ] **M06-T07** — IPC/BoQ integration through existing financial services
+- [x] **M06-T07** — IPC/BoQ integration through existing financial services (PR #72)
   - Depends on: M06-T04, M06-T06 · Output: BoQ/IPC integration through the existing domain services, with parity evidence.
   - Scope: integrate worksheet outputs with IPC/BoQ through existing financial services (v3 §5.1, §6 M02/M06).
   - Acceptance:
