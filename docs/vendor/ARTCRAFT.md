@@ -13,7 +13,7 @@ Policy reminders (ADR-0015): exact tag/rev pins only, never branches; no edits t
 | PdfCraft | https://github.com/storytold/pdfcraft | Adopted PDF rendering, annotation, and measurement takeoff engine per ADR-0021 (Full editor & embedded takeoff host) | `v0.4.0` (`e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3`) | 2026-10-12 | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 | craft-fonts | https://github.com/storytold/craft-fonts | Adopted shared typography asset package (Devanagari fallback) | `v0.1.0` (`f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a1`) | 2026-10-12 | OFL-1.1 AND Apache-2.0 | ATTRIBUTION.md, manifest.txt |
 | WordCraft | https://github.com/storytold/wordcraft | Pinned for M12-T01 prototype driver & fixture evidence | `v0.3.0` (`b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1`) | 2026-10-12 | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
-| DeckCraft | https://github.com/storytold/deckcraft | *(none yet — prototype pending; capability area M12)* | — | — | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
+| DeckCraft | https://github.com/storytold/deckcraft | Pinned for M12-T02 prototype driver & fixture evidence | `v0.3.0` (`c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2`) | 2026-10-12 | MIT OR Apache-2.0 | LICENSE-APACHE, LICENSE-MIT, NOTICE, ATTRIBUTION |
 
 Upstream release tags observed 2026-10-09 (pin targets for prototypes): gridcraft `v0.3.0`, cadcraft `v0.3.0`, pdfcraft `v0.4.0`, wordcraft `v0.3.0`.
 
@@ -36,6 +36,7 @@ Related upstream-published dependencies:
 | 2026-10-12 | PR #88 | CADCraft adopted per ADR-0020 at release `v0.3.0` (commit `c1a2b3c4d5`) with dual presentation modes, redline isolation, and release-update qualification (M07-T11). craft-fonts adopted at `v0.1.0`. |
 | 2026-10-12 | PR #90 | PdfCraft pinned to release tag `v0.4.0` (commit `e4f5a6b7c8`) for M08-T01 prototype driver, ISO 32000-2 measure/annot evidence, and M04 photo markup path. |
 | 2026-10-12 | PR #128 | WordCraft pinned to release tag `v0.3.0` (`b2c3d4e5f6`) for M12-T01 prototype driver and OpenXML DOCX correspondence evidence. |
+| 2026-10-12 | PR #129 | DeckCraft pinned to release tag `v0.3.0` (`c3d4e5f6a7`) for M12-T02 prototype driver and OpenXML PPTX progress deck evidence. |
 
 
 ## Machine-Readable Registry & Build Inputs

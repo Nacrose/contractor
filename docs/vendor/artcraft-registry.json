@@ -212,8 +212,8 @@
       ],
       "buildInputs": null,
       "dependentMilestone": "M12",
-      "dependentTask": "M12-W09",
-      "reason": "Pending M12 Client documents & presentations capability area. Unevaluated apps have no fabricated pin or passed status."
+      "dependentTask": "M12-T10",
+      "reason": "Prototype driver active in prototype/deckcraft (M12-T02); full update qualification executes in M12-T10."
     },
     "craft-fonts": {
       "name": "craft-fonts",
