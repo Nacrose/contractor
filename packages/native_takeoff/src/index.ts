@@ -18,3 +18,4 @@ export * from "./invalidation_engine.js";
 export * from "./sync_feed_adapter.js";
 export * from "./cad_topology_bridge.js";
 export * from "./measurement_engine.js";
+export * from "./boq_link_service.js";

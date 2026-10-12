@@ -14,7 +14,10 @@ export type TakeoffChangeKind =
   | 'TAKEOFF_MEASUREMENT_UPDATED'
   | 'TAKEOFF_MEASUREMENT_INVALIDATED'
   | 'TAKEOFF_MEASUREMENT_REVIEWED'
-  | 'TAKEOFF_CALIBRATION_ESTABLISHED';
+  | 'TAKEOFF_CALIBRATION_ESTABLISHED'
+  | 'TAKEOFF_BOQ_LINK_CREATED'
+  | 'TAKEOFF_BOQ_QUANTITY_POSTED'
+  | 'TAKEOFF_BOQ_LINK_REMOVED';
 
 export interface TakeoffChangeEvent {
   readonly eventId: string;
@@ -42,6 +45,22 @@ export interface FlutterParityTakeoffDto {
   readonly declaredUnit: string;
   readonly scaleFactor: number;
   readonly version: number;
+}
+
+export interface FlutterParityBoqLinkDto {
+  readonly linkId: string;
+  readonly measurementId: string;
+  readonly documentId: string;
+  readonly revisionId: string;
+  readonly boqCode: string;
+  readonly cellRef: string;
+  readonly multiplier: number;
+  readonly derivedQuantity: number;
+  readonly exactDecimalQuantity: string;
+  readonly targetUnit: string;
+  readonly status: string;
+  readonly receiptId: string | null;
+  readonly serverSeq: number | null;
 }
 
 export class TakeoffSyncFeedAdapter {

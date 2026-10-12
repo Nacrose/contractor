@@ -48,7 +48,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Unit conversion is calibrated and versioned with the measurement (no ambient unit state).
     - Reuses M07 geometry primitives where applicable — no duplicate topology implementations.
 
-- [ ] **M08-T05** — First-class takeoff-to-BoQ link via existing models and one domain integration path
+- [x] **M08-T05** — First-class takeoff-to-BoQ link via existing models and one domain integration path (PR #94)
   - Depends on: M08-T04, M06 BoQ linking contract · Output: takeoff→BoQ integration through one domain path.
   - Scope: quantity changes flow through one domain integration path; no direct BoQ cell mutation from a drawing widget (v3 §6 M08).
   - Acceptance:
