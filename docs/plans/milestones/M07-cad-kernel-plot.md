@@ -21,7 +21,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - The report includes the CADCraft MCP tool inventory (tool names, inputs, outputs) and notes on headless driving.
     - The report ends in an explicit recommendation: proceed toward a per-engine adoption ADR (replacing or complementing the LibreDWG fallback per ADR-0015 §7), or keep the recorded fallback — either way the evidence is linked from this milestone.
 
-- [ ] **M07-T02** — Preserve central command registry and input state machines
+- [x] **M07-T02** — Preserve central command registry and input state machines (PR #80)
   - Depends on: M02-GATE · Output: command registry and input state machines carried into the kernel boundary with contract tests.
   - Scope: command line, aliases, numeric/relative input, cancel/repeat, selection, grips, snap, ortho, units, undo, layouts retained from `src/lib/cad/` (v3 §3, §6 M07); Contractor hosts/adapters dispatch through the adopted command boundary, never modify entities directly.
   - Acceptance:
