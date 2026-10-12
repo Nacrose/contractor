@@ -1,0 +1,9 @@
+{
+  "name": "gridcraft-prototype",
+  "version": "0.3.0",
+  "type": "module",
+  "description": "GridCraft CLI / Headless MCP Prototype & Fixture Comparison against TypeScript Authority (M06-T01)",
+  "scripts": {
+    "test": "node run_prototype.mjs"
+  }
+}
