@@ -20,7 +20,10 @@ export interface InvalidationSummary {
 export type ReviewAction = 'CONFIRM_AS_IS' | 'RECALCULATE_QUANTITY' | 'DISCARD';
 
 export class TakeoffInvalidationEngine {
-  constructor(private readonly repository: MeasurementRepository) {}
+  constructor(
+    private readonly repository: MeasurementRepository,
+    private readonly onInvalidation?: (summary: InvalidationSummary) => void
+  ) {}
 
   /**
    * Invalidates measurements when a new drawing revision is issued (e.g. REV-A -> REV-B).
@@ -56,13 +59,15 @@ export class TakeoffInvalidationEngine {
       affectedIds.push(m.id);
     }
 
-    return {
+    const summary: InvalidationSummary = {
       documentId,
       reason: 'SOURCE_REVISION_BUMPED',
       invalidatedMeasurementIds: affectedIds,
       affectedDerivedQuantitiesCount: derivedCount,
       timestampUtc: now
     };
+    if (this.onInvalidation) this.onInvalidation(summary);
+    return summary;
   }
 
   /**
@@ -99,13 +104,15 @@ export class TakeoffInvalidationEngine {
       }
     }
 
-    return {
+    const summary: InvalidationSummary = {
       documentId,
       reason: 'PAGE_RECALIBRATED',
       invalidatedMeasurementIds: affectedIds,
       affectedDerivedQuantitiesCount: derivedCount,
       timestampUtc: now
     };
+    if (this.onInvalidation) this.onInvalidation(summary);
+    return summary;
   }
 
   /**
@@ -151,13 +158,15 @@ export class TakeoffInvalidationEngine {
       }
     }
 
-    return {
+    const summary: InvalidationSummary = {
       documentId,
       reason: 'CROP_OR_ROTATION_CHANGED',
       invalidatedMeasurementIds: affectedIds,
       affectedDerivedQuantitiesCount: derivedCount,
       timestampUtc: now
     };
+    if (this.onInvalidation) this.onInvalidation(summary);
+    return summary;
   }
 
   /**

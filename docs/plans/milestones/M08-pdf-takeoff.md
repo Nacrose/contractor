@@ -56,7 +56,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - A drawing widget cannot mutate BoQ cells directly; the single integration path is enforced and tested.
     - Change-feed integration and Flutter-parity path named (standing constraint 3); round-trip evidence links measurement → quantity → BoQ → measurement.
 
-- [ ] **M08-T06** — Recalibration/revision invalidation and double-counting prevention
+- [x] **M08-T06** — Recalibration/revision invalidation and double-counting prevention (PR #95)
   - Depends on: M08-T05 · Output: invalidation/deduplication evidence under real sync.
   - Scope: recalibration/revision changes mark affected measurements and downstream quantities for review; prevent double counting from repeated links or replayed measurements (v3 §6 M08).
   - Acceptance:

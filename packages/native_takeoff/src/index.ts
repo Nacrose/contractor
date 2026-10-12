@@ -19,3 +19,4 @@ export * from "./sync_feed_adapter.js";
 export * from "./cad_topology_bridge.js";
 export * from "./measurement_engine.js";
 export * from "./boq_link_service.js";
+export * from "./save_sync_state.js";

@@ -50,7 +50,7 @@ export type MeasurementType =
 export interface DerivedQuantityLink {
   readonly linkId: string;
   readonly boqItemId: string;
-  readonly factor: number;
+  factor: number;
   derivedQuantity: number;
   status: MeasurementStatus;
 }

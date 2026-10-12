@@ -1,8 +1,8 @@
 /**
- * First-Class Takeoff-to-BoQ Integration Service (M08-T05).
+ * First-Class Takeoff-to-BoQ Integration Service (M08-T05 / M08-T06).
  *
  * Implements the single domain integration path between takeoff measurements and BoQ items,
- * fulfilling Platform Plan v3 §5.1, §6 M08 and Standing Constraint 3.
+ * fulfilling Platform Plan v3 §5.1, §5.4, §6 M08 and Standing Constraint 3.
  *
  * Design Invariants:
  *  1. SINGLE INTEGRATION PATH — all takeoff quantity postings flow through this service.
@@ -17,11 +17,20 @@
  *     with receiptId and serverSeq captured on both ends.
  *  5. CHANGE-FEED & FLUTTER-PARITY — emits canonical change events and provides
  *     Flutter-compatible DTOs (Standing Constraint 3).
+ *  6. REVISION/CALIBRATION INVALIDATION & NO SILENT PERSISTENCE (M08-T06) — recalibration or revision
+ *     bumps mark affected measurements and downstream BoQ quantities for review (NEEDS_REVIEW).
+ *     Accepted quantities CANNOT silently persist.
+ *  7. DOUBLE-COUNTING PREVENTION & IDEMPOTENCY (M08-T06) — repeated links and replayed measurements
+ *     (M03 feed replay) do not double-count; cell totals aggregate distinct links idempotently.
+ *  8. SHARED SAVE/SYNC VISIBILITY (M02-T05 / M08-T06) — review state is visible in SaveSyncState
+ *     and clears ONLY through the domain review resolution path.
  */
 
 import { MeasurementRecord, MeasurementRepository, DerivedQuantityLink } from "./geometry_storage.js";
-import { MeasurementStatus } from "./provenance.js";
+import { CalibrationRatio, MeasurementStatus } from "./provenance.js";
 import { TakeoffSyncFeedAdapter, TakeoffChangeEvent } from "./sync_feed_adapter.js";
+import { TakeoffSaveSyncTracker, SaveSyncState } from "./save_sync_state.js";
+import { TakeoffInvalidationEngine, ReviewAction } from "./invalidation_engine.js";
 
 // ---------------------------------------------------------------------------
 // Error Types
@@ -35,7 +44,8 @@ export type TakeoffBoqErrorCode =
   | 'MEASUREMENT_NOT_FOUND'
   | 'INVALID_MEASUREMENT_STATUS'
   | 'LINK_NOT_FOUND'
-  | 'EXACT_DECIMAL_FORMAT_ERROR';
+  | 'EXACT_DECIMAL_FORMAT_ERROR'
+  | 'DIRECT_CLEAR_PROHIBITED';
 
 export class TakeoffBoqLinkError extends Error {
   constructor(
@@ -93,7 +103,7 @@ export interface TakeoffBoqLink {
   readonly revisionId: string;
   readonly boqCode: string;
   readonly cellRef: string; // "<sheetId>:<colId>:<rowId>"
-  readonly multiplier: number;
+  multiplier: number;
   derivedQuantity: number;
   exactDecimalQuantity: string;
   readonly targetUnit: string;
@@ -110,6 +120,7 @@ export interface QuantityPostingRequest {
   readonly cellRef: string;
   readonly multiplier?: number;
   readonly targetUnit?: string;
+  readonly idempotencyKey?: string;
 }
 
 export interface QuantityPostingReceipt {
@@ -122,6 +133,7 @@ export interface QuantityPostingReceipt {
   readonly exactDecimalQuantity: string;
   readonly postedAtUtc: string;
   readonly operation: 'worksheet.update';
+  readonly isIdempotentReplay?: boolean;
 }
 
 export interface RoundTripEvidence {
@@ -146,13 +158,26 @@ export interface RoundTripEvidence {
 export interface ReflectedBoqCell {
   readonly cellRef: string;
   readonly boqCode: string;
-  value: string; // Exact-decimal string
+  value: string; // Exact-decimal string: aggregated sum of active, accepted contributing links
   unit: string;
+  status: MeasurementStatus;
+  needsReview: boolean;
+  contributingLinkIds: string[];
   lastTakeoffMeasurementId: string;
   lastTakeoffLinkId: string;
   lastReceiptId: string;
   lastServerSeq: number;
   updatedAtUtc: string;
+}
+
+export interface ReviewResolutionResult {
+  readonly measurementId: string;
+  readonly action: ReviewAction;
+  readonly reviewer: string;
+  readonly resolvedAtUtc: string;
+  readonly updatedLinksCount: number;
+  readonly affectedCellsCount: number;
+  readonly remainingPendingReviewsCount: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -218,17 +243,78 @@ export interface ITakeoffBoqLinkService {
   getLinksForBoqItem(boqCode: string): TakeoffBoqLink[];
   getReflectedCell(cellRef: string): ReflectedBoqCell | undefined;
   verifyRoundTrip(measurementId: string, cellRef: string): RoundTripEvidence;
+  invalidateDownstreamLinks(invalidatedMeasurementIds: readonly string[], reason: string): number;
+  resolveReviewDecision(
+    caller: CallerContext,
+    decision: {
+      measurementId: string;
+      action: ReviewAction;
+      reviewer: string;
+      newCalibrationRatio?: CalibrationRatio;
+    }
+  ): ReviewResolutionResult;
+  getSaveSyncState(): Readonly<SaveSyncState>;
 }
 
 export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
   private readonly linksById = new Map<string, TakeoffBoqLink>();
   private readonly reflectedCells = new Map<string, ReflectedBoqCell>();
+  private readonly receiptsByIdempotencyKey = new Map<string, QuantityPostingReceipt>();
+  private readonly saveSyncTracker: TakeoffSaveSyncTracker;
+  private readonly invalidationEngine: TakeoffInvalidationEngine;
   private seqCounter = 1000;
 
   constructor(
     private readonly measurementRepo: MeasurementRepository,
-    private readonly onEventEmitted?: (evt: TakeoffChangeEvent) => void
-  ) {}
+    private readonly onEventEmitted?: (evt: TakeoffChangeEvent) => void,
+    saveSyncTracker?: TakeoffSaveSyncTracker,
+    invalidationEngine?: TakeoffInvalidationEngine
+  ) {
+    this.saveSyncTracker = saveSyncTracker ?? new TakeoffSaveSyncTracker();
+    this.invalidationEngine =
+      invalidationEngine ??
+      new TakeoffInvalidationEngine(this.measurementRepo, (summary) => {
+        this.invalidateDownstreamLinks(summary.invalidatedMeasurementIds, summary.reason);
+      });
+  }
+
+  getSaveSyncState(): Readonly<SaveSyncState> {
+    return this.saveSyncTracker.getState();
+  }
+
+  getInvalidationEngine(): TakeoffInvalidationEngine {
+    return this.invalidationEngine;
+  }
+
+  /**
+   * Recalculates the aggregated cell quantity across all contributing links
+   * ensuring that only ACCEPTED links contribute to the active quantity.
+   * If any contributing link requires review, the cell is flagged NEEDS_REVIEW.
+   */
+  private recalculateCellValue(cellRef: string): string {
+    const cell = this.reflectedCells.get(cellRef);
+    if (!cell) return '0.00';
+
+    let total = 0;
+    let hasNeedsReview = false;
+
+    for (const linkId of cell.contributingLinkIds) {
+      const link = this.linksById.get(linkId);
+      if (link) {
+        if (link.status === 'ACCEPTED') {
+          total += link.derivedQuantity;
+        } else if (link.status === 'NEEDS_REVIEW') {
+          hasNeedsReview = true;
+        }
+      }
+    }
+
+    const exactStr = formatExactDecimal(total, 2);
+    cell.value = exactStr;
+    cell.needsReview = hasNeedsReview;
+    cell.status = hasNeedsReview ? 'NEEDS_REVIEW' : 'ACCEPTED';
+    return exactStr;
+  }
 
   /**
    * Validates security guards corresponding to "worksheet.update" operation in registry:
@@ -270,11 +356,23 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
 
   /**
    * Single domain integration path for posting takeoff quantities to BoQ items.
+   * Enforces idempotency and prevents double counting upon replayed messages.
    */
   async postQuantityUpdate(
     caller: CallerContext,
     request: QuantityPostingRequest
   ): Promise<QuantityPostingReceipt> {
+    // 1. Idempotency Check: if identical idempotency key was previously processed, return cached receipt
+    if (request.idempotencyKey) {
+      const cached = this.receiptsByIdempotencyKey.get(request.idempotencyKey);
+      if (cached) {
+        return {
+          ...cached,
+          isIdempotentReplay: true
+        };
+      }
+    }
+
     const measurement = this.measurementRepo.getById(request.measurementId);
     if (!measurement) {
       throw new TakeoffBoqLinkError(
@@ -293,7 +391,6 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
     }
 
     // Run permission and fiscal lock checks
-    // Measurement provenance stores documentId, we treat tenant as caller.tenantId if matching
     this.assertPermissions(caller, caller.tenantId);
 
     const multiplier = request.multiplier ?? 1.0;
@@ -306,7 +403,7 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
     const receiptId = `rcpt-boq-${Date.now()}-${this.seqCounter}`;
     const serverSeq = this.seqCounter;
 
-    // 1. Create or update the link model
+    // 2. Create or update the link model (DEDUPLICATION: updates existing link in-place)
     let link = this.linksById.get(linkId);
     if (!link) {
       link = {
@@ -328,6 +425,7 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
       };
       this.linksById.set(linkId, link);
     } else {
+      link.multiplier = multiplier;
       link.derivedQuantity = computedDerived;
       link.exactDecimalQuantity = exactDecimalStr;
       link.status = 'ACCEPTED';
@@ -336,11 +434,12 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
       link.updatedAtUtc = now;
     }
 
-    // 2. Update measurement's derivedQuantities list
+    // 3. Update measurement's derivedQuantities list (in-place replacement prevents list duplication)
     const existingDerived = measurement.derivedQuantities.find((d) => d.linkId === linkId);
     if (existingDerived) {
       existingDerived.derivedQuantity = computedDerived;
       existingDerived.status = 'ACCEPTED';
+      existingDerived.factor = multiplier;
     } else {
       measurement.derivedQuantities.push({
         linkId,
@@ -352,21 +451,54 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
     }
     this.measurementRepo.save(measurement);
 
-    // 3. Reflect cell in target BoQ table (canonical service update)
-    const reflectedCell: ReflectedBoqCell = {
-      cellRef: request.cellRef,
-      boqCode: request.boqCode,
-      value: exactDecimalStr,
-      unit: request.targetUnit ?? measurement.declaredUnit,
-      lastTakeoffMeasurementId: measurement.id,
-      lastTakeoffLinkId: linkId,
-      lastReceiptId: receiptId,
-      lastServerSeq: serverSeq,
-      updatedAtUtc: now
-    };
-    this.reflectedCells.set(request.cellRef, reflectedCell);
+    // 4. Update or create ReflectedBoqCell with aggregated value (DEDUPLICATION: linkId added only once)
+    let reflectedCell = this.reflectedCells.get(request.cellRef);
+    if (!reflectedCell) {
+      reflectedCell = {
+        cellRef: request.cellRef,
+        boqCode: request.boqCode,
+        value: exactDecimalStr,
+        unit: request.targetUnit ?? measurement.declaredUnit,
+        status: 'ACCEPTED',
+        needsReview: false,
+        contributingLinkIds: [linkId],
+        lastTakeoffMeasurementId: measurement.id,
+        lastTakeoffLinkId: linkId,
+        lastReceiptId: receiptId,
+        lastServerSeq: serverSeq,
+        updatedAtUtc: now
+      };
+      this.reflectedCells.set(request.cellRef, reflectedCell);
+    } else {
+      if (!reflectedCell.contributingLinkIds.includes(linkId)) {
+        reflectedCell.contributingLinkIds.push(linkId);
+      }
+      reflectedCell.lastTakeoffMeasurementId = measurement.id;
+      reflectedCell.lastTakeoffLinkId = linkId;
+      reflectedCell.lastReceiptId = receiptId;
+      reflectedCell.lastServerSeq = serverSeq;
+      reflectedCell.updatedAtUtc = now;
+      this.recalculateCellValue(request.cellRef);
+    }
 
-    // 4. Emit change-feed event for Flutter client and sync outbox
+    const receipt: QuantityPostingReceipt = {
+      receiptId,
+      serverSeq,
+      linkId,
+      measurementId: measurement.id,
+      boqCode: request.boqCode,
+      cellRef: request.cellRef,
+      exactDecimalQuantity: exactDecimalStr,
+      postedAtUtc: now,
+      operation: 'worksheet.update',
+      isIdempotentReplay: false
+    };
+
+    if (request.idempotencyKey) {
+      this.receiptsByIdempotencyKey.set(request.idempotencyKey, receipt);
+    }
+
+    // 5. Emit change-feed event for Flutter client and sync outbox
     const changeEvent: TakeoffChangeEvent = {
       eventId: `feed-evt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       changeKind: 'TAKEOFF_MEASUREMENT_UPDATED',
@@ -381,6 +513,7 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
         boqCode: request.boqCode,
         cellRef: request.cellRef,
         exactDecimalQuantity: exactDecimalStr,
+        cellAggregatedTotal: reflectedCell.value,
         receiptId,
         serverSeq
       },
@@ -391,17 +524,7 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
       this.onEventEmitted(changeEvent);
     }
 
-    return {
-      receiptId,
-      serverSeq,
-      linkId,
-      measurementId: measurement.id,
-      boqCode: request.boqCode,
-      cellRef: request.cellRef,
-      exactDecimalQuantity: exactDecimalStr,
-      postedAtUtc: now,
-      operation: 'worksheet.update'
-    };
+    return receipt;
   }
 
   getLinksForMeasurement(measurementId: string): TakeoffBoqLink[] {
@@ -429,13 +552,168 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
   }
 
   /**
+   * Invalidates downstream BoQ links and reflected cells when measurements require review.
+   * Enforces that accepted quantities CANNOT silently persist.
+   */
+  invalidateDownstreamLinks(invalidatedMeasurementIds: readonly string[], reason: string): number {
+    const invalidatedSet = new Set(invalidatedMeasurementIds);
+    let affectedLinkCount = 0;
+    const affectedCellRefs = new Set<string>();
+
+    for (const link of this.linksById.values()) {
+      if (invalidatedSet.has(link.measurementId)) {
+        link.status = 'NEEDS_REVIEW';
+        affectedLinkCount++;
+        affectedCellRefs.add(link.cellRef);
+      }
+    }
+
+    for (const cellRef of affectedCellRefs) {
+      const cell = this.reflectedCells.get(cellRef);
+      if (cell) {
+        cell.status = 'NEEDS_REVIEW';
+        cell.needsReview = true;
+        this.recalculateCellValue(cellRef);
+
+        if (this.onEventEmitted) {
+          this.onEventEmitted({
+            eventId: `feed-evt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+            changeKind: 'TAKEOFF_MEASUREMENT_INVALIDATED',
+            entityId: cellRef,
+            tenantId: 'system',
+            documentId: '',
+            revisionId: '',
+            payload: {
+              cellRef,
+              boqCode: cell.boqCode,
+              status: 'NEEDS_REVIEW',
+              reason
+            },
+            emittedAtUtc: new Date().toISOString()
+          });
+        }
+      }
+    }
+
+    // Count all links currently needing review across the repository
+    let pendingReviews = 0;
+    for (const link of this.linksById.values()) {
+      if (link.status === 'NEEDS_REVIEW') {
+        pendingReviews++;
+      }
+    }
+    this.saveSyncTracker.notifyReviewRequired(pendingReviews);
+
+    return affectedLinkCount;
+  }
+
+  /**
+   * Resolves review for a measurement via the canonical domain path.
+   * Updates measurement, links, reflected BoQ cells, and clears SaveSyncState review status.
+   */
+  resolveReviewDecision(
+    caller: CallerContext,
+    decision: {
+      measurementId: string;
+      action: ReviewAction;
+      reviewer: string;
+      newCalibrationRatio?: CalibrationRatio;
+    }
+  ): ReviewResolutionResult {
+    this.assertPermissions(caller, caller.tenantId);
+
+    const m = this.measurementRepo.getById(decision.measurementId);
+    if (!m) {
+      throw new TakeoffBoqLinkError(
+        'MEASUREMENT_NOT_FOUND',
+        `Measurement "${decision.measurementId}" not found for review resolution`
+      );
+    }
+
+    // 1. Apply decision to measurement in repository
+    const reviewApplied = this.invalidationEngine.applyHumanReview(
+      decision.measurementId,
+      decision.action,
+      decision.reviewer,
+      decision.newCalibrationRatio
+    );
+
+    if (!reviewApplied) {
+      throw new TakeoffBoqLinkError(
+        'MEASUREMENT_NOT_FOUND',
+        `Failed to apply review decision to measurement "${decision.measurementId}"`
+      );
+    }
+
+    const updatedM = this.measurementRepo.getById(decision.measurementId)!;
+    const links = this.getLinksForMeasurement(decision.measurementId);
+    const affectedCellRefs = new Set<string>();
+    const now = new Date().toISOString();
+
+    // 2. Update linked quantities according to review decision
+    for (const link of links) {
+      affectedCellRefs.add(link.cellRef);
+      if (decision.action === 'CONFIRM_AS_IS') {
+        link.status = 'ACCEPTED';
+        link.updatedAtUtc = now;
+      } else if (decision.action === 'RECALCULATE_QUANTITY') {
+        link.derivedQuantity = updatedM.calibratedQuantity * link.multiplier;
+        link.exactDecimalQuantity = formatExactDecimal(link.derivedQuantity, 2);
+        link.status = 'ACCEPTED';
+        link.updatedAtUtc = now;
+      } else if (decision.action === 'DISCARD') {
+        link.status = 'INVALIDATED';
+        link.updatedAtUtc = now;
+      }
+    }
+
+    // 3. Recalculate affected BoQ cells
+    for (const cellRef of affectedCellRefs) {
+      this.recalculateCellValue(cellRef);
+    }
+
+    // 4. Update save/sync status
+    let remainingReviews = 0;
+    for (const link of this.linksById.values()) {
+      if (link.status === 'NEEDS_REVIEW') {
+        remainingReviews++;
+      }
+    }
+    this.saveSyncTracker.notifyReviewRequired(remainingReviews);
+
+    // 5. Emit change event
+    if (this.onEventEmitted) {
+      this.onEventEmitted({
+        eventId: `feed-evt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        changeKind: 'TAKEOFF_MEASUREMENT_REVIEWED',
+        entityId: decision.measurementId,
+        tenantId: caller.tenantId,
+        documentId: updatedM.provenance.documentId,
+        revisionId: updatedM.provenance.sourceRevisionId,
+        payload: {
+          measurementId: decision.measurementId,
+          action: decision.action,
+          reviewer: decision.reviewer,
+          remainingReviews
+        },
+        emittedAtUtc: now
+      });
+    }
+
+    return {
+      measurementId: decision.measurementId,
+      action: decision.action,
+      reviewer: decision.reviewer,
+      resolvedAtUtc: now,
+      updatedLinksCount: links.length,
+      affectedCellsCount: affectedCellRefs.size,
+      remainingPendingReviewsCount: remainingReviews
+    };
+  }
+
+  /**
    * Verifies the round-trip link:
    * measurement -> quantity -> BoQ cell -> measurement
-   * Confirms that:
-   * 1. Measurement exists and contains the derived quantity link.
-   * 2. The BoQ cell contains the reflected value.
-   * 3. The exact-decimal string matches identically.
-   * 4. The receiptId and serverSeq match between link and reflected cell.
    */
   verifyRoundTrip(measurementId: string, cellRef: string): RoundTripEvidence {
     const measurement = this.measurementRepo.getById(measurementId);
@@ -456,8 +734,7 @@ export class TakeoffBoqLinkService implements ITakeoffBoqLinkService {
     }
 
     const matches =
-      reflectedCell.value === link.exactDecimalQuantity &&
-      reflectedCell.lastReceiptId === link.lastReceiptId &&
+      reflectedCell.contributingLinkIds.includes(link.linkId) &&
       reflectedCell.lastTakeoffMeasurementId === measurementId;
 
     return {
