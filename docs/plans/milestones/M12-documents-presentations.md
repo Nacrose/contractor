@@ -29,7 +29,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Round-trip fidelity of sample construction progress deck fixture.
     - Evidence report and tool inventory recorded in `docs/reports/M12/deckcraft-prototype-and-contract.md`.
 
-- [ ] **M12-T03** — Document data-flow, authority contract & financial projection boundaries
+- [x] **M12-T03** — Document data-flow, authority contract & financial projection boundaries (PR #130)
   - Depends on: M02-T01, M06-T07, M10-T04 · Output: `docs/reports/M12/document-data-flow-and-authority.md`, `@contractor/native-documents` package core contracts.
   - Scope: establish the architectural boundary where documents and decks are strictly read-only projections of authoritative domain data (derived from M12-W01). Render inputs cross the service boundary as exact-decimal strings or scaled integer minor units (`BigInt` Paisa). Zero financial math, billing formulas, or permission checks duplicated in the document layer. Define template versioning and document generation provenance records (snapshot timestamp, creator, source record hashes).
   - Acceptance:
