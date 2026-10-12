@@ -64,7 +64,7 @@ SyncEnvelope buildSyncEnvelope({
         role: op.role ?? 'member',
       );
   return SyncEnvelope(
-    syncProtocolVersion: kSyncProtocolVersion,
+    protocolVersion: kNativeAdapterProtocolVersion,
     opId: op.opId,
     deviceId: deviceId,
     accountId: op.accountId,
