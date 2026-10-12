@@ -34,7 +34,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Python runtime execution budget verified ($\le 250\text{ ms}$ for 1,000 tasks).
     - TruePPM MCP tool inventory documented.
 
-- [ ] **M09-T02** — Versioned calculation inputs, schema tracking & Contractor data bridge
+- [x] **M09-T02** — Versioned calculation inputs, schema tracking & Contractor data bridge (PR #101)
   - Depends on: M09-T01, M02-GATE, M03-GATE · Output: `@contractor/native-scheduling` core data bridge & schema versioning.
   - Scope: implement bidirectional data bridge mapping stable project, task, dependency, calendar, and rate IDs between Contractor tenant entities and TruePPM calculation inputs. Persist engine release, input schema version, and calculation revision alongside outputs. Preserve strict date-only semantics (ISO 8601 `YYYY-MM-DD` without ambient timezone drift) and explicit duration units (working days / hours). Minimal upstream state boundary with zero uncontrolled dual writes.
   - Acceptance:
