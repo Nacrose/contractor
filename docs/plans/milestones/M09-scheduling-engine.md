@@ -70,7 +70,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Structured revision explanations categorize cause (progress actuals, dependency modification, calendar change, constraint change).
     - Historical baseline comparisons remain queryable across multiple revisions.
 
-- [ ] **M09-T06** — Reproducible TruePPM release update and rollback pipeline
+- [x] **M09-T06** — Reproducible TruePPM release update and rollback pipeline (PR #105)
   - Depends on: M09-T01, M06-T12 · Output: `scripts/update-trueppm.mjs` command, vendor registry tracking, and two-release qualification test battery.
   - Scope: implement `scripts/update-trueppm.mjs <release>` with machine-readable immutable pins, resolved commits, artifact hashes, dependency locks, and Apache-2.0 license/NOTICE auditing in `docs/vendor/TRUEPPM.md`. Demonstrate two actual releases across full/embedded modes, historical schedule compatibility, and safe rollback.
   - Acceptance:
