@@ -129,7 +129,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Workbook/freeform mode and domain-backed tables have explicit authority contracts, source provenance and checkpoint/recovery behavior. Financial arithmetic remains in existing services.
     - Consumer switch and retirement evidence includes native/web workflow and mobile input/accessibility checks, with rollback preserving unsynchronized work. No screen-specific engine, offline queue or permanent duplicate domain model.
 
-- [ ] **M06-T11** — 👤 GATE — M06 exit evidence
+- [x] **M06-T11** — 👤 GATE — M06 exit evidence (PR #78)
   - Depends on: M06-T01…T10, M06-T12, M06-T13 · Output: `[M06-GATE]` evidence packet and owner decision.
   - Acceptance:
     - Full/embedded hosting, calculation-table consumer migration and a real GridCraft release upgrade/rollback are evidenced; T01 simulation claims are replaced by T04 actual execution evidence.
