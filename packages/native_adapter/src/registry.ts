@@ -12,7 +12,77 @@
 
 import { OperationMap } from "./contract.js";
 
+export const DAILY_REPORT_OPERATION = "workflow.dailyReport.createFieldReport" as const;
+export const DAILY_REPORT_UPDATE_OPERATION = "workflow.dailyReport.updateFieldReport" as const;
+export const ATTENDANCE_RECORD_OPERATION = "attendance.record" as const;
+export const ATTENDANCE_UPDATE_OPERATION = "attendance.update" as const;
+export const SITE_EXPENSE_OPERATION = "siteExpense.create" as const;
+export const MATERIAL_DELIVERY_OPERATION = "material.delivery" as const;
+export const FIELD_PHOTOS_UPLOAD_OPERATION = "fieldPhotos.upload" as const;
+
 export const SEED_OPERATIONS: OperationMap = {
+  // M04-T03 activation — the product native-sync route calls the existing
+  // daily-report service, preserving its project edit guard, transactional
+  // photo-reference checks, and durable clientUuid idempotency.
+  [DAILY_REPORT_OPERATION]: {
+    kind: "mutation",
+    service: "workflow.dailyReport.createFieldReport",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "inputReferences",
+      "idempotency",
+    ],
+  },
+
+  [DAILY_REPORT_UPDATE_OPERATION]: {
+    kind: "mutation",
+    service: "workflow.dailyReport.updateReport",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "inputReferences",
+      "idempotency",
+    ],
+  },
+
+  // M05-T02 expansion — attendance submissions (M00 router inventory row 43:
+  // leave.ts / StaffAttendance; row 39: hr.ts; row 26: field-submission.ts).
+  // Central duplicate rules and server-authoritative timestamps enforced.
+  [ATTENDANCE_RECORD_OPERATION]: {
+    kind: "mutation",
+    service: "attendance submission engine (field-submission ingestion / daily-report-sync normalization, idempotency, audit-log)",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "inputReferences",
+      "idempotency",
+    ],
+  },
+
+  [ATTENDANCE_UPDATE_OPERATION]: {
+    kind: "mutation",
+    service: "attendance update engine (field-submission ingestion / daily-report-sync normalization, idempotency, audit-log)",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "inputReferences",
+      "idempotency",
+    ],
+  },
+
   // field-submission.ts — createDomainRouter declarative pipeline, withIdempotency
   // (M00-T07 §3 row 26: mutation via daily-report-sync normalization).
   "fieldSubmission.submit": {
@@ -23,10 +93,44 @@ export const SEED_OPERATIONS: OperationMap = {
 
   // site-expense.ts — createDomainRouter proc.write + financialGuard + capabilityGuard;
   // ledger-entry/bank-balance/fiscal-year-lock engines (M00-T07 §3 row 67).
-  "siteExpense.create": {
+  [SITE_EXPENSE_OPERATION]: {
     kind: "mutation",
     service: "site-expense engine (financial-event-log, bank-balance, fiscal-year-lock, ledger-entry)",
     guards: ["identity", "tenantScope", "rateLimit", "projectMembership", "projectPermission", "capability", "delegation", "financial", "fiscalLock", "idempotency"],
+  },
+
+  // M05-T04 expansion — MRR / delivery submissions (M00 router inventory
+  // row 26: field-submission.ts and row 44-46: material routers).
+  // Material reconciliation and office review flow reused.
+  [MATERIAL_DELIVERY_OPERATION]: {
+    kind: "mutation",
+    service: "material delivery ingestion (field-submission ingestion / daily-report-sync normalization, idempotency, audit-log)",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "capability",
+      "inputReferences",
+      "idempotency",
+    ],
+  },
+
+  // M05-T05 expansion — field photos through resumable pipeline (M00 router
+  // inventory row 25: field-photos.ts).
+  [FIELD_PHOTOS_UPLOAD_OPERATION]: {
+    kind: "mutation",
+    service: "field-photos engine (resumable chunks, sharp digest verification, StoredFile / FieldPhoto registration)",
+    guards: [
+      "identity",
+      "tenantScope",
+      "rateLimit",
+      "projectMembership",
+      "projectPermission",
+      "inputReferences",
+      "idempotency",
+    ],
   },
 
   // vendor-bill.ts — ledger-entry + fiscal-year-lock + withIdempotency (M00-T07 §3 row 77).
