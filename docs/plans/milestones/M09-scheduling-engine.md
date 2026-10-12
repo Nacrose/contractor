@@ -61,7 +61,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Dependency cycles and impossible constraints detected and surfaced with fail-closed errors before calculation dispatch.
     - Local offline proposals clearly distinguished from server-accepted revisions; reconciliation rules proven.
 
-- [ ] **M09-T05** — Immutable baselines, variance analysis & explained schedule revisions
+- [x] **M09-T05** — Immutable baselines, variance analysis & explained schedule revisions (PR #104)
   - Depends on: M09-T03, M09-T04 · Output: baseline snapshot engine, revision variance analyzer, and explanation model.
   - Scope: preserve Contractor baseline identities, provenance, and approval history across calculation cycles and upgrades. Compute deterministic date, duration, and float variances between active schedule and approved target baseline. Generate structured explanation of schedule shifts before applying revisions; accepted revisions freeze engine release and inputs.
   - Acceptance:
