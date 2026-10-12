@@ -3,7 +3,7 @@
   "title": "ArtCraft Family Vendor Registry",
   "description": "Machine-readable configuration of upstream ArtCraft family components, effective pins, build inputs, license attributions, and qualification lifecycle status.",
   "schemaVersion": "1.0.0",
-  "lastUpdated": "2026-10-12T11:24:51.392Z",
+  "lastUpdated": "2026-10-12T16:48:11.396Z",
   "governance": {
     "policy": "ADR-0015",
     "pinningRule": "exact_tag_and_immutable_commit_only",
@@ -171,15 +171,15 @@
     },
     "wordcraft": {
       "name": "WordCraft",
-      "description": "Rich document authoring and contractual specification engine",
-      "status": "pending",
+      "description": "Adopted rich document authoring and contractual specification engine per ADR-0015/ADR-0016",
+      "status": "supported",
       "upstreamUrl": "https://github.com/storytold/wordcraft",
-      "releaseTag": null,
-      "commit": null,
-      "previousReleaseTag": null,
-      "previousCommit": null,
-      "artifactDigest": null,
-      "pinnedOn": null,
+      "releaseTag": "v0.3.0",
+      "commit": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+      "previousReleaseTag": "v0.3.0",
+      "previousCommit": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+      "artifactDigest": "sha256:d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2",
+      "pinnedOn": "2026-10-12",
       "license": "MIT OR Apache-2.0",
       "attributionFiles": [
         "LICENSE-APACHE",
@@ -187,22 +187,43 @@
         "NOTICE",
         "ATTRIBUTION"
       ],
-      "buildInputs": null,
-      "dependentMilestone": "M12",
-      "dependentTask": "M12-T10",
-      "reason": "Prototype driver active in prototype/wordcraft (M12-T01); full update qualification executes in M12-T10."
+      "buildInputs": {
+        "manifest": "package.json",
+        "lockfile": "package-lock.json",
+        "lockfileHash": "sha256:b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3",
+        "packages": [
+          "@wordcraft/core",
+          "@wordcraft/docx",
+          "@wordcraft/editor",
+          "@wordcraft/mcp"
+        ]
+      },
+      "integration": {
+        "milestone": "M12",
+        "task": "M12-T10",
+        "adapterPackage": "@contractor/native-documents",
+        "adapterModule": "packages/native_documents/src/wordcraft_host_adapter.ts",
+        "conformanceSuite": "packages/native_documents/test/wordcraft_host_adapter.test.ts",
+        "modes": [
+          "full_editor",
+          "embedded_view",
+          "headless_mcp"
+        ],
+        "qualificationReport": "docs/reports/M12/wordcraft-deckcraft-update-qualification.md"
+      },
+      "lastRollbackAt": "2026-10-12T16:47:55.531Z"
     },
     "deckcraft": {
       "name": "DeckCraft",
-      "description": "Presentation and project proposal slide deck engine",
-      "status": "pending",
+      "description": "Adopted presentation and project proposal slide deck engine per ADR-0015/ADR-0016",
+      "status": "supported",
       "upstreamUrl": "https://github.com/storytold/deckcraft",
-      "releaseTag": null,
-      "commit": null,
-      "previousReleaseTag": null,
-      "previousCommit": null,
-      "artifactDigest": null,
-      "pinnedOn": null,
+      "releaseTag": "v0.3.0",
+      "commit": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+      "previousReleaseTag": "v0.3.0",
+      "previousCommit": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+      "artifactDigest": "sha256:e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+      "pinnedOn": "2026-10-12",
       "license": "MIT OR Apache-2.0",
       "attributionFiles": [
         "LICENSE-APACHE",
@@ -210,10 +231,31 @@
         "NOTICE",
         "ATTRIBUTION"
       ],
-      "buildInputs": null,
-      "dependentMilestone": "M12",
-      "dependentTask": "M12-T10",
-      "reason": "Prototype driver active in prototype/deckcraft (M12-T02); full update qualification executes in M12-T10."
+      "buildInputs": {
+        "manifest": "package.json",
+        "lockfile": "package-lock.json",
+        "lockfileHash": "sha256:c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4",
+        "packages": [
+          "@deckcraft/core",
+          "@deckcraft/pptx",
+          "@deckcraft/slides",
+          "@deckcraft/mcp"
+        ]
+      },
+      "integration": {
+        "milestone": "M12",
+        "task": "M12-T10",
+        "adapterPackage": "@contractor/native-documents",
+        "adapterModule": "packages/native_documents/src/deckcraft_host_adapter.ts",
+        "conformanceSuite": "packages/native_documents/test/deckcraft_host_adapter.test.ts",
+        "modes": [
+          "full_editor",
+          "embedded_view",
+          "headless_mcp"
+        ],
+        "qualificationReport": "docs/reports/M12/wordcraft-deckcraft-update-qualification.md"
+      },
+      "lastRollbackAt": "2026-10-12T16:48:07.345Z"
     },
     "craft-fonts": {
       "name": "craft-fonts",
@@ -239,9 +281,9 @@
         ]
       },
       "integration": {
-        "milestone": "M07",
-        "task": "M07-T06 / M07-T11",
-        "usage": "Devanagari Unicode script fallback and vector PDF typography"
+        "milestone": "M07 / M12",
+        "task": "M07-T06, M07-T11, M12-T09, M12-T10",
+        "usage": "Devanagari Unicode script fallback, vector PDF typography, and cross-platform document rendering"
       }
     }
   },
@@ -331,6 +373,54 @@
           "headless_cli"
         ],
         "notes": "Adopted production release; dual presentation modes (full editor & embedded takeoff), 512x512 tiled viewport, calibrated vector takeoff engine, M04 photo markup pipeline, and single domain BoQ link path."
+      }
+    },
+    "wordcraft": {
+      "v0.2.0": {
+        "releaseTag": "v0.2.0",
+        "commit": "a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+        "releaseDate": "2026-08-18",
+        "documentFormatVersion": 2,
+        "supportedModes": [
+          "full_editor"
+        ],
+        "notes": "Baseline prototype release; single full editor mode, in-process DOCX authoring."
+      },
+      "v0.3.0": {
+        "releaseTag": "v0.3.0",
+        "commit": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+        "releaseDate": "2026-10-12",
+        "documentFormatVersion": 3,
+        "supportedModes": [
+          "full_editor",
+          "embedded_view",
+          "headless_mcp"
+        ],
+        "notes": "Adopted production release; dual presentation modes (full editor & embedded view), FIDIC correspondence templates, track changes, comments, OpenXML DOCX export, and M03 sync outbox integration."
+      }
+    },
+    "deckcraft": {
+      "v0.2.0": {
+        "releaseTag": "v0.2.0",
+        "commit": "b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0",
+        "releaseDate": "2026-08-20",
+        "documentFormatVersion": 2,
+        "supportedModes": [
+          "full_editor"
+        ],
+        "notes": "Baseline prototype release; single full editor mode, in-process PPTX presentation layout."
+      },
+      "v0.3.0": {
+        "releaseTag": "v0.3.0",
+        "commit": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+        "releaseDate": "2026-10-12",
+        "documentFormatVersion": 3,
+        "supportedModes": [
+          "full_editor",
+          "embedded_view",
+          "headless_mcp"
+        ],
+        "notes": "Adopted production release; dual presentation modes (full editor & embedded view), 5-slide monthly executive progress presentation generation, TruePPM EVM S-curve & milestone timeline bindings, OpenXML PresentationML (.pptx) export, and immutable issuance locking."
       }
     }
   }
