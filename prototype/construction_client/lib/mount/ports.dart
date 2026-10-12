@@ -43,6 +43,11 @@ abstract interface class MountSqliteDriver implements SqlDriver {
   Object? pragmaValue(String pragma);
 
   void close();
+
+  /// Waits until committed writes have reached the platform's durable store.
+  /// Native SQLite completes this during transaction commit; browser VFS
+  /// bindings must flush their async IndexedDB journal before acknowledging.
+  Future<void> flushDurability();
 }
 
 /// Durability policy from driver.ts: WAL alone is NOT durability evidence —
@@ -248,7 +253,8 @@ class ObjectStoreError implements Exception {
 /// ---------------------------------------------------------------------------
 
 /// Sync-layer protocol version. Bumped only via a [PLAN-AMEND] decision.
-const int kSyncProtocolVersion = 1;
+/// Exact platform-contract pin used by the M03 native adapter.
+const String kNativeAdapterProtocolVersion = '1.1.0';
 
 class ScopeClaims {
   final String tenantId;
@@ -271,7 +277,7 @@ class ScopeClaims {
 }
 
 class SyncEnvelope {
-  final int syncProtocolVersion;
+  final String protocolVersion;
   final String opId;
   final String deviceId;
   final String accountId;
@@ -286,7 +292,7 @@ class SyncEnvelope {
   final int sentAtMs;
 
   const SyncEnvelope({
-    required this.syncProtocolVersion,
+    required this.protocolVersion,
     required this.opId,
     required this.deviceId,
     required this.accountId,
@@ -300,7 +306,7 @@ class SyncEnvelope {
   });
 
   Map<String, Object?> toJson() => {
-        'syncProtocolVersion': syncProtocolVersion,
+        'protocolVersion': protocolVersion,
         'opId': opId,
         'deviceId': deviceId,
         'accountId': accountId,
