@@ -160,6 +160,36 @@
       "description": "Deterministic 1,000-row realistic BoQ with 10,010 populated cells, quantity calculations and item pricing."
     },
     {
+      "id": "worksheet-standard-ipc-xlsx",
+      "category": "Worksheet",
+      "format": "Open Packaging Conventions / SpreadsheetML (.xlsx)",
+      "versionTag": "ECMA-376 / ISO/IEC 29500",
+      "relativePath": "worksheet/xlsx/standard_ipc_measurement.xlsx",
+      "byteSize": 4299,
+      "sha256": "c1c4696bbebd7164dbf042a8ae0338e09e5af2ba6188440d01b88ff76d3818a6",
+      "coordinateConvention": "SpreadsheetML sheetData with A1 cell notation",
+      "source": "generate-xlsx-fixtures.mjs from standard_ipc_measurement.json",
+      "license": "Apache-2.0 / MIT",
+      "sanitized": true,
+      "isDegenerate": false,
+      "description": "Multi-sheet ECMA-376 XLSX package with 2 sheets (Measurements & BOQ Abstract), 4-factor formulas, cross-sheet links, and 13% VAT rollup."
+    },
+    {
+      "id": "worksheet-bridge-culvert-xlsx",
+      "category": "Worksheet",
+      "format": "Open Packaging Conventions / SpreadsheetML (.xlsx)",
+      "versionTag": "ECMA-376 / ISO/IEC 29500",
+      "relativePath": "worksheet/xlsx/sample_bridge_culvert.xlsx",
+      "byteSize": 3109,
+      "sha256": "68386aa2570ae7b55617e2a7bf95984f9b0f3815f813357b04a270e2469aa78e",
+      "coordinateConvention": "SpreadsheetML sheetData with A1 cell notation",
+      "source": "generate-xlsx-fixtures.mjs",
+      "license": "Apache-2.0 / MIT",
+      "sanitized": true,
+      "isDegenerate": false,
+      "description": "Representative bridge culvert takeoff and interim payment certificate with 4-factor volume formulas, rebar calculations, frozen panes, and VAT rollup."
+    },
+    {
       "id": "pdf-canvas-dense-blueprint",
       "category": "PDF_Canvas",
       "format": "CanvasDoc JSON (v1)",

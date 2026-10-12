@@ -1,0 +1,10 @@
+{
+  "name": "cadcraft-prototype",
+  "version": "0.3.0",
+  "type": "module",
+  "description": "CADCraft CLI / Headless MCP Prototype & DWG/DXF Fixture Comparison against TypeScript Authority (M07-T01)",
+  "scripts": {
+    "test": "node test/driver.test.mjs",
+    "run": "node run_prototype.mjs"
+  }
+}
