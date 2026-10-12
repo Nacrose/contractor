@@ -21,7 +21,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Lossless round-trip of standard construction letter and specification fixtures.
     - Evidence report and tool inventory recorded in `docs/reports/M12/wordcraft-prototype-and-contract.md`.
 
-- [ ] **M12-T02** — DeckCraft prototype & headless MCP verification over .pptx fixtures
+- [x] **M12-T02** — DeckCraft prototype & headless MCP verification over .pptx fixtures (PR #129)
   - Depends on: M01-T01, M06-T01, M12-T01 · Output: `docs/reports/M12/deckcraft-prototype-and-contract.md`, DeckCraft MCP driver, fixture test suite.
   - Scope: drive pinned DeckCraft upstream via CLI / headless MCP against an agreed .pptx corpus (monthly progress presentations, client executive reviews, IPC financial summaries) per ADR-0015. Verify slide layouts, shapes, charts, tables, and slide master fidelity against reference outputs. Record MCP tool inventory before production binding.
   - Acceptance:

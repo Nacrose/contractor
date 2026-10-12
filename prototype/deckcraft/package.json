@@ -1,0 +1,10 @@
+{
+  "name": "deckcraft-prototype",
+  "version": "0.3.0",
+  "type": "module",
+  "description": "DeckCraft CLI / Headless MCP Prototype & OpenXML PPTX Construction Presentation Engine (M12-T02)",
+  "scripts": {
+    "test": "node test/driver.test.mjs",
+    "run": "node run_prototype.mjs"
+  }
+}
