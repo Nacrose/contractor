@@ -69,7 +69,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Embedded vectors, fonts, and letterheads render with 100% visual fidelity.
     - Print dialog integration produces clean paginated output matching ISO 216 paper sizes (A4, A3).
 
-- [ ] **M12-T08** — Document/deck change-feed sync, offline durability & conflict handling
+- [x] **M12-T08** — Document/deck change-feed sync, offline durability & conflict handling (PR #135)
   - Depends on: M03-T04, M12-T04, M12-T06 · Output: `docs/reports/M12/document-sync-and-conflict-handling.md`, document sync adapter.
   - Scope: integrate document (.docx) and presentation (.pptx) artifacts into Contractor's local SQLite storage, attachment transfer pipeline, and change-feed replication (derived from M12-W06). Implement revision management, concurrent edit locking, and conflict resolution: drafts support optimistic concurrent edits with branch fork review, while issued contractual documents are cryptographically locked against alteration.
   - Acceptance:

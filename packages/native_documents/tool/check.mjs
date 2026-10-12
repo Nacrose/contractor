@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_documents: all authority, WordCraft, DeckCraft, and PdfCraft export bridge tests PASSED (M12-T07)");
+console.log("native_documents: all authority, WordCraft, DeckCraft, and sync durability tests PASSED (M12-T08)");
