@@ -56,7 +56,7 @@ Exit (v3): measured recovery drill, validated platform packages, full parity evi
     - Device sync-health metrics expose pending outbox queue depth, cursor lag, and rejection reasons.
     - Alerting triggers when sync lag exceeds threshold or crash rate spikes.
 
-- [ ] **M11-T07** — 👤 GATE — Internal pilot → controlled wider rollout → owner-approved release
+- [x] **M11-T07** — 👤 GATE — Internal pilot → controlled wider rollout → owner-approved release (PR #126)
   - Depends on: M11-T01…T06 · Output: `[M11-GATE]` evidence packet (`docs/reports/M11/m11-exit-gate.md`) and owner release approval.
   - Scope: aggregate complete vault restore drill evidence, measured RPO/RTO metrics, fresh-device bootstrap pass, signed multi-platform installer artifacts, auto-update verification logs, and live channel observability dashboards (derived from M11-W07). Present final release packet to repository owner for formal Protocol R8 release signoff.
   - Acceptance:
