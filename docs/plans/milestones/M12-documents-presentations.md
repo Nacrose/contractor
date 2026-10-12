@@ -93,7 +93,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Pinned versions, checksums, and license notices registered in `docs/vendor/ARTCRAFT.md`.
     - Strict zero-fork upstream posture verified across all document packages.
 
-- [ ] **M12-T11** — 👤 GATE — Client documents & presentations exit evidence
+- [x] **M12-T11** — 👤 GATE — Client documents & presentations exit evidence (PR #138)
   - Depends on: M12-T01…T10 · Output: `[M12-GATE]` evidence packet (`docs/reports/M12/m12-exit-gate.md`) and formal owner approval.
   - Scope: aggregate comprehensive evidence covering WordCraft/DeckCraft prototype reports, document authority contracts, correspondence templates, multi-source report assembly, presentation deck generation, PdfCraft export fidelity, change-feed sync durability, workload benchmarks, and upstream update qualification (derived from M12-W08). Present final exit packet for owner review under Protocol R8.
   - Acceptance:
