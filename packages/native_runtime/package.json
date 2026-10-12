@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Cutover gateway, single active writer contracts, route routing adapters, and concurrency guards (M10-T03).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}

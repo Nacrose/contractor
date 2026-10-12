@@ -1,0 +1,10 @@
+{
+  "name": "@contractor/native-accounting",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Double-entry general ledger, exact-decimal monetary precision, period locks, and Nepal construction chart of accounts (M10-T04).",
+  "scripts": {
+    "check": "node tool/check.mjs"
+  }
+}
