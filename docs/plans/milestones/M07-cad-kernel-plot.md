@@ -30,7 +30,7 @@ Reuse-first direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - Selection/grip semantics preserved with interaction tests; undo semantics unchanged.
     - No production route cutover in this task.
 
-- [ ] **M07-T03** — Integrate and qualify upstream topology primitives
+- [x] **M07-T03** — Integrate and qualify upstream topology primitives (PR #81)
   - Depends on: M07-T02 · Output: shared upstream topology adapter with construction tolerance policy and degeneracy fixtures.
   - Scope: segment/curve intersections, connectivity, split/join, offsets, polygon validity, holes, tolerance policy; large survey coordinates, near-coincident points, degeneracies covered by fixtures (v3 §6 M07).
   - Acceptance:

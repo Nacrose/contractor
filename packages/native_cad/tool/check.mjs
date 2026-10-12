@@ -24,4 +24,4 @@ for (const testFile of testFiles) {
   run("node", [resolve(testDir, testFile)]);
 }
 
-console.log("native_cad: all CAD command registry and input state machine tests PASSED (M07-T02)");
+console.log("native_cad: all CAD command registry, input state, and topology tests PASSED (M07-T02/T03)");

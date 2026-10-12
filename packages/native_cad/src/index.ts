@@ -11,3 +11,4 @@ export * from './undo_engine.js';
 export * from './selection_and_grips.js';
 export * from './input_state_machine.js';
 export * from './command_registry.js';
+export * from './topology.js';
