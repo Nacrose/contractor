@@ -31,20 +31,52 @@ Related upstream-published dependencies:
 | 2026-10-09 | M12 registration | Documents/decks capability area registered as milestone M12; WordCraft/DeckCraft rows updated from "unregistered" to "M12, prototype pending". |
 | 2026-10-12 | PR #66 | GridCraft pinned to release tag `v0.3.0` for M06-T01 prototype driver and fixture evidence. |
 | 2026-10-12 | PR #69 | GridCraft adopted per ADR-0019 at commit `fb823899c57b41703edcad2b6476cf4b8a01dfc4` with actual 20-tool MCP inventory and f64 numeric characterization (M06-T04). |
+| 2026-10-12 | PR #75 | Machine-readable registry `artcraft-registry.json`, `scripts/update-artcraft` pipeline CLI, and two-release qualification evidence (v0.2.0 <-> v0.3.0) implemented (M06-T12). |
 
+## Machine-Readable Registry & Build Inputs
 
-## Release-update contract (planned tooling)
+The machine-readable configuration is maintained at [`docs/vendor/artcraft-registry.json`](artcraft-registry.json). It defines:
+- **Exact immutable pins:** Resolved git commits, release tags, and artifact digests.
+- **Build & lockfile inputs:** Monitored crate lists, cargo lockfile hashes, and compiler/edition baselines.
+- **Milestone boundary enforcement:** Registered pending components (`cadcraft`, `pdfcraft`, `wordcraft`, `deckcraft`, `craft-fonts`) without fabricated pins or passed statuses.
+- **Qualification catalog:** Certified releases with feature capabilities and compatibility matrices.
 
-- M06-T12 implements the shared command, proposed as `scripts/update-artcraft <app> <release>`, and independent app/font registrations. It does not exist merely because this registry names it.
-- Effective configuration must resolve each tag to an immutable commit and record artifact digests, lockfiles and build inputs. Unconsumed apps retain no effective pin; record missing registrations explicitly.
-- Full editors preserve upstream chrome; embedded views use supported component/configuration APIs. All customization stays in Contractor adapters, with missing hooks proposed upstream.
-- Each app's milestone must demonstrate an actual two-release upgrade and rollback: GridCraft M06-T12, CADCraft M07-T11, PdfCraft M08-T09, WordCraft/DeckCraft M12-W09. Both UI modes and previous-release documents are covered. Font updates exercise affected apps/exports.
-- Monthly/per-gate checks identify updates for review; security fixes are expedited. Retain prior artifacts and compatible data/history or tested migration/restore. Zero-fork does not guarantee zero adapter changes.
+## Release-Update CLI (`scripts/update-artcraft`)
+
+The ArtCraft release-update pipeline is implemented as an executable CLI tool at `scripts/update-artcraft` (and module `scripts/update-artcraft.mjs`):
+
+```bash
+# Check vendor registry integrity and effective pins
+scripts/update-artcraft --check
+
+# Qualify and bump an ArtCraft component release
+scripts/update-artcraft gridcraft v0.3.0
+
+# Execute qualification rollback to a previous release
+scripts/update-artcraft gridcraft --rollback v0.2.0
+
+# Dry-run qualification without modifying registry files
+scripts/update-artcraft gridcraft v0.3.0 --dry-run
+```
+
+### Safety & Governance Invariants:
+1. **Explicit Milestone Failures:** Invoking updates on unevaluated or pending apps (`cadcraft`, `pdfcraft`, `wordcraft`, `deckcraft`, `craft-fonts`) halts immediately with exit code 1 and outputs the blocking milestone dependency (e.g. M07-T11, M08-T09).
+2. **Two-Release Qualification Battery:** Upgrades and rollbacks must pass all 8 qualification checks:
+   - Full-editor host adapter chrome & interaction
+   - Embedded-table host adapter chrome & compact BoQ embedding
+   - Cell protection & contractual domain lock rules
+   - Formula registry & dependency recalculation (DAG cycle detection, #DIV/0!, #REF!)
+   - File open/save & XLSX codec round-trip fidelity
+   - Previous-release document compatibility (lossless v2 -> v3 format upgrade)
+   - Local crash recovery & SQLite journal durability
+   - Multi-writer concurrency & sync conflict review (no silent LWW)
+3. **Rollback & Non-Destructive Invariants:** Rollbacks verify that previous-release documents load cleanly and that local recovery checkpoints remain immutable without truncation.
 
 ## Sync checklist (per pin-bump PR)
 
 1. Read upstream release notes/changelog since the previous pin; flag breaking changes touching the crates we consume.
-2. Use the shared update command once implemented to bump the machine-readable release/immutable revision and refresh build inputs/artifact hashes; mirror them here. Run actual upstream fixtures and both full/embedded host checks, including protection/permissions, domain bindings, file fidelity, local recovery, sync conflicts and platform/performance evidence.
+2. Use `scripts/update-artcraft <app> <release>` to bump the machine-readable release/immutable revision and refresh build inputs/artifact hashes; mirror them here. Run actual upstream fixtures and both full/embedded host checks, including protection/permissions, domain bindings, file fidelity, local recovery, sync conflicts and platform/performance evidence.
 3. Re-verify licenses unchanged (`MIT OR Apache-2.0`; `acadrust` still MPL-2.0) and refresh carried attribution files if updated upstream.
-4. Test previous-release documents/operations and rollback; retain prior artifacts and compatible checkpoints or prove migration/restore before enabling incompatible writes.
+4. Test previous-release documents/operations and rollback using `scripts/update-artcraft <app> --rollback <release>`; retain prior artifacts and compatible checkpoints or prove migration/restore before enabling incompatible writes.
 5. Record the bump above; note adapter changes and any overlay crates dropped (fix landed upstream) or still carried. No production promotion without required checks and existing gates.
+

@@ -107,7 +107,7 @@ Exit (v3): agreed feature matrix, native/web/server calculation parity, concurre
     - Retirement is gated on all consumers switched; the sweep and switch evidence is linked.
     - Rollback path recorded (restore is a revert, not a rewrite).
 
-- [ ] **M06-T12** — Shared ArtCraft release-update pipeline and GridCraft upgrade qualification
+- [x] **M06-T12** — Shared ArtCraft release-update pipeline and GridCraft upgrade qualification (PR #75)
   - Depends on: M06-T04, M06-T05 · Output: machine-readable pins/build inputs, documented update command, adapter conformance contract and a GridCraft upgrade/rollback report.
   - Scope: implement the cross-suite lifecycle/version boundary once, with per-app registrations for GridCraft, CADCraft, PdfCraft, WordCraft, DeckCraft and craft-fonts. Proposed command interface: `scripts/update-artcraft <app> <release>`; documentation must distinguish supported integrations from pending app registrations.
   - Acceptance:
