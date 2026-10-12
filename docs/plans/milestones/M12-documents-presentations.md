@@ -37,7 +37,7 @@ Cross-tool integration: [ADR-0018](../../adr/0018-upstream-capabilities-and-cons
     - Document projection models verify exact match with source accounting and BoQ figures.
     - Template version and source data snapshots permanently frozen upon document issuance.
 
-- [ ] **M12-T04** — Letters & site correspondence (.docx) authoring in dual UI modes via WordCraft
+- [x] **M12-T04** — Letters & site correspondence (.docx) authoring in dual UI modes via WordCraft (PR #131)
   - Depends on: M02-T05, M12-T01, M12-T03 · Output: `docs/reports/M12/letters-and-correspondence-wordcraft.md`, WordCraft host adapter, template library.
   - Scope: implement dual UI modes for letters and site correspondence per ADR-0016 (derived from M12-W02): (1) `full_editor` mode preserving WordCraft upstream ribbons, menus, track changes, and comments; (2) `embedded_view` mode providing focused template filling, preview, and placeholder substitution. Build construction correspondence template library (FIDIC notice of claim, engineer instruction, variation memo, site memo). Verify mode switching without document state loss.
   - Acceptance:

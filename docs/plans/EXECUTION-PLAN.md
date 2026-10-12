@@ -34,8 +34,8 @@
 | M09 TruePPM scheduling, progress & cash-flow | [M09-scheduling-engine.md](milestones/M09-scheduling-engine.md) | **Complete** — T01–T08 (PRs #100–#107), T09 gate (PR #108) | 9/9 | M09-T09 `👤 GATE` — submitted for owner review (PR #108) |
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | **Complete** — T01–T08 (PRs #110–#117), T09 gate (PR #118) | 9/9 | M10-T09 `👤 GATE` — submitted for owner review (PR #118) |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | **Complete** — T01–T06 (PRs #120–#125), T07 gate (PR #126) | 7/7 | M11-T07 `👤 GATE` — submitted for owner review (PR #126) |
-| M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | In progress — T01 WordCraft prototype (PR #128), T02 DeckCraft prototype (PR #129), T03 data-flow authority (PR #130); T04–T10 defined, T11 gate | 3/11 | M12-T11 `👤 GATE` — not reached |
-| **Program total** | | | **129/144** | |
+| M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | In progress — T01 WordCraft prototype (PR #128), T02 DeckCraft prototype (PR #129), T03 data-flow authority (PR #130), T04 correspondence dual UI (PR #131); T05–T10 defined, T11 gate | 4/11 | M12-T11 `👤 GATE` — not reached |
+| **Program total** | | | **130/144** | |
 
 
 
