@@ -56,3 +56,9 @@ declare module "node:crypto" {
   }
   export function createHash(algorithm: string): Hash;
 }
+
+declare module "node:fs" {
+  export function readFileSync(path: string, encoding: string): string;
+  export function writeFileSync(path: string, data: string, encoding?: string): void;
+  export function existsSync(path: string): boolean;
+}

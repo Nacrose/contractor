@@ -13,3 +13,4 @@ export * from './sync_feed_adapter.js';
 export * from './scheduling_service_adapter.js';
 export * from './trueppm_host_adapter.js';
 export * from './baseline_and_variance.js';
+export * from './legacy_migration.js';

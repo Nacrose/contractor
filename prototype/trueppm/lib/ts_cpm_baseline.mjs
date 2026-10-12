@@ -1,12 +1,16 @@
 /**
  * Reference TypeScript CPM Engine Baseline (M09-T01).
  *
- * Implements the existing baseline calculation logic to provide
- * comparative evidence against TruePPM's calculation authority.
+ * @deprecated Legacy prototype baseline scheduler superseded by TruePPM integration (ADR-0017, M09-T07).
+ * Scheduled for complete retirement upon M09 Exit Gate cutover.
+ * Production schedules must route through @contractor/native-scheduling (TruePpmHostAdapter & SchedulingBridge).
  */
 
 import { NepalConstructionCalendar } from './nepal_calendar.mjs';
 
+/**
+ * @deprecated Superseded by TruePPM upstream scheduler (ADR-0017).
+ */
 export class TsCpmBaselineEngine {
   constructor() {
     this.calendar = new NepalConstructionCalendar();

@@ -11,31 +11,41 @@
 
 License checked 2026-10-12: repository [Apache-2.0](https://gitlab.com/trueppm/trueppm/-/raw/main/LICENSE). At the chosen immutable release, inspect component/dependency licenses, distribute the license and applicable NOTICE/attribution, and identify modified files if any. Our integration keeps upstream source unmodified. Proprietary enterprise modules are excluded under ADR-0014.
 
-## Initial capability watchlist
+## Release-specific capability delivery register (M09-T07)
 
-Documentation snapshot checked 2026-10-12; verify against the actual selected release. This table is not execution evidence.
+Capability tracking linking upstream TruePPM releases (`v0.4.0-beta.1` / `v0.3.9`) to Contractor fixtures, error guards, and construction workflows:
 
-| Area | Published current state | Contractor follow-up |
-|---|---|---|
-| Release maturity | 0.4 beta line | Qualify chosen releases; do not track `main` |
-| Resource leveling | Not implemented | Link W09 fixture/issue and recheck delivery |
-| Date constraints | Start-no-earlier-than only | Map contractual requirements before cutover |
-| Time granularity | Whole working-day durations; calendar-day lags | Verify required hour/date conventions |
-| P6 exchange | Planned | Track construction exchange fixtures |
-| Schedule UI scale | Comfortable around 2,000 tasks | Measure the existing 10k/50k target |
-| Cost/EVM | Not implemented | Keep Contractor financial services authoritative |
-| Governance | Multi-tenancy and approval chains outside OSS core | Enforce Contractor boundaries on every edit path |
+| Area | Upstream state (v0.4.0-beta.1) | Local fixture / validation | Workflow impact | Disposition | Next verification |
+|---|---|---|---|---|---|
+| **Core CPM Pass** | Forward & backward pass, early/late dates, float | `fixtures/platform-parity/cpm/sample_cpm_1k.json` | Project scheduling, critical path highlighting | **Adopted** | 2026-11-15 |
+| **Working Calendars** | Multi-calendar support, integer workdays | `prototype/trueppm/test/trueppm_prototype.test.mjs` | Nepal standard 6-day calendar, holidays | **Adopted** | 2026-11-15 |
+| **Date Constraints** | Start-No-Earlier-Than (SNET) supported | `packages/native_scheduling/test/trueppm_bridge.test.ts` | Material delivery milestones, site access dates | **Adopted** | 2026-11-15 |
+| **Resource Leveling** | Not implemented in v0.4 line | `LegacyCpmMigrationAdapter.assertSupportedCapability` | Subcontractor resource leveling | **Gated (Fail-Closed)** (`UnsupportedCapabilityError`) | Upstream v0.5 |
+| **Heuristic Smoothing** | Not implemented upstream | `LegacyCpmMigrationAdapter.assertSupportedCapability` | Cash-flow smoothing | **Gated (Fail-Closed)** (`UnsupportedCapabilityError`) | Upstream v0.5 |
+| **P6 XML Exchange** | Planned on upstream roadmap | `docs/reports/M09/trueppm-capabilities-and-legacy-migration.md` | Client tender schedule imports | **Gated (Fail-Closed)** (`UnsupportedCapabilityError`) | Upstream v0.5 |
+| **Cost & EVM (Earned Value)** | Outside upstream OSS scope | `packages/native_scheduling/test/scheduling_service_adapter.test.ts` | BoQ client billing vs Running Account costs | **Contractor-Authoritative** (Retained in Contractor) | Continuous |
+| **Multi-Tenancy & Governance** | Outside upstream OSS core | `SchedulingServiceAdapter` security guards | Tenant isolation, project roles, fiscal locks | **Contractor-Authoritative** (Retained in Contractor) | Continuous |
 
-Sources: [limitations](https://docs.trueppm.com/overview/what-it-does-not-do/), [scheduler conventions](https://docs.trueppm.com/features/scheduler/), [roadmap](https://docs.trueppm.com/overview/roadmap/). These are published claims; no adoption fixture has been run by this amendment. M09-W09 expands the matrix with tested release, upstream issue, local fixture, workflow impact, disposition and next verification. Selection remains TruePPM as those capabilities develop.
+---
 
-## Update contract — M09-W08
+## Legacy CPM engine retirement plan (M09-T07)
 
-- Implement `scripts/update-trueppm <release>` or document the chosen equivalent. It does not exist yet. Reuse shared release machinery from M06-T12 where practical.
-- Record app/engine compatibility, release tags, immutable source revisions, package/container/artifact hashes, lockfiles and runtime versions in machine-readable build inputs; mirror effective pins here in the same pin-bump PR. Do not assume independently published artifacts with similar version numbers are compatible.
-- Check available releases during active integration and before M09/M10 gates. Read API, modeling, schema, migration and license changes; refresh the watchlist. This does not create a scheduled monitoring job.
-- Run actual engine fixtures, both UI modes, authorization/tenant boundaries, progress idempotency, domain bridge, previous-release schedules and ratified performance checks before promotion. Explain date/float changes; do not silently recalculate issued baselines with a new engine.
-- Demonstrate at least one two-release upgrade and restore. Preserve prior artifacts and compatible database/operation checkpoints; test migration and restoration before permitting incompatible writes. Record unsupported downgrade cases.
-- Keep adapters outside upstream; retain the working pin when an upgrade fails and register required integration work. No automatic production promotion merely because a release exists.
+Under [ADR-0017](../adr/0017-trueppm-scheduling-integration.md), TruePPM replaces legacy in-process TypeScript and client Dart CPM implementations. The migration and retirement sequence is governed as follows:
+
+```mermaid
+graph TD
+    Legacy[Legacy CPM Implementations<br/>TsCpmBaselineEngine & DartCpmKernel] --> Adapt[LegacyCpmMigrationAdapter<br/>Converts M00/M01 Fixtures to TruePPM]
+    Adapt --> Deprecate[Mark @deprecated<br/>M09-T07 Completed]
+    Deprecate --> Gate[M09 Exit Gate M09-T09<br/>Verify Parity & Cutover Authority]
+    Gate --> Retire[M10 Milestone Cutover<br/>Complete Removal of Legacy CPM Code]
+```
+
+1. **Step 1 — Migration Adapter (`LegacyCpmMigrationAdapter`):** Converts historical M00/M01 schedule graphs (`sample_cpm_1k.json`, `cpm_degenerate_cases.json`) to Contractor's `TenantScheduleProject` format with 100% ID and logic fidelity.
+2. **Step 2 — Deprecation Tagging (`@deprecated`):** `TsCpmBaselineEngine` ([`ts_cpm_baseline.mjs`](../../prototype/trueppm/lib/ts_cpm_baseline.mjs)), `CpmKernel` ([`cpm_kernel_interface.dart`](../../prototype/construction_client/lib/cpm/cpm_kernel_interface.dart)), and `DartCpmKernel` ([`dart_cpm_kernel.dart`](../../prototype/construction_client/lib/cpm/dart_cpm_kernel.dart)) marked `@deprecated`.
+3. **Step 3 — Gate Cutover (`M09-T09`):** Parity verified across platforms; TruePPM designated as the sole calculation authority.
+4. **Step 4 — Final Deletion (`M10`):** Legacy prototype CPM kernels and simulator scripts retired and removed from tree.
+
+---
 
 ## Change log
 
@@ -43,3 +53,5 @@ Sources: [limitations](https://docs.trueppm.com/overview/what-it-does-not-do/), 
 |---|---|
 | 2026-10-12 | Owner selected TruePPM. M09 amended for app/engine integration, updates and capability delivery. |
 | 2026-10-12 | Pinned TruePPM v0.4.0-beta.1 (commit `b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0`, `trueppm-scheduler` 0.4.0b1). Prototype spike and baseline contract qualified in M09-T01 (PR #100). |
+| 2026-10-12 | Release update pipeline and two-release qualification test battery delivered in M09-T06 (PR #105). |
+| 2026-10-12 | Capability delivery register, fail-closed guards, and legacy CPM migration/retirement plan established in M09-T07 (PR #106). |

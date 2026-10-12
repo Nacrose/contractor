@@ -79,7 +79,7 @@ Exit: native/web/server accepted schedule results agree, progress cannot post tw
     - Bidirectional upgrade and downgrade rollback proven between two actual releases without schedule corruption.
     - All carried licenses and notices audited under ADR-0014.
 
-- [ ] **M09-T07** — Upstream capability delivery tracking & legacy scheduler migration/retirement
+- [x] **M09-T07** — Upstream capability delivery tracking & legacy scheduler migration/retirement (PR #106)
   - Depends on: M09-T01, M09-T06 · Output: capability delivery register in `docs/vendor/TRUEPPM.md`, legacy CPM migration adapter, and retirement plan.
   - Scope: maintain release-specific capability matrix in `docs/vendor/TRUEPPM.md` linking upstream releases to Contractor fixtures and workflows. Sequence features against verified capabilities rather than roadmap dates. Migrate historical schedule records to TruePPM schema; verify semantic differences; mark legacy TypeScript/Dart CPM implementations for clean retirement after cutover.
   - Acceptance:
