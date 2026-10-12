@@ -75,7 +75,7 @@ Integration direction: [ADR-0018](../../adr/0018-upstream-capabilities-and-const
     - All backend endpoints and domain logic remain intact and verified by regression test batteries.
     - Rollback drill demonstrates immediate traffic restoration to legacy fallback within $< 60\text{ s}$ if triggered.
 
-- [ ] **M10-T09** — 👤 GATE — Full parity & web migration exit evidence
+- [x] **M10-T09** — 👤 GATE — Full parity & web migration exit evidence (PR #118)
   - Depends on: M10-T01…T08 · Output: `[M10-GATE]` evidence packet (`docs/reports/M10/m10-exit-gate.md`) and owner decision.
   - Scope: aggregate complete cross-platform parity matrix, tool disposition audit, accounting integration proof, connected journey evidence, and retirement signoff (derived from M10-W06).
   - Acceptance:
