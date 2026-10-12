@@ -15,12 +15,17 @@
 /// (recorded constraint in the M04-T02 report).
 library;
 
+import 'os_scheduler.dart';
 import 'outbox_repository.dart';
 import 'ports.dart';
 
 /// Direct port of health.ts buildDeviceSyncHealth — rules, reason strings,
 /// and their order are mirrored exactly.
-DeviceSyncHealth buildDeviceSyncHealth(SyncHealthSource source, HealthOptions options) {
+DeviceSyncHealth buildDeviceSyncHealth(
+  SyncHealthSource source,
+  HealthOptions options, {
+  DurableSchedulerStateStore? schedulerStore,
+}) {
   final ops = source.pendingOps();
   final cursors = source.acceptedCursors();
   final reasons = <String>[];
@@ -39,6 +44,13 @@ DeviceSyncHealth buildDeviceSyncHealth(SyncHealthSource source, HealthOptions op
   if (conflicts.isNotEmpty) reasons.add('${conflicts.length} conflicted operation(s) awaiting resolution');
   if (blocked.isNotEmpty) reasons.add('${blocked.length} dependency-blocked operation(s)');
   if (freshRejections.isNotEmpty) reasons.add('${freshRejections.length} recent rejection(s) surfaced');
+
+  if (schedulerStore != null) {
+    final deferred = schedulerStore.listDeferred(source.accountId);
+    for (final d in deferred) {
+      reasons.add('background sync deferred: ${d.deferredReason ?? 'os_constraint'}');
+    }
+  }
 
   final oldestPendingAgeMs = pending.isEmpty
       ? null
