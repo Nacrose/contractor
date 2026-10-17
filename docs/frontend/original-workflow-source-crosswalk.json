@@ -2302,8 +2302,8 @@
         "equipment.updateStatus [Mutation]",
         "equipment.utilizationReport [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/equipment-source-action-reconciliation.md",
+      "sourceReviewState": "equipment router composition, selected UI entry points, permission and transaction boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -2466,8 +2466,8 @@
         "equipment.updateStatus [Mutation]",
         "equipment.utilizationReport [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/equipment-source-action-reconciliation.md",
+      "sourceReviewState": "equipment router composition, selected UI entry points, permission and transaction boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -2630,8 +2630,8 @@
         "equipment.updateStatus [Mutation]",
         "equipment.utilizationReport [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/equipment-source-action-reconciliation.md",
+      "sourceReviewState": "equipment router composition, selected UI entry points, permission and transaction boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
