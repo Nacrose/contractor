@@ -108,6 +108,10 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "bankGuarantee.delete [Mutation]", "bankGuarantee.linkToProject [Mutation]",
         "bankGuarantee.unlinkFromProject [Mutation]",
     },
+    "WF-038": {
+        "jvPartner.getAgreement [Query]", "jvPartner.saveAgreement [Mutation]",
+        "jvPartner.recordPayout [Mutation]", "jvPartner.deletePayout [Mutation]",
+    },
 }
 
 USER_DECISIONS = {
@@ -256,6 +260,19 @@ ORG_PAYABLES_REVIEWED_TRIGGERS = {
     "TRIGGER-994B155015DB",
 }
 
+JV_COMMISSION_REVIEWED_TRIGGERS = {
+    "TRIGGER-BFCFADAB69CD", "TRIGGER-289542342604", "TRIGGER-EA51929781AD",
+    "TRIGGER-3605DE9E144F", "TRIGGER-F02AC2B65445", "TRIGGER-B47004B64081",
+    "TRIGGER-4AB081EE3B84", "TRIGGER-25F595319256", "TRIGGER-FFE6FBF0C075",
+    "TRIGGER-838BF8DFEB5D", "TRIGGER-C58A213DC43D", "TRIGGER-6B53CD901EA8",
+    "TRIGGER-99D1C033A7C4", "TRIGGER-E6361C503D1E", "TRIGGER-0681AF484214",
+    "TRIGGER-8E61FD7CB4CE", "TRIGGER-78E354CFFBFE", "TRIGGER-BC989FBF86CB",
+    "TRIGGER-959B0EAF580E", "TRIGGER-AE408C875B39", "TRIGGER-5669BADB0CD4",
+    "TRIGGER-0649025F1069", "TRIGGER-254342C49868", "TRIGGER-B2C014A3EE9E",
+    "TRIGGER-C505D9B23C57", "TRIGGER-233C62A84F13", "TRIGGER-5C8CD35C6AAE",
+    "TRIGGER-D64B482B85D1",
+}
+
 GUARANTEE_FINANCE_REVIEWED_TRIGGERS = {
     "TRIGGER-AD9D7CF6CF40", "TRIGGER-AA8753F79BAF", "TRIGGER-F2C866CE0895",
     "TRIGGER-AF9DBA8D7C06", "TRIGGER-91583E49D1ED", "TRIGGER-7B0DC4A7EA8C",
@@ -305,6 +322,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-041": DASHBOARD_REVIEWED_TRIGGERS,
     "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS | FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS | ORG_BANK_ACCOUNT_REVIEWED_TRIGGERS | ORG_PAYABLES_REVIEWED_TRIGGERS,
     "WF-025": GUARANTEE_FINANCE_REVIEWED_TRIGGERS,
+    "WF-038": JV_COMMISSION_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -516,6 +534,8 @@ def main():
                 if workflow_id == "WF-024" else
                 "organization guarantee register, create/edit form, extension dialog, view handoff, conversion, project link/unlink, release and deletion controls traced to source operations; remaining finance controls and runtime remain unverified"
                 if workflow_id == "WF-025" else
+                "JV agreement and commission payout controls on organization finance traced through IPC basis, project grants, delegation and ledger mutations; remaining JV and runtime paths remain unverified"
+                if workflow_id == "WF-038" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
                 "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified"
