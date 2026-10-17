@@ -81,6 +81,15 @@ SERVICE_HINTS = {
     "WF-039": ["rfi.", "submittal"], "WF-040": ["responsibility", "delegation", "dailyProgram", "peopleAccess.myAccess", "peopleAccess.catalog", "project."],
     "WF-041": ["dashboard.", "finance.", "gantt."],
 }
+SOURCE_OPERATION_SUPPLEMENTS = {
+    # Imported child component hooks on the hierarchy route are represented in
+    # the trigger sidecar but are not direct page hooks in the component index.
+    "WF-040": {
+        "responsibilityHandover.accountOptions [Query]",
+        "responsibilityHandover.discoverAssignments [Query]",
+        "responsibilityHandover.pendingItems [Query]",
+    },
+}
 
 USER_DECISIONS = {
     "WF-010": "Contractor creates each IPC and a separate workbook; full GridCraft edits it; Contractor consumes only a validated Summary of Payment.",
@@ -351,7 +360,10 @@ def main():
             "m13Packet": packet_by_id[workflow_id],
             "canonicalRoutes": route_records,
             "sourceActionIds": sorted(unique_actions),
-            "sourceOperations": sorted({action["hook"] for action in unique_actions.values()}),
+            "sourceOperations": sorted(
+                {action["hook"] for action in unique_actions.values()}
+                | SOURCE_OPERATION_SUPPLEMENTS.get(workflow_id, set())
+            ),
             "outboxActionIds": [action["actionId"] for action in outbox_actions],
             "outboxOperations": [action["procedure"] for action in outbox_actions],
             "offlineReadPaths": index["offlineModel"]["persistedReadQueryPaths"] if workflow_id == "WF-005" else [],

@@ -37842,10 +37842,13 @@
         "project.getModules [Query]",
         "project.getOrgProfile [Query]",
         "project.myOrgAccess [Query]",
+        "responsibilityHandover.accountOptions [Query]",
         "responsibilityHandover.applyBatch [Mutation]",
         "responsibilityHandover.begin [Mutation]",
+        "responsibilityHandover.discoverAssignments [Query]",
         "responsibilityHandover.listPlans [Query]",
         "responsibilityHandover.offboardAccount [Mutation]",
+        "responsibilityHandover.pendingItems [Query]",
         "responsibilityHandover.skipItem [Mutation]",
         "workflow.dailyProgram.listPrograms [Query]",
         "workflow.dailyProgram.updateTaskExecution [Mutation]"

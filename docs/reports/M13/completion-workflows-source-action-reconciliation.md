@@ -26,7 +26,7 @@ These routes contain many metrics and state transitions, and the dashboard M00 s
 
 ## WF-040 handover manager trigger review
 
-The `ResponsibilityHandoverManager` imported by `ROUTE-102` was followed from each indexed control handler to its client query/mutation and the corresponding `responsibilityHandover` procedure. The crosswalk marks these 18 trigger IDs as source-reviewed; this is a source trace, not a runtime acceptance claim:
+The `ResponsibilityHandoverManager` imported by `ROUTE-102` was followed from each indexed control handler to its client query/mutation and the corresponding `responsibilityHandover` procedure. `accountOptions`, `discoverAssignments`, and `pendingItems` are listed as explicit source operations because their hooks live in the imported child component rather than the route page's direct-hook list. The crosswalk marks these 18 trigger IDs as source-reviewed; this is a source trace, not a runtime acceptance claim:
 
 | Control group | Trigger IDs | Source behavior and server boundary |
 |---|---|---|
