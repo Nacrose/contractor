@@ -872,6 +872,20 @@ BOQ_ROUTE_REVIEWED_SOURCE_FILES = (
     | BOQ_QUERY_ERROR_REVIEWED_SOURCE_FILES
     | BOQ_SHARED_CONTROL_REVIEWED_SOURCE_FILES
 )
+IPC_DETAIL_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/ipc/[ipcId]/page.tsx",
+    "src/app/(app)/projects/[id]/ipc/[ipcId]/components/ipc-scanned-bill-card.tsx",
+    "src/app/(app)/projects/[id]/ipc/[ipcId]/components/ipc-version-diff.tsx",
+    "src/components/documents/document-trail.tsx",
+    "src/components/documents/upload-signed-copy-dialog.tsx",
+    "src/components/drop-zone.tsx",
+    "src/components/ui/action-pending.tsx",
+    "src/components/ui/alert-dialog.tsx",
+    "src/components/ui/confirm-dialog.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/input.tsx",
+    "src/components/ui/query-error-alert.tsx",
+}
 RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/rate-library/page.tsx",
     "src/app/(app)/projects/[id]/boq/components/catalog-rates-library.tsx",
@@ -1379,6 +1393,15 @@ def main():
                 and indexed_route["routeId"] == "ROUTE-070"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES
+            )
+        if workflow_id in {"WF-009", "WF-010", "WF-011", "WF-012"}:
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-030"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in IPC_DETAIL_REVIEWED_SOURCE_FILES
             )
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
