@@ -1,6 +1,6 @@
 # BOQ, rate-analysis and version source-action reconciliation
 
-Status: **Core service and permission boundaries reviewed for WF-006–009. Detailed form controls, the full catalog lifecycle and runtime behavior remain unverified.**
+Status: **Core service and permission boundaries reviewed for WF-006–009; 52 of 223 BOQ route trigger candidates are also traced through register/header/create forms. BOQ row controls, the rate inspector, import/paste validation, the full catalog lifecycle and runtime behavior remain unverified.**
 
 Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Stable route, hook-action and event-candidate IDs are in the [workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) and [canonical action index](../../frontend/original-action-component-index.json).
 
@@ -71,6 +71,18 @@ The BOQ item create, inline quantity/rate edit, delete and duplicate paths were 
 The review found a source-level concurrency gap to carry into T10 qualification: `boq.create` checks the project lock before its transaction but does not recheck it inside; `boq.delete` and `boq.duplicate` also recheck permission in their transactions but do not recheck the lock/item state there. A lock or item-state change racing those requests may pass the preflight check. `boq.update` does recheck under its row lock. Contractor must enforce the approved-baseline invariant atomically across create, edit, delete, duplicate and lock transitions, and test the race explicitly.
 
 These trigger IDs are now marked source-reviewed for WF-006. The observed lock gap remains an unresolved source compatibility finding, not proof that every runtime exhibits the race; the source procedures and transaction shapes should be confirmed against the deployed revision before translating it into a repair.
+
+## BOQ register, toolbar and create-form trigger review
+
+An additional 52 `ROUTE-012` candidates are traced through the page, BOQ header, inline add row and Add BOQ Item dialog. Exact stable IDs are marked on WF-006 in the crosswalk; 171 of the route's 223 candidates remain open, especially row editing/menus and the rate-analysis inspector.
+
+| Control group | Source behavior and service boundary |
+|---|---|
+| Register workspace and header | Search, density, collapsed sections, comparison baseline, selected rows and inspector selection use project-keyed workspace state. The comparison area switches between contract-versus-analysis data and recorded cost coverage, with purpose selection and an Excel export of the currently selected comparison. Opening a row analysis and toggling the inspector are local view changes. Setting the default rate-analysis library calls `analysisLibrary.setDefault` online. |
+| Add item from dialog or inline row | Both entry paths call `boq.create` with project, code, description, unit, quantity, rate and optional section. The dialog reseeds fields on open, checks description and local lock state, disables submit while pending and closes after server success. The inline row supports Enter to create and Escape to cancel; server Zod validation remains authoritative. The procedure requires `project.boq.edit`, checks project lock and duplicate project/code, derives amount as quantity × rate, and creates the BOQ item plus analysis records for each project library in one transaction. The explicit server conflict is the final guard against two users choosing the same default count-based code. |
+| Table action routing | The page wires analysis, section move, duplicate-to-section, copy-rate-analysis, delete confirmation and keyword editing into `BoqTable`. The corresponding duplicate/update/delete service contracts are traced in the existing hierarchy review; table row editors and contextual-menu controls are not yet covered by this subset. |
+
+The two create forms accept quantity and rate as text and convert with `parseFloat(...) || 0`; negative values are rejected by the server schema, while malformed/empty input becomes zero. There is no auto-retry for a duplicate code: users receive the conflict toast and must correct the code. The source dialog's disabled button and server lock check are good safeguards, but the create lock check occurs before its transaction and is not reasserted inside; the existing race finding applies to both create surfaces.
 
 ## Government rate-analysis trigger review
 

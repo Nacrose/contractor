@@ -819,6 +819,12 @@ DAILY_REPORT_DETAIL_REVIEWED_SOURCE_FILES = {
     "src/components/ui/input.tsx",
     "src/components/drop-zone.tsx",
 }
+BOQ_ITEM_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/boq/page.tsx",
+    "src/app/(app)/projects/[id]/boq/components/boq-tab-header.tsx",
+    "src/app/(app)/projects/[id]/boq/components/inline-add-row.tsx",
+    "src/app/(app)/projects/[id]/boq/components/add-boq-item-dialog.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -1015,6 +1021,14 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in DAILY_REPORT_DETAIL_REVIEWED_SOURCE_FILES
             )
+        if workflow_id == "WF-006":
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in BOQ_ITEM_REVIEWED_SOURCE_FILES
+            )
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
         if missing_reviewed_triggers:
@@ -1100,6 +1114,8 @@ def main():
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
+                "core BOQ/rate/snapshot routes and permission contracts reviewed; 52 BOQ register/header/create-form triggers reviewed; row editing, rate inspector, import/paste and full catalog lifecycle remain unverified"
+                if workflow_id == "WF-006" else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
                 "purchase-order service boundaries reviewed; vendor bill and payment controls are in an unreferenced materials component"
