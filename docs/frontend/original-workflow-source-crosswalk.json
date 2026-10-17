@@ -615,11 +615,18 @@
         "workflow.dailyReport.uploadAttachment [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
-      "sourceReviewState": "daily-report local draft and outbox send triggers reviewed; other form, attachment, office lifecycle and runtime paths remain unverified",
+      "sourceReviewState": "daily-report mobile draft/send and office create/status/delete triggers reviewed; remaining form/attachment paths and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceReviewedTriggerIds": [
+        "TRIGGER-2C860AB9C728",
+        "TRIGGER-436BA22CADBA",
         "TRIGGER-67DA9E9618FF",
-        "TRIGGER-7BDEED88E412"
+        "TRIGGER-67DCC90776A7",
+        "TRIGGER-7BDEED88E412",
+        "TRIGGER-BE59F25879E8",
+        "TRIGGER-CF8330109CD8",
+        "TRIGGER-D8A70A80562B",
+        "TRIGGER-DBB14792E9FB"
       ],
       "sourceTestFiles": [
         {
