@@ -151,9 +151,18 @@ def main():
         trigger_actions = []
         for route_path in path_list:
             route_ref = route_rows.get(route_path)
-            if route_ref:
-                route_records.append({**route_ref, "sourcePage": routes_by_path.get(route_path, {}).get("routeSource")})
             indexed_route = routes_by_path.get(route_path)
+            if route_ref:
+                route_records.append({
+                    **route_ref,
+                    "sourcePage": indexed_route.get("routeSource") if indexed_route else None,
+                    "reachableActionIds": sorted(
+                        action["actionId"] for action in indexed_route["reachableProcedureCandidates"]
+                    ) if indexed_route else [],
+                    "triggerCandidateIds": sorted(
+                        action["actionId"] for action in triggers_by_route.get(indexed_route["routeId"], [])
+                    ) if indexed_route else [],
+                })
             if not indexed_route:
                 continue
             hints = SERVICE_HINTS[workflow_id]
