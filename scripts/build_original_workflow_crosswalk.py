@@ -99,6 +99,13 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "accounting.reverseLedgerEntry [Mutation]",
         "accounting.attachLedgerFile [Mutation]",
     },
+    "WF-025": {
+        "bankGuarantee.list [Query]", "bankGuarantee.portfolioAlerts [Query]",
+        "bankGuarantee.create [Mutation]", "bankGuarantee.update [Mutation]",
+        "bankGuarantee.extend [Mutation]", "bankGuarantee.release [Mutation]",
+        "bankGuarantee.delete [Mutation]", "bankGuarantee.linkToProject [Mutation]",
+        "bankGuarantee.unlinkFromProject [Mutation]",
+    },
 }
 
 USER_DECISIONS = {
@@ -225,6 +232,31 @@ DAY_BOOK_REVIEWED_TRIGGERS = {
     "TRIGGER-8F45EDBC8BBD", "TRIGGER-F705EF29B314", "TRIGGER-AD6480D48C39",
     "TRIGGER-D483E781BC65", "TRIGGER-B4CAF7F607F1", "TRIGGER-9A9EC5838F4A",
 }
+
+GUARANTEE_FINANCE_REVIEWED_TRIGGERS = {
+    "TRIGGER-AD9D7CF6CF40", "TRIGGER-AA8753F79BAF", "TRIGGER-F2C866CE0895",
+    "TRIGGER-AF9DBA8D7C06", "TRIGGER-91583E49D1ED", "TRIGGER-7B0DC4A7EA8C",
+    "TRIGGER-9205D769877D", "TRIGGER-64E2D94589F5", "TRIGGER-4255939A244D",
+    "TRIGGER-966ABC9C2C8F", "TRIGGER-5A035E7AC6C5", "TRIGGER-C1A1E2A80C3D",
+    "TRIGGER-12899EF35507", "TRIGGER-A831323A5FF1", "TRIGGER-A2E232F6BC26",
+    "TRIGGER-0764F7CF4FD9", "TRIGGER-6F7B09BE680F", "TRIGGER-1258940F384F",
+    "TRIGGER-554DB93C5F57", "TRIGGER-CE20B22C130B", "TRIGGER-B1D5BC49A27E",
+    "TRIGGER-576935BDBE0B", "TRIGGER-94A562A3EB12", "TRIGGER-A56C457ACBE7",
+    "TRIGGER-3B5706183890", "TRIGGER-02BA76E48A6B", "TRIGGER-F367FEBC8D0B",
+    "TRIGGER-B63E0BA5ACEA", "TRIGGER-13B6B9E14E53", "TRIGGER-CEE87C313385",
+    "TRIGGER-41F6A55C90F1", "TRIGGER-E375F7D18517", "TRIGGER-B74915DF0F93",
+    "TRIGGER-D572D9BAACCA", "TRIGGER-58D628BAAE92", "TRIGGER-A780D393C821",
+    "TRIGGER-6B111692FC3B", "TRIGGER-73B94252DED6", "TRIGGER-FEDEC965572D",
+    "TRIGGER-93FBCC730E24", "TRIGGER-1A6DF04ED67A", "TRIGGER-C21CFFFD1652",
+    "TRIGGER-EE67FF8B5529", "TRIGGER-2F5DE577DC7A", "TRIGGER-5308D32B6C12",
+    "TRIGGER-7CB3EADFB4CE", "TRIGGER-9B2BFE7E07B6", "TRIGGER-35D2C858A67F",
+    "TRIGGER-1DE0EB7DF0BA", "TRIGGER-0C20BC082CF1", "TRIGGER-F55AC7107E07",
+    "TRIGGER-72EE74C17034", "TRIGGER-21BBDAD08442", "TRIGGER-026F0DA0CD14",
+    "TRIGGER-CD58CAE4B148", "TRIGGER-C9F4270512BC", "TRIGGER-56D7D790F165",
+    "TRIGGER-D9E440E6BE9A", "TRIGGER-9256340EBB7C", "TRIGGER-D3A8F9B77D52",
+    "TRIGGER-99732ECF473B", "TRIGGER-601D7F68F3C3", "TRIGGER-5553894A6576",
+    "TRIGGER-1F00B62FCD8A",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -249,6 +281,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS | MY_ACCESS_REVIEWED_TRIGGERS,
     "WF-041": DASHBOARD_REVIEWED_TRIGGERS,
     "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS,
+    "WF-025": GUARANTEE_FINANCE_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -458,6 +491,8 @@ def main():
                 if workflow_id == "WF-040" else
                 "project-cost widgets on project home/dashboard and Day Book controls on finance/project accounting traced through source handlers, ledger guards and selected dialogs; other finance controls, nested dialog actions and runtime remain unverified"
                 if workflow_id == "WF-024" else
+                "organization guarantee register, create/edit form, extension dialog, view handoff, conversion, project link/unlink, release and deletion controls traced to source operations; remaining finance controls and runtime remain unverified"
+                if workflow_id == "WF-025" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
                 "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified"
