@@ -1953,9 +1953,27 @@
         "fieldSubmission.mySubmissions [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
-      "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
+      "sourceReviewState": "all 17 desktop/mobile Sync and offline route trigger candidates traced; data durability/runtime and deployed service compatibility remain unverified",
       "sourceReviewedActionIds": [],
-      "sourceReviewedTriggerIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-1F638FACF833",
+        "TRIGGER-254CC5AF8BD5",
+        "TRIGGER-63EF9F892EF8",
+        "TRIGGER-7F95ABB86628",
+        "TRIGGER-806F5FD535B1",
+        "TRIGGER-8D17FCED4264",
+        "TRIGGER-9A41BD2CF460",
+        "TRIGGER-A98ED35CFFC4",
+        "TRIGGER-B32BA13E94C2",
+        "TRIGGER-B45D7B874208",
+        "TRIGGER-B5558A691058",
+        "TRIGGER-C8D415021823",
+        "TRIGGER-C9CE08BC456E",
+        "TRIGGER-D7310C3EDEB4",
+        "TRIGGER-DF4AEEBE3C04",
+        "TRIGGER-E6183F9DA7EE",
+        "TRIGGER-FA57FBA1A0B6"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/lib/__tests__/field-query-persist.test.ts",

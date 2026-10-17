@@ -616,6 +616,14 @@ RFI_SHARED_ROUTE_REVIEWED_TRIGGERS = {
     "TRIGGER-5EFB5D428804", "TRIGGER-A41EBD647FA7", "TRIGGER-FEE398701514",
     "TRIGGER-4E8BFBA5AC86", "TRIGGER-77B8A8B460F9",
 }
+FIELD_SYNC_ROUTE_REVIEWED_TRIGGERS = {
+    "TRIGGER-254CC5AF8BD5", "TRIGGER-63EF9F892EF8", "TRIGGER-806F5FD535B1",
+    "TRIGGER-9A41BD2CF460", "TRIGGER-B32BA13E94C2", "TRIGGER-B45D7B874208",
+    "TRIGGER-C9CE08BC456E", "TRIGGER-D7310C3EDEB4", "TRIGGER-E6183F9DA7EE",
+    "TRIGGER-FA57FBA1A0B6", "TRIGGER-1F638FACF833", "TRIGGER-7F95ABB86628",
+    "TRIGGER-8D17FCED4264", "TRIGGER-A98ED35CFFC4", "TRIGGER-B5558A691058",
+    "TRIGGER-DF4AEEBE3C04", "TRIGGER-C8D415021823",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -652,6 +660,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-025": GUARANTEE_FINANCE_REVIEWED_TRIGGERS,
     "WF-038": JV_COMMISSION_REVIEWED_TRIGGERS,
     "WF-039": SUBMITTALS_REGISTER_REVIEWED_TRIGGERS | RFI_REGISTER_REVIEWED_TRIGGERS | RFI_CREATE_REVIEWED_TRIGGERS | RFI_DETAIL_REVIEWED_TRIGGERS | RFI_IMPORT_COMMENT_REVIEWED_TRIGGERS | RFI_ATTACHMENT_DOCUMENT_REVIEWED_TRIGGERS | RFI_SHARED_ROUTE_REVIEWED_TRIGGERS,
+    "WF-005": FIELD_SYNC_ROUTE_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -871,6 +880,8 @@ def main():
             "sourceReviewState": (
                 "daily-report mobile draft/send and office create/status/delete triggers reviewed; remaining form/attachment paths and runtime remain unverified"
                 if workflow_id == "WF-001" else
+                "all 17 desktop/mobile Sync and offline route trigger candidates traced; data durability/runtime and deployed service compatibility remain unverified"
+                if workflow_id == "WF-005" else
                 "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified"
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
