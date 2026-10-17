@@ -42,7 +42,7 @@ WORKFLOW_ROUTES = {
     "WF-021": ["/team", "/hr-organization", "/projects/[id]/hr", "/projects/[id]/hr/team", "/projects/[id]/hr/hierarchy"],
     "WF-022": ["/projects/[id]/hr", "/projects/[id]/hr/team", "/m/log"],
     "WF-023": ["/projects/[id]/hr", "/projects/[id]/hr/team", "/projects/[id]/expenses"],
-    "WF-024": ["/projects/[id]/accounting", "/projects/[id]/payments", "/finance"],
+    "WF-024": ["/projects/[id]", "/projects/[id]/accounting", "/projects/[id]/payments", "/finance", "/projects/[id]/dashboard"],
     "WF-025": ["/finance", "/projects/[id]/accounting"],
     "WF-026": ["/finance", "/projects/[id]/accounting"],
     "WF-027": ["/drawings", "/projects/[id]/drawings"],
@@ -72,7 +72,7 @@ SERVICE_HINTS = {
     "WF-015": ["purchaseOrder"], "WF-016": ["material."], "WF-017": ["material.transfer", "transfer"],
     "WF-018": ["equipment."], "WF-019": ["equipment.", "fuel"], "WF-020": ["equipment."],
     "WF-021": ["hr.", "staffRole", "workforce", "person"], "WF-022": ["attendance", "leave", "fieldSubmission"],
-    "WF-023": ["payroll", "attendance", "finance."], "WF-024": ["finance.", "projectOps.payment"],
+    "WF-023": ["payroll", "attendance", "finance."], "WF-024": ["finance.", "projectOps.payment", "projectCost."],
     "WF-025": ["guarantee", "finance."], "WF-026": ["fiscal", "finance."],
     "WF-027": ["document.", "drawing"], "WF-028": ["drawing", "pdf"], "WF-029": ["drawing", "pdf", "export"],
     "WF-030": ["drawing", "pdf"], "WF-031": ["boq.", "drawing", "takeoff"],
@@ -90,6 +90,11 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "responsibilityHandover.pendingItems [Query]",
     },
     "WF-041": {"GET /api/dashboard"},
+    "WF-024": {
+        "projectCost.list [Query]", "projectCost.stats [Query]",
+        "projectCost.create [Mutation]", "projectCost.delete [Mutation]",
+        "projectCost.exportCsv [Query]",
+    },
 }
 
 USER_DECISIONS = {
@@ -177,6 +182,26 @@ DASHBOARD_REVIEWED_TRIGGERS = {
     "TRIGGER-E3E265BFE082", "TRIGGER-D2BB7F275340", "TRIGGER-BD39F906727A",
     "TRIGGER-37C0252549E9",
 }
+PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS = {
+    "TRIGGER-D7B9131F93E2", "TRIGGER-065A1CCE15D9", "TRIGGER-64EF6DD6FEE2",
+    "TRIGGER-A0C5C807230A", "TRIGGER-5A65F748D7A6", "TRIGGER-3C75699AA07B",
+    "TRIGGER-0385AA83C1D8", "TRIGGER-E59B859111E3", "TRIGGER-12A677E02E98",
+    "TRIGGER-1055A60A441C", "TRIGGER-ADEE960DC6BC", "TRIGGER-60B7C4A8560A",
+    "TRIGGER-F25128A552A7", "TRIGGER-3962B363A92B", "TRIGGER-B4D42F8C8195",
+    "TRIGGER-CCAA2D0153E6", "TRIGGER-82E8E4B99BE3", "TRIGGER-025C4A917A18",
+    "TRIGGER-B6CB98A21D2D", "TRIGGER-9AB9C64CF3C2", "TRIGGER-09C20715B6E5",
+    "TRIGGER-37247E9DA002", "TRIGGER-FDD1CB106F5D", "TRIGGER-1EE0128243AE",
+    "TRIGGER-D6ABCD365183",
+    "TRIGGER-F580285C3874", "TRIGGER-4A66A7EA93BC", "TRIGGER-358D44B66F20",
+    "TRIGGER-2ADF5394E4CC", "TRIGGER-E90C4F5D5873", "TRIGGER-351783F47848",
+    "TRIGGER-0C3655D8196D", "TRIGGER-1B9E66BC0F44", "TRIGGER-94A8D74A7563",
+    "TRIGGER-345226314A25", "TRIGGER-5D90E737600B", "TRIGGER-591A493D646D",
+    "TRIGGER-0D26B1C55294", "TRIGGER-F7FE57794FF4", "TRIGGER-6B5CBE94E918",
+    "TRIGGER-7C8CB45B34E4", "TRIGGER-3309C4360146", "TRIGGER-C275FD6FC179",
+    "TRIGGER-B7A880C6EF97", "TRIGGER-5A1DC0AC0AFA", "TRIGGER-54806A382B38",
+    "TRIGGER-8CDD23EC64CA", "TRIGGER-D8EBE3D55A61", "TRIGGER-415BF96FCAE8",
+    "TRIGGER-7E67AA76E0FE",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -200,6 +225,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     },
     "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS | MY_ACCESS_REVIEWED_TRIGGERS,
     "WF-041": DASHBOARD_REVIEWED_TRIGGERS,
+    "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -407,6 +433,8 @@ def main():
                 if workflow_id == "WF-017" else
                 "handover manager, selected My Tasks controls and My Access delegation-visibility path traced to source handlers and server guards; remaining route/shared controls and runtime are unverified"
                 if workflow_id == "WF-040" else
+                "project-cost widgets on project home and dashboard routes traced through create/delete controls, draft and receipt handling, and accounting guards; other finance controls and runtime remain unverified"
+                if workflow_id == "WF-024" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
                 "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified"
