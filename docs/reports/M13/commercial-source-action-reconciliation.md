@@ -1,6 +1,6 @@
 # BOQ, rate-analysis and version source-action reconciliation
 
-Status: **Core service and permission boundaries reviewed for WF-006–009; 190 of 223 BOQ route trigger candidates are traced through the register, table hierarchy, row controls, create forms, rate-analysis inspector, resource picker and Excel paste import. The full catalog lifecycle and runtime behavior remain unverified.**
+Status: **Core service and permission boundaries reviewed for WF-006–009; 202 of 223 BOQ route trigger candidates are traced through the register, table hierarchy, row controls, create forms, rate-analysis inspector, resource picker, Excel paste import, floating action bar and query-error recovery. The full catalog lifecycle and runtime behavior remain unverified.**
 
 Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Stable route, hook-action and event-candidate IDs are in the [workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) and [canonical action index](../../frontend/original-action-component-index.json).
 
@@ -113,7 +113,15 @@ The resource picker searches project materials through `material.listByType`, wh
 
 The UI state review found several behaviors Contractor should account for: changing the selected analysis is local state; collapsing ingredient categories and expanding read-only breakdowns are view-only; the read-only breakdown nevertheless exposes an “Edit in Analysis tab” route link. Ingredient deletion is immediate with no confirmation. Invalid/empty quantity and rate text is converted to zero on blur; invalid/zero batch input becomes one, while negative server inputs are rejected. The fixed-resource quick-add Enter handler does not guard `addMutation.isPending` even though its button does, so repeated Enter can submit duplicates while the first request is pending. Cancelling quick-add clears the catalog material ID but leaves other resource selection/name state, which can carry into a later add form. Copy's `mutateAsync` error is toasted both by the mutation callback and its caller catch. Applying a preset clears its confirmation state immediately after mutation starts, so the dialog's loading state is not visible while the replacement is pending. These are source-level UX/reliability findings to qualify against the deployed revision.
 
-All 49 `ROUTE-012` inspector/read-only trigger candidates and all nine project resource-picker candidates are marked source-reviewed for WF-006 and WF-007. WF-006 now covers 190 of 223 route candidates; WF-007 review is limited to the BOQ route's rate inspector, resource picker and read-only breakdown. `ROUTE-111` rate-library controls, norm import, full catalog lifecycle and runtime remain open.
+All 49 `ROUTE-012` inspector/read-only trigger candidates and all nine project resource-picker candidates are marked source-reviewed for WF-006 and WF-007. WF-006 now covers 202 of 223 route candidates; WF-007 review is limited to the BOQ route's rate inspector, resource picker, shared query-error recovery and read-only breakdown. `ROUTE-111` rate-library controls, norm import, full catalog lifecycle and runtime remain open.
+
+## Shared BOQ action and error recovery controls
+
+The floating action bar delegates each button to page-provided behavior and uses the page's disabled flags for the add, import, print/export and BOQ lock actions. Sticky/auto-hide selection is stored through user preferences; hover reveals an auto-hidden bar after pointer entry, and pointer exit hides it after a 300 ms delay. The generic component does not independently check BOQ permissions, so the page's capability/lock gates and server procedures remain essential.
+
+`QueryErrorAlert` handles permission failures separately with a My Access route and optional retry. Other failures expose the error message, can disclose/copy diagnostics, offer sign-in for likely auth errors, retry where a callback exists, and dispatch a report-problem event with the error and entity. The schema-drift message directly tells users to run `npx prisma migrate deploy` against production `DATABASE_URL`; that is consequential deployment guidance embedded in a runtime error and should be routed through an approved operator/runbook path. The clipboard rejection is swallowed while the UI immediately shows “Incident reference copied,” which can falsely claim success. Error text is rendered and included in report payloads, so the app should verify server-side redaction before displaying or forwarding provider/database messages. The alert remains visible until the failed query changes or its owner retries; dismiss is not provided.
+
+All five floating-action-bar and seven query-error-alert stable trigger candidates are marked source-reviewed for WF-006; the seven shared query-error controls are also recorded for WF-007 and WF-008 because their rate-analysis and profile paths use the same component.
 
 ## BOQ Excel import and paste review
 
@@ -121,7 +129,7 @@ The Excel file picker in the BOQ page accepts `.xlsx`, `.xls` and `.csv`, reject
 
 The direct-paste dialog parses tab-separated columns into a preview and supports five-column rows plus shorter positional formats. It also creates each row separately. Per-row errors are swallowed and omitted from the imported count; the dialog still reports a success toast with the number created and closes, without saying how many were rejected. Its Cancel and backdrop-close paths remain active during import. There is no paste-size or row-count cap, and the parser turns malformed quantity/rate cells into zero. The normal page's toolbar hides the paste entry when the user lacks BOQ edit access or the BOQ is locked, while `boq.create` remains the final server guard. Contractor should validate a complete import before writing, expose row-level errors and partial completion, and keep dialog state and progress clear until all row writes settle.
 
-The four stable trigger IDs from `ExcelPasteDialog` are marked source-reviewed for WF-006. Together with the inspector and resource-picker passes, WF-006 covers 190 of 223 `ROUTE-012` candidates; 33 route candidates and the full catalog lifecycle remain open.
+The four stable trigger IDs from `ExcelPasteDialog` are marked source-reviewed for WF-006. Together with the inspector, resource-picker and shared-control passes, WF-006 covers 202 of 223 `ROUTE-012` candidates; 21 route candidates and the full catalog lifecycle remain open.
 
 ## Rate-profile refresh trigger review
 
