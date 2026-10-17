@@ -147,6 +147,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-006": BOQ_ITEM_REVIEWED_TRIGGERS,
     "WF-007": RATE_ANALYSIS_REVIEWED_TRIGGERS,
     "WF-008": RATE_PROFILE_REVIEWED_TRIGGERS,
+    "WF-017": {"TRIGGER-9A6B3C859E69"},
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
@@ -164,16 +165,23 @@ def main():
     for route in index["routes"]:
         for action in route["reachableProcedureCandidates"]:
             reachable_ui_files.update(action.get("uiSourceFiles", []))
-    reachable_ui_files.update(trigger["sourceFile"] for trigger in trigger_records)
+    reachable_ui_files.update(
+        trigger["sourceFile"] for trigger in trigger_records
+        if trigger.get("scopeType") != "unreferenced-ui"
+    )
+    orphan_triggers_by_source = {}
+    for trigger in trigger_records:
+        if trigger.get("scopeType") == "unreferenced-ui":
+            orphan_triggers_by_source.setdefault(trigger["sourceFile"], []).append(trigger)
     unreferenced_ui = []
-    for component in sorted((SOURCE / "src").rglob("*.tsx")):
-        relative = str(component.relative_to(SOURCE))
-        if relative in reachable_ui_files:
-            continue
-        source_text = component.read_text(errors="ignore")
-        hooks = sorted(set(UI_HOOK.findall(source_text)))
-        if hooks:
-            unreferenced_ui.append({"sourceFile": relative, "hooks": hooks})
+    for component in index.get("unreferencedUiComponentsWithHooks", []):
+        unreferenced_ui.append({
+            **component,
+            "triggerCandidates": sorted(
+                orphan_triggers_by_source.get(component["sourceFile"], []),
+                key=lambda item: item["actionId"],
+            ),
+        })
     coverage = COVERAGE.read_text()
     route_rows = {
         path: {"routeId": route_id, "destination": destination.strip(), "packet": packet.strip(), "status": status.strip()}
@@ -283,6 +291,11 @@ def main():
                 if (SOURCE / item).is_file() and item not in linked_source_files
             ),
             "unreferencedUiComponentsWithRelatedHooks": orphaned_ui,
+            "unreferencedUiTriggerCandidateIds": sorted({
+                action["actionId"]
+                for component in orphaned_ui
+                for action in component.get("triggerCandidates", [])
+            }),
             "m13Packet": packet_by_id[workflow_id],
             "canonicalRoutes": route_records,
             "sourceActionIds": sorted(unique_actions),
@@ -306,6 +319,8 @@ def main():
                 if workflow_id in FIELD_WORKFLOWS else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
+                "transfer dispatch trigger reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes"
+                if workflow_id == "WF-017" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
                 "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified"

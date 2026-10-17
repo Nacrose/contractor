@@ -266,7 +266,7 @@
     "appRouterRegistrations": 60,
     "directDialogComponentReferences": 57,
     "directProcedureHooks": 219,
-    "interactiveTriggerCandidates": 11239,
+    "interactiveTriggerCandidates": 11446,
     "otherPageRoutes": 51,
     "pageRoutes": 110,
     "procedureDefinitionCandidatesIncludingDomainWrappers": 702,
@@ -279,14 +279,14 @@
     "sharedLayoutTriggerCandidates": 134,
     "superAdminProceduresOmittedByHistoricalPattern": 22,
     "triggersLinkedToFieldOutbox": 2,
-    "triggersWithMutationCandidates": 562,
-    "triggersWithPermissionMarkers": 396,
+    "triggersWithMutationCandidates": 584,
+    "triggersWithPermissionMarkers": 416,
     "uniqueReachableProcedureHooks": 528
   },
   "interactionTriggerInventory": {
-    "count": 11239,
+    "count": 11446,
     "file": "original-interaction-trigger-candidates.jsonl",
-    "format": "JSON Lines; one route-scoped JSX event-handler candidate per line",
+    "format": "JSON Lines; one route, layout or unreferenced-UI scoped JSX event-handler candidate per line",
     "reviewState": "static trigger candidates; event call paths require review"
   },
   "limitations": [
@@ -42824,5 +42824,414 @@
     "commit": "7d06a8a51826639b554e30d11a8b0b8f7d095259",
     "kind": "git-checkout",
     "repository": "Construction_Manager"
-  }
+  },
+  "unreferencedUiComponentsWithHooks": [
+    {
+      "hooks": [
+        "material.listOrgInventory [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-FF08F34467B3",
+      "sourceFile": "src/app/(app)/finance/components/org-inventory-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-39EC3BDB5C10",
+        "TRIGGER-54EB3B5BAB5D",
+        "TRIGGER-67E18696471D",
+        "TRIGGER-788215EBC435",
+        "TRIGGER-86A3A2272FF6",
+        "TRIGGER-A907257D594E",
+        "TRIGGER-B194406E4660"
+      ]
+    },
+    {
+      "hooks": [
+        "hr.createStaffAdvance [Mutation]",
+        "hr.deleteStaffAdvance [Mutation]",
+        "hr.getAdvanceCandidates [Query]",
+        "hr.getStaffAdvances [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-350BC1677B6E",
+      "sourceFile": "src/app/(app)/projects/[id]/hr/components/advances-ledger-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-150819378510",
+        "TRIGGER-1BAFD82A6694",
+        "TRIGGER-1D0924F60E92",
+        "TRIGGER-2573C34A613D",
+        "TRIGGER-2C75ABE1C8EB",
+        "TRIGGER-3D7E94315FB3",
+        "TRIGGER-5E06C207ED01",
+        "TRIGGER-805D117C1CEA",
+        "TRIGGER-9491436FA1FE",
+        "TRIGGER-A40D8B23ABF1",
+        "TRIGGER-C63ABD1742E2",
+        "TRIGGER-DAE91C8E2A84",
+        "TRIGGER-E62E988B705E",
+        "TRIGGER-EBF6FDE997BE",
+        "TRIGGER-EEA9BF08DAA7",
+        "TRIGGER-F7F05A405BC4",
+        "TRIGGER-FFF68D0967F9"
+      ]
+    },
+    {
+      "hooks": [
+        "hr.bulkLogAttendance [Mutation]",
+        "hr.getAttendanceByDate [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-0CA228A4E886",
+      "sourceFile": "src/app/(app)/projects/[id]/hr/components/daily-attendance-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-17A20BE9E14A",
+        "TRIGGER-21C857C23736",
+        "TRIGGER-39EFC9DC8FE8",
+        "TRIGGER-3FC476293E78",
+        "TRIGGER-40963812C2D9",
+        "TRIGGER-5C9B962B5961",
+        "TRIGGER-5F138C2A1342",
+        "TRIGGER-648DCBEE2108",
+        "TRIGGER-8A19C479A8E6",
+        "TRIGGER-9BD471D2D3D2",
+        "TRIGGER-AB6EDEB8E459",
+        "TRIGGER-B320A611EFB3",
+        "TRIGGER-C843ECD609AF",
+        "TRIGGER-F31B4D5DBF97",
+        "TRIGGER-F4B6C0AB0C13"
+      ]
+    },
+    {
+      "hooks": [
+        "leave.actionAccess [Query]",
+        "leave.approve [Mutation]",
+        "leave.create [Mutation]",
+        "leave.list [Query]",
+        "leave.reject [Mutation]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-F790D03C6E46",
+      "sourceFile": "src/app/(app)/projects/[id]/hr/components/leaves-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-05F3DABD7362",
+        "TRIGGER-0776DF1C1520",
+        "TRIGGER-15810DE051FB",
+        "TRIGGER-17E2CD508E6B",
+        "TRIGGER-2DE829A94FA3",
+        "TRIGGER-3195E7EF7E1A",
+        "TRIGGER-335F1CC6A850",
+        "TRIGGER-34C4E753BF2D",
+        "TRIGGER-5CC05A41ACE4",
+        "TRIGGER-831E90CEF810",
+        "TRIGGER-88D886C51388",
+        "TRIGGER-9D9DB290D437",
+        "TRIGGER-C0A74B130324",
+        "TRIGGER-EED97FC20DCA"
+      ]
+    },
+    {
+      "hooks": [
+        "hr.getMusterRoll [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-F214AF617E15",
+      "sourceFile": "src/app/(app)/projects/[id]/hr/components/muster-roll-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-3F148C0533B5",
+        "TRIGGER-DE63899AAB82"
+      ]
+    },
+    {
+      "hooks": [
+        "payroll.calculate [Query]",
+        "payroll.createPayrollRun [Mutation]",
+        "payroll.getRun [Query]",
+        "payroll.updateRunStatus [Mutation]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-584D8390D708",
+      "sourceFile": "src/app/(app)/projects/[id]/hr/components/payroll-management-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-1836DEDBEEAD",
+        "TRIGGER-2016710DBBDB",
+        "TRIGGER-325CE95291D3",
+        "TRIGGER-3E04999E84A2",
+        "TRIGGER-6325A39731DC",
+        "TRIGGER-8AC82EAADEC7",
+        "TRIGGER-AD61AB757C7C",
+        "TRIGGER-AFB0D39CC81C",
+        "TRIGGER-B0094EF14F00",
+        "TRIGGER-BA5186A8F8E1",
+        "TRIGGER-CF03DCA77A6F",
+        "TRIGGER-D2C57061453A",
+        "TRIGGER-E31B938502F4",
+        "TRIGGER-E7839BF60A12"
+      ]
+    },
+    {
+      "hooks": [
+        "hr.getPersonHistory [Query]",
+        "payroll.createPayrollRun [Mutation]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-7CF52B5B01AB",
+      "sourceFile": "src/app/(app)/projects/[id]/hr/dialogs/payroll-allocation-dialog.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-49CB9E040E93",
+        "TRIGGER-5A560BF9AB34",
+        "TRIGGER-5B83634D7214",
+        "TRIGGER-62746352F2BF",
+        "TRIGGER-73E16CA17EFA",
+        "TRIGGER-776F2B52D6A0",
+        "TRIGGER-82644A08ADF3",
+        "TRIGGER-9435B0CA334A",
+        "TRIGGER-A9615326CB58",
+        "TRIGGER-FB5166489EDB"
+      ]
+    },
+    {
+      "hooks": [
+        "interSiteTransfer.cancelTransfer [Mutation]",
+        "interSiteTransfer.list [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-40B80F6EBDD0",
+      "sourceFile": "src/app/(app)/projects/[id]/materials/components/inter-site-transfers-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-051960A9D3B1",
+        "TRIGGER-149CDEB4C4BE",
+        "TRIGGER-174938D7839A",
+        "TRIGGER-18065A761C06",
+        "TRIGGER-31A9553E2330",
+        "TRIGGER-3CC86DAA3558",
+        "TRIGGER-445D42258474",
+        "TRIGGER-461660A3CE73",
+        "TRIGGER-51C2372570E3",
+        "TRIGGER-78111A6F7347",
+        "TRIGGER-7B6F8DBB2537",
+        "TRIGGER-885FD6113F99",
+        "TRIGGER-88ADF674E775",
+        "TRIGGER-990BABBE36DD",
+        "TRIGGER-B7A985419AA7",
+        "TRIGGER-B8E11B0ED346",
+        "TRIGGER-C8C08D4D639B",
+        "TRIGGER-C8E3C50FD7FB"
+      ]
+    },
+    {
+      "hooks": [
+        "storeLocation.list [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-E2CAF293F21D",
+      "sourceFile": "src/app/(app)/projects/[id]/materials/components/materials-transactions-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-5F34F978D5EF",
+        "TRIGGER-6A4D84A666AD",
+        "TRIGGER-7FAA6B0A3FFE",
+        "TRIGGER-8B352654431A",
+        "TRIGGER-C554F08073FB"
+      ]
+    },
+    {
+      "hooks": [
+        "material.list [Query]",
+        "storeLocation.create [Mutation]",
+        "storeLocation.list [Query]",
+        "storeLocation.transferStock [Mutation]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-2FC127E1E084",
+      "sourceFile": "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-13B0011656FE",
+        "TRIGGER-26A9B4F25A12",
+        "TRIGGER-34AA198434B4",
+        "TRIGGER-46D996DD138C",
+        "TRIGGER-54524DC0204D",
+        "TRIGGER-5950B091BC95",
+        "TRIGGER-5CCDAC87783A",
+        "TRIGGER-5CE37543C774",
+        "TRIGGER-6B96294A64C3",
+        "TRIGGER-6E6AB5FA9448",
+        "TRIGGER-72DFA2D3D67A",
+        "TRIGGER-849BBE5241DF",
+        "TRIGGER-87ED8B376800",
+        "TRIGGER-89B6D087AEBA",
+        "TRIGGER-A615077FA11A",
+        "TRIGGER-B561DA147FA0",
+        "TRIGGER-B5AD2C62DB81",
+        "TRIGGER-C51630238FA1",
+        "TRIGGER-CDB019F299A6",
+        "TRIGGER-DC276EDCD9EE",
+        "TRIGGER-DFC529BCD7B1",
+        "TRIGGER-F4D6BAD78AA0"
+      ]
+    },
+    {
+      "hooks": [
+        "partner.listPartners [Query]",
+        "project.get [Query]",
+        "purchaseOrder.list [Query]",
+        "purchaseOrder.openBillablePOs [Query]",
+        "vendorBill.checkDuplicate [Query]",
+        "vendorBill.create [Mutation]",
+        "vendorBill.getThreeWayMatchData [Query]",
+        "vendorBill.list [Query]",
+        "vendorBill.recordPayment [Mutation]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-E377890E42E5",
+      "sourceFile": "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-0237AA6EE309",
+        "TRIGGER-1EED725945D2",
+        "TRIGGER-26F3BF60998F",
+        "TRIGGER-31EF2E6C4C28",
+        "TRIGGER-3569226276AD",
+        "TRIGGER-3D7585B28622",
+        "TRIGGER-42B877B08E0E",
+        "TRIGGER-47E82B480472",
+        "TRIGGER-48AB251A2D65",
+        "TRIGGER-546F4B0AB9C7",
+        "TRIGGER-556A25E0EF3A",
+        "TRIGGER-62D66D840D62",
+        "TRIGGER-71B79C56DC62",
+        "TRIGGER-8E31F1FDF6E8",
+        "TRIGGER-8F7DC3423654",
+        "TRIGGER-A15FA3A71BEB",
+        "TRIGGER-A81EE16258F6",
+        "TRIGGER-B82BED1D1F26",
+        "TRIGGER-B8A4CD1C96A4",
+        "TRIGGER-BD4413D71D5C",
+        "TRIGGER-C03324C49911",
+        "TRIGGER-DC0892653E16",
+        "TRIGGER-ED1319C84A3D",
+        "TRIGGER-F96250CC996C"
+      ]
+    },
+    {
+      "hooks": [
+        "project.crossProjectFinancials [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-CBDEBE70CE32",
+      "sourceFile": "src/components/dashboard/cross-project-financials-card.tsx",
+      "triggerCandidateIds": []
+    },
+    {
+      "hooks": [
+        "procurementLookahead.getLookahead [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-AD783D35198D",
+      "sourceFile": "src/components/inventory/procurement-lookahead-widget.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-38325645714B",
+        "TRIGGER-B2D7BBDDF7E8"
+      ]
+    },
+    {
+      "hooks": [
+        "material.approveCount [Mutation]",
+        "material.listCounts [Query]",
+        "material.physicalCount [Mutation]",
+        "material.reconciliation [Query]",
+        "material.rejectCount [Mutation]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-166C06B7348E",
+      "sourceFile": "src/components/inventory/reconciliation-report.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-10615A6EB4CF",
+        "TRIGGER-11E583D65F38",
+        "TRIGGER-2809E112E601",
+        "TRIGGER-3CEB4579C212",
+        "TRIGGER-40CF0E05A3C3",
+        "TRIGGER-4430FD6182D6",
+        "TRIGGER-56AF3C5E9B22",
+        "TRIGGER-6B159C0D04DA",
+        "TRIGGER-6CA90B1C2D83",
+        "TRIGGER-850B895FD7BC",
+        "TRIGGER-95C04F836E11",
+        "TRIGGER-96016C0EEBD0",
+        "TRIGGER-A3866443D282",
+        "TRIGGER-A48F5AE39BF1",
+        "TRIGGER-AA60BEA60346",
+        "TRIGGER-C8241799A564",
+        "TRIGGER-DC295E774E6A",
+        "TRIGGER-E8A798C66008",
+        "TRIGGER-F01E1615B18F",
+        "TRIGGER-F2E89FC00FB8",
+        "TRIGGER-F5D80C2E96E9",
+        "TRIGGER-F8FAE2681C11"
+      ]
+    },
+    {
+      "hooks": [
+        "interSiteTransfer.receiveMaterial [Mutation]",
+        "storeLocation.list [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-3E52DDAC8DCC",
+      "sourceFile": "src/components/inventory/transfer-acknowledgement-dialog.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-0161BB60C13A",
+        "TRIGGER-2410577B430D",
+        "TRIGGER-29D4B637D517",
+        "TRIGGER-35E87A9B2BEF",
+        "TRIGGER-39BE109CC19E",
+        "TRIGGER-94CE598952E2",
+        "TRIGGER-A0AFBEADEEE5",
+        "TRIGGER-B12298BE001C",
+        "TRIGGER-D250BBAC40FD",
+        "TRIGGER-EA0806023038"
+      ]
+    },
+    {
+      "hooks": [
+        "hr.endOrganizationEmployment [Mutation]",
+        "hr.startOrganizationEmployment [Mutation]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-29BDE9333625",
+      "sourceFile": "src/components/organization-employment-manager.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-1029EDA02E28",
+        "TRIGGER-1668DD985809",
+        "TRIGGER-2D394889E9FB",
+        "TRIGGER-4996176D25D3",
+        "TRIGGER-55D3028E6349",
+        "TRIGGER-6674723D937E",
+        "TRIGGER-A8C6A1B0CA2A",
+        "TRIGGER-A8EF7A07CEA2",
+        "TRIGGER-C2511262144F",
+        "TRIGGER-C645DA43A535",
+        "TRIGGER-CA19CF777C3C",
+        "TRIGGER-D162AC9D83AA",
+        "TRIGGER-D285D16FB38F",
+        "TRIGGER-E1486DB0D815",
+        "TRIGGER-E2AB63A90B6D",
+        "TRIGGER-EFFB3FA34176",
+        "TRIGGER-F52372B3BACD",
+        "TRIGGER-FB842940C880"
+      ]
+    },
+    {
+      "hooks": [
+        "peopleAccess.catalog [Query]",
+        "peopleAccess.reviewReport [Query]"
+      ],
+      "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+      "scopeId": "ORPHAN-UI-78174C2BCF67",
+      "sourceFile": "src/components/people-access/access-review-report.tsx",
+      "triggerCandidateIds": [
+        "TRIGGER-00C3866F3F64",
+        "TRIGGER-5CEF9DF31C42",
+        "TRIGGER-61C736D1677C",
+        "TRIGGER-64C2DF7F4332",
+        "TRIGGER-9A9F41CE2B69",
+        "TRIGGER-AC82B298D5C0",
+        "TRIGGER-DD67B56FCF44"
+      ]
+    }
+  ]
 }

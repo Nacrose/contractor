@@ -221,7 +221,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path, help="source ZIP archive or checked-out repository")
     parser.add_argument("--output", type=Path)
-    parser.add_argument("--trigger-output", type=Path, help="JSONL file for route-scoped UI trigger candidates")
+    parser.add_argument("--trigger-output", type=Path, help="JSONL file for route, layout and unreferenced UI trigger candidates")
     parser.add_argument("--coverage", type=Path, help="coverage markdown used to assign stable route IDs")
     args = parser.parse_args()
     is_archive = args.source.is_file()
@@ -446,6 +446,7 @@ def main():
         }
         route_actions = []
         all_trigger_candidates = []
+        reachable_ui_files = set()
         route_ids = {}
         route_tasks = {}
         next_route_id = 1
@@ -529,6 +530,7 @@ def main():
                 "originalRoute": route_path,
                 **candidate,
             } for candidate in trigger_candidates)
+            reachable_ui_files.update(path.removeprefix(ROOT) for path in visited)
             mapped_hooks = []
             for hook in sorted(hooks):
                 qualified = hook.rsplit(" [", 1)[0]
@@ -642,6 +644,7 @@ def main():
                     "scopeType": "shared-layout",
                     **candidate,
                 })
+            reachable_ui_files.update(path.removeprefix(ROOT) for path in visited)
             shared_shells.append({
                 "layoutId": layout_id,
                 "sourceLayout": relative_layout,
@@ -653,6 +656,40 @@ def main():
                 "triggerCandidateCount": len(layout_triggers),
                 "directDialogComponents": sorted(dialogs),
                 "reviewState": "shared layout source indexed separately from page routes; interaction behavior requires review",
+            })
+        unreferenced_ui_components = []
+        for source_name in sorted(files):
+            if not source_name.startswith(ROOT + "src/") or not source_name.endswith((".tsx", ".jsx")):
+                continue
+            relative_source = source_name.removeprefix(ROOT)
+            if relative_source in reachable_ui_files:
+                continue
+            src = read_source(source_name).decode(errors="ignore")
+            hooks = sorted(set(f"{path} [{method.removeprefix('use')}]" for path, method in HOOK.findall(src)))
+            if not hooks:
+                continue
+            scope_id = "ORPHAN-UI-" + hashlib.sha256(relative_source.encode()).hexdigest()[:12].upper()
+            mutation_bindings = {
+                variable: f"{path} [Mutation]"
+                for variable, path in re.findall(
+                    r"\b(?:const|let)\s+(\w+)\s*=\s*trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.useMutation\b",
+                    src,
+                )
+            }
+            orphan_triggers = interactive_triggers(src, relative_source, scope_id, "unassigned", mutation_bindings)
+            for candidate in orphan_triggers:
+                all_trigger_candidates.append({
+                    "routeId": scope_id,
+                    "originalRoute": "unreferenced-ui:" + relative_source,
+                    "scopeType": "unreferenced-ui",
+                    **candidate,
+                })
+            unreferenced_ui_components.append({
+                "scopeId": scope_id,
+                "sourceFile": relative_source,
+                "hooks": hooks,
+                "triggerCandidateIds": sorted(item["actionId"] for item in orphan_triggers),
+                "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
             })
         trigger_output = args.trigger_output or (
             args.output.with_name("original-interaction-trigger-candidates.jsonl") if args.output else None
@@ -721,7 +758,7 @@ def main():
                 "triggersLinkedToFieldOutbox": sum(trigger["offlinePolicyCandidate"] == "durable-field-outbox-action" for trigger in all_trigger_candidates),
             },
             "interactionTriggerInventory": {
-                "format": "JSON Lines; one route-scoped JSX event-handler candidate per line",
+                "format": "JSON Lines; one route, layout or unreferenced-UI scoped JSX event-handler candidate per line",
                 "file": trigger_output.name if trigger_output else None,
                 "count": len(all_trigger_candidates),
                 "reviewState": "static trigger candidates; event call paths require review",
@@ -736,6 +773,7 @@ def main():
             "apiSurface": api_routes,
             "scheduledWorkflows": scheduled_workflows,
             "sharedShells": shared_shells,
+            "unreferencedUiComponentsWithHooks": unreferenced_ui_components,
             "offlineModel": offline_model,
             "routes": route_actions,
         }
