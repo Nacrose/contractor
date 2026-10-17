@@ -811,6 +811,13 @@ DAILY_REPORT_DETAIL_REVIEWED_SOURCE_FILES = {
     "src/components/documents/document-trail.tsx",
     "src/components/documents/upload-signed-copy-dialog.tsx",
     "src/app/(app)/projects/[id]/workflow/reports/[reportId]/dialogs/create-rfi-from-progress-dialog.tsx",
+    "src/app/(app)/projects/[id]/workflow/reports/[reportId]/page.tsx",
+    "src/app/(app)/projects/[id]/workflow/reports/[reportId]/sections/section-delete-button.tsx",
+    "src/components/ui/confirm-dialog.tsx",
+    "src/components/ui/alert-dialog.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/input.tsx",
+    "src/components/drop-zone.tsx",
 }
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
@@ -1079,7 +1086,7 @@ def main():
             "sourceReviewedActionIds": ipc_reviewed_actions,
             "sourceReviewedTriggerIds": reviewed_trigger_ids,
             "sourceReviewState": (
-                "all 61 mobile capture and all 57 office register trigger candidates, 144 selected section/status/photo/share/document-trail/RFI-from-progress controls on each report detail/edit route, and selected office lifecycle triggers reviewed; remaining shared dialog controls, runtime and deployed service compatibility remain unverified"
+                "all 61 mobile capture, all 57 office register and all 165 report detail/edit trigger candidates reviewed, plus selected office lifecycle triggers; runtime behavior and deployed service compatibility remain unverified"
                 if workflow_id == "WF-001" else
                 "all 79 mapped field-photo, shared field-review and drawing-progress route trigger candidates traced; photo-progress data gap, runtime and deployed service compatibility remain unverified"
                 if workflow_id == "WF-002" else
