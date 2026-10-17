@@ -40,4 +40,17 @@ One visible control combines `begin` and the first `applyBatch`; the plan may th
 
 Route ownership correction: `/m/tasks` is a punch-list register with durable field status updates, not a responsibility-handover screen. It is assigned to M13-T26 and removed from WF-040's route crosswalk; `/m/tasks/new` already belongs to T26. The full source trace is in [quality and safety reconciliation](quality-safety-source-action-reconciliation.md).
 
+## WF-040 My Tasks route controls
+
+`ROUTE-115` (`/projects/[id]/workflow/program/my-tasks`) is the generic assigned-work surface. Its direct date, search, edit and export controls are followed in the crosswalk. Thirteen stable trigger IDs are marked source-reviewed; this does not source-review the page's remaining generic shared-shell/table candidates or assert runtime parity.
+
+| Control | Trigger IDs | Source behavior and service contract |
+|---|---|---|
+| Previous day, today, next day and date input | `TRIGGER-CB0DC7C2D9F5`, `TRIGGER-04860F834927`, `TRIGGER-CA3BDCDFD65A`, `TRIGGER-9B3C981B92BA` | Change the selected date in register filter state. The page then selects that day's program from the loaded project programs. |
+| Search field and its ActionBar binding | `TRIGGER-DC28ECDC49A6`, `TRIGGER-AE8B71BFA76D` | Updates local search; task name, location and BOQ code are filtered on the client. |
+| Start edit, quantity input, status selector, save and cancel | `TRIGGER-480DA02FE40B`, `TRIGGER-0186CA25FFD2`, `TRIGGER-5CFB8DB4A5CD`, `TRIGGER-B07BE401825D`, `TRIGGER-9D0A55DE3BB4` | Edit state is local until save. Save calls `workflow.dailyProgram.updateTaskExecution` with the route project and task ID. The server requires `project.dailyProgramme.edit`, verifies that the task belongs to that project, validates a non-negative quantity and an allowed execution status, updates in a tenant transaction, and audits the change. The call is online-only; no durable outbox path is used by this page. |
+| Export to Excel, desktop and overflow presentations | `TRIGGER-6286A652A3CC`, `TRIGGER-04A3391ABA1E` | Same export action in ActionBar presentations; exports the currently selected day and the current user's assigned, locally searched task rows. It performs no server write. |
+
+The page reads programs with `workflow.dailyProgram.listPrograms` under `project.dailyProgramme.view`, then filters task assignment to the current user in the client. The query returns project program records and applies source visibility rules to linked RFI, Gantt, subcontractor, equipment, HR and BOQ data. Treat the project read grant as the authority boundary; the “My Tasks” label is not a separate server permission. The index also captures query error, clear-filter, tab, navigation and shared table candidates; their full conditional reachability remains open under T01.
+
 Contractor should keep JV payout and IPC payment-summary semantics aligned with the user-approved IPC contract, preserve RFI/submittal cross-record validation, and make handover a recipient-authorized, auditable batch process. Dashboard visibility should be composed from per-metric grants. Do not treat M00's implemented/partial labels as runtime acceptance.
