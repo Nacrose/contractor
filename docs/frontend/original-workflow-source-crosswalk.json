@@ -1628,8 +1628,8 @@
         "vatRegister.getSalesRegister [Query]",
         "vatRegister.getVatReturnSchedule10 [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -1760,8 +1760,8 @@
         "requisition.list [Query]",
         "requisition.rejectPr [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -1886,8 +1886,8 @@
         "purchaseOrder.get [Query]",
         "purchaseOrder.list [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -2025,8 +2025,8 @@
         "material.setThresholds [Mutation]",
         "material.stockAlerts [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -2135,8 +2135,8 @@
       "sourceOperations": [
         "interSiteTransfer.transferMaterial [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {

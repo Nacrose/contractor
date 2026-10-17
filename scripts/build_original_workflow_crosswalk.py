@@ -91,6 +91,7 @@ USER_DECISIONS = {
 }
 FIELD_WORKFLOWS = {"WF-001", "WF-002", "WF-003", "WF-004", "WF-005"}
 COMMERCIAL_WORKFLOWS = {"WF-006", "WF-007", "WF-008", "WF-009"}
+TAX_MATERIALS_WORKFLOWS = {"WF-013", "WF-014", "WF-015", "WF-016", "WF-017"}
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
 
@@ -225,6 +226,8 @@ def main():
                 if workflow_id in FIELD_WORKFLOWS else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
+                "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified"
+                if workflow_id in TAX_MATERIALS_WORKFLOWS else
                 "candidate crosswalk only; source action semantics require review"
             ),
             "sourceReviewReference": (
@@ -233,7 +236,9 @@ def main():
                 "docs/reports/M13/field-and-sync-source-action-reconciliation.md"
                 if workflow_id in FIELD_WORKFLOWS else
                 "docs/reports/M13/commercial-source-action-reconciliation.md"
-                if workflow_id in COMMERCIAL_WORKFLOWS else None
+                if workflow_id in COMMERCIAL_WORKFLOWS else
+                "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md"
+                if workflow_id in TAX_MATERIALS_WORKFLOWS else None
             ),
             "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
         })
