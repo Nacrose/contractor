@@ -125,6 +125,10 @@ RATE_ANALYSIS_REVIEWED_TRIGGERS = {
     "TRIGGER-A2B025FE25FC", "TRIGGER-B979DC32E0C9", "TRIGGER-B3AC961395C5",
     "TRIGGER-C7DD504DC818", "TRIGGER-BEC1AD0CD5BD", "TRIGGER-25326B7B97B1",
 }
+RATE_PROFILE_REVIEWED_TRIGGERS = {
+    "TRIGGER-B91D32C59628", "TRIGGER-F6A5AA529D38", "TRIGGER-9499BC675885",
+    "TRIGGER-6F74FFB4BB45",
+}
 VARIATION_ORDER_REVIEWED_TRIGGERS = {
     "TRIGGER-628518F1BB88", "TRIGGER-0B74FB1AD490", "TRIGGER-DF05F79A9F31",
     "TRIGGER-A6C23BC29477", "TRIGGER-791450CABBB6", "TRIGGER-98B8F794AA82",
@@ -142,6 +146,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-009": BOQ_VERSION_REVIEWED_TRIGGERS | VARIATION_ORDER_REVIEWED_TRIGGERS,
     "WF-006": BOQ_ITEM_REVIEWED_TRIGGERS,
     "WF-007": RATE_ANALYSIS_REVIEWED_TRIGGERS,
+    "WF-008": RATE_PROFILE_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
@@ -309,6 +314,8 @@ def main():
                 if workflow_id == "WF-006" else
                 "rate-analysis batch, ingredient and copy controls source-reviewed; distinct from contractual BOQ rate editing; catalog/profile controls and runtime remain unverified"
                 if workflow_id == "WF-007" else
+                "rate-profile preview selection, protected-rate replacement and fingerprint-bound apply controls reviewed; catalogs and runtime remain unverified"
+                if workflow_id == "WF-008" else
                 "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified"
                 if workflow_id in EQUIPMENT_WORKFLOWS else
                 "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified"

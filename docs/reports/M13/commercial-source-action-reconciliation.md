@@ -83,4 +83,12 @@ The rate-analysis inspector in `ROUTE-012` is a separate engineering-cost editor
 | `TRIGGER-A2B025FE25FC` | A batch-size change calls `rateAnalysis.update`, which recalculates the analysis in the same write transaction. | Treat batch size as a unit-rate divisor/input and verify the resulting unit cost against calculation fixtures. |
 | `TRIGGER-C7DD504DC818` | Copies ingredient breakdown from the client-estimate analysis; `rateAnalysis.copyIngredients` verifies source and target analyses belong to the same BOQ item, checks BOQ locks under transaction, replaces the target rows and recalculates it. | Keep source/target scope checks, replacement semantics, ingredient provenance and recalculation atomic. |
 
-These trigger IDs are marked source-reviewed for WF-007. The service operations require `project.boq.edit` and are online-only. Norm import, presets, catalogs, rate-profile application and full ingredient validation still need their own control-level review.
+These trigger IDs are marked source-reviewed for WF-007. The service operations require `project.boq.edit` and are online-only. Norm import, presets, catalogs and remaining ingredient validation still need their own control-level review.
+
+## Rate-profile refresh trigger review
+
+The “Refresh profile rates” dialog in `ROUTE-012` was traced through preview and apply. `TRIGGER-B91D32C59628` opens the dialog; `TRIGGER-F6A5AA529D38` selects a profile and clears prior replacement choices; `TRIGGER-9499BC675885` opts a protected ingredient rate into replacement; and `TRIGGER-6F74FFB4BB45` submits the selected set with the preview fingerprint.
+
+The preview is a BOQ-view query. Applying is a BOQ-edit mutation that rechecks the target analysis and BOQ item belong to the project, rejects locked baselines, recomputes the preview inside a serializable transaction, rejects a stale fingerprint or ineligible replacement ID, applies only eligible rows, records rate provenance and recalculates the analysis. The UI also refetches the preview after a conflict. Contractor acceptance should preserve “fill missing rates” as the default, require explicit replacement for protected rates, and never silently apply a stale preview.
+
+All four controls are marked source-reviewed for WF-008. This does not cover profile creation/edit/deletion or the scoped rate-catalog import/synchronization lifecycle.
