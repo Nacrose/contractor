@@ -1,6 +1,6 @@
 # BOQ, rate-analysis and version source-action reconciliation
 
-Status: **Core service and permission boundaries reviewed for WF-006–009; 128 of 223 BOQ route trigger candidates are also traced through the register, table hierarchy, row controls and create forms. The rate inspector, import/paste validation, the full catalog lifecycle and runtime behavior remain unverified.**
+Status: **Core service and permission boundaries reviewed for WF-006–009; 177 of 223 BOQ route trigger candidates are traced through the register, table hierarchy, row controls, create forms and rate-analysis inspector. Import/paste validation, the full catalog lifecycle and runtime behavior remain unverified.**
 
 Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Stable route, hook-action and event-candidate IDs are in the [workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) and [canonical action index](../../frontend/original-action-component-index.json).
 
@@ -74,7 +74,7 @@ These trigger IDs are now marked source-reviewed for WF-006. The observed lock g
 
 ## BOQ register, toolbar and create-form trigger review
 
-An additional 52 `ROUTE-012` candidates are traced through the page, BOQ header, inline add row and Add BOQ Item dialog. Exact stable IDs are marked on WF-006 in the crosswalk. A subsequent pass traced the hierarchy table, row editor, section group, tags, unit selector, preset combobox and the comparison table integration, bringing the reviewed set to 128 of the route's 223 candidates; the 95 remaining include the rate-analysis inspector and import/paste flows.
+An additional 52 `ROUTE-012` candidates are traced through the page, BOQ header, inline add row and Add BOQ Item dialog. Exact stable IDs are marked on WF-006 in the crosswalk. A subsequent pass traced the hierarchy table, row editor, section group, tags, unit selector, preset combobox and the comparison-table integration, bringing the reviewed set to 128 of the route's 223 candidates and leaving 95 open at that point.
 
 | Control group | Source behavior and service boundary |
 |---|---|
@@ -86,7 +86,7 @@ The two create forms accept quantity and rate as text and convert with `parseFlo
 
 ## BOQ hierarchy table and row-control trigger review
 
-The next 78 route candidates trace the grouped hierarchy, row editing, tags/units, selection and comparison-table callbacks. The crosswalk keeps the stable IDs; 93 of 223 route candidates remain open after this pass.
+The next 78 route candidates trace the grouped hierarchy, row editing, tags/units, selection and comparison-table callbacks. The crosswalk keeps the stable IDs; 95 route candidates remained open before the inspector pass.
 
 | Control group | Source behavior and service boundary |
 |---|---|
@@ -98,7 +98,7 @@ The source item-lock and project-lock checks are enforced again by `boq.update`,
 
 ## Government rate-analysis trigger review
 
-The rate-analysis inspector in `ROUTE-012` is a separate engineering-cost editor from the contractual BOQ rate fields. The reviewed controls below use `rateAnalysis.*` procedures and the shared `withBoqWriteTx` guard, which rechecks BOQ/item locks inside the tenant transaction.
+The rate-analysis inspector in `ROUTE-012` is a separate engineering-cost editor from the contractual BOQ rate fields. The current focused pass traces all 48 inspector candidates plus the one expandable read-only breakdown control (49 total); earlier ingredient, batch and copy trigger IDs overlap this complete control set. The reviewed writes use `rateAnalysis.*` procedures and the shared `withBoqWriteTx` guard, which rechecks BOQ/item locks inside the tenant transaction.
 
 | Trigger ID | Source behavior | Contractor acceptance consequence |
 |---|---|---|
@@ -107,7 +107,11 @@ The rate-analysis inspector in `ROUTE-012` is a separate engineering-cost editor
 | `TRIGGER-A2B025FE25FC` | A batch-size change calls `rateAnalysis.update`, which recalculates the analysis in the same write transaction. | Treat batch size as a unit-rate divisor/input and verify the resulting unit cost against calculation fixtures. |
 | `TRIGGER-C7DD504DC818` | Copies ingredient breakdown from the client-estimate analysis; `rateAnalysis.copyIngredients` verifies source and target analyses belong to the same BOQ item, checks BOQ locks under transaction, replaces the target rows and recalculates it. | Keep source/target scope checks, replacement semantics, ingredient provenance and recalculation atomic. |
 
-These trigger IDs are marked source-reviewed for WF-007. The service operations require `project.boq.edit` and are online-only. Norm import, presets, catalogs and remaining ingredient validation still need their own control-level review.
+The inspector's analysis and ingredient queries require BOQ view access and verify that requested analyses belong to the item. Write operations require `project.boq.edit`; ingredient mutations validate non-negative quantity/rate and 0–100 percentage, and recheck the item/project lock inside the transaction. Fixed-rate edits and adds recalculate `(quantity + quantity × percentage / 100) × rate`; percentage provisions retain an explicit base and the saved-order calculation. Copy confirms both analyses belong to the same BOQ item, replaces target ingredients, copies batch size and recalculates atomically. Applying a preset is explicitly confirmed, then replaces the target analysis ingredients; the server rechecks project/item locks, preset readability and analysis ownership in the transaction, optionally refreshes rates from the supplied catalog/district, and matches project resources by catalog ID or normalized name. Saving an analysis as a reusable organization/global preset requires preset-collection write access and BOQ view access to the source item.
+
+The UI state review found several behaviors Contractor should account for: changing the selected analysis is local state; collapsing ingredient categories and expanding read-only breakdowns are view-only; the read-only breakdown nevertheless exposes an “Edit in Analysis tab” route link. Ingredient deletion is immediate with no confirmation. Invalid/empty quantity and rate text is converted to zero on blur; invalid/zero batch input becomes one, while negative server inputs are rejected. The fixed-resource quick-add Enter handler does not guard `addMutation.isPending` even though its button does, so repeated Enter can submit duplicates while the first request is pending. Cancelling quick-add clears the catalog material ID but leaves other resource selection/name state, which can carry into a later add form. Copy's `mutateAsync` error is toasted both by the mutation callback and its caller catch. Applying a preset clears its confirmation state immediately after mutation starts, so the dialog's loading state is not visible while the replacement is pending. These are source-level UX/reliability findings to qualify against the deployed revision.
+
+All 49 `ROUTE-012` inspector/read-only trigger candidates are marked source-reviewed for WF-006 and WF-007. WF-006 now covers 177 of 223 route candidates; WF-007 review is limited to the BOQ route's rate inspector and read-only breakdown. `ROUTE-111` rate-library controls, norm import, full catalog lifecycle and runtime remain open.
 
 ## Rate-profile refresh trigger review
 

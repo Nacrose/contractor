@@ -833,6 +833,10 @@ BOQ_ITEM_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/boq/components/preset-combobox.tsx",
     "src/components/ui/construction-table.tsx",
 }
+RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/boq/components/rate-analysis-inspector.tsx",
+    "src/app/(app)/projects/[id]/boq/components/read-only-rate-analysis.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -1037,6 +1041,23 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in BOQ_ITEM_REVIEWED_SOURCE_FILES
             )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-012"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES
+            )
+        if workflow_id == "WF-007":
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-012"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES
+            )
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
         if missing_reviewed_triggers:
@@ -1122,8 +1143,10 @@ def main():
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
-                "core BOQ/rate/snapshot routes and permission contracts reviewed; 128 BOQ register/header/create/table-row triggers reviewed; rate inspector, import/paste and full catalog lifecycle remain unverified"
+                "core BOQ/rate/snapshot routes and permission contracts reviewed; 177 of 223 BOQ register/header/create/table-row/rate-inspector triggers reviewed; import/paste, full catalog lifecycle and runtime remain unverified"
                 if workflow_id == "WF-006" else
+                "rate-analysis ingredient, preset and read-only inspector controls on ROUTE-012 reviewed; ROUTE-111 rate-library controls, full catalog lifecycle and runtime remain unverified"
+                if workflow_id == "WF-007" else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
                 "purchase-order service boundaries reviewed; vendor bill and payment controls are in an unreferenced materials component"
