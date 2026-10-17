@@ -82,6 +82,13 @@ SERVICE_HINTS = {
     "WF-041": ["dashboard.", "finance.", "accounting.dayBook", "gantt."],
 }
 SOURCE_OPERATION_SUPPLEMENTS = {
+    # The office Field Photos tray and receiving surfaces are shared layout / child
+    # components, rather than hooks declared directly by the mapped route pages.
+    "WF-002": {
+        "fieldPhotos.list [Query]",
+        "fieldPhotos.file [Mutation]",
+        "fieldPhotos.archive [Mutation]",
+    },
     # Imported child component hooks on the hierarchy route are represented in
     # the trigger sidecar but are not direct page hooks in the component index.
     "WF-040": {
@@ -624,6 +631,37 @@ FIELD_SYNC_ROUTE_REVIEWED_TRIGGERS = {
     "TRIGGER-8D17FCED4264", "TRIGGER-A98ED35CFFC4", "TRIGGER-B5558A691058",
     "TRIGGER-DF4AEEBE3C04", "TRIGGER-C8D415021823",
 }
+FIELD_PHOTO_REVIEWED_TRIGGERS = {
+    # Mobile photo capture, the shared field-submission review route, and
+    # drawing progress's view controls (including shared route components).
+    "TRIGGER-0B8F3F58AD00", "TRIGGER-1320CF177CF9", "TRIGGER-1790EC74BE1C",
+    "TRIGGER-1C58FED69FDE", "TRIGGER-2356BCAF972D", "TRIGGER-2DA3AE346B8F",
+    "TRIGGER-301517B74AD7", "TRIGGER-32FDEF113641", "TRIGGER-372995D8F995",
+    "TRIGGER-3838BDD1C330", "TRIGGER-394B7CB434F8", "TRIGGER-42F9B1025B15",
+    "TRIGGER-44A62B126AAD", "TRIGGER-4539E48A3D50", "TRIGGER-45DC6C2A3C6C",
+    "TRIGGER-4739F95F6F64", "TRIGGER-479886D685C4", "TRIGGER-54CFE43F9A72",
+    "TRIGGER-582480E002F6", "TRIGGER-5CB0320EC27A", "TRIGGER-5E886F24CA26",
+    "TRIGGER-614DC95FF006", "TRIGGER-61C5E6FDB332", "TRIGGER-661DE5B84D19",
+    "TRIGGER-68134C237D12", "TRIGGER-69940ADD2C48", "TRIGGER-7494CFF28D73",
+    "TRIGGER-76A84DB843A9", "TRIGGER-7A8C3CE0EDDE", "TRIGGER-839229B08DE5",
+    "TRIGGER-84E626217636", "TRIGGER-85B337A28F80", "TRIGGER-8709439E1DD0",
+    "TRIGGER-87967DA7085C", "TRIGGER-8A3E9B7EC073", "TRIGGER-8F19D0437235",
+    "TRIGGER-93E73B39B407", "TRIGGER-97A1A1AEFE2A", "TRIGGER-9C0895DC383F",
+    "TRIGGER-A54DDA45D383", "TRIGGER-A56D37D47E80", "TRIGGER-A57B712EB4F1",
+    "TRIGGER-AC1A0C289F4E", "TRIGGER-AD1D48EDE7A9", "TRIGGER-ADE918999615",
+    "TRIGGER-B204D304E856", "TRIGGER-B4C07E590B35", "TRIGGER-B5A66C008754",
+    "TRIGGER-BA2FAB85B76E", "TRIGGER-BB203FB4099B", "TRIGGER-BBA3E09B1202",
+    "TRIGGER-BCFE530B41CE", "TRIGGER-C0792BB50B72", "TRIGGER-C7AF7DDBEBF1",
+    "TRIGGER-D4E521DCF504", "TRIGGER-D591F00B008D", "TRIGGER-D798FC139FCC",
+    "TRIGGER-DA57305B2389", "TRIGGER-DA6063291D8A", "TRIGGER-DBE88A45F2A6",
+    "TRIGGER-DDE4E9DF2C3A", "TRIGGER-DF74C259A664", "TRIGGER-E147E51D743F",
+    "TRIGGER-E41632591536", "TRIGGER-E721420123F3", "TRIGGER-E80977F23B3B",
+    "TRIGGER-E8D2C9E02120", "TRIGGER-E9CBA34D5EEB", "TRIGGER-EBD5A3299530",
+    "TRIGGER-EE5AC6CC1544", "TRIGGER-EFCFCDF26282", "TRIGGER-F102875C55C5",
+    "TRIGGER-F2825E7C2CD8", "TRIGGER-F5379A26719F", "TRIGGER-F8B9208352DF",
+    "TRIGGER-FE67C7F5CE8F", "TRIGGER-FE70CE862E10", "TRIGGER-FE812F3EF026",
+    "TRIGGER-FF0E0F3D45A9",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -661,6 +699,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-038": JV_COMMISSION_REVIEWED_TRIGGERS,
     "WF-039": SUBMITTALS_REGISTER_REVIEWED_TRIGGERS | RFI_REGISTER_REVIEWED_TRIGGERS | RFI_CREATE_REVIEWED_TRIGGERS | RFI_DETAIL_REVIEWED_TRIGGERS | RFI_IMPORT_COMMENT_REVIEWED_TRIGGERS | RFI_ATTACHMENT_DOCUMENT_REVIEWED_TRIGGERS | RFI_SHARED_ROUTE_REVIEWED_TRIGGERS,
     "WF-005": FIELD_SYNC_ROUTE_REVIEWED_TRIGGERS,
+    "WF-002": FIELD_PHOTO_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -880,6 +919,8 @@ def main():
             "sourceReviewState": (
                 "daily-report mobile draft/send and office create/status/delete triggers reviewed; remaining form/attachment paths and runtime remain unverified"
                 if workflow_id == "WF-001" else
+                "all 79 mapped field-photo, shared field-review and drawing-progress route trigger candidates traced; photo-progress data gap, runtime and deployed service compatibility remain unverified"
+                if workflow_id == "WF-002" else
                 "all 17 desktop/mobile Sync and offline route trigger candidates traced; data durability/runtime and deployed service compatibility remain unverified"
                 if workflow_id == "WF-005" else
                 "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified"
