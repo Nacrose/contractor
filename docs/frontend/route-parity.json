@@ -1,0 +1,1310 @@
+{
+  "version": 1,
+  "referenceCommit": "7d06a8a51826639b554e30d11a8b0b8f7d095259",
+  "totalRoutes": 64,
+  "routes": [
+    {
+      "routeId": "activity",
+      "scope": "organisation",
+      "originalRoute": "/activity",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/activity/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "OVERVIEW",
+      "l3SubTab": "FEED",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/activity_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify activity opens in organisation scope under DESK > OVERVIEW > FEED, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin.audit",
+      "scope": "organisation",
+      "originalRoute": "/admin/audit",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/audit/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "AUDIT",
+      "procedures": [
+        "admin.auditLog"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin/audit_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin.audit opens in organisation scope under ADMIN > SYSTEM > AUDIT, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin.data",
+      "scope": "organisation",
+      "originalRoute": "/admin/data",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/data/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "DATA",
+      "procedures": [
+        "admin.browseTable",
+        "admin.listTables"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin/data_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin.data opens in organisation scope under ADMIN > SYSTEM > DATA, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin.database",
+      "scope": "organisation",
+      "originalRoute": "/admin/database",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/database/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "DATABASE",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin/database_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin.database opens in organisation scope under ADMIN > SYSTEM > DATABASE, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin.organizations",
+      "scope": "organisation",
+      "originalRoute": "/admin/organizations",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/organizations/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "ORGANIZATIONS",
+      "procedures": [
+        "admin.createOrganization",
+        "admin.deleteOrganization",
+        "admin.extendTrial",
+        "admin.listOrganizations",
+        "admin.updateOrganization"
+      ],
+      "dialogs": [
+        "AlertDialog",
+        "CreateOrgDialog",
+        "DeleteDialog",
+        "EditOrgDialog",
+        "ExtendTrialDialog",
+        "SuspendDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin/organizations_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin.organizations opens in organisation scope under ADMIN > SYSTEM > ORGANIZATIONS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin",
+      "scope": "organisation",
+      "originalRoute": "/admin",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "ADMIN",
+      "procedures": [
+        "admin.overview"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin opens in organisation scope under ADMIN > SYSTEM > ADMIN, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin.settings",
+      "scope": "organisation",
+      "originalRoute": "/admin/settings",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/settings/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "SETTINGS",
+      "procedures": [
+        "admin.listFeatureFlags",
+        "admin.upsertFeatureFlag"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin/settings_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin.settings opens in organisation scope under ADMIN > SYSTEM > SETTINGS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin.trials",
+      "scope": "organisation",
+      "originalRoute": "/admin/trials",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/trials/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "TRIALS",
+      "procedures": [
+        "admin.extendTrial",
+        "admin.listTrials"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin/trials_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin.trials opens in organisation scope under ADMIN > SYSTEM > TRIALS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "admin.users",
+      "scope": "organisation",
+      "originalRoute": "/admin/users",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/admin/users/page.tsx",
+      "l1Module": "ADMIN",
+      "l2Tab": "SYSTEM",
+      "l3SubTab": "USERS",
+      "procedures": [
+        "admin.activateUser",
+        "admin.deactivateUser",
+        "admin.deleteUser",
+        "admin.listUsers",
+        "admin.resetUserPassword"
+      ],
+      "dialogs": [
+        "ActivateDialog",
+        "AlertDialog",
+        "DeactivateDialog",
+        "DeleteDialog",
+        "ResetPasswordDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/admin/users_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify admin.users opens in organisation scope under ADMIN > SYSTEM > USERS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "dashboard",
+      "scope": "organisation",
+      "originalRoute": "/dashboard",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/dashboard/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "OVERVIEW",
+      "l3SubTab": "FEED",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/dashboard_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify dashboard opens in organisation scope under DESK > OVERVIEW > FEED, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "presets",
+      "scope": "organisation",
+      "originalRoute": "/presets",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/presets/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "GENERAL",
+      "l3SubTab": "DEFAULT",
+      "procedures": [
+        "globalPreset.addIngredient",
+        "globalPreset.create",
+        "globalPreset.delete",
+        "globalPreset.deleteIngredient",
+        "globalPreset.get",
+        "globalPreset.list",
+        "globalPreset.update",
+        "globalPreset.updateIngredient"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/presets_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify presets opens in organisation scope under DESK > GENERAL > DEFAULT, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.boq",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/boq",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/boq/page.tsx",
+      "l1Module": "PLANNING",
+      "l2Tab": "BOQ & RATES",
+      "l3SubTab": "WORKSHEET",
+      "procedures": [
+        "boq.create",
+        "boq.delete",
+        "boq.list",
+        "boq.update",
+        "project.get",
+        "project.lockBoq"
+      ],
+      "dialogs": [
+        "AddBoqItemDialog",
+        "AlertDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "prototype/construction_client/lib/worksheet/worksheet_viewport.dart",
+      "disposition": "adapter-wiring-needed",
+      "acceptanceScenario": "Verify projects.project.boq opens in project scope under PLANNING > BOQ & RATES > WORKSHEET, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.boq.pdf-designer",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/boq/pdf-designer",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/boq/pdf-designer/page.tsx",
+      "l1Module": "PLANNING",
+      "l2Tab": "BOQ & RATES",
+      "l3SubTab": "WORKSHEET",
+      "procedures": [
+        "boq.list",
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "prototype/construction_client/lib/worksheet/worksheet_viewport.dart",
+      "disposition": "adapter-wiring-needed",
+      "acceptanceScenario": "Verify projects.project.boq.pdf-designer opens in project scope under PLANNING > BOQ & RATES > WORKSHEET, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.budget-variance",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/budget-variance",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/budget-variance/page.tsx",
+      "l1Module": "FINANCE",
+      "l2Tab": "BUDGET VS ACTUAL",
+      "l3SubTab": "LEDGER",
+      "procedures": [
+        "finance.budgetVariance"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/budget-variance_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.budget-variance opens in project scope under FINANCE > BUDGET VS ACTUAL > LEDGER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.cash-flow",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/cash-flow",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/cash-flow/page.tsx",
+      "l1Module": "FINANCE",
+      "l2Tab": "BUDGET VS ACTUAL",
+      "l3SubTab": "LEDGER",
+      "procedures": [
+        "finance.cashFlow"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/cash-flow_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.cash-flow opens in project scope under FINANCE > BUDGET VS ACTUAL > LEDGER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.communication",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/communication",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/communication/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "chat.createChannel",
+        "chat.getMessages",
+        "chat.listChannels",
+        "chat.markRead",
+        "chat.sendMessage"
+      ],
+      "dialogs": [
+        "CreateChannelDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/communication_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.communication opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.correspondence",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/correspondence",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/correspondence/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "correspondence.create",
+        "correspondence.get",
+        "correspondence.list",
+        "correspondence.stats",
+        "correspondence.updateReply"
+      ],
+      "dialogs": [
+        "LetterDetailDialog",
+        "LogLetterDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/correspondence_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.correspondence opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.daily-program",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/daily-program",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/daily-program/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.daily-program opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.daily-reports.detail",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/daily-reports/[reportId]",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/daily-reports/[reportId]/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.daily-reports.detail opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.daily-reports",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/daily-reports",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/daily-reports/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.daily-reports opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.dashboard",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/dashboard",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/dashboard/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/dashboard_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.dashboard opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.document-center",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/document-center",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/document-center/page.tsx",
+      "l1Module": "DOCUMENTS",
+      "l2Tab": "DRAWINGS & SPEC",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "approvedDocument.list",
+        "correspondence.list",
+        "document.listDrawings",
+        "ipc.list",
+        "submittal.list"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "prototype/construction_client/lib/pdf/pdf_viewport.dart",
+      "disposition": "adapter-wiring-needed",
+      "acceptanceScenario": "Verify projects.project.document-center opens in project scope under DOCUMENTS > DRAWINGS & SPEC > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.documents",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/documents",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/documents/page.tsx",
+      "l1Module": "DOCUMENTS",
+      "l2Tab": "DRAWINGS & SPEC",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "document.createDocument",
+        "document.listDocuments",
+        "project.get"
+      ],
+      "dialogs": [
+        "AddDocDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "prototype/construction_client/lib/pdf/pdf_viewport.dart",
+      "disposition": "adapter-wiring-needed",
+      "acceptanceScenario": "Verify projects.project.documents opens in project scope under DOCUMENTS > DRAWINGS & SPEC > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.drawings",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/drawings",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/drawings/page.tsx",
+      "l1Module": "DOCUMENTS",
+      "l2Tab": "DRAWINGS & SPEC",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "document.addRevision",
+        "document.approveDrawing",
+        "document.createDrawing",
+        "document.createRfiFromDrawing",
+        "document.getDrawing",
+        "document.getRevisionFile",
+        "document.listDrawings",
+        "gantt.list"
+      ],
+      "dialogs": [
+        "AddRevisionDialog",
+        "ApproveDrawingDialog",
+        "CreateRfiFromDrawingDialog",
+        "UploadDrawingDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "prototype/construction_client/lib/cad/cad_viewport.dart",
+      "disposition": "adapter-wiring-needed",
+      "acceptanceScenario": "Verify projects.project.drawings opens in project scope under DOCUMENTS > DRAWINGS & SPEC > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.equipment",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/equipment",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/equipment/page.tsx",
+      "l1Module": "EQUIPMENT",
+      "l2Tab": "FLEET & PRODUCTION",
+      "l3SubTab": "LOG",
+      "procedures": [
+        "equipment.create",
+        "equipment.createLog",
+        "equipment.createMaintenance",
+        "equipment.getEfficiencyStats",
+        "equipment.list",
+        "equipment.listLogs",
+        "equipment.listMaintenance",
+        "equipment.resolveMaintenance",
+        "equipment.updateStatus",
+        "project.get"
+      ],
+      "dialogs": [
+        "AddEquipDialog",
+        "AddLogDialog",
+        "AddMaintDialog",
+        "ResolveMaintDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/equipment_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.equipment opens in project scope under EQUIPMENT > FLEET & PRODUCTION > LOG, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.forms",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/forms",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/forms/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "boq.list",
+        "ipc.list",
+        "material.getRequirements"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/forms_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.forms opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.gantt.detail.pdf-designer",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/gantt/[versionId]/pdf-designer",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/gantt/[versionId]/pdf-designer/page.tsx",
+      "l1Module": "PLANNING",
+      "l2Tab": "BOQ & RATES",
+      "l3SubTab": "WORKSHEET",
+      "procedures": [
+        "gantt.list",
+        "gantt.listVersions",
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/gantt/detail/pdf-designer_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.gantt.detail.pdf-designer opens in project scope under PLANNING > BOQ & RATES > WORKSHEET, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.gantt",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/gantt",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/gantt/page.tsx",
+      "l1Module": "PLANNING",
+      "l2Tab": "BOQ & RATES",
+      "l3SubTab": "WORKSHEET",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/gantt_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.gantt opens in project scope under PLANNING > BOQ & RATES > WORKSHEET, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.hr",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/hr",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/hr/page.tsx",
+      "l1Module": "HR",
+      "l2Tab": "SITE WORKFORCE",
+      "l3SubTab": "MUSTER ROLL",
+      "procedures": [
+        "hr.create",
+        "hr.list",
+        "project.get"
+      ],
+      "dialogs": [
+        "AddStaffDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "prototype/construction_client/lib/workflows/attendance_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.hr opens in project scope under HR > SITE WORKFORCE > MUSTER ROLL, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.ipc.detail",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/ipc/[ipcId]",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/ipc/[ipcId]/page.tsx",
+      "l1Module": "IPC & VO",
+      "l2Tab": "CERTIFICATES",
+      "l3SubTab": "APPLICATIONS",
+      "procedures": [
+        "boqVersion.diff",
+        "ipc.listItems",
+        "ipc.loadBoq",
+        "ipc.updateItem",
+        "partner.getSubcontractor",
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/projects/project/ipc/detail_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.ipc.detail opens in project scope under IPC & VO > CERTIFICATES > APPLICATIONS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.ipc.detail.pdf-designer",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/ipc/[ipcId]/pdf-designer",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/ipc/[ipcId]/pdf-designer/page.tsx",
+      "l1Module": "IPC & VO",
+      "l2Tab": "CERTIFICATES",
+      "l3SubTab": "APPLICATIONS",
+      "procedures": [
+        "ipc.listItems",
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/projects/project/ipc/detail/pdf-designer_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.ipc.detail.pdf-designer opens in project scope under IPC & VO > CERTIFICATES > APPLICATIONS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.ipc",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/ipc",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/ipc/page.tsx",
+      "l1Module": "IPC & VO",
+      "l2Tab": "CERTIFICATES",
+      "l3SubTab": "APPLICATIONS",
+      "procedures": [
+        "ipc.create",
+        "ipc.list",
+        "partner.listSubcontractors",
+        "project.get"
+      ],
+      "dialogs": [
+        "AddIpcDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/projects/project/ipc_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.ipc opens in project scope under IPC & VO > CERTIFICATES > APPLICATIONS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.look-ahead",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/look-ahead",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/look-ahead/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "execution.autoGenerateProgram",
+        "execution.materialRequirements",
+        "execution.resourceConflicts"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/look-ahead_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.look-ahead opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.materials",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/materials",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/materials/page.tsx",
+      "l1Module": "MATERIALS",
+      "l2Tab": "MATERIALS & PROCUREMENT",
+      "l3SubTab": "STOCK & INVENTORY",
+      "procedures": [
+        "material.create",
+        "material.createGateEntry",
+        "material.createTransaction",
+        "material.delete",
+        "material.getRequirements",
+        "material.list",
+        "material.listGateEntries",
+        "material.listTransactions",
+        "partner.createSupplier",
+        "partner.listSubcontractors",
+        "project.get",
+        "purchaseOrder.create",
+        "purchaseOrder.updateStatus"
+      ],
+      "dialogs": [
+        "AddGateEntryDialog",
+        "AddMaterialDialog",
+        "AddSupplierDialog",
+        "AlertDialog",
+        "CreatePODialog",
+        "LogTransactionDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/material_delivery_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.materials opens in project scope under MATERIALS > MATERIALS & PROCUREMENT > STOCK & INVENTORY, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.meetings",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/meetings",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/meetings/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [],
+      "dialogs": [
+        "MeetingDetailDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/meetings_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.meetings opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project",
+      "scope": "project",
+      "originalRoute": "/projects/[id]",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.payments",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/payments",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/payments/page.tsx",
+      "l1Module": "IPC & VO",
+      "l2Tab": "CERTIFICATES",
+      "l3SubTab": "APPLICATIONS",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "online-only",
+      "targetWidget": "lib/views/projects/project/payments_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.payments opens in project scope under IPC & VO > CERTIFICATES > APPLICATIONS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.planning-dashboard",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/planning-dashboard",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/planning-dashboard/page.tsx",
+      "l1Module": "PLANNING",
+      "l2Tab": "BOQ & RATES",
+      "l3SubTab": "WORKSHEET",
+      "procedures": [
+        "boq.list",
+        "gantt.getEVM",
+        "gantt.getVariance",
+        "gantt.listVersions",
+        "project.get",
+        "staffRole.list"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/planning-dashboard_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.planning-dashboard opens in project scope under PLANNING > BOQ & RATES > WORKSHEET, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.planning.revision.detail",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/planning/revision/[versionId]",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/planning/revision/[versionId]/page.tsx",
+      "l1Module": "PLANNING",
+      "l2Tab": "BOQ & RATES",
+      "l3SubTab": "WORKSHEET",
+      "procedures": [
+        "gantt.getRevisionDocument"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/planning/revision/detail_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.planning.revision.detail opens in project scope under PLANNING > BOQ & RATES > WORKSHEET, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.punch-list",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/punch-list",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/punch-list/page.tsx",
+      "l1Module": "QUALITY & SAFETY",
+      "l2Tab": "INSPECTIONS",
+      "l3SubTab": "CHECKLIST",
+      "procedures": [
+        "punchList.create",
+        "punchList.list",
+        "punchList.stats",
+        "punchList.updateStatus"
+      ],
+      "dialogs": [
+        "CreatePunchDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/punch-list_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.punch-list opens in project scope under QUALITY & SAFETY > INSPECTIONS > CHECKLIST, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.quality",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/quality",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/quality/page.tsx",
+      "l1Module": "QUALITY & SAFETY",
+      "l2Tab": "INSPECTIONS",
+      "l3SubTab": "CHECKLIST",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/quality_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.quality opens in project scope under QUALITY & SAFETY > INSPECTIONS > CHECKLIST, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.rfis",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/rfis",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/rfis/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/rfis_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.rfis opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.safety",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/safety",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/safety/page.tsx",
+      "l1Module": "QUALITY & SAFETY",
+      "l2Tab": "INSPECTIONS",
+      "l3SubTab": "CHECKLIST",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/safety_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.safety opens in project scope under QUALITY & SAFETY > INSPECTIONS > CHECKLIST, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.subcontractors",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/subcontractors",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/subcontractors/page.tsx",
+      "l1Module": "SUBCONTRACTORS",
+      "l2Tab": "MEASUREMENT & BILLING",
+      "l3SubTab": "CONTRACTS",
+      "procedures": [
+        "material.updateTransaction",
+        "partner.createSubcontractor",
+        "partner.getSubcontractor",
+        "partner.getSubcontractorWorks",
+        "partner.listSubcontractors",
+        "project.get"
+      ],
+      "dialogs": [
+        "AddSubcontractorDialog",
+        "AlertDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/subcontractors_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.subcontractors opens in project scope under SUBCONTRACTORS > MEASUREMENT & BILLING > CONTRACTS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.submittals",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/submittals",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/submittals/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "submittal.create",
+        "submittal.list",
+        "submittal.review",
+        "submittal.stats",
+        "submittal.submit"
+      ],
+      "dialogs": [
+        "CreateSubmittalDialog",
+        "ReviewDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/submittals_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.submittals opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.tax-summary",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/tax-summary",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/tax-summary/page.tsx",
+      "l1Module": "OVERVIEW",
+      "l2Tab": "PROJECT SUMMARY",
+      "l3SubTab": "METRICS",
+      "procedures": [
+        "ipc.taxSummary",
+        "material.taxSummary",
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/tax-summary_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.tax-summary opens in project scope under OVERVIEW > PROJECT SUMMARY > METRICS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.variations.detail",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/variations/[voId]",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/variations/[voId]/page.tsx",
+      "l1Module": "IPC & VO",
+      "l2Tab": "CERTIFICATES",
+      "l3SubTab": "APPLICATIONS",
+      "procedures": [
+        "boq.list",
+        "variationOrder.get",
+        "variationOrder.update",
+        "variationOrder.updateStatus"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/variations/detail_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.variations.detail opens in project scope under IPC & VO > CERTIFICATES > APPLICATIONS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.variations",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/variations",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/variations/page.tsx",
+      "l1Module": "IPC & VO",
+      "l2Tab": "CERTIFICATES",
+      "l3SubTab": "APPLICATIONS",
+      "procedures": [
+        "variationOrder.create",
+        "variationOrder.list"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/variations_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.variations opens in project scope under IPC & VO > CERTIFICATES > APPLICATIONS, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.program",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/program",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/program/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "boq.list",
+        "project.get"
+      ],
+      "dialogs": [
+        "AddProgramDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/workflow/program_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.workflow.program opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.reports.detail.edit",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/reports/[reportId]/edit",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/reports/[reportId]/edit/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [
+        "ShareReportDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.workflow.reports.detail.edit opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.reports.detail",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/reports/[reportId]",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/reports/[reportId]/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "boq.list",
+        "material.list",
+        "project.get"
+      ],
+      "dialogs": [
+        "AlertDialog",
+        "ShareReportDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.workflow.reports.detail opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.reports.detail.pdf-designer",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/reports/[reportId]/pdf-designer",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/reports/[reportId]/pdf-designer/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.workflow.reports.detail.pdf-designer opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.reports.detail.pdf-render",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/reports/[reportId]/pdf-render",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/reports/[reportId]/pdf-render/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.workflow.reports.detail.pdf-render opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.reports.detail.print",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/reports/[reportId]/print",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/reports/[reportId]/print/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.workflow.reports.detail.print opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.reports",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/reports",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/reports/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "prototype/construction_client/lib/workflows/daily_report_screen.dart",
+      "disposition": "implemented-needs-shell-wire",
+      "acceptanceScenario": "Verify projects.project.workflow.reports opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.rfi.[rfiId].pdf-designer",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/rfi/[rfiId]/pdf-designer",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/rfi/[rfiId]/pdf-designer/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/workflow/rfi/[rfiId]/pdf-designer_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.workflow.rfi.[rfiId].pdf-designer opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects.project.workflow.rfi",
+      "scope": "project",
+      "originalRoute": "/projects/[id]/workflow/rfi",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/[id]/workflow/rfi/page.tsx",
+      "l1Module": "WORKFLOW",
+      "l2Tab": "DAILY REPORTS",
+      "l3SubTab": "REGISTER",
+      "procedures": [
+        "project.get"
+      ],
+      "dialogs": [
+        "AlertDialog",
+        "CreateRfiDialog",
+        "ViewRfiDialog"
+      ],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects/project/workflow/rfi_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects.project.workflow.rfi opens in project scope under WORKFLOW > DAILY REPORTS > REGISTER, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "projects",
+      "scope": "organisation",
+      "originalRoute": "/projects",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/projects/page.tsx",
+      "l1Module": "PROJECTS",
+      "l2Tab": "PORTFOLIO",
+      "l3SubTab": "LIST",
+      "procedures": [
+        "project.create",
+        "project.list"
+      ],
+      "dialogs": [
+        "CreateProjectDialog"
+      ],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/projects_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify projects opens in organisation scope under PROJECTS > PORTFOLIO > LIST, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "sync",
+      "scope": "organisation",
+      "originalRoute": "/sync",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/sync/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "GENERAL",
+      "l3SubTab": "DEFAULT",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/sync_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify sync opens in organisation scope under DESK > GENERAL > DEFAULT, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "team",
+      "scope": "organisation",
+      "originalRoute": "/team",
+      "sourceFile": "Construction-Manager-main/src/app/(app)/team/page.tsx",
+      "l1Module": "HR",
+      "l2Tab": "DIRECTORY",
+      "l3SubTab": "ALL",
+      "procedures": [
+        "project.createOrgUser",
+        "project.listOrgUsers",
+        "project.removeOrgUser",
+        "project.resetOrgUserPassword",
+        "project.updateOrgUserRole"
+      ],
+      "dialogs": [],
+      "hasDataTable": true,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/team_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify team opens in organisation scope under HR > DIRECTORY > ALL, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "login",
+      "scope": "organisation",
+      "originalRoute": "/login",
+      "sourceFile": "Construction-Manager-main/src/app/login/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "GENERAL",
+      "l3SubTab": "DEFAULT",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/login_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify login opens in organisation scope under DESK > GENERAL > DEFAULT, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "offline",
+      "scope": "organisation",
+      "originalRoute": "/offline",
+      "sourceFile": "Construction-Manager-main/src/app/offline/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "GENERAL",
+      "l3SubTab": "DEFAULT",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "offline-command",
+      "targetWidget": "lib/views/offline_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify offline opens in organisation scope under DESK > GENERAL > DEFAULT, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "root",
+      "scope": "organisation",
+      "originalRoute": "",
+      "sourceFile": "Construction-Manager-main/src/app/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "GENERAL",
+      "l3SubTab": "DEFAULT",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/root_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify root opens in organisation scope under DESK > GENERAL > DEFAULT, loads data via authoritative procedures, and handles offline durability per policy."
+    },
+    {
+      "routeId": "signup",
+      "scope": "organisation",
+      "originalRoute": "/signup",
+      "sourceFile": "Construction-Manager-main/src/app/signup/page.tsx",
+      "l1Module": "DESK",
+      "l2Tab": "GENERAL",
+      "l3SubTab": "DEFAULT",
+      "procedures": [],
+      "dialogs": [],
+      "hasDataTable": false,
+      "offlinePolicy": "cached-read",
+      "targetWidget": "lib/views/signup_view.dart",
+      "disposition": "registered-target",
+      "acceptanceScenario": "Verify signup opens in organisation scope under DESK > GENERAL > DEFAULT, loads data via authoritative procedures, and handles offline durability per policy."
+    }
+  ],
+  "auditStatus": "historical-unverified-seed",
+  "auditNote": "Route labels, disposition, direct page calls and offlinePolicy were generated by regex/heuristics. See ../../reports/M13/original-source-audit.md.",
+  "alternateReferenceClaims": [
+    "7d06a8a51826639b554e30d11a8b0b8f7d095259",
+    "7a5cccfd01484cc17b01e7c840fc0f35e87c1e58"
+  ]
+}

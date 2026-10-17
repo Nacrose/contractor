@@ -35,9 +35,20 @@
 | M10 Full parity & web migration | [M10-parity-web-migration.md](milestones/M10-parity-web-migration.md) | **Complete** — T01–T08 (PRs #110–#117), T09 gate (PR #118) | 9/9 | M10-T09 `👤 GATE` — submitted for owner review (PR #118) |
 | M11 Recovery, packaging & staged release | [M11-recovery-packaging-release.md](milestones/M11-recovery-packaging-release.md) | **Complete** — T01–T06 (PRs #120–#125), T07 gate (PR #126) | 7/7 | M11-T07 `👤 GATE` — submitted for owner review (PR #126) |
 | M12 Client documents & presentations | [M12-documents-presentations.md](milestones/M12-documents-presentations.md) | **Complete** — T01–T10 (PRs #128–#137), T11 gate (PR #138) | 11/11 | M12-T11 `👤 GATE` — submitted for owner review (PR #138) |
-| **Program total** | | | **144/144** | |
+| M13 Full product features & navigation closure | [M13-product-feature-navigation-closure.md](milestones/M13-product-feature-navigation-closure.md) | **Planned** — source/action audit and product integration closure | 0/33 | M13-T33 `👤 GATE` — not started |
+| **Program total** | | | **144/177** | |
 
 
+
+## Full-product closure amendment — 2026-10-17
+
+Execution procedure: [full-product execution runbook](full-product-execution-runbook.md). It schedules existing M13 tasks and adds no new backlog or completion claim.
+
+- **What changed:** register 33 M13 work packets in the [full-product plan](full-product-feature-navigation-plan.md), with a [coverage seed](../frontend/full-product-coverage.md) for all 64 known routes and 41 M00 workflows. M13 refines broad downstream packets before implementation.
+- **Why:** current main entry point, transport, scope propagation and shell dispatch still contain disconnected/sample behavior despite historical frontend completion claims. Route/service manifests also use heuristics and inconsistent source references.
+- **Evidence:** source inspection and specific file-level findings are recorded in the new plan. No current runtime acceptance or fresh test-suite success is asserted.
+- **Scope:** planning documents only. Preserve existing milestone history and unrelated working files; add 33 open tasks, with 144 historical completions unchanged. These counts measure registered tasks, not product readiness. M13 closure requires its own service/UI/platform evidence.
+- **Owner decisions retained:** Contractor creates a separate workbook per IPC; full GridCraft owns workbook/payment edits; only validated Summary of Payment feeds the app. Existing supported dashboard parity is scheduled last; new analytics remains deferred.
 
 ## Dependency graph
 
@@ -51,6 +62,8 @@ M00 ──► M01 ──► M02 ──► M03 ──► M04 ──► M05 ──
                  │              M12 ── document/deck evidence ──► M10
                  └── backup/packaging groundwork starts after M01 (M11)
 ```
+
+M13 consumes the existing M00–M12 foundations and verifies them in the real product; its internal dependencies are declared in its task register. Historical engine gates are not substitutes for product acceptance.
 
 Exact dependencies per task are declared inside each milestone file; the v3 plan §10 ledger remains the authority on milestone-level blocking.
 

@@ -1,0 +1,2921 @@
+{
+  "version": 1,
+  "referenceCommit": "7d06a8a51826639b554e30d11a8b0b8f7d095259",
+  "totalProcedures": 323,
+  "bindings": [
+    {
+      "procedure": "analysisLibrary.create",
+      "router": "analysisLibrary",
+      "method": "create",
+      "domain": "analysisLibrary",
+      "authoritativeService": "src/server/routers/analysisLibrary.ts",
+      "clientRepository": "lib/data/repositories/analysisLibrary_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "analysisLibrary.getItems",
+      "router": "analysisLibrary",
+      "method": "getItems",
+      "domain": "analysisLibrary",
+      "authoritativeService": "src/server/routers/analysisLibrary.ts",
+      "clientRepository": "lib/data/repositories/analysisLibrary_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "analysisLibrary.list",
+      "router": "analysisLibrary",
+      "method": "list",
+      "domain": "analysisLibrary",
+      "authoritativeService": "src/server/routers/analysisLibrary.ts",
+      "clientRepository": "lib/data/repositories/analysisLibrary_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "analysisLibrary.setDefault",
+      "router": "analysisLibrary",
+      "method": "setDefault",
+      "domain": "analysisLibrary",
+      "authoritativeService": "src/server/routers/analysisLibrary.ts",
+      "clientRepository": "lib/data/repositories/analysisLibrary_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "approvedDocument.delete",
+      "router": "approvedDocument",
+      "method": "delete",
+      "domain": "approvedDocument",
+      "authoritativeService": "src/server/routers/approvedDocument.ts",
+      "clientRepository": "lib/data/repositories/approvedDocument_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "approvedDocument.get",
+      "router": "approvedDocument",
+      "method": "get",
+      "domain": "approvedDocument",
+      "authoritativeService": "src/server/routers/approvedDocument.ts",
+      "clientRepository": "lib/data/repositories/approvedDocument_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "approvedDocument.list",
+      "router": "approvedDocument",
+      "method": "list",
+      "domain": "approvedDocument",
+      "authoritativeService": "src/server/routers/approvedDocument.ts",
+      "clientRepository": "lib/data/repositories/approvedDocument_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "approvedDocument.update",
+      "router": "approvedDocument",
+      "method": "update",
+      "domain": "approvedDocument",
+      "authoritativeService": "src/server/routers/approvedDocument.ts",
+      "clientRepository": "lib/data/repositories/approvedDocument_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "approvedDocument.upload",
+      "router": "approvedDocument",
+      "method": "upload",
+      "domain": "approvedDocument",
+      "authoritativeService": "src/server/routers/approvedDocument.ts",
+      "clientRepository": "lib/data/repositories/approvedDocument_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "boq.create",
+      "router": "boq",
+      "method": "create",
+      "domain": "boq",
+      "authoritativeService": "src/server/routers/boq.ts",
+      "clientRepository": "lib/data/repositories/boq_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "boq.delete",
+      "router": "boq",
+      "method": "delete",
+      "domain": "boq",
+      "authoritativeService": "src/server/routers/boq.ts",
+      "clientRepository": "lib/data/repositories/boq_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "boq.list",
+      "router": "boq",
+      "method": "list",
+      "domain": "boq",
+      "authoritativeService": "src/server/routers/boq.ts",
+      "clientRepository": "lib/data/repositories/boq_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "boq.reorder",
+      "router": "boq",
+      "method": "reorder",
+      "domain": "boq",
+      "authoritativeService": "src/server/routers/boq.ts",
+      "clientRepository": "lib/data/repositories/boq_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "boq.update",
+      "router": "boq",
+      "method": "update",
+      "domain": "boq",
+      "authoritativeService": "src/server/routers/boq.ts",
+      "clientRepository": "lib/data/repositories/boq_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "boqVersion.approve",
+      "router": "boqVersion",
+      "method": "approve",
+      "domain": "boqVersion",
+      "authoritativeService": "src/server/routers/boqVersion.ts",
+      "clientRepository": "lib/data/repositories/boqVersion_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "boqVersion.create",
+      "router": "boqVersion",
+      "method": "create",
+      "domain": "boqVersion",
+      "authoritativeService": "src/server/routers/boqVersion.ts",
+      "clientRepository": "lib/data/repositories/boqVersion_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "boqVersion.diff",
+      "router": "boqVersion",
+      "method": "diff",
+      "domain": "boqVersion",
+      "authoritativeService": "src/server/routers/boqVersion.ts",
+      "clientRepository": "lib/data/repositories/boqVersion_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "boqVersion.get",
+      "router": "boqVersion",
+      "method": "get",
+      "domain": "boqVersion",
+      "authoritativeService": "src/server/routers/boqVersion.ts",
+      "clientRepository": "lib/data/repositories/boqVersion_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "boqVersion.list",
+      "router": "boqVersion",
+      "method": "list",
+      "domain": "boqVersion",
+      "authoritativeService": "src/server/routers/boqVersion.ts",
+      "clientRepository": "lib/data/repositories/boqVersion_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.addMembers",
+      "router": "chat",
+      "method": "addMembers",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.createChannel",
+      "router": "chat",
+      "method": "createChannel",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "chat.deleteMessage",
+      "router": "chat",
+      "method": "deleteMessage",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.getMessageStatus",
+      "router": "chat",
+      "method": "getMessageStatus",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.getMessages",
+      "router": "chat",
+      "method": "getMessages",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.getOrCreateDM",
+      "router": "chat",
+      "method": "getOrCreateDM",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.getPresence",
+      "router": "chat",
+      "method": "getPresence",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.getReadReceipts",
+      "router": "chat",
+      "method": "getReadReceipts",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.listByEntity",
+      "router": "chat",
+      "method": "listByEntity",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.listChannels",
+      "router": "chat",
+      "method": "listChannels",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.markRead",
+      "router": "chat",
+      "method": "markRead",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.searchUsers",
+      "router": "chat",
+      "method": "searchUsers",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.sendMessage",
+      "router": "chat",
+      "method": "sendMessage",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "chat.togglePin",
+      "router": "chat",
+      "method": "togglePin",
+      "domain": "chat",
+      "authoritativeService": "src/server/routers/chat.ts",
+      "clientRepository": "lib/data/repositories/chat_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "correspondence.create",
+      "router": "correspondence",
+      "method": "create",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "correspondence.delete",
+      "router": "correspondence",
+      "method": "delete",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "correspondence.get",
+      "router": "correspondence",
+      "method": "get",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "correspondence.getThread",
+      "router": "correspondence",
+      "method": "getThread",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "correspondence.list",
+      "router": "correspondence",
+      "method": "list",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "correspondence.stats",
+      "router": "correspondence",
+      "method": "stats",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "correspondence.updateEot",
+      "router": "correspondence",
+      "method": "updateEot",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "correspondence.updateReply",
+      "router": "correspondence",
+      "method": "updateReply",
+      "domain": "correspondence",
+      "authoritativeService": "src/server/routers/correspondence.ts",
+      "clientRepository": "lib/data/repositories/correspondence_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "dailyReport.addBacklogToProgram",
+      "router": "dailyReport",
+      "method": "addBacklogToProgram",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.approveProgram",
+      "router": "dailyReport",
+      "method": "approveProgram",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.createProgram",
+      "router": "dailyReport",
+      "method": "createProgram",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "dailyReport.createReport",
+      "router": "dailyReport",
+      "method": "createReport",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "dailyReport.deleteAttachment",
+      "router": "dailyReport",
+      "method": "deleteAttachment",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.deleteProgram",
+      "router": "dailyReport",
+      "method": "deleteProgram",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.deleteReport",
+      "router": "dailyReport",
+      "method": "deleteReport",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.fetchWeather",
+      "router": "dailyReport",
+      "method": "fetchWeather",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.getApprovedDailyProgramByDate",
+      "router": "dailyReport",
+      "method": "getApprovedDailyProgramByDate",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.getProgramResources",
+      "router": "dailyReport",
+      "method": "getProgramResources",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.getReport",
+      "router": "dailyReport",
+      "method": "getReport",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.listAttachments",
+      "router": "dailyReport",
+      "method": "listAttachments",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.listAvailableRfis",
+      "router": "dailyReport",
+      "method": "listAvailableRfis",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.listBacklog",
+      "router": "dailyReport",
+      "method": "listBacklog",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.listBacklogTasks",
+      "router": "dailyReport",
+      "method": "listBacklogTasks",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.listPendingCancellations",
+      "router": "dailyReport",
+      "method": "listPendingCancellations",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.listPrograms",
+      "router": "dailyReport",
+      "method": "listPrograms",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.listReports",
+      "router": "dailyReport",
+      "method": "listReports",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.requestCancellation",
+      "router": "dailyReport",
+      "method": "requestCancellation",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.resyncProgram",
+      "router": "dailyReport",
+      "method": "resyncProgram",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.reviewCancellation",
+      "router": "dailyReport",
+      "method": "reviewCancellation",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dailyReport.updateProgram",
+      "router": "dailyReport",
+      "method": "updateProgram",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "dailyReport.updateReport",
+      "router": "dailyReport",
+      "method": "updateReport",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "dailyReport.updateTaskExecution",
+      "router": "dailyReport",
+      "method": "updateTaskExecution",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "dailyReport.uploadAttachment",
+      "router": "dailyReport",
+      "method": "uploadAttachment",
+      "domain": "dailyReport",
+      "authoritativeService": "src/server/routers/dailyReport.ts",
+      "clientRepository": "lib/data/repositories/dailyReport_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.activityFeed",
+      "router": "dashboard",
+      "method": "activityFeed",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.cashFlow",
+      "router": "dashboard",
+      "method": "cashFlow",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.costVsBudget",
+      "router": "dashboard",
+      "method": "costVsBudget",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.delayRegister",
+      "router": "dashboard",
+      "method": "delayRegister",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.photoTimeline",
+      "router": "dashboard",
+      "method": "photoTimeline",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.progressSCurve",
+      "router": "dashboard",
+      "method": "progressSCurve",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.qualityTestRegister",
+      "router": "dashboard",
+      "method": "qualityTestRegister",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.rfiMetrics",
+      "router": "dashboard",
+      "method": "rfiMetrics",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "dashboard.visitorLog",
+      "router": "dashboard",
+      "method": "visitorLog",
+      "domain": "dashboard",
+      "authoritativeService": "src/server/routers/dashboard.ts",
+      "clientRepository": "lib/data/repositories/dashboard_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.addMarkup",
+      "router": "document",
+      "method": "addMarkup",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.addRevision",
+      "router": "document",
+      "method": "addRevision",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.approveDrawing",
+      "router": "document",
+      "method": "approveDrawing",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.assignToSet",
+      "router": "document",
+      "method": "assignToSet",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.createDocument",
+      "router": "document",
+      "method": "createDocument",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "document.createDrawing",
+      "router": "document",
+      "method": "createDrawing",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "document.createRfiFromDrawing",
+      "router": "document",
+      "method": "createRfiFromDrawing",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "document.createSet",
+      "router": "document",
+      "method": "createSet",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "document.deleteDocument",
+      "router": "document",
+      "method": "deleteDocument",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.deleteDrawing",
+      "router": "document",
+      "method": "deleteDrawing",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.deleteMarkup",
+      "router": "document",
+      "method": "deleteMarkup",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.getDrawing",
+      "router": "document",
+      "method": "getDrawing",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.getRevisionFile",
+      "router": "document",
+      "method": "getRevisionFile",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.getRevisions",
+      "router": "document",
+      "method": "getRevisions",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.listDocuments",
+      "router": "document",
+      "method": "listDocuments",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.listDrawings",
+      "router": "document",
+      "method": "listDrawings",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.listMarkups",
+      "router": "document",
+      "method": "listMarkups",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.listSets",
+      "router": "document",
+      "method": "listSets",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "document.updateDocument",
+      "router": "document",
+      "method": "updateDocument",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "document.updateDrawing",
+      "router": "document",
+      "method": "updateDrawing",
+      "domain": "document",
+      "authoritativeService": "src/server/routers/document.ts",
+      "clientRepository": "lib/data/repositories/document_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.addCrew",
+      "router": "equipment",
+      "method": "addCrew",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.create",
+      "router": "equipment",
+      "method": "create",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.createLog",
+      "router": "equipment",
+      "method": "createLog",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.createMaintenance",
+      "router": "equipment",
+      "method": "createMaintenance",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.createRental",
+      "router": "equipment",
+      "method": "createRental",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.createVendor",
+      "router": "equipment",
+      "method": "createVendor",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.delete",
+      "router": "equipment",
+      "method": "delete",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.getEfficiencyStats",
+      "router": "equipment",
+      "method": "getEfficiencyStats",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.getVendor",
+      "router": "equipment",
+      "method": "getVendor",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.list",
+      "router": "equipment",
+      "method": "list",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.listCrew",
+      "router": "equipment",
+      "method": "listCrew",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.listDamages",
+      "router": "equipment",
+      "method": "listDamages",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.listLogs",
+      "router": "equipment",
+      "method": "listLogs",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.listMaintenance",
+      "router": "equipment",
+      "method": "listMaintenance",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.listRentals",
+      "router": "equipment",
+      "method": "listRentals",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.listVendors",
+      "router": "equipment",
+      "method": "listVendors",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.markReturned",
+      "router": "equipment",
+      "method": "markReturned",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.markStored",
+      "router": "equipment",
+      "method": "markStored",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.reactivate",
+      "router": "equipment",
+      "method": "reactivate",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.removeCrew",
+      "router": "equipment",
+      "method": "removeCrew",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.rentalStats",
+      "router": "equipment",
+      "method": "rentalStats",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.reportDamage",
+      "router": "equipment",
+      "method": "reportDamage",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.resolveDamage",
+      "router": "equipment",
+      "method": "resolveDamage",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.resolveMaintenance",
+      "router": "equipment",
+      "method": "resolveMaintenance",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "equipment.update",
+      "router": "equipment",
+      "method": "update",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.updateCrew",
+      "router": "equipment",
+      "method": "updateCrew",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.updateRentalTerms",
+      "router": "equipment",
+      "method": "updateRentalTerms",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.updateStatus",
+      "router": "equipment",
+      "method": "updateStatus",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.updateVendor",
+      "router": "equipment",
+      "method": "updateVendor",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "equipment.uploadAgreement",
+      "router": "equipment",
+      "method": "uploadAgreement",
+      "domain": "equipment",
+      "authoritativeService": "src/server/routers/equipment.ts",
+      "clientRepository": "lib/data/repositories/equipment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "execution.autoGenerateProgram",
+      "router": "execution",
+      "method": "autoGenerateProgram",
+      "domain": "execution",
+      "authoritativeService": "src/server/routers/execution.ts",
+      "clientRepository": "lib/data/repositories/execution_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "execution.materialRequirements",
+      "router": "execution",
+      "method": "materialRequirements",
+      "domain": "execution",
+      "authoritativeService": "src/server/routers/execution.ts",
+      "clientRepository": "lib/data/repositories/execution_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "execution.resourceConflicts",
+      "router": "execution",
+      "method": "resourceConflicts",
+      "domain": "execution",
+      "authoritativeService": "src/server/routers/execution.ts",
+      "clientRepository": "lib/data/repositories/execution_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "finance.budgetVariance",
+      "router": "finance",
+      "method": "budgetVariance",
+      "domain": "finance",
+      "authoritativeService": "src/server/routers/finance.ts",
+      "clientRepository": "lib/data/repositories/finance_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "finance.cashFlow",
+      "router": "finance",
+      "method": "cashFlow",
+      "domain": "finance",
+      "authoritativeService": "src/server/routers/finance.ts",
+      "clientRepository": "lib/data/repositories/finance_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.addDependency",
+      "router": "gantt",
+      "method": "addDependency",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.applyLeveling",
+      "router": "gantt",
+      "method": "applyLeveling",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.approveRevision",
+      "router": "gantt",
+      "method": "approveRevision",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.approveVersion",
+      "router": "gantt",
+      "method": "approveVersion",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.archiveVersion",
+      "router": "gantt",
+      "method": "archiveVersion",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.calculateAll",
+      "router": "gantt",
+      "method": "calculateAll",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.commitImport",
+      "router": "gantt",
+      "method": "commitImport",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.create",
+      "router": "gantt",
+      "method": "create",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "gantt.createExecutionSchedule",
+      "router": "gantt",
+      "method": "createExecutionSchedule",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "gantt.createRevision",
+      "router": "gantt",
+      "method": "createRevision",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "gantt.createScenario",
+      "router": "gantt",
+      "method": "createScenario",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "gantt.createVersion",
+      "router": "gantt",
+      "method": "createVersion",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "gantt.delete",
+      "router": "gantt",
+      "method": "delete",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.deleteVersion",
+      "router": "gantt",
+      "method": "deleteVersion",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.getCashFlow",
+      "router": "gantt",
+      "method": "getCashFlow",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.getEVM",
+      "router": "gantt",
+      "method": "getEVM",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.getResourceConflicts",
+      "router": "gantt",
+      "method": "getResourceConflicts",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.getRevisionDocument",
+      "router": "gantt",
+      "method": "getRevisionDocument",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.getVariance",
+      "router": "gantt",
+      "method": "getVariance",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.linkBoq",
+      "router": "gantt",
+      "method": "linkBoq",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.list",
+      "router": "gantt",
+      "method": "list",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.listBoqLinks",
+      "router": "gantt",
+      "method": "listBoqLinks",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.listSchedules",
+      "router": "gantt",
+      "method": "listSchedules",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.listVersions",
+      "router": "gantt",
+      "method": "listVersions",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.move",
+      "router": "gantt",
+      "method": "move",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.previewImport",
+      "router": "gantt",
+      "method": "previewImport",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.rejectRevision",
+      "router": "gantt",
+      "method": "rejectRevision",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.removeDependency",
+      "router": "gantt",
+      "method": "removeDependency",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.reorder",
+      "router": "gantt",
+      "method": "reorder",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.setDependencies",
+      "router": "gantt",
+      "method": "setDependencies",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.submitRevision",
+      "router": "gantt",
+      "method": "submitRevision",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.syncDailyReports",
+      "router": "gantt",
+      "method": "syncDailyReports",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.unlinkBoq",
+      "router": "gantt",
+      "method": "unlinkBoq",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "gantt.update",
+      "router": "gantt",
+      "method": "update",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "gantt.wouldCreateCycle",
+      "router": "gantt",
+      "method": "wouldCreateCycle",
+      "domain": "gantt",
+      "authoritativeService": "src/server/routers/gantt.ts",
+      "clientRepository": "lib/data/repositories/gantt_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.addIngredient",
+      "router": "globalPreset",
+      "method": "addIngredient",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.create",
+      "router": "globalPreset",
+      "method": "create",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "globalPreset.delete",
+      "router": "globalPreset",
+      "method": "delete",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.deleteIngredient",
+      "router": "globalPreset",
+      "method": "deleteIngredient",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.get",
+      "router": "globalPreset",
+      "method": "get",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.list",
+      "router": "globalPreset",
+      "method": "list",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.load",
+      "router": "globalPreset",
+      "method": "load",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.saveFromAnalysis",
+      "router": "globalPreset",
+      "method": "saveFromAnalysis",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "globalPreset.update",
+      "router": "globalPreset",
+      "method": "update",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "globalPreset.updateIngredient",
+      "router": "globalPreset",
+      "method": "updateIngredient",
+      "domain": "globalPreset",
+      "authoritativeService": "src/server/routers/globalPreset.ts",
+      "clientRepository": "lib/data/repositories/globalPreset_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "hr.create",
+      "router": "hr",
+      "method": "create",
+      "domain": "hr",
+      "authoritativeService": "src/server/routers/hr.ts",
+      "clientRepository": "lib/data/repositories/hr_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "hr.delete",
+      "router": "hr",
+      "method": "delete",
+      "domain": "hr",
+      "authoritativeService": "src/server/routers/hr.ts",
+      "clientRepository": "lib/data/repositories/hr_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "hr.list",
+      "router": "hr",
+      "method": "list",
+      "domain": "hr",
+      "authoritativeService": "src/server/routers/hr.ts",
+      "clientRepository": "lib/data/repositories/hr_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "hr.update",
+      "router": "hr",
+      "method": "update",
+      "domain": "hr",
+      "authoritativeService": "src/server/routers/hr.ts",
+      "clientRepository": "lib/data/repositories/hr_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "ipc.create",
+      "router": "ipc",
+      "method": "create",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "ipc.delete",
+      "router": "ipc",
+      "method": "delete",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "ipc.list",
+      "router": "ipc",
+      "method": "list",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "ipc.listItems",
+      "router": "ipc",
+      "method": "listItems",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "ipc.loadBoq",
+      "router": "ipc",
+      "method": "loadBoq",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "ipc.taxSummary",
+      "router": "ipc",
+      "method": "taxSummary",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "ipc.update",
+      "router": "ipc",
+      "method": "update",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "ipc.updateItem",
+      "router": "ipc",
+      "method": "updateItem",
+      "domain": "ipc",
+      "authoritativeService": "src/server/routers/ipc.ts",
+      "clientRepository": "lib/data/repositories/ipc_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "material.autoMatchIngredients",
+      "router": "material",
+      "method": "autoMatchIngredients",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.create",
+      "router": "material",
+      "method": "create",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "material.createGateEntry",
+      "router": "material",
+      "method": "createGateEntry",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "material.createTransaction",
+      "router": "material",
+      "method": "createTransaction",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "material.delete",
+      "router": "material",
+      "method": "delete",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.getRequirements",
+      "router": "material",
+      "method": "getRequirements",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.ingredientLinks",
+      "router": "material",
+      "method": "ingredientLinks",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.linkIngredient",
+      "router": "material",
+      "method": "linkIngredient",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.list",
+      "router": "material",
+      "method": "list",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.listGateEntries",
+      "router": "material",
+      "method": "listGateEntries",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.listTransactions",
+      "router": "material",
+      "method": "listTransactions",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.lowStock",
+      "router": "material",
+      "method": "lowStock",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.physicalCount",
+      "router": "material",
+      "method": "physicalCount",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.reconciliation",
+      "router": "material",
+      "method": "reconciliation",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.taxSummary",
+      "router": "material",
+      "method": "taxSummary",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "material.update",
+      "router": "material",
+      "method": "update",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "material.updateTransaction",
+      "router": "material",
+      "method": "updateTransaction",
+      "domain": "material",
+      "authoritativeService": "src/server/routers/material.ts",
+      "clientRepository": "lib/data/repositories/material_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "notification.list",
+      "router": "notification",
+      "method": "list",
+      "domain": "notification",
+      "authoritativeService": "src/server/routers/notification.ts",
+      "clientRepository": "lib/data/repositories/notification_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "notification.markAllRead",
+      "router": "notification",
+      "method": "markAllRead",
+      "domain": "notification",
+      "authoritativeService": "src/server/routers/notification.ts",
+      "clientRepository": "lib/data/repositories/notification_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "notification.markRead",
+      "router": "notification",
+      "method": "markRead",
+      "domain": "notification",
+      "authoritativeService": "src/server/routers/notification.ts",
+      "clientRepository": "lib/data/repositories/notification_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "partner.createSubcontractor",
+      "router": "partner",
+      "method": "createSubcontractor",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "partner.createSupplier",
+      "router": "partner",
+      "method": "createSupplier",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "partner.deleteSubcontractor",
+      "router": "partner",
+      "method": "deleteSubcontractor",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "partner.getSubcontractor",
+      "router": "partner",
+      "method": "getSubcontractor",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "partner.getSubcontractorWorks",
+      "router": "partner",
+      "method": "getSubcontractorWorks",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "partner.listSubcontractors",
+      "router": "partner",
+      "method": "listSubcontractors",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "partner.listSuppliers",
+      "router": "partner",
+      "method": "listSuppliers",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "partner.updateSubcontractor",
+      "router": "partner",
+      "method": "updateSubcontractor",
+      "domain": "partner",
+      "authoritativeService": "src/server/routers/partner.ts",
+      "clientRepository": "lib/data/repositories/partner_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "project.addMember",
+      "router": "project",
+      "method": "addMember",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.archive",
+      "router": "project",
+      "method": "archive",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.create",
+      "router": "project",
+      "method": "create",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "project.createOrgUser",
+      "router": "project",
+      "method": "createOrgUser",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "project.get",
+      "router": "project",
+      "method": "get",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.list",
+      "router": "project",
+      "method": "list",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.listMembers",
+      "router": "project",
+      "method": "listMembers",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.listOrgUsers",
+      "router": "project",
+      "method": "listOrgUsers",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.lockBoq",
+      "router": "project",
+      "method": "lockBoq",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.removeMember",
+      "router": "project",
+      "method": "removeMember",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.removeOrgUser",
+      "router": "project",
+      "method": "removeOrgUser",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.resetOrgUserPassword",
+      "router": "project",
+      "method": "resetOrgUserPassword",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "project.update",
+      "router": "project",
+      "method": "update",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "project.updateMember",
+      "router": "project",
+      "method": "updateMember",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "project.updateOrgUserRole",
+      "router": "project",
+      "method": "updateOrgUserRole",
+      "domain": "project",
+      "authoritativeService": "src/server/routers/project.ts",
+      "clientRepository": "lib/data/repositories/project_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "projectCost.create",
+      "router": "projectCost",
+      "method": "create",
+      "domain": "projectCost",
+      "authoritativeService": "src/server/routers/projectCost.ts",
+      "clientRepository": "lib/data/repositories/projectCost_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "projectCost.delete",
+      "router": "projectCost",
+      "method": "delete",
+      "domain": "projectCost",
+      "authoritativeService": "src/server/routers/projectCost.ts",
+      "clientRepository": "lib/data/repositories/projectCost_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectCost.exportCsv",
+      "router": "projectCost",
+      "method": "exportCsv",
+      "domain": "projectCost",
+      "authoritativeService": "src/server/routers/projectCost.ts",
+      "clientRepository": "lib/data/repositories/projectCost_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectCost.list",
+      "router": "projectCost",
+      "method": "list",
+      "domain": "projectCost",
+      "authoritativeService": "src/server/routers/projectCost.ts",
+      "clientRepository": "lib/data/repositories/projectCost_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectCost.stats",
+      "router": "projectCost",
+      "method": "stats",
+      "domain": "projectCost",
+      "authoritativeService": "src/server/routers/projectCost.ts",
+      "clientRepository": "lib/data/repositories/projectCost_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.addActionItem",
+      "router": "projectOps",
+      "method": "addActionItem",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.agingReport",
+      "router": "projectOps",
+      "method": "agingReport",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.complete",
+      "router": "projectOps",
+      "method": "complete",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.create",
+      "router": "projectOps",
+      "method": "create",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "projectOps.delete",
+      "router": "projectOps",
+      "method": "delete",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.get",
+      "router": "projectOps",
+      "method": "get",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.list",
+      "router": "projectOps",
+      "method": "list",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.releaseRetention",
+      "router": "projectOps",
+      "method": "releaseRetention",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.retentionSummary",
+      "router": "projectOps",
+      "method": "retentionSummary",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.stats",
+      "router": "projectOps",
+      "method": "stats",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "projectOps.update",
+      "router": "projectOps",
+      "method": "update",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "projectOps.updateActionItem",
+      "router": "projectOps",
+      "method": "updateActionItem",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "projectOps.updateStatus",
+      "router": "projectOps",
+      "method": "updateStatus",
+      "domain": "projectOps",
+      "authoritativeService": "src/server/routers/projectOps.ts",
+      "clientRepository": "lib/data/repositories/projectOps_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "punchList.create",
+      "router": "punchList",
+      "method": "create",
+      "domain": "punchList",
+      "authoritativeService": "src/server/routers/punchList.ts",
+      "clientRepository": "lib/data/repositories/punchList_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "punchList.delete",
+      "router": "punchList",
+      "method": "delete",
+      "domain": "punchList",
+      "authoritativeService": "src/server/routers/punchList.ts",
+      "clientRepository": "lib/data/repositories/punchList_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "punchList.list",
+      "router": "punchList",
+      "method": "list",
+      "domain": "punchList",
+      "authoritativeService": "src/server/routers/punchList.ts",
+      "clientRepository": "lib/data/repositories/punchList_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "punchList.stats",
+      "router": "punchList",
+      "method": "stats",
+      "domain": "punchList",
+      "authoritativeService": "src/server/routers/punchList.ts",
+      "clientRepository": "lib/data/repositories/punchList_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "punchList.updateStatus",
+      "router": "punchList",
+      "method": "updateStatus",
+      "domain": "punchList",
+      "authoritativeService": "src/server/routers/punchList.ts",
+      "clientRepository": "lib/data/repositories/punchList_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "purchaseOrder.create",
+      "router": "purchaseOrder",
+      "method": "create",
+      "domain": "purchaseOrder",
+      "authoritativeService": "src/server/routers/purchaseOrder.ts",
+      "clientRepository": "lib/data/repositories/purchaseOrder_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "purchaseOrder.delete",
+      "router": "purchaseOrder",
+      "method": "delete",
+      "domain": "purchaseOrder",
+      "authoritativeService": "src/server/routers/purchaseOrder.ts",
+      "clientRepository": "lib/data/repositories/purchaseOrder_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "purchaseOrder.get",
+      "router": "purchaseOrder",
+      "method": "get",
+      "domain": "purchaseOrder",
+      "authoritativeService": "src/server/routers/purchaseOrder.ts",
+      "clientRepository": "lib/data/repositories/purchaseOrder_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "purchaseOrder.list",
+      "router": "purchaseOrder",
+      "method": "list",
+      "domain": "purchaseOrder",
+      "authoritativeService": "src/server/routers/purchaseOrder.ts",
+      "clientRepository": "lib/data/repositories/purchaseOrder_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "purchaseOrder.updateStatus",
+      "router": "purchaseOrder",
+      "method": "updateStatus",
+      "domain": "purchaseOrder",
+      "authoritativeService": "src/server/routers/purchaseOrder.ts",
+      "clientRepository": "lib/data/repositories/purchaseOrder_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rateAnalysis.addIngredient",
+      "router": "rateAnalysis",
+      "method": "addIngredient",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateAnalysis.create",
+      "router": "rateAnalysis",
+      "method": "create",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rateAnalysis.deleteAnalysis",
+      "router": "rateAnalysis",
+      "method": "deleteAnalysis",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateAnalysis.deleteIngredient",
+      "router": "rateAnalysis",
+      "method": "deleteIngredient",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateAnalysis.deleteIngredientsOfAnalysis",
+      "router": "rateAnalysis",
+      "method": "deleteIngredientsOfAnalysis",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateAnalysis.getResources",
+      "router": "rateAnalysis",
+      "method": "getResources",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateAnalysis.list",
+      "router": "rateAnalysis",
+      "method": "list",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateAnalysis.listIngredients",
+      "router": "rateAnalysis",
+      "method": "listIngredients",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateAnalysis.update",
+      "router": "rateAnalysis",
+      "method": "update",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rateAnalysis.updateIngredient",
+      "router": "rateAnalysis",
+      "method": "updateIngredient",
+      "domain": "rateAnalysis",
+      "authoritativeService": "src/server/routers/rateAnalysis.ts",
+      "clientRepository": "lib/data/repositories/rateAnalysis_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rateProfile.addAveragedItem",
+      "router": "rateProfile",
+      "method": "addAveragedItem",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.addItem",
+      "router": "rateProfile",
+      "method": "addItem",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.batchApply",
+      "router": "rateProfile",
+      "method": "batchApply",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.create",
+      "router": "rateProfile",
+      "method": "create",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rateProfile.delete",
+      "router": "rateProfile",
+      "method": "delete",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.deleteItem",
+      "router": "rateProfile",
+      "method": "deleteItem",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.get",
+      "router": "rateProfile",
+      "method": "get",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.list",
+      "router": "rateProfile",
+      "method": "list",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.searchItems",
+      "router": "rateProfile",
+      "method": "searchItems",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rateProfile.update",
+      "router": "rateProfile",
+      "method": "update",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rateProfile.updateItem",
+      "router": "rateProfile",
+      "method": "updateItem",
+      "domain": "rateProfile",
+      "authoritativeService": "src/server/routers/rateProfile.ts",
+      "clientRepository": "lib/data/repositories/rateProfile_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "reportTemplate.create",
+      "router": "reportTemplate",
+      "method": "create",
+      "domain": "reportTemplate",
+      "authoritativeService": "src/server/routers/reportTemplate.ts",
+      "clientRepository": "lib/data/repositories/reportTemplate_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "reportTemplate.delete",
+      "router": "reportTemplate",
+      "method": "delete",
+      "domain": "reportTemplate",
+      "authoritativeService": "src/server/routers/reportTemplate.ts",
+      "clientRepository": "lib/data/repositories/reportTemplate_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "reportTemplate.get",
+      "router": "reportTemplate",
+      "method": "get",
+      "domain": "reportTemplate",
+      "authoritativeService": "src/server/routers/reportTemplate.ts",
+      "clientRepository": "lib/data/repositories/reportTemplate_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "reportTemplate.list",
+      "router": "reportTemplate",
+      "method": "list",
+      "domain": "reportTemplate",
+      "authoritativeService": "src/server/routers/reportTemplate.ts",
+      "clientRepository": "lib/data/repositories/reportTemplate_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "reportTemplate.update",
+      "router": "reportTemplate",
+      "method": "update",
+      "domain": "reportTemplate",
+      "authoritativeService": "src/server/routers/reportTemplate.ts",
+      "clientRepository": "lib/data/repositories/reportTemplate_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "resourceAssignment.assignEquipment",
+      "router": "resourceAssignment",
+      "method": "assignEquipment",
+      "domain": "resourceAssignment",
+      "authoritativeService": "src/server/routers/resourceAssignment.ts",
+      "clientRepository": "lib/data/repositories/resourceAssignment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "resourceAssignment.assignRole",
+      "router": "resourceAssignment",
+      "method": "assignRole",
+      "domain": "resourceAssignment",
+      "authoritativeService": "src/server/routers/resourceAssignment.ts",
+      "clientRepository": "lib/data/repositories/resourceAssignment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "resourceAssignment.assignStaff",
+      "router": "resourceAssignment",
+      "method": "assignStaff",
+      "domain": "resourceAssignment",
+      "authoritativeService": "src/server/routers/resourceAssignment.ts",
+      "clientRepository": "lib/data/repositories/resourceAssignment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "resourceAssignment.list",
+      "router": "resourceAssignment",
+      "method": "list",
+      "domain": "resourceAssignment",
+      "authoritativeService": "src/server/routers/resourceAssignment.ts",
+      "clientRepository": "lib/data/repositories/resourceAssignment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "resourceAssignment.listForProject",
+      "router": "resourceAssignment",
+      "method": "listForProject",
+      "domain": "resourceAssignment",
+      "authoritativeService": "src/server/routers/resourceAssignment.ts",
+      "clientRepository": "lib/data/repositories/resourceAssignment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "resourceAssignment.remove",
+      "router": "resourceAssignment",
+      "method": "remove",
+      "domain": "resourceAssignment",
+      "authoritativeService": "src/server/routers/resourceAssignment.ts",
+      "clientRepository": "lib/data/repositories/resourceAssignment_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.addComment",
+      "router": "rfi",
+      "method": "addComment",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.assignableMembers",
+      "router": "rfi",
+      "method": "assignableMembers",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.bulkCreate",
+      "router": "rfi",
+      "method": "bulkCreate",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.countAll",
+      "router": "rfi",
+      "method": "countAll",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.create",
+      "router": "rfi",
+      "method": "create",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rfi.delete",
+      "router": "rfi",
+      "method": "delete",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.deleteAttachment",
+      "router": "rfi",
+      "method": "deleteAttachment",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.deleteComment",
+      "router": "rfi",
+      "method": "deleteComment",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.get",
+      "router": "rfi",
+      "method": "get",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.list",
+      "router": "rfi",
+      "method": "list",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.respond",
+      "router": "rfi",
+      "method": "respond",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.searchSimilar",
+      "router": "rfi",
+      "method": "searchSimilar",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "rfi.update",
+      "router": "rfi",
+      "method": "update",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "rfi.uploadAttachment",
+      "router": "rfi",
+      "method": "uploadAttachment",
+      "domain": "rfi",
+      "authoritativeService": "src/server/routers/rfi.ts",
+      "clientRepository": "lib/data/repositories/rfi_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "staffRole.assignStaff",
+      "router": "staffRole",
+      "method": "assignStaff",
+      "domain": "staffRole",
+      "authoritativeService": "src/server/routers/staffRole.ts",
+      "clientRepository": "lib/data/repositories/staffRole_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "staffRole.create",
+      "router": "staffRole",
+      "method": "create",
+      "domain": "staffRole",
+      "authoritativeService": "src/server/routers/staffRole.ts",
+      "clientRepository": "lib/data/repositories/staffRole_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "staffRole.delete",
+      "router": "staffRole",
+      "method": "delete",
+      "domain": "staffRole",
+      "authoritativeService": "src/server/routers/staffRole.ts",
+      "clientRepository": "lib/data/repositories/staffRole_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "staffRole.getHistory",
+      "router": "staffRole",
+      "method": "getHistory",
+      "domain": "staffRole",
+      "authoritativeService": "src/server/routers/staffRole.ts",
+      "clientRepository": "lib/data/repositories/staffRole_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "staffRole.list",
+      "router": "staffRole",
+      "method": "list",
+      "domain": "staffRole",
+      "authoritativeService": "src/server/routers/staffRole.ts",
+      "clientRepository": "lib/data/repositories/staffRole_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "staffRole.unassignStaff",
+      "router": "staffRole",
+      "method": "unassignStaff",
+      "domain": "staffRole",
+      "authoritativeService": "src/server/routers/staffRole.ts",
+      "clientRepository": "lib/data/repositories/staffRole_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "staffRole.update",
+      "router": "staffRole",
+      "method": "update",
+      "domain": "staffRole",
+      "authoritativeService": "src/server/routers/staffRole.ts",
+      "clientRepository": "lib/data/repositories/staffRole_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "submittal.create",
+      "router": "submittal",
+      "method": "create",
+      "domain": "submittal",
+      "authoritativeService": "src/server/routers/submittal.ts",
+      "clientRepository": "lib/data/repositories/submittal_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "submittal.delete",
+      "router": "submittal",
+      "method": "delete",
+      "domain": "submittal",
+      "authoritativeService": "src/server/routers/submittal.ts",
+      "clientRepository": "lib/data/repositories/submittal_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "submittal.get",
+      "router": "submittal",
+      "method": "get",
+      "domain": "submittal",
+      "authoritativeService": "src/server/routers/submittal.ts",
+      "clientRepository": "lib/data/repositories/submittal_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "submittal.list",
+      "router": "submittal",
+      "method": "list",
+      "domain": "submittal",
+      "authoritativeService": "src/server/routers/submittal.ts",
+      "clientRepository": "lib/data/repositories/submittal_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "submittal.review",
+      "router": "submittal",
+      "method": "review",
+      "domain": "submittal",
+      "authoritativeService": "src/server/routers/submittal.ts",
+      "clientRepository": "lib/data/repositories/submittal_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "submittal.stats",
+      "router": "submittal",
+      "method": "stats",
+      "domain": "submittal",
+      "authoritativeService": "src/server/routers/submittal.ts",
+      "clientRepository": "lib/data/repositories/submittal_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "submittal.submit",
+      "router": "submittal",
+      "method": "submit",
+      "domain": "submittal",
+      "authoritativeService": "src/server/routers/submittal.ts",
+      "clientRepository": "lib/data/repositories/submittal_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "variationOrder.create",
+      "router": "variationOrder",
+      "method": "create",
+      "domain": "variationOrder",
+      "authoritativeService": "src/server/routers/variationOrder.ts",
+      "clientRepository": "lib/data/repositories/variationOrder_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "variationOrder.get",
+      "router": "variationOrder",
+      "method": "get",
+      "domain": "variationOrder",
+      "authoritativeService": "src/server/routers/variationOrder.ts",
+      "clientRepository": "lib/data/repositories/variationOrder_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "variationOrder.list",
+      "router": "variationOrder",
+      "method": "list",
+      "domain": "variationOrder",
+      "authoritativeService": "src/server/routers/variationOrder.ts",
+      "clientRepository": "lib/data/repositories/variationOrder_repository.dart",
+      "supportsOffline": false
+    },
+    {
+      "procedure": "variationOrder.update",
+      "router": "variationOrder",
+      "method": "update",
+      "domain": "variationOrder",
+      "authoritativeService": "src/server/routers/variationOrder.ts",
+      "clientRepository": "lib/data/repositories/variationOrder_repository.dart",
+      "supportsOffline": true
+    },
+    {
+      "procedure": "variationOrder.updateStatus",
+      "router": "variationOrder",
+      "method": "updateStatus",
+      "domain": "variationOrder",
+      "authoritativeService": "src/server/routers/variationOrder.ts",
+      "clientRepository": "lib/data/repositories/variationOrder_repository.dart",
+      "supportsOffline": true
+    }
+  ],
+  "auditStatus": "historical-unverified-seed",
+  "auditNote": "This 323-entry scanner omits 18 superAdminProcedure methods, guesses supportsOffline and generates unverified clientRepository paths. See ../../reports/M13/original-source-audit.md.",
+  "observedProcedureDefinitionCount": 341,
+  "alternateReferenceClaims": [
+    "7d06a8a51826639b554e30d11a8b0b8f7d095259",
+    "7a5cccfd01484cc17b01e7c840fc0f35e87c1e58"
+  ]
+}
