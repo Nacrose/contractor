@@ -3509,8 +3509,8 @@
         "document.updateDrawing [Mutation]",
         "document.updateMarkup [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3647,8 +3647,8 @@
         "document.listDrawings [Query]",
         "document.updateDrawing [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3767,8 +3767,8 @@
         "document.listDrawings [Query]",
         "document.updateDrawing [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3874,8 +3874,8 @@
         "document.listDrawings [Query]",
         "document.updateDrawing [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3972,8 +3972,8 @@
         "boq.list [Query]",
         "boq.update [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -4141,8 +4141,8 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -4307,8 +4307,8 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -4473,8 +4473,8 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -4634,8 +4634,8 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
+      "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {

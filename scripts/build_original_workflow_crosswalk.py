@@ -94,6 +94,7 @@ COMMERCIAL_WORKFLOWS = {"WF-006", "WF-007", "WF-008", "WF-009"}
 TAX_MATERIALS_WORKFLOWS = {"WF-013", "WF-014", "WF-015", "WF-016", "WF-017"}
 EQUIPMENT_WORKFLOWS = {"WF-018", "WF-019", "WF-020"}
 WORKFORCE_FINANCE_WORKFLOWS = {"WF-021", "WF-022", "WF-023", "WF-024", "WF-025", "WF-026"}
+DRAWING_PLANNING_WORKFLOWS = {"WF-027", "WF-028", "WF-029", "WF-030", "WF-031", "WF-032", "WF-033", "WF-034", "WF-035"}
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
 
@@ -234,6 +235,8 @@ def main():
                 if workflow_id in EQUIPMENT_WORKFLOWS else
                 "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified"
                 if workflow_id in WORKFORCE_FINANCE_WORKFLOWS else
+                "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified"
+                if workflow_id in DRAWING_PLANNING_WORKFLOWS else
                 "candidate crosswalk only; source action semantics require review"
             ),
             "sourceReviewReference": (
@@ -248,7 +251,9 @@ def main():
                 "docs/reports/M13/equipment-source-action-reconciliation.md"
                 if workflow_id in EQUIPMENT_WORKFLOWS else
                 "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md"
-                if workflow_id in WORKFORCE_FINANCE_WORKFLOWS else None
+                if workflow_id in WORKFORCE_FINANCE_WORKFLOWS else
+                "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md"
+                if workflow_id in DRAWING_PLANNING_WORKFLOWS else None
             ),
             "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
         })
