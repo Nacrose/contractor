@@ -134,6 +134,14 @@ VARIATION_ORDER_REVIEWED_TRIGGERS = {
     "TRIGGER-A6C23BC29477", "TRIGGER-791450CABBB6", "TRIGGER-98B8F794AA82",
     "TRIGGER-C6A6DA29D436",
 }
+HANDOVER_REVIEWED_TRIGGERS = {
+    "TRIGGER-82C3A2BAF5AE", "TRIGGER-5F8A8B03C6DC", "TRIGGER-7F3173223ADF",
+    "TRIGGER-9656A043C87D", "TRIGGER-01FAD93F5D39", "TRIGGER-BD0B4703148B",
+    "TRIGGER-7FF82FBC88F8", "TRIGGER-16D21EDDDF6B", "TRIGGER-E91808C24762",
+    "TRIGGER-F22901221A11", "TRIGGER-B38B26A28EA4", "TRIGGER-357F0099599C",
+    "TRIGGER-AD4A7F89916F", "TRIGGER-EFA2D8B3C464", "TRIGGER-8F962CA7BF0B",
+    "TRIGGER-81923AAD264F", "TRIGGER-FE6475A54A29", "TRIGGER-7E1D4FC80E3F",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -155,6 +163,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
         "TRIGGER-384576D431E6", "TRIGGER-00DDAB0064FC", "TRIGGER-37BB12FF0D68",
         "TRIGGER-CFE26C3FCA70", "TRIGGER-B2A27D1834F5",
     },
+    "WF-040": HANDOVER_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -357,6 +366,8 @@ def main():
                 if workflow_id == "WF-016" else
                 "transfer dialog fields, mode, submit, dismiss and success callbacks reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes"
                 if workflow_id == "WF-017" else
+                "responsibility-handover manager inputs, selection, plan/apply, resume, skip and offboarding confirmation traced to source handlers and server guards; runtime remains unverified"
+                if workflow_id == "WF-040" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
                 "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified"
