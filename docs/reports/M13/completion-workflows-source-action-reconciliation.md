@@ -1,6 +1,6 @@
 # Remaining workflow source-action reconciliation
 
-Status: **Core JV, RFI/submittal, responsibility-handover and dashboard source boundaries reviewed for WF-038–041. Full trigger-level mapping and runtime acceptance remain open.**
+Status: **Core JV, RFI/submittal, responsibility-handover and dashboard source boundaries reviewed for WF-038–041. All 86 mapped WF-041 dashboard route triggers are now source-reviewed; other trigger-level mapping and runtime acceptance remain open.**
 
 Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Stable route IDs and candidate operations are in the [41-workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) and [canonical action index](../../frontend/original-action-component-index.json).
 
@@ -66,6 +66,8 @@ The global `/dashboard` route's 28 trigger candidates are source-dispositioned. 
 The remaining candidates are unreachable interactions from shared components: `TRIGGER-EF1999667A41`, `TRIGGER-F76C2E527C07`, and `TRIGGER-15A5F26D4086` belong to motion exports that the page does not render with click/tilt handlers; the ConstructionTable selection, row preview, expand, pagination, and bulk-action candidates (`TRIGGER-BD93B1C75FC9`, `TRIGGER-21E13CFD5C6D`, `TRIGGER-8B5866ACBFAF`, `TRIGGER-194E4D31C1AB`, `TRIGGER-E1882D799ECF`, `TRIGGER-253461056C2F`, `TRIGGER-814A2AF88617`, `TRIGGER-203A8103B686`, `TRIGGER-F71C8A446E3E`, `TRIGGER-5DE1F1541D26`, `TRIGGER-E1BF273DACD1`, `TRIGGER-81652519CD81`, `TRIGGER-E3E265BFE082`) are disabled because this dashboard table has no selection, row-preview, expand, load-more or bulk-action props. The dialog Escape/outside candidates (`TRIGGER-D2BB7F275340`, `TRIGGER-BD39F906727A`, `TRIGGER-37C0252549E9`) likewise have no active confirmation dialog because there are no bulk actions.
 
 The global route reads `GET /api/dashboard`, `accounting.dayBook`, and `finance.orgBankAccounts`. The REST handler uses `withTenantRoute` and `getDashboardProjectAccess` to scope project, RFI, BOQ, and financial aggregates independently by effective grants; day-book and bank-account reads require `org.finance.accounting.view`. The dashboard has no write action: its linked Finance routes own accounting changes. This pins source behavior, but deployed permission configuration and dashboard data acceptance remain unverified.
+
+The project dashboard `ROUTE-021` has 58 trigger candidates, all now traced across its cost summary, manual-expense form, date/calendar picker, receipt drop zone, input/dialog primitives, activity filter, workspace view tabs and query-error surfaces. The expense widget's form fields and receipt controls are the same source components reviewed under WF-024; route-level reporting also accounts for the calendar and dashboard navigation controls. Combined with the 28 global dashboard candidates on `ROUTE-010` and the actionless planning dashboard `ROUTE-038`, all 86 mapped WF-041 route trigger candidates are source-reviewed. The source dashboard remains partial and runtime/data accuracy are not accepted by this count.
 
 ## WF-039 submittals register trigger review
 

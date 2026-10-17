@@ -920,6 +920,19 @@ VO_VERSION_REVIEWED_SOURCE_FILES = {
     "src/components/ux/query-boundary.tsx",
     "src/components/ux/register-page.tsx",
 }
+PROJECT_DASHBOARD_REVIEWED_SOURCE_FILES = {
+    "src/components/costs/cost-summary-card.tsx",
+    "src/components/costs/expense-entry-dialog.tsx",
+    "src/components/dashboard/activity-feed.tsx",
+    "src/components/drop-zone.tsx",
+    "src/components/ui/amount-in-words.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/input.tsx",
+    "src/components/ui/nepali-calendar.tsx",
+    "src/components/ui/nepali-date-picker.tsx",
+    "src/components/ui/query-error-alert.tsx",
+    "src/components/workspace-view-tabs.tsx",
+}
 RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/rate-library/page.tsx",
     "src/app/(app)/projects/[id]/boq/components/catalog-rates-library.tsx",
@@ -1455,6 +1468,15 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in VO_VERSION_REVIEWED_SOURCE_FILES
             )
+        if workflow_id in {"WF-024", "WF-041"}:
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-021"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in PROJECT_DASHBOARD_REVIEWED_SOURCE_FILES
+            )
         replacement_trigger_ids = sorted({
             action["actionId"]
             for route_path in path_list
@@ -1569,6 +1591,8 @@ def main():
                 if workflow_id == "WF-040" else
                 "Finance route navigation, bank accounts/payables, project-cost widgets, Day Book, Money In/Out and inspector/edit-dialog controls traced through source handlers and ledger guards; other finance controls and runtime remain unverified"
                 if workflow_id == "WF-024" else
+                "all 86 mapped global/project dashboard route trigger candidates source-reviewed; project-cost and expense-entry controls reconciled with WF-024, while dashboard aggregates and deployed service compatibility remain unverified"
+                if workflow_id == "WF-041" else
                 "organization guarantee register, create/edit form, extension dialog, view handoff, conversion, project link/unlink, release and deletion controls traced to source operations; remaining finance controls and runtime remain unverified"
                 if workflow_id == "WF-025" else
                 "JV agreement and commission payout controls on organization finance traced through IPC basis, project grants, delegation and ledger mutations; remaining JV and runtime paths remain unverified"

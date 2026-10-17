@@ -41,7 +41,7 @@ Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b
 
 `projectCost.list` requires accounting, BOQ, Gantt, subcontractor, equipment and HR view permissions; `projectCost.stats` requires accounting view. Creation and deletion require `project.accounting.edit`. Creation checks the expense date against the fiscal lock, verifies linked records belong to the same project, writes a manual cost in a tenant transaction and audits it. Deletion is limited to manual costs; auto-captured costs must be corrected at their source. The add button is gated by `project.getModules` accounting edit on the dashboard route. On project home, however, `canWrite` is fed by `project.actionAccess.canEditRates`, whose server field is computed from `project.hr.compensation.edit`; that can expose a misleading button but does not bypass the accounting guard. Contractor should gate both routes with the same accounting capability.
 
-These paired direct component triggers are now source-reviewed and mapped to WF-024. The shared picker/input/drop-zone event candidates outside the dialog's explicit props, query-error controls, dashboard view tabs and other project-home interactions remain under review.
+These paired direct component triggers and all 58 `ROUTE-021` candidates are now source-reviewed. The expanded route pass includes the shared date picker/calendar, file picker/drop/remove paths, input and dialog controls, amount-in-words toggle, activity filter, workspace view tabs and query-error recovery. All 58 are also mapped to WF-041 as project-dashboard interactions; the same components appear on project home, where WF-024 still has other route-specific controls under review.
 
 ## WF-024 Day Book controls shared by finance and project accounting
 
