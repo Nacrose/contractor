@@ -4,80 +4,92 @@ Status: **In progress**. The available source bundle is pinned for audit. Action
 
 ## Source identity and confidence
 
-- Bundle: `Construction-Manager-main.zip` (local path `/Users/aakashdhakal/Construction-Manager-main.zip`), SHA-256 `8b3cb347083cfe25d484724116f87d1ab3fec80d81a0206a73e4f9b55a2de23d`; ZIP comment declares source revision `7a5cccfd01484cc17b01e7c840fc0f35e87c1e58`.
-- Earlier frontend artifacts declare `7d06a8a51826639b554e30d11a8b0b8f7d095259`, which differs from the ZIP comment. The ZIP has no `.git` object database, so the comment does not prove its contents match that commit. Locate the canonical checkout or verify the archive against a Git tree before finalizing parity scope.
-- The bundle includes the original Next.js app and server source together. Its package declares Construction Manager 1.0.0, Next.js 16, React 19, tRPC v11 and Prisma 6. This is a source backend contract, not proof that any deployed backend/API/schema is compatible.
+- Canonical source repository: private `Nacrose/Construction_Manager`; the earlier frontend artifacts reference commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`, which exists and checks out as a merge commit.
+- Supplied bundle: `Construction-Manager-main.zip` (local path `/Users/aakashdhakal/Construction-Manager-main.zip`), SHA-256 `8b3cb347083cfe25d484724116f87d1ab3fec80d81a0206a73e4f9b55a2de23d`. Its ZIP comment claims revision `7a5cccfd01484cc17b01e7c840fc0f35e87c1e58`; GitHub reports that commit does not exist in the canonical repository.
+- The bundle is **not** a copy of commit `7d06a8a`. A file-content comparison against that checkout found 1,698 tracked files versus 351 bundle files: 1,419 tracked files absent from the bundle, 72 bundle-only paths, and 242 shared paths with different contents. Both ZIP files in Downloads have the same SHA-256. Treat the bundle as an independently pinned but incomplete/unidentified snapshot, not as the canonical source revision.
+- The verified commit has 110 App Router page files and the bundle has 64. After removing Next.js route-group names, 55 URL paths are shared, 55 occur only in the verified commit, and 9 only in the bundle. Seventeen canonical-only paths are under `/m`, while the bundle contains no mobile routes. The old coverage seed also contained a spurious `//` route caused by root-path normalization; it is now retained as an invalid seed trace and excluded from the route denominator. This explains the apparent mobile-scope discrepancy: it is a bundle coverage gap, not evidence that the original app had no mobile surface. The M00 41-workflow matrix and original 64-route seed therefore do not yet cover the canonical route surface.
+- The canonical commit contains `src/lib/nav-registry.ts` and `src/lib/navigation/view-registry.ts`; the ZIP does not. The old planning note about those files applies to the ZIP only, not to the canonical source checkout.
+- The canonical package lock pins Next.js 16.3.8, React 19, tRPC server 11.19.0 and Prisma client 6.19.3. The canonical tRPC endpoint is `/api/trpc`; Prisma schema SHA-256 is `673867f43016f526156c1d805d292f2336df94fede3b273b3d986ad2e9a4e089`, and package-lock SHA-256 is `e1ef3a799d58b01cc1dd2dc1927285ea3cd08ba6f648fd42daa72bde5c5895ce`. The ZIP's corresponding package-lock SHA-256 is `88082e0dc91b49d56adab3159fe00d0c119fdd5a1e59d328f4244876d93c5d33`, and schema SHA-256 is `a3c6e00e32c4d5cdd91076dcfe0f3a42803bc6a20eaa0af4ee2376813d5fca7f`. These pin the source-side contract only; the deployed API origin, server revision and applied schema/migration state remain unavailable, so runtime compatibility is unverified.
 
-## Verified source counts
+## Supplied bundle counts (not canonical-revision counts)
 
 | Surface | Observed | Meaning |
 |---|---:|---|
 | App Router pages | 64 | 46 project routes and 18 organisation/public/admin paths |
 | Router files | 34 | 32 root `appRouter` registrations; daily reports and RFIs are nested under `workflow` |
 | Procedures | 341 | 323 recognized by the old scanner plus 18 `superAdminProcedure` methods it omitted |
-| Direct route procedure references | 164 unique / 223 occurrences | Page calls only; imported children/hooks can add more actions |
+| Direct and reachable procedure hooks | 223 page occurrences / 271 unique hooks through local TS/TSX imports | Component traversal is static; not all controls/lifecycles are captured |
 | Pages with direct tRPC calls | 51 of 64 | Other pages may use child components, page props or static/utility behavior |
+| Next.js API route handlers | 20 | Includes tRPC transport plus auth/admin/file/export routes |
 | Direct dialog references | 47 route occurrences | Does not inventory dialog inputs, actions or nested children |
+
+## Canonical checkout counts
+
+The same scanner was run against the verified `7d06a8a` checkout. The current canonical index contains all of its route pages and reachable component hooks; these figures are distinct from the incomplete ZIP counts above.
+
+| Surface | Observed | Meaning |
+|---|---:|---|
+| App Router pages | 110 | 59 project routes and 51 organisation/public/admin/mobile paths |
+| Root router registrations | 60 | Top-level server routers from `_app.ts` |
+| Router source files | 79 | Excludes `_app.ts` and router test files |
+| Procedure definitions | 702 candidates | Includes 645 historical wrapper matches, 22 `superAdminProcedure` definitions and 35 `proc.*` domain-wrapper definitions |
+| Direct/reachable procedure hooks | 219 page occurrences / 528 unique reachable hooks | Static TS/TSX component traversal across pages and seven shared layouts; runtime actions remain to be reviewed |
+| Route-scoped hook action records | 1,162 | Stable action IDs with UI component and candidate server source paths |
+| Shared-layout hook actions | 25 | Indexed once under seven shared layout roots, separately from page routes |
+| Route and shared-layout JSX event-handler candidates | 11,239 | Stable trigger IDs with source locations; 562 have same-source mutation-binding candidates |
+| Unreferenced UI components with hooks / event candidates | 17 / 207 | Kept in separate `ORPHAN-UI-*` scopes; not counted as route-reachable actions |
+| Trigger candidates with permission markers / linked to field outbox | 416 / 2 | Combined route, layout and unreferenced UI inventory; effective guard and outbox call paths require review |
+| Direct dialog references | 57 route occurrences | Dialog component names only; inputs and behavior remain to be reviewed |
+
+All 528 distinct reachable hook names now resolve to a source procedure file in the canonical index, including procedures assembled through material, equipment and schedule router modules. The 1,162 page-route hook records have stable action IDs and record the UI component, declared server wrapper, candidate permission guard calls/keys, offline policy, and proposed M13 packet owner inherited from the route coverage seed. The seven shared layouts are indexed separately with 25 more service hooks and 134 event-handler candidates, avoiding duplication into every page route. Packet ownership is provisional until each control is reviewed; it is not a confirmed individual owner. The index records 11,239 route and shared-layout JSX event-handler candidates and 207 candidates from 17 hook-using UI components that are not reachable from indexed routes or shared layouts. Orphan candidates have their own stable `ORPHAN-UI-*` scope and do not count as reachable workflow controls; all 17 files are assigned to likely workflows in the crosswalk with explicit source-file overrides where shared hooks would cause ambiguous matches. Across the combined inventory, 584 triggers have same-source mutation-binding candidates and 416 expose permission marker candidates; two are associated with field outbox operations. Such links do not prove the runtime call path or effective policy. These are review leads only; control semantics and effective guards remain unverified.
+
+The trigger sidecar now indexes 11,239 route/layout candidates and 207 unreferenced-UI candidates, each with a unique stable ID, scope, source file, line, and handler expression. Across both scopes, 584 triggers have a same-file mutation candidate; 416 expose permission-marker candidates, and two point to a durable field outbox operation. The remaining 10,862 candidates may be local state, navigation, query-driven, indirect or unresolved, and still need semantic classification. Every one of the 1,162 route-scoped hook records has an ID, proposed task owner and resolved procedure source, but proposed ownership and candidate server metadata are not reviewed action contracts. The 41-workflow crosswalk embeds each mapped route's reachable hook IDs and complete trigger-candidate ID list (24,982 workflow-route references, with expected duplication where workflows share a route), and separately retains related unreferenced UI candidates by workflow. This improves traceability only; it does not validate the candidate's semantics.
+
+These structural checks do not yet map each button, row menu, form, dialog field, cancellation path, background job or notification to a reviewed action record. JSX event attributes and same-file mutation references are static candidates, not verified call paths. The 57 dialog references are component names, not a reviewed dialog/action inventory. M13-T01 therefore remains open until those controls and lifecycles are reviewed, the 41 M00 workflows and route additions are reconciled, the nine archive-only candidates are dispositioned, and the compatible deployed backend is identified. The audit uses the verified `7d06a8a` checkout as its canonical source index because that exact commit is referenced by the earlier source artifacts and exists in the canonical repository. The separately hashed ZIP remains an unverified, incomplete snapshot; no claim is made that it matches the commit.
+
+User-directed IPC boundary to carry into implementation: Contractor creates each IPC and its separate linked GridCraft workbook; GridCraft owns workbook/payment editing; Contractor is view-only for workbook content and accepts only a validated Summary of Payment. This replaces the original app's in-app IPC editing behavior for this product. The detailed boundary and sync acceptance criteria remain in the [IPC/GridCraft plan](../plans/ipc-summary-gridcraft-agent-plan.md), and the legacy routes, actions, server permissions, offline policy and explicit replacement are reviewed in the [IPC source-action reconciliation](ipc-source-action-reconciliation.md). Scoped source reviews for daily reports, field photos, expenses, material capture and field sync are recorded in the [field and sync source-action reconciliation](field-and-sync-source-action-reconciliation.md). The core BOQ, rate-analysis, rate-profile and version routes and server permission contracts are in the [commercial source-action reconciliation](commercial-source-action-reconciliation.md), which also corrects the WF-009 route crosswalk. The source VAT, requisition, PO, inventory and transfer transaction/permission boundaries for WF-013–017 are recorded in the [tax, procurement and inventory reconciliation](tax-procurement-inventory-source-action-reconciliation.md). The router composition, selected entry points and transaction boundaries for WF-018–020 are captured in the [equipment reconciliation](equipment-source-action-reconciliation.md); HR identity, attendance, payroll, accounting, guarantees and fiscal locks for WF-021–026 are in the [workforce and finance reconciliation](workforce-and-finance-source-action-reconciliation.md); drawing, takeoff, CAD/PDF and planning source boundaries for WF-027–035 are in the [drawings and planning reconciliation](drawings-and-planning-source-action-reconciliation.md); JV, RFI/submittal, handover and dashboard boundaries for WF-038–041 are in the [completion workflows reconciliation](completion-workflows-source-action-reconciliation.md).
+
+## Offline policy evidence at the verified revision
+
+Offline behavior is deliberately split between office requests and the CM Field mobile outbox. `src/lib/offline-fetch.ts` delegates to native `fetch`; ordinary mutations remain online-only. The legacy `src/lib/offline-queue.ts` stores old writes for inspection and discard but never replays them. The canonical index marks only the exact query paths whitelisted in `src/lib/field-query-persist.ts` as durable offline reads: `project.list`, `notification.list`, `workflow.dailyReport.listReports`, `fieldSubmission.mySubmissions`, `punchList.list`, `chat.listChannels`, `chat.getMessages`, and `partner.subcontractorOptions`. Other reads are not durably persisted.
+
+The v3 outbox is used by these mobile write actions:
+
+| Action | Procedure | Source behavior |
+|---|---|---|
+| Material inward, material capture, labour log, site expense | `fieldSubmission.create` | Saved as editable IndexedDB drafts; explicit send queues a `clientUuid`-identified write for office review. |
+| Daily report | `workflow.dailyReport.createFieldReport` | Explicit send queues through the same field draft/outbox flow. |
+| Photo capture | `fieldPhotos.create` | Compressed photos are queued from `/m/photos`. |
+| Punch item creation | `punchList.create` | Queued from `/m/tasks/new`. |
+| Punch item status change | `punchList.updateStatus` | Queued from `/m/tasks`. |
+
+Network, server and authentication failures retry; validation/permission 4xx responses park as failed. One durability limitation is recorded in the source: `field-outbox.ts` swallows IndexedDB write errors, so local enqueue persistence is best-effort when storage fails. No other mutation receives an offline-replay guarantee from the inspected client paths. These source policies are indexed, but the full UI call graph and server-side compatibility still require review.
 
 ## Original sidebar destinations
 
-The archive sidebar has one organisation/top-level list, one project list, and a separately gated admin list. Contractor’s three-level shell is a proposed mapping, not an original navigation structure. Source: `src/components/app-sidebar.tsx`.
+The canonical commit has a single navigation registry in `src/lib/nav-registry.ts`, consumed by `src/components/app-sidebar.tsx`. It defines six global destinations, 12 project rail destinations, four privileged-admin domains, and the tab clusters below. `src/lib/navigation/view-registry.ts` separately defines six HR views, six equipment views, no materials subviews, and four tax-summary views. This is the canonical source for navigation reconciliation; the supplied ZIP's sidebar is a different snapshot. Module-key and capability metadata live on individual entries and need to be represented by T02's canonical route/capability contract, not reduced to labels.
 
-**Organisation/top-level:**
-- Dashboard → `/dashboard`
-- Projects → `/projects`
-- Team → `/team`
-- Presets → `/presets`
-- Activity → `/activity`
-- Sync Status → `/sync`
+The canonical organisation rail contains Desk (`/dashboard`), Projects (`/projects`), Materials (`/inventory`, also matching `/materials` and `/rate-catalogs`), Finance (`/finance`), HR (`/hr-organization`) and Documents (`/drawings`, also matching `/correspondence`). The project rail contains Overview, Planning, Workflow, Field Data, Materials, Equipment, Subcontractors, HR, IPC and VO, Quality and Safety, Documents and Finance. Privileged administration is grouped into Overview, Tenancy, Catalogs and Operations; the matching deep routes are all preserved in the route ledger. These groups map the original source structure into Contractor's existing three-level shell; they do not claim source and target navigation are identical.
 
-**Project:**
-- Overview → ``
-- Planning Dashboard → `/planning-dashboard`
-- Workflow → `/workflow/rfi`
-- Communication → `/communication`
-- Drawings → `/drawings`
-- Submittals → `/submittals`
-- Punch List → `/punch-list`
-- Safety → `/safety`
-- Quality → `/quality`
-- Meetings → `/meetings`
-- Look-Ahead → `/look-ahead`
-- Planning → `/boq`
-- Variation Orders → `/variations`
-- Subcontractors → `/subcontractors`
-- Materials → `/materials`
-- Equipment → `/equipment`
-- Correspondence → `/correspondence`
-- Doc Center → `/document-center`
-- Payments → `/payments`
-- IPC Certificates → `/ipc`
-- Tax Summary → `/tax-summary`
-- Cash Flow → `/cash-flow`
-- Budget vs Actual → `/budget-variance`
-- HR / Staff → `/hr`
-
-**Privileged admin:**
-- Overview → `/admin`
-- Organizations → `/admin/organizations`
-- Users → `/admin/users`
-- Trials → `/admin/trials`
-- Audit Log → `/admin/audit`
-- Data Browser → `/admin/data`
-- Settings → `/admin/settings`
-- Database → `/admin/database`
+Canonical tier-two clusters include Overview/Dashboard; Materials & Procurement/Vendors/Rate Library; Equipment/Plant & Production; Subcontractors/Measurement & Billing; HR/Staff & Workforce; Day Book/Parties/Cash Flow/Budget vs Actual; RFIs/Daily Program/My Tasks/Daily Reports/Meetings; Drawings/Photo Progress/Submittals/Correspondence/Doc Center; Quality/Punch List/Safety; Planning/BOQ/Look-Ahead/Staffing Requirements; and IPC Certificates/Variation Orders. Admin domains group Overview, Tenancy, Catalogs and Operations, with their own route clusters. The route index preserves additional auth, mobile, print, detail and utility destinations that are not ordinary sidebar entries.
 
 ## Router and service ledger findings
 
-- `_app.ts` registers 32 top-level routers. `workflow` composes `dailyReport` and `rfi`; those two files explain the 34 router source files.
-- `admin.ts` declares 18 procedures through a `superAdminProcedure` wrapper. The old generator omitted this wrapper type, so every admin operation is absent from `service-bindings.json`. This is a real inventory gap.
+- `_app.ts` registers 60 top-level routers. The canonical checkout contains 79 router source files and 702 procedure-definition candidates, including 22 `superAdminProcedure` definitions and 35 domain-wrapper definitions.
+- `admin.ts` declares 22 procedures through a `superAdminProcedure` wrapper. The historical generator omitted this wrapper type, so admin operations are absent from `service-bindings.json`. This remains a source-mapping gap in that generated artifact.
 - The old generator invents Dart repository paths from router names and sets `supportsOffline` from method-name prefixes. Neither is source evidence. Replace with verified adapter paths or `unknown`; determine offline policy per operation from the client durability path and server lifecycle.
 - A top-level procedure name does not establish effective permission: wrappers, role checks and handler-level project membership assertions must be reviewed.
 - The M00 matrix includes 41 workflows; two are marked partial. Their source status is separate from Contractor status, and both remain in parity coverage.
 
+## API, background jobs and deployed-contract gap
+
+The canonical source exposes 23 App Router API handlers, including tRPC GET/POST at `/api/trpc`, eight auth routes, three bearer-protected cron endpoints, file/document/drawing access, backup export, dashboard, search, push and setup routes. Each handler, method and source-file path is indexed under `apiSurface`; extracted authentication/security names are candidates and are not a substitute for handler review.
+
+`.github/workflows/cron.yml` schedules outbox dispatch and database keepalive every five minutes and invariant probes hourly. `.github/workflows/backup.yml` schedules the PostgreSQL and StoredFile backup at 02:30 UTC nightly. The three cron API routes are `/api/cron/outbox`, `/api/cron/db-keepalive` and `/api/cron/invariants`; workflow schedules, endpoint references and source files are in `scheduledWorkflows`. These files do not prove that production secrets exist, that the workflows are enabled, or that any job ran successfully. The actual deployed API origin, revision, migration state, authentication mode and test credentials are not present in the current workspace. That precise external contract remains a T04 prerequisite; the source contract is not presented as a production-compatible backend.
+
 ## Route-by-route direct-source index
 
-The following procedures and dialog references are extracted from each archived page itself. This gives reviewers a route-level index; it does not claim to capture nested dialogs, child components, all controls, permission checks or lifecycle behavior.
+The [route component index](../../frontend/original-action-component-index.json) now traverses static and literal dynamic local imports for all 110 canonical pages plus seven shared layouts. It records 1,162 route-scoped hook actions, 25 shared-layout hook actions, 528 unique reachable procedure hooks, 23 API route handlers, scheduled job sources and reachable dialog components. Its [trigger-candidate sidecar](../../frontend/original-interaction-trigger-candidates.jsonl) has 11,239 route and shared-layout JSX event-handler candidates. The [M00 workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) links all 41 workflows to canonical routes, service candidates, original platform status, M00 engine/test file existence, and the explicit IPC/GridCraft dispositions. These indexes provide reviewable source references; they do not prove event call paths, effective permission checks or lifecycle behavior. The table below is retained as a direct-page index for the supplied ZIP snapshot only.
 
 | Route | Source page | Direct procedure hooks | Dialog components |
 |---|---|---|---|
@@ -146,17 +158,42 @@ The following procedures and dialog references are extracted from each archived 
 | `/` | `src/app/page.tsx` | — | — |
 | `/signup` | `src/app/signup/page.tsx` | — | — |
 
+The coverage appendix assigns stable IDs to 110 canonical routes and nine disputed archive-only candidates, plus `WF-001`–`WF-041`. The invalid `//` seed row is retained as `INVALID-ROUTE-SEED-001` for traceability and excluded from the route denominator. All 110 routes in the verified repository commit have a route ID; the nine archive-only candidates remain explicitly disputed. The route component index is generated by `scripts/audit_frontend_archive.py` and records the checkout commit.
+
 ## Work required before T01 can close
 
-1. Resolve the intended original revision and verify the bundle against its Git tree, or obtain the canonical checkout. Compare route, sidebar, workflow and backend inventories at that revision.
-2. Verify the target/deployed backend version, schema and API compatibility. If deployment evidence is outside this task, record it as an explicit prerequisite for T04.
+1. The verified `7d06a8a` commit is the canonical local audit baseline; the nine ZIP-only paths are separately retained as disputed candidates. The archive cannot be represented as that commit. The invalid `//` route seed is excluded and preserved for traceability.
+2. Compare the 41-workflow matrix and server lifecycle actions with the verified commit. Source API/schema versions are pinned above, but verify the target/deployed backend revision, schema and compatibility; register that deployment evidence as an explicit prerequisite for T04.
 3. Traverse page imports through dialogs, tables, hooks and child routes. Inventory every action, input/validation, lifecycle transition, permission, export/print, error and cancellation. The table above is only a direct-page index.
 4. Map every operation to its actual root/nested procedure and effective server guard. Verify offline eligibility from the durable client command/outbox behavior; do not infer it from names.
 5. Reconcile the 41 workflows with pages, mobile journeys, background jobs and cross-module consumers; add omitted actions and preserve source partial/deferred status.
 6. Give each verified action a stable coverage ID, owner, source, service, permission, offline policy, scenario and platform evidence. Keep unresolved rows unverified.
 
+### Disputed archive-only route dispositions
+
+The nine ZIP-only paths remain in the denominator as target requirements. The verified tree has no matching page file for any of them, so the generic route alternatives below are navigation/function candidates, not proof of complete parity.
+
+| Archive-only path | Verified-tree evidence and disposition |
+|---|---|
+| `/admin/data` | No matching route. `/admin/database` exists, but its navigation label is “Database & Health”; equivalent data-management behavior is unproven. Retain as unresolved. |
+| `/projects/[id]/boq/pdf-designer` | No matching route or proven BOQ-specific design surface. Retain as unresolved under BOQ/PDF output acceptance. |
+| `/projects/[id]/gantt/[versionId]/pdf-designer` | No matching route. A PDF canvas exists elsewhere, but it only recognizes RFI and daily-report entity scopes; Gantt-specific schedule layout/export parity is unproven. Retain as unresolved. |
+| `/projects/[id]/ipc/[ipcId]/pdf-designer` | No matching route or IPC-specific designer. Generic PDF canvas does not declare IPC as a supported entity type. Retain as unresolved; Contractor IPC output must also honor the user-directed GridCraft summary boundary. |
+| `/projects/[id]/workflow/reports/[reportId]/pdf-designer` | No matching route. The report share dialog opens `/projects/[id]/pdf-canvas?entityType=daily_report&entityId=…`; this is a moved generic editor entry point, but exact legacy deep-link compatibility is absent. Keep the old path as a required alias or explicitly test migration to the generic route. |
+| `/projects/[id]/workflow/reports/[reportId]/pdf-render` | No matching route. The share dialog opens `/projects/[id]/pdf-canvas/render` with the daily-report entity query. Same output flow is evidenced through a different route; old deep-link compatibility remains unresolved. |
+| `/projects/[id]/workflow/reports/[reportId]/print` | No matching route. Quick Print in the share dialog opens the generic renderer route. Treat as a candidate moved flow, pending print/readback acceptance. |
+| `/projects/[id]/workflow/rfi/[rfiId]/pdf-designer` | No matching route. The generic canvas explicitly supports `entityType=rfi`, so the designer capability has a query-based route, while the legacy deep link is absent. Keep route alias/migration behavior for implementation acceptance. |
+| `/team` | No matching route. Organization people directory and project HR team pages exist, but the old path’s scope and redirect behavior are unknown. Retain as unresolved until the correct target scope is established from the source archive. |
+
+This disposition separates exact route preservation from candidate feature equivalents. It does not remove any archive-only path from product scope or mark the specialized BOQ, Gantt or IPC output routes as implemented.
+
 ## Evidence
 
-- Route/sidebar counts were inspected in the ZIP with Python `zipfile`; exact bundle hash and archive comment appear above. The counts are recorded so the source scan can be independently repeated from the same archive.
-- Compared archive pages/router source with `docs/frontend/route-parity.json`, `service-bindings.json`, `manifest.md` and `docs/reports/M00/feature-matrix.json`. These artifacts are not a verified common source snapshot.
-- No original Git checkout was found in the inspected DSH session path. GitHub API access failed in this environment, so remote branches and open PRs could not be checked.
+- Bundle route/sidebar counts were inspected with Python `zipfile`; the hash and unverified ZIP comment are recorded above.
+- Checked both recorded revision identifiers against the canonical GitHub repository. `7d06a8a` exists; `7a5cccfd` does not.
+- Compared every regular bundle file with the checked-out `7d06a8a` tree by SHA-256. The comparison establishes that the bundle is not a complete or byte-identical export of that revision.
+- Canonical and archive URL sets were compared after stripping Next.js route groups. The coverage appendix retains the nine archive-only paths as disputed candidates, adds stable IDs and proposed M13 owners for 55 canonical-only paths, and records the invalid duplicate-root seed outside the denominator.
+- `python3 scripts/audit_frontend_archive.py CHECKOUT --coverage docs/frontend/full-product-coverage.md --output docs/frontend/original-action-component-index.json` reproduces the canonical index from the pinned checkout; it reports 110 route pages, seven shared layouts, 528 reachable hooks, 17 unreferenced hook-using UI components and zero hook-to-source-file misses. `python3 scripts/build_original_workflow_crosswalk.py` regenerates the 41-workflow source crosswalk from this index, retaining orphan trigger candidates separately from reachable route actions.
+- The crosswalk records 3,204 unique reviewed stable trigger IDs across reachable route controls and a separately marked orphan vendor-bill component. The reachable `sourceReviewedTriggerIds` include all 61 WF-001 mobile daily-report capture/photo controls, all 57 ROUTE-055 office register controls, all 165 trigger candidates on each of ROUTE-050 and ROUTE-051, and nine previously reviewed office lifecycle candidates; WF-001 also records source defects in partial-page Excel export, duplicate-number retry using the wrong date, a delete action exposed by edit permission and email partial-recipient success hidden by the UI and a high-impact partial-JSON-update path that clears unrelated normalized daily-report sections, document-list responses that include unused base64 payloads, an upload button that can be re-pressed while its mutation is pending, a delete action shown without checking document-delete access, a count-based RFI numbering race, an RFI-create/report-link split write with Cancel enabled during mutation, and inline row deletion without confirmation; all 165 detail route trigger candidates are reviewed; runtime behavior and deployed service compatibility remain open; all 79 WF-002 mobile photo, shared field-review and drawing-progress route candidates, including a source-level finding that Photo Progress does not read the field-photo service; all 124 WF-003 full/simple mobile expense-capture and project-expense route controls, including the distinction between local draft/outbox, office verification and financial approval; 98 WF-004 full/simple mobile material-capture and office inbox controls, with the remaining 425 broad Materials route candidates explicitly scoped separately; 17 WF-005 desktop/mobile Sync and offline route controls; IPC, equipment, VAT/tax summary, requisition form/detail, direct-material and quick-buy purchase, purchase-order register/create/generate dialogs, materials register, inward delivery/gate/GRN and transaction controls; WF-006 includes all 223 ROUTE-012 BOQ register/header/create/table-row/rate-inspector/resource-picker/Excel-paste/action-bar/navigation/dialog/error-feedback trigger candidates and records the BOQ create/delete/duplicate pre-transaction lock race, non-atomic section rename, quick-add repeat-submit and stale picker state, cross-module materials permission mismatch, partial per-row Excel import and silent paste rejection, a false clipboard-success signal plus unqualified production migration guidance in query errors, and BOQ async dialogs that remain dismissible while their operation continues; WF-009 records all 189 Variation Order register/detail, BOQ snapshot and IPC detail triggers source-reviewed; WF-010 through WF-012 record all 62 ROUTE-032 IPC register and 69 ROUTE-030 detail triggers, including workbook-provisioning and scanned-bill/document reliability findings, while all 598 legacy worksheet-editor triggers are explicitly mapped to the GridCraft replacement; WF-007 and WF-008 record source review of all 223 ROUTE-012 BOQ route candidates from the same audited BOQ, rate-analysis, profile-refresh, picker, paste and shared-control files; WF-007 also covers all 218 ROUTE-111 rate-library tab/controller/material-register/tree/toolbar/table/create/edit/name-picker/district/fiscal-year/escalation/copy/sync/material-import/merge/archive/purge/shared-control candidates, and WF-008 covers ROUTE-111 plus all 269 ROUTE-117 candidates reviewed (253 rendered page/governance controls and 16 `CatalogDetail` controls found unreachable because the route imports only its type); source findings include catalog write controls exposed without the edit grant, global suggestion mappings rejected by an organization target type, an unpaginated 100-row queue, bulk actions that overstate partial success, a dead Import Global presets button, and rate-catalog import names ignored. The ROUTE-117 catalog-detail component is type-imported but not rendered. The ROUTE-111 subset also records project-material permission mismatch, implicit empty-catalog sync, stale local rate drafts, no-parent create-catalog blocker, unaudited bulk multiplier, fiscal-year preview/calculation consistency risks, and broken parent-to-project rate-copy mapping, and missing project-material archive recovery, an unpopulated undo stack, an unpaginated 500-row register, a restore control that does not reactivate rows, a global-scope import dispatch from the master catalog, a purge action that defaults to global scope, a false material-merge rollback claim, an import “link existing” action that persists no link, an uneditable default rate on create, inconsistent material normalization on edit, fuzzy-name suggestions whose clickable rows/menu navigation lack keyboard semantics, and query-error recovery that reports false clipboard success and advises direct production migrations; route trigger candidates are all source-reviewed, while broader workflows and runtime remain open; the WF-039 submittals register and all of its route-scoped shared controls; and all 196 RFI route trigger candidates across the page, forms, linked records, detail/respond, CSV import, comments, attachments, document trail, calendar, board and shared controls. Other reviewed areas include reachable WF-017 transfer-dialog, WF-024 Finance navigation, bank-account, payables, Money In/Out, inspector/edit dialog, external bookkeeping export/reconciliation, project-cost and Day Book controls, WF-025 guarantee register controls, WF-038 JV agreement/payout controls, WF-040 handover manager, all 136 hierarchy-route candidates (including project People Access controls), all 50 My Tasks and 16 My Access route candidates, and all 86 WF-041 global and project dashboard route trigger candidates. WF-013 includes 46 tax-summary controls on each of ROUTE-046 and ROUTE-074; WF-014 includes 78 requisition/direct-purchase controls; WF-015 includes 41 reachable PO controls and 24 bill/payment controls in an unreferenced component; WF-016 includes 87 materials register, gate/receipt and transaction controls; WF-024 covers 50 project-home/dashboard cost-widget controls, 48 Day Book controls, 24 Money In controls, 68 Money Out controls, 32 inspector/edit-dialog controls, 24 external-export/reconciliation controls, two Finance route navigation controls, 12 bank-account controls and 19 organization payables/settlement controls; WF-025 covers 64 guarantee register/form/extension/view controls; WF-038 covers 28 JV agreement and commission controls; WF-039 covers all 79 ROUTE-045 submittals-register and 196 ROUTE-057 RFI candidates. The finance reviews trace permissions, online mutations, drafts, receipts, reversals, attachments, ledger posting and lifecycle transitions, and record source defects in identifier binding, permission affordance, unsupported in-place ledger edits, query-state restoration, bank-account form validation/correction, unpersisted Money In details/project fallback, dropped head-office TDS, external export format claims and reconciliation transition/race handling, and missing JV payout deletion lock checks. The inventory remains deliberately partial; orphan transfer list, receive and cancel controls are separately scoped and are not treated as reachable. This does not imply complete control review or runtime parity.
+- Compared the bundle with `docs/frontend/route-parity.json`, `service-bindings.json`, `manifest.md` and `docs/reports/M00/feature-matrix.json`. These artifacts do not represent a verified common source snapshot.
+- Deployed backend identity and compatibility remain unknown. Obtain deployment/schema evidence before a task claims production service compatibility.
