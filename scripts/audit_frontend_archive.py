@@ -127,10 +127,22 @@ def main():
                 end = match.end() + next_prop.start() if next_prop else min(len(src), match.end() + 1500)
                 body = src[match.end():end]
                 kind = "mutation" if re.search(r"\.mutation\s*\(", body) else "query" if re.search(r"\.query\s*\(", body) else "unclassified"
+                guard_calls = sorted(set(re.findall(
+                    r"\b(?:assert|require)[A-Za-z0-9_]*(?:Permission|Access|Role|Capability)[A-Za-z0-9_]*\s*\(",
+                    body,
+                )))
+                permission_keys = sorted(set(re.findall(
+                    r"[\"']((?:project|organization|org|user|admin)\.[A-Za-z0-9_.-]+)[\"']",
+                    body,
+                )))
                 source = {
                     "sourceFile": name.removeprefix(ROOT),
                     "declaredProcedureWrapper": match.group(2),
                     "handlerKind": kind,
+                    "permissionGuardCandidates": guard_calls,
+                    "permissionKeyCandidates": permission_keys,
+                    "permissionReviewState": "candidate source evidence; effective policy requires review",
+                    "offlinePolicy": "unreviewed",
                 }
                 for alias in aliases:
                     procedure_sources[f"{alias}.{match.group(1)}"] = source
