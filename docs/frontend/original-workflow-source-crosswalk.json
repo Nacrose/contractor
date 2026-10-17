@@ -692,8 +692,8 @@
         "boq.list [Query]",
         "boq.update [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
+      "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -836,8 +836,8 @@
         "rateProfile.list [Query]",
         "rateProfile.previewApply [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
+      "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -1011,8 +1011,8 @@
         "rateProfile.list [Query]",
         "rateProfile.previewApply [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
+      "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -1062,23 +1062,21 @@
     {
       "canonicalRoutes": [
         {
-          "destination": "BOQ, VO & IPC / BOQ",
-          "packet": "T10",
-          "routeId": "ROUTE-012",
-          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "destination": "BOQ, VO & IPC / VO register",
+          "packet": "T12",
+          "routeId": "ROUTE-048",
+          "sourcePage": "src/app/(app)/projects/[id]/variations/page.tsx",
           "status": "Unverified"
         },
         {
-          "destination": "Planning / Revision",
-          "packet": "T17",
-          "routeId": "ROUTE-039",
-          "sourcePage": "src/app/(app)/projects/[id]/planning/revision/[versionId]/page.tsx",
+          "destination": "BOQ, VO & IPC / IPC detail, view only",
+          "packet": "T16",
+          "routeId": "ROUTE-030",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/page.tsx",
           "status": "Unverified"
         }
       ],
-      "declaredSourceFilesNotLinkedFromMappedRoutes": [
-        "src/server/routers/boq-version.ts"
-      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
       "description": "Snapshot contractual BoQ versions (As-Awarded, Revision 1, Variation Order) and compare delta.",
       "domain": "Contractual BoQ & Rate Analysis",
       "m13Packet": "T10",
@@ -1101,16 +1099,15 @@
       },
       "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
       "serverSourceFiles": [
-        "src/server/routers/boq.ts"
+        "src/server/routers/boq-version.ts"
       ],
       "sourceActionIds": [
-        "ACTION-14D856AEA885",
-        "ACTION-3A0D9CA2B83E",
-        "ACTION-4B97D1189D71",
-        "ACTION-511359DF7F79",
-        "ACTION-5D52935A12A7",
-        "ACTION-8BEAEB63136A",
-        "ACTION-C267A6E68582"
+        "ACTION-82D9D656D1F9",
+        "ACTION-9C71EE2DAB63",
+        "ACTION-ADB690F918F2",
+        "ACTION-B3756FC403AF",
+        "ACTION-C7C69FF879E8",
+        "ACTION-E3177D562A60"
       ],
       "sourceEngineFiles": [
         {
@@ -1119,16 +1116,14 @@
         }
       ],
       "sourceOperations": [
-        "boq.actionAccess [Query]",
-        "boq.compare [Query]",
-        "boq.create [Mutation]",
-        "boq.delete [Mutation]",
-        "boq.duplicate [Mutation]",
-        "boq.list [Query]",
-        "boq.update [Mutation]"
+        "boqVersion.approve [Mutation]",
+        "boqVersion.create [Mutation]",
+        "boqVersion.diff [Query]",
+        "boqVersion.get [Query]",
+        "boqVersion.list [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
+      "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -1137,24 +1132,9 @@
         }
       ],
       "triggerActionIdsWithMutationCandidates": [
-        "TRIGGER-0F7D742D81ED",
-        "TRIGGER-1998DB7344D9",
-        "TRIGGER-377CF47BC4E7",
-        "TRIGGER-3D523DC87758",
-        "TRIGGER-4BD0C700B7DE",
-        "TRIGGER-50DE23E8FF1F",
-        "TRIGGER-574B9B0DDE35",
-        "TRIGGER-5E15163DB887",
-        "TRIGGER-64D9713FB90B",
-        "TRIGGER-6AE063CAE705",
-        "TRIGGER-7B439089BC0C",
-        "TRIGGER-81DDE2B1EE4A",
-        "TRIGGER-9E5E48182CD0",
-        "TRIGGER-B9F704535421",
-        "TRIGGER-C6D702DE839B",
-        "TRIGGER-CF2A568A3433",
-        "TRIGGER-EAF23A01937F",
-        "TRIGGER-EB047350E1CD"
+        "TRIGGER-017A47B74357",
+        "TRIGGER-0A168DCF23BB",
+        "TRIGGER-71B0E7A01082"
       ],
       "unreferencedUiComponentsWithRelatedHooks": [],
       "userDirectedDisposition": null,

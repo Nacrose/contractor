@@ -24,7 +24,10 @@ WORKFLOW_ROUTES = {
     "WF-006": ["/projects/[id]/boq"],
     "WF-007": ["/projects/[id]/boq", "/projects/[id]/rate-library"],
     "WF-008": ["/rate-catalogs", "/projects/[id]/rate-library", "/projects/[id]/boq", "/admin/rate-catalogs"],
-    "WF-009": ["/projects/[id]/boq", "/projects/[id]/planning/revision/[versionId]"],
+    # Snapshot controls are rendered by BoqVersionsTab on the Variation Orders
+    # page; the planning revision route is Gantt-owned. IPC detail also reads
+    # a snapshot diff for the selected baseline.
+    "WF-009": ["/projects/[id]/variations", "/projects/[id]/ipc/[ipcId]"],
     "WF-010": ["/projects/[id]/ipc", "/projects/[id]/ipc/[ipcId]", "/projects/[id]/ipc/[ipcId]/worksheets"],
     "WF-011": ["/projects/[id]/ipc", "/projects/[id]/ipc/[ipcId]", "/projects/[id]/ipc/[ipcId]/worksheets"],
     "WF-012": ["/projects/[id]/ipc", "/projects/[id]/ipc/[ipcId]", "/projects/[id]/ipc/[ipcId]/worksheets"],
@@ -87,6 +90,7 @@ USER_DECISIONS = {
     "WF-037": "Excel-compatible round-trip is qualified through the separate GridCraft workbook; preserve original data and fail closed on unproven round-trip fidelity.",
 }
 FIELD_WORKFLOWS = {"WF-001", "WF-002", "WF-003", "WF-004", "WF-005"}
+COMMERCIAL_WORKFLOWS = {"WF-006", "WF-007", "WF-008", "WF-009"}
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
 
@@ -219,13 +223,17 @@ def main():
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
+                "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
+                if workflow_id in COMMERCIAL_WORKFLOWS else
                 "candidate crosswalk only; source action semantics require review"
             ),
             "sourceReviewReference": (
                 "docs/reports/M13/ipc-source-action-reconciliation.md"
                 if workflow_id in USER_DECISIONS else
                 "docs/reports/M13/field-and-sync-source-action-reconciliation.md"
-                if workflow_id in FIELD_WORKFLOWS else None
+                if workflow_id in FIELD_WORKFLOWS else
+                "docs/reports/M13/commercial-source-action-reconciliation.md"
+                if workflow_id in COMMERCIAL_WORKFLOWS else None
             ),
             "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
         })
