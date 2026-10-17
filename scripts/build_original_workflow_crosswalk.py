@@ -114,6 +114,7 @@ EQUIPMENT_REVIEWED_TRIGGERS = {
 }
 VAT_REVIEWED_TRIGGERS = {"TRIGGER-A748EE47C9C7", "TRIGGER-2E2F9FBCDE13"}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
+    "WF-001": {"TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF"},
     **{workflow_id: IPC_REVIEWED_TRIGGERS for workflow_id in ("WF-010", "WF-011", "WF-012")},
     **{workflow_id: EQUIPMENT_REVIEWED_TRIGGERS for workflow_id in ("WF-018", "WF-019", "WF-020")},
     "WF-013": VAT_REVIEWED_TRIGGERS,
@@ -268,6 +269,8 @@ def main():
             "sourceReviewedActionIds": ipc_reviewed_actions,
             "sourceReviewedTriggerIds": reviewed_trigger_ids,
             "sourceReviewState": (
+                "daily-report local draft and outbox send triggers reviewed; other form, attachment, office lifecycle and runtime paths remain unverified"
+                if workflow_id == "WF-001" else
                 "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified"
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"

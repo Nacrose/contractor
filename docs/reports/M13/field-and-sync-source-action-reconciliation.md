@@ -20,7 +20,18 @@ The exact durable query whitelist in `src/lib/field-query-persist.ts` is `projec
 
 - Mobile outbox operation IDs: WF-001 uses `ACTION-OUTBOX-983FB40FCD` (`fieldSubmission.create`) and `ACTION-OUTBOX-413198CCB7` (`workflow.dailyReport.createFieldReport`); WF-002 uses `ACTION-OUTBOX-9872C1AE1B` (`fieldPhotos.create`) and `ACTION-OUTBOX-983FB40FCD`; WF-003 and WF-004 use `ACTION-OUTBOX-983FB40FCD`; WF-005 covers all five endpoint IDs listed in its crosswalk row.
 - M00 engine sources that the crosswalk surfaced but the route scan does not directly reach include `src/lib/field-entry-builders.ts` for WF-001, `src/lib/field-photo.ts` for WF-002, and `src/lib/field-query-persist.ts` for WF-005. These are retained for T01 review rather than treated as missing or unused.
-- The original crosswalk has 41 workflows and stable route/action IDs. WF-001–005 service and queue links are source-reviewed here; all individual UI trigger call paths remain candidates until manually traced. The indexed endpoints and guards do not prove deployed API compatibility.
+- The original crosswalk has 41 workflows and stable route/action IDs. WF-001–005 service and queue links are source-reviewed here; the two mobile draft/send controls below are traced, while the remaining individual UI trigger call paths stay candidates until manually reviewed. The indexed endpoints and guards do not prove deployed API compatibility.
+
+## Daily report capture trigger review
+
+The two mobile capture controls below were followed from `ROUTE-083` into `src/lib/field-drafts.ts` and the field outbox implementation. This reviews the draft/send boundary, not every daily-report field, photo action or office review control.
+
+| Trigger ID | Source behavior | Contractor acceptance consequence |
+|---|---|---|
+| `TRIGGER-7BDEED88E412` | “Save draft” calls `saveFieldDraft` with the form payload and optional existing draft ID. It stores a local `daily_report` draft, reports save failure, then clears the rapid-entry form only after the local save succeeds. It does not mean the office server has received a report. | Preserve local draft recovery across restart and keep local-save status distinct from server acceptance. A failed local write must leave the user's form recoverable. |
+| `TRIGGER-67DA9E9618FF` | “Save & send now” on an existing draft calls `sendFieldDraft`. That validates required fields, builds the `workflow.dailyReport.createFieldReport` outbox command (with `clientUuid` assigned by the outbox), deletes the draft after enqueue, requests an immediate single-flight flush and reports `landed` only if the outbox item is observed as synced. Offline or unreachable service yields “saved on this phone,” not “sent.” | Keep enqueue, transport acknowledgment and office review as distinct states. Strengthen the source's best-effort IndexedDB persistence for Contractor and preserve the queued command if a definitive rejection or process interruption occurs. |
+
+These exact trigger IDs are now marked source-reviewed in the workflow crosswalk. The report's broader WF-001–005 service and outbox review remains valid; the other mobile form controls, photos, and office lifecycle actions remain unreviewed candidates.
 
 ## Contractor implementation implications
 

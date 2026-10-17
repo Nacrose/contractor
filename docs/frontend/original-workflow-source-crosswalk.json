@@ -615,9 +615,12 @@
         "workflow.dailyReport.uploadAttachment [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
-      "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
+      "sourceReviewState": "daily-report local draft and outbox send triggers reviewed; other form, attachment, office lifecycle and runtime paths remain unverified",
       "sourceReviewedActionIds": [],
-      "sourceReviewedTriggerIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-67DA9E9618FF",
+        "TRIGGER-7BDEED88E412"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/field-submission.test.ts",
