@@ -165,6 +165,7 @@ ORPHAN_UI_WORKFLOW_OVERRIDES = {
     "src/components/inventory/transfer-acknowledgement-dialog.tsx": {"WF-017"},
     "src/components/inventory/reconciliation-report.tsx": {"WF-016"},
     "src/app/(app)/finance/components/org-inventory-tab.tsx": {"WF-016"},
+    "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx": {"WF-015"},
 }
 
 
@@ -339,6 +340,8 @@ def main():
                 if workflow_id in FIELD_WORKFLOWS else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
+                "purchase-order service boundaries reviewed; vendor bill and payment controls are in an unreferenced materials component"
+                if workflow_id == "WF-015" else
                 "inventory route/source transactions reviewed; store management, organization inventory and physical-count reconciliation screens are unreferenced from mapped routes"
                 if workflow_id == "WF-016" else
                 "transfer dialog fields, mode, submit, dismiss and success callbacks reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes"
