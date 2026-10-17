@@ -31,3 +31,15 @@ No BOQ, rate-analysis, profile or catalog operation appears in the field outbox 
 T10–T12 need to preserve the distinction between contract quantities/rates, engineering analysis, scoped material/rate catalogs, and immutable BOQ snapshots. Verify project isolation, lock behavior, snapshot versions, concurrent changes, stale rate-profile preview rejection and exact financial calculations against the compatible backend. The user’s IPC direction remains separate: the Contractor BOQ module can own its authorized BOQ actions, while IPC calculation sheets stay in GridCraft and Contractor consumes only the validated Summary of Payment.
 
 This review covers the core service and permission contracts only. It does not verify every BOQ/rate/catalog button, import/export validation, error/cancel path or full browser journey, and it does not close M13-T01.
+
+## BOQ snapshot lifecycle trigger review
+
+The snapshot tab mounted in `ROUTE-048` was followed through the imported `BoqVersionsTab` and `src/server/routers/boq-version.ts`. This is a focused review of the baseline lifecycle, not the full BOQ hierarchy or rate-catalog control inventory.
+
+| Trigger ID | Source behavior | Contractor acceptance consequence |
+|---|---|---|
+| `TRIGGER-F14D6523985F`, `TRIGGER-71B0E7A01082` | An editor opens “Create Snapshot” and creates a draft snapshot of the current BOQ. The server requires `project.boq.edit`, rejects an empty BOQ, snapshots current rows and retries serializable/version-number conflicts. | Preserve the explicit snapshot boundary and ensure no partial snapshot appears when version allocation conflicts. |
+| `TRIGGER-36F13A858CDC`, `TRIGGER-017A47B74357` | A draft version opens a confirmation; confirmation calls `boqVersion.approve`. The source server requires `project.boq.lock`, applies a compare-and-swap transition and locks the project BOQ in the same transaction. | Model the lock grant separately from general BOQ edit capability. The legacy tab's `canWrite` UI gate is based on edit access, so the server remains the effective authority when the distinct lock grant is absent. |
+| `TRIGGER-138F80DC4953`, `TRIGGER-6D216F1E99C9` | Selects a saved version and optionally chooses a comparison version/current BOQ for the displayed diff. These are reads; they do not mutate either snapshot. | Keep selected baseline identity and comparison target explicit; viewing a diff must never change the approved baseline. |
+
+These trigger IDs are marked source-reviewed for WF-009 in the generated crosswalk. Inline BOQ edits, imports/exports, rate-analysis controls and full variation-order effects remain unreviewed candidates.
