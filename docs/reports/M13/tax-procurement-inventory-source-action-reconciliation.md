@@ -30,3 +30,14 @@ No operation in these workflows is in the field offline outbox or exact durable-
 T19–T20 must preserve the quote comparison, approval/rejection, partial ordering and receipt trail. Keep purchase orders, committed cost, received stock, bills and VAT records tied together; a requisition is not a PO, a gate entry is not a receipt, and a receipt is not a paid/approved invoice. Inventory transfers must prove both project grants and organization scope and preserve both ledgers. Tax totals must reconcile to their source rows and journal entries under locked fiscal-period and delegated-amount rules.
 
 This document reviews server contracts, not every source trigger or complete register lifecycle. Product UI review, sample-ledger reconciliation, end-to-end transaction tests and deployed-backend compatibility remain open under T01/T04.
+
+## Direct VAT bill entry trigger review
+
+Two high-impact controls on `ROUTE-046` were followed from the UI into the pinned server procedures. The rest of the register, filters, imports and report controls remain inventory candidates.
+
+| Trigger ID | Source behavior | Target acceptance consequence |
+|---|---|---|
+| `TRIGGER-A748EE47C9C7` | The standalone VAT bill form validates bill number, party name and a positive taxable or exempt amount, then calls `vatRegister.createDirectVatBill`. The form supports purchase, sales, capital goods, import and expense categories, AD/BS dates, optional PAN and scan attachment. The service enforces VAT/accounting write access, fiscal-period lock, delegation, PAN validation, duplicate protection and transactional ledger/audit writes. | Keep this as an explicit online financial write with validation and server authority. Its totals must remain reconciled with the relevant register and journal entry; a local save must not be presented as posted. |
+| `TRIGGER-2E2F9FBCDE13` | The missing-scan flow submits a file attachment to `vatRegister.attachScannedBill`; the procedure checks access for the selected target type and updates the matching project-scoped record inside a tenant transaction. | Preserve target-specific scope checks and persisted read-back. Attachment success must not imply bill creation or approval. |
+
+Both trigger IDs exist in the canonical trigger index and point to the source dialog/component and protected procedure recorded above. Neither operation is listed in the offline outbox; treat them as online-only financial actions.
