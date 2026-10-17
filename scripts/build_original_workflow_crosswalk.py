@@ -104,6 +104,11 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "requisition.approvePr [Mutation]", "requisition.rejectPr [Mutation]",
         "requisition.generatePOs [Mutation]",
     },
+    "WF-015": {
+        "vendorBill.list [Query]", "vendorBill.checkDuplicate [Query]",
+        "vendorBill.getThreeWayMatchData [Query]", "vendorBill.create [Mutation]",
+        "vendorBill.recordPayment [Mutation]", "purchaseOrder.openBillablePOs [Query]",
+    },
     "WF-024": {
         "projectCost.list [Query]", "projectCost.stats [Query]",
         "projectCost.create [Mutation]", "projectCost.delete [Mutation]",
@@ -469,6 +474,18 @@ ORPHAN_UI_WORKFLOW_OVERRIDES = {
     "src/components/people-access/access-review-report.tsx": {"WF-040"},
     "src/components/dashboard/cross-project-financials-card.tsx": {"WF-024", "WF-041"},
 }
+ORPHAN_UI_REVIEWED_TRIGGER_IDS_BY_SOURCE = {
+    "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx": {
+        "TRIGGER-A81EE16258F6", "TRIGGER-A15FA3A71BEB", "TRIGGER-546F4B0AB9C7",
+        "TRIGGER-0237AA6EE309", "TRIGGER-3569226276AD", "TRIGGER-8F7DC3423654",
+        "TRIGGER-3D7585B28622", "TRIGGER-B8A4CD1C96A4", "TRIGGER-71B79C56DC62",
+        "TRIGGER-62D66D840D62", "TRIGGER-1EED725945D2", "TRIGGER-47E82B480472",
+        "TRIGGER-B82BED1D1F26", "TRIGGER-ED1319C84A3D", "TRIGGER-F96250CC996C",
+        "TRIGGER-42B877B08E0E", "TRIGGER-8E31F1FDF6E8", "TRIGGER-BD4413D71D5C",
+        "TRIGGER-C03324C49911", "TRIGGER-556A25E0EF3A", "TRIGGER-48AB251A2D65",
+        "TRIGGER-31EF2E6C4C28", "TRIGGER-26F3BF60998F", "TRIGGER-DC0892653E16",
+    },
+}
 
 
 def main():
@@ -494,11 +511,25 @@ def main():
             orphan_triggers_by_source.setdefault(trigger["sourceFile"], []).append(trigger)
     unreferenced_ui = []
     for component in index.get("unreferencedUiComponentsWithHooks", []):
+        candidates = sorted(
+            orphan_triggers_by_source.get(component["sourceFile"], []),
+            key=lambda item: item["actionId"],
+        )
+        reviewed_ids = ORPHAN_UI_REVIEWED_TRIGGER_IDS_BY_SOURCE.get(component["sourceFile"], set())
+        candidate_ids = {item["actionId"] for item in candidates}
+        if not reviewed_ids <= candidate_ids:
+            raise SystemExit(
+                f"reviewed orphan trigger IDs not found for {component['sourceFile']}: "
+                + ", ".join(sorted(reviewed_ids - candidate_ids))
+            )
         unreferenced_ui.append({
             **component,
-            "triggerCandidates": sorted(
-                orphan_triggers_by_source.get(component["sourceFile"], []),
-                key=lambda item: item["actionId"],
+            "triggerCandidates": candidates,
+            "sourceReviewedTriggerIds": sorted(reviewed_ids),
+            "sourceReviewState": (
+                "form and payment handlers traced; component is unreferenced from mapped routes and runtime availability is unverified"
+                if reviewed_ids else
+                "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified"
             ),
         })
     coverage = COVERAGE.read_text()

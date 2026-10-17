@@ -9791,6 +9791,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-AD783D35198D",
           "sourceFile": "src/components/inventory/procurement-lookahead-widget.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-38325645714B",
             "TRIGGER-B2D7BBDDF7E8"
@@ -10482,7 +10484,13 @@
         "purchaseOrder.create [Mutation]",
         "purchaseOrder.delete [Mutation]",
         "purchaseOrder.get [Query]",
-        "purchaseOrder.list [Query]"
+        "purchaseOrder.list [Query]",
+        "purchaseOrder.openBillablePOs [Query]",
+        "vendorBill.checkDuplicate [Query]",
+        "vendorBill.create [Mutation]",
+        "vendorBill.getThreeWayMatchData [Query]",
+        "vendorBill.list [Query]",
+        "vendorBill.recordPayment [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
       "sourceReviewState": "purchase-order service boundaries reviewed; vendor bill and payment controls are in an unreferenced materials component",
@@ -10515,6 +10523,33 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-E377890E42E5",
           "sourceFile": "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx",
+          "sourceReviewState": "form and payment handlers traced; component is unreferenced from mapped routes and runtime availability is unverified",
+          "sourceReviewedTriggerIds": [
+            "TRIGGER-0237AA6EE309",
+            "TRIGGER-1EED725945D2",
+            "TRIGGER-26F3BF60998F",
+            "TRIGGER-31EF2E6C4C28",
+            "TRIGGER-3569226276AD",
+            "TRIGGER-3D7585B28622",
+            "TRIGGER-42B877B08E0E",
+            "TRIGGER-47E82B480472",
+            "TRIGGER-48AB251A2D65",
+            "TRIGGER-546F4B0AB9C7",
+            "TRIGGER-556A25E0EF3A",
+            "TRIGGER-62D66D840D62",
+            "TRIGGER-71B79C56DC62",
+            "TRIGGER-8E31F1FDF6E8",
+            "TRIGGER-8F7DC3423654",
+            "TRIGGER-A15FA3A71BEB",
+            "TRIGGER-A81EE16258F6",
+            "TRIGGER-B82BED1D1F26",
+            "TRIGGER-B8A4CD1C96A4",
+            "TRIGGER-BD4413D71D5C",
+            "TRIGGER-C03324C49911",
+            "TRIGGER-DC0892653E16",
+            "TRIGGER-ED1319C84A3D",
+            "TRIGGER-F96250CC996C"
+          ],
           "triggerCandidateIds": [
             "TRIGGER-0237AA6EE309",
             "TRIGGER-1EED725945D2",
@@ -12202,6 +12237,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-FF08F34467B3",
           "sourceFile": "src/app/(app)/finance/components/org-inventory-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-39EC3BDB5C10",
             "TRIGGER-54EB3B5BAB5D",
@@ -12361,6 +12398,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-E2CAF293F21D",
           "sourceFile": "src/app/(app)/projects/[id]/materials/components/materials-transactions-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-5F34F978D5EF",
             "TRIGGER-6A4D84A666AD",
@@ -12481,6 +12520,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-2FC127E1E084",
           "sourceFile": "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-13B0011656FE",
             "TRIGGER-26A9B4F25A12",
@@ -12991,6 +13032,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-166C06B7348E",
           "sourceFile": "src/components/inventory/reconciliation-report.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-10615A6EB4CF",
             "TRIGGER-11E583D65F38",
@@ -14602,6 +14645,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-40B80F6EBDD0",
           "sourceFile": "src/app/(app)/projects/[id]/materials/components/inter-site-transfers-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-051960A9D3B1",
             "TRIGGER-149CDEB4C4BE",
@@ -15009,6 +15054,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-3E52DDAC8DCC",
           "sourceFile": "src/components/inventory/transfer-acknowledgement-dialog.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-0161BB60C13A",
             "TRIGGER-2410577B430D",
@@ -17804,6 +17851,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-29BDE9333625",
           "sourceFile": "src/components/organization-employment-manager.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-1029EDA02E28",
             "TRIGGER-1668DD985809",
@@ -18657,6 +18706,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-0CA228A4E886",
           "sourceFile": "src/app/(app)/projects/[id]/hr/components/daily-attendance-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-17A20BE9E14A",
             "TRIGGER-21C857C23736",
@@ -19012,6 +19063,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-F790D03C6E46",
           "sourceFile": "src/app/(app)/projects/[id]/hr/components/leaves-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-05F3DABD7362",
             "TRIGGER-0776DF1C1520",
@@ -19360,6 +19413,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-F214AF617E15",
           "sourceFile": "src/app/(app)/projects/[id]/hr/components/muster-roll-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-3F148C0533B5",
             "TRIGGER-DE63899AAB82"
@@ -19924,6 +19979,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-350BC1677B6E",
           "sourceFile": "src/app/(app)/projects/[id]/hr/components/advances-ledger-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-150819378510",
             "TRIGGER-1BAFD82A6694",
@@ -20328,6 +20385,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-584D8390D708",
           "sourceFile": "src/app/(app)/projects/[id]/hr/components/payroll-management-tab.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-1836DEDBEEAD",
             "TRIGGER-2016710DBBDB",
@@ -20667,6 +20726,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-7CF52B5B01AB",
           "sourceFile": "src/app/(app)/projects/[id]/hr/dialogs/payroll-allocation-dialog.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-49CB9E040E93",
             "TRIGGER-5A560BF9AB34",
@@ -22923,6 +22984,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-CBDEBE70CE32",
           "sourceFile": "src/components/dashboard/cross-project-financials-card.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [],
           "triggerCandidates": []
         }
@@ -31773,6 +31836,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-AD783D35198D",
           "sourceFile": "src/components/inventory/procurement-lookahead-widget.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-38325645714B",
             "TRIGGER-B2D7BBDDF7E8"
@@ -38776,6 +38841,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-78174C2BCF67",
           "sourceFile": "src/components/people-access/access-review-report.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [
             "TRIGGER-00C3866F3F64",
             "TRIGGER-5CEF9DF31C42",
@@ -39199,6 +39266,8 @@
           "reviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
           "scopeId": "ORPHAN-UI-CBDEBE70CE32",
           "sourceFile": "src/components/dashboard/cross-project-financials-card.tsx",
+          "sourceReviewState": "source component is not reachable from indexed routes or shared layouts; runtime availability is unverified",
+          "sourceReviewedTriggerIds": [],
           "triggerCandidateIds": [],
           "triggerCandidates": []
         }
