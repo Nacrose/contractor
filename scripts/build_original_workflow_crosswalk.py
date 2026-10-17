@@ -99,6 +99,8 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "accounting.reverseLedgerEntry [Mutation]",
         "accounting.attachLedgerFile [Mutation]",
         "accounting.logJournalEntry [Mutation]",
+        "projectOps.payment.create [Mutation]", "paymentCategory.create [Mutation]",
+        "finance.createHeadOfficeExpense [Mutation]",
         "finance.orgBankAccounts [Query]", "finance.createBankAccount [Mutation]",
         "finance.orgPayables [Query]", "finance.orgSettleMultiBill [Mutation]",
     },
@@ -272,6 +274,32 @@ RECORD_INFLOW_REVIEWED_TRIGGERS = {
     "TRIGGER-ACC8FA46AE3F", "TRIGGER-7D8AB0E6F65E", "TRIGGER-42E578B0DED2",
 }
 
+RECORD_PAYMENT_REVIEWED_TRIGGERS = {
+    "TRIGGER-FE8112792D02", "TRIGGER-CC6B8D5D3489", "TRIGGER-09537CD4C142",
+    "TRIGGER-6F7C664502F7", "TRIGGER-66F169BCB766", "TRIGGER-BE34DB60FF88",
+    "TRIGGER-26B3D1EBB73D", "TRIGGER-9B590978FE4B", "TRIGGER-1F478CB594E9",
+    "TRIGGER-E758D719E34D", "TRIGGER-231EACB0A391", "TRIGGER-8C77B75D2EE9",
+    "TRIGGER-2BB51B543E55", "TRIGGER-68ECD7CF5665", "TRIGGER-4A45D36F02A7",
+    "TRIGGER-E60D202BD277", "TRIGGER-C9A8381C8818", "TRIGGER-C5DE5489AE71",
+    "TRIGGER-C8B0FD9A603F", "TRIGGER-707A967201DF", "TRIGGER-42D30C91B318",
+    "TRIGGER-68F334F38CEB", "TRIGGER-D86957FFE569", "TRIGGER-0B71CBCFD4E1",
+    "TRIGGER-58903390BEB0", "TRIGGER-EF823D945D1C", "TRIGGER-E1609789B27F",
+    "TRIGGER-CB5ED3574982", "TRIGGER-825F90297CFD", "TRIGGER-520E6EAF49A9",
+    "TRIGGER-B1028DF9EEB8", "TRIGGER-A80F971F8750", "TRIGGER-C3AC79524130",
+    "TRIGGER-E429AB5B168B", "TRIGGER-21852CAEE2BA", "TRIGGER-15625F2CCB45",
+    "TRIGGER-1A4CA9D7E195", "TRIGGER-CFC43118C47F", "TRIGGER-236FDD34F0CD",
+    "TRIGGER-35A16FBB9F84", "TRIGGER-3195199409FD", "TRIGGER-223B8C18C1D3",
+    "TRIGGER-48F006BF7DD0", "TRIGGER-37ADE6A781E7", "TRIGGER-4F0C97E64903",
+    "TRIGGER-8CE49578AC01", "TRIGGER-A153C5346C72", "TRIGGER-AEB46A1BE45A",
+    "TRIGGER-E2ADC476912D", "TRIGGER-26BFC32EA8E9", "TRIGGER-A50DC4F6AB06",
+    "TRIGGER-C98CAB68E394", "TRIGGER-1DCD7D8493DE", "TRIGGER-1341B90C9A31",
+    "TRIGGER-3D28CD64194D", "TRIGGER-CD805AC4B7FB", "TRIGGER-512AF283B39D",
+    "TRIGGER-E6F2663FD827", "TRIGGER-CACC14F13D26", "TRIGGER-A636BC197B7C",
+    "TRIGGER-35821C273156", "TRIGGER-B96C6B897EAF", "TRIGGER-A1FAF3B33AC9",
+    "TRIGGER-A1FC3C8FDBB0", "TRIGGER-F77A36CA2050", "TRIGGER-7F3F55F8CD92",
+    "TRIGGER-400D621EB264", "TRIGGER-1A19ED0DCBE3",
+}
+
 JV_COMMISSION_REVIEWED_TRIGGERS = {
     "TRIGGER-BFCFADAB69CD", "TRIGGER-289542342604", "TRIGGER-EA51929781AD",
     "TRIGGER-3605DE9E144F", "TRIGGER-F02AC2B65445", "TRIGGER-B47004B64081",
@@ -332,7 +360,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     },
     "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS | MY_ACCESS_REVIEWED_TRIGGERS,
     "WF-041": DASHBOARD_REVIEWED_TRIGGERS,
-    "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS | FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS | ORG_BANK_ACCOUNT_REVIEWED_TRIGGERS | ORG_PAYABLES_REVIEWED_TRIGGERS | RECORD_INFLOW_REVIEWED_TRIGGERS,
+    "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS | FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS | ORG_BANK_ACCOUNT_REVIEWED_TRIGGERS | ORG_PAYABLES_REVIEWED_TRIGGERS | RECORD_INFLOW_REVIEWED_TRIGGERS | RECORD_PAYMENT_REVIEWED_TRIGGERS,
     "WF-025": GUARANTEE_FINANCE_REVIEWED_TRIGGERS,
     "WF-038": JV_COMMISSION_REVIEWED_TRIGGERS,
 }
@@ -542,7 +570,7 @@ def main():
                 if workflow_id == "WF-017" else
                 "handover manager, selected My Tasks controls and My Access delegation-visibility path traced to source handlers and server guards; remaining route/shared controls and runtime are unverified"
                 if workflow_id == "WF-040" else
-                "Finance route navigation, bank accounts/payables, project-cost widgets, Day Book and Money In controls traced through source handlers and ledger guards; other finance controls, nested dialog actions and runtime remain unverified"
+                "Finance route navigation, bank accounts/payables, project-cost widgets, Day Book, Money In and Money Out controls traced through source handlers and ledger guards; other finance controls, nested dialog actions and runtime remain unverified"
                 if workflow_id == "WF-024" else
                 "organization guarantee register, create/edit form, extension dialog, view handoff, conversion, project link/unlink, release and deletion controls traced to source operations; remaining finance controls and runtime remain unverified"
                 if workflow_id == "WF-025" else
