@@ -71,3 +71,16 @@ The BOQ item create, inline quantity/rate edit, delete and duplicate paths were 
 The review found a source-level concurrency gap to carry into T10 qualification: `boq.create` checks the project lock before its transaction but does not recheck it inside; `boq.delete` and `boq.duplicate` also recheck permission in their transactions but do not recheck the lock/item state there. A lock or item-state change racing those requests may pass the preflight check. `boq.update` does recheck under its row lock. Contractor must enforce the approved-baseline invariant atomically across create, edit, delete, duplicate and lock transitions, and test the race explicitly.
 
 These trigger IDs are now marked source-reviewed for WF-006. The observed lock gap remains an unresolved source compatibility finding, not proof that every runtime exhibits the race; the source procedures and transaction shapes should be confirmed against the deployed revision before translating it into a repair.
+
+## Government rate-analysis trigger review
+
+The rate-analysis inspector in `ROUTE-012` is a separate engineering-cost editor from the contractual BOQ rate fields. The reviewed controls below use `rateAnalysis.*` procedures and the shared `withBoqWriteTx` guard, which rechecks BOQ/item locks inside the tenant transaction.
+
+| Trigger ID | Source behavior | Contractor acceptance consequence |
+|---|---|---|
+| `TRIGGER-25326B7B97B1`, `TRIGGER-BEC1AD0CD5BD` | Adds fixed material/labor/equipment ingredients or a percentage provision. Fixed rows carry quantity, unit and rate; provisions carry an explicit percent base such as direct cost, material, labor, equipment or material+labor. | Preserve exact input dimensions and percentage base; don't flatten a provision into an ordinary fixed rate. |
+| `TRIGGER-B979DC32E0C9`, `TRIGGER-B3AC961395C5` | Edits or deletes an ingredient row; the service recalculates the containing analysis (or default item rate when it is not in an analysis) using the stored item/analysis relationship. | Recompute from persisted relationships and reject stale or cross-item ingredient IDs; preserve recalculated values after restart. |
+| `TRIGGER-A2B025FE25FC` | A batch-size change calls `rateAnalysis.update`, which recalculates the analysis in the same write transaction. | Treat batch size as a unit-rate divisor/input and verify the resulting unit cost against calculation fixtures. |
+| `TRIGGER-C7DD504DC818` | Copies ingredient breakdown from the client-estimate analysis; `rateAnalysis.copyIngredients` verifies source and target analyses belong to the same BOQ item, checks BOQ locks under transaction, replaces the target rows and recalculates it. | Keep source/target scope checks, replacement semantics, ingredient provenance and recalculation atomic. |
+
+These trigger IDs are marked source-reviewed for WF-007. The service operations require `project.boq.edit` and are online-only. Norm import, presets, catalogs, rate-profile application and full ingredient validation still need their own control-level review.

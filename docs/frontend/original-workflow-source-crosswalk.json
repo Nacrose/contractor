@@ -3013,7 +3013,14 @@
       "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
       "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
-      "sourceReviewedTriggerIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-25326B7B97B1",
+        "TRIGGER-A2B025FE25FC",
+        "TRIGGER-B3AC961395C5",
+        "TRIGGER-B979DC32E0C9",
+        "TRIGGER-BEC1AD0CD5BD",
+        "TRIGGER-C7DD504DC818"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/rate-analysis.test.ts",
