@@ -40867,7 +40867,7 @@
       "interactiveTriggerCandidateCount": 10,
       "originalRoute": "/m/tasks",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
-      "plannedTask": "T18",
+      "plannedTask": "T26",
       "reachableDialogComponents": [],
       "reachableProcedureCandidates": [
         {
@@ -40876,7 +40876,7 @@
           "hook": "accounting.ledgerAccounts [Query]",
           "offlinePolicy": "not-durably-persisted-offline",
           "ownerReviewState": "proposed coverage-packet owner; requires action-level assignment",
-          "ownerTask": "T18",
+          "ownerTask": "T26",
           "serverSource": {
             "declaredProcedureWrapper": "protectedProcedure",
             "handlerKind": "query",
@@ -40902,7 +40902,7 @@
           "hook": "material.listByType [Query]",
           "offlinePolicy": "not-durably-persisted-offline",
           "ownerReviewState": "proposed coverage-packet owner; requires action-level assignment",
-          "ownerTask": "T18",
+          "ownerTask": "T26",
           "serverSource": {
             "declaredProcedureWrapper": "protectedProcedure",
             "handlerKind": "query",
@@ -40926,7 +40926,7 @@
           "hook": "partner.listSuppliers [Query]",
           "offlinePolicy": "not-durably-persisted-offline",
           "ownerReviewState": "proposed coverage-packet owner; requires action-level assignment",
-          "ownerTask": "T18",
+          "ownerTask": "T26",
           "serverSource": {
             "declaredProcedureWrapper": "protectedProcedure",
             "handlerKind": "query",
@@ -40950,7 +40950,7 @@
           "hook": "project.list [Query]",
           "offlinePolicy": "durable-offline-read-whitelist",
           "ownerReviewState": "proposed coverage-packet owner; requires action-level assignment",
-          "ownerTask": "T18",
+          "ownerTask": "T26",
           "serverSource": {
             "declaredProcedureWrapper": "protectedProcedure",
             "handlerKind": "query",
@@ -40971,7 +40971,7 @@
           "hook": "punchList.list [Query]",
           "offlinePolicy": "durable-offline-read-whitelist",
           "ownerReviewState": "proposed coverage-packet owner; requires action-level assignment",
-          "ownerTask": "T18",
+          "ownerTask": "T26",
           "serverSource": {
             "declaredProcedureWrapper": "protectedProcedure",
             "handlerKind": "query",

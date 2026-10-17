@@ -38,4 +38,6 @@ The `ResponsibilityHandoverManager` imported by `ROUTE-102` was followed from ea
 
 One visible control combines `begin` and the first `applyBatch`; the plan may therefore be persisted even if a later batch fails. The UI preserves the plan ID and reloads pending items for recovery. All reviewed handlers are online-only tRPC operations or local form state; none is a durable offline mutation. Query-backed form availability and effective permission behavior still need target-runtime verification. The update does not close WF-040 or T01.
 
+Route ownership correction: `/m/tasks` is a punch-list register with durable field status updates, not a responsibility-handover screen. It is assigned to M13-T26 and removed from WF-040's route crosswalk; `/m/tasks/new` already belongs to T26. The full source trace is in [quality and safety reconciliation](quality-safety-source-action-reconciliation.md).
+
 Contractor should keep JV payout and IPC payment-summary semantics aligned with the user-approved IPC contract, preserve RFI/submittal cross-record validation, and make handover a recipient-authorized, auditable batch process. Dashboard visibility should be composed from per-metric grants. Do not treat M00's implemented/partial labels as runtime acceptance.

@@ -58,7 +58,7 @@ WORKFLOW_ROUTES = {
     "WF-037": ["/projects/[id]/ipc/[ipcId]/worksheets", "/worksheet-lab", "/projects/[id]/boq"],
     "WF-038": ["/finance", "/projects/[id]/accounting"],
     "WF-039": ["/projects/[id]/rfis", "/projects/[id]/submittals", "/projects/[id]/workflow/rfi"],
-    "WF-040": ["/my-access", "/projects/[id]/workflow/program/my-tasks", "/m/tasks", "/projects/[id]/hr/hierarchy"],
+    "WF-040": ["/my-access", "/projects/[id]/workflow/program/my-tasks", "/projects/[id]/hr/hierarchy"],
     "WF-041": ["/dashboard", "/projects/[id]/dashboard", "/projects/[id]/planning-dashboard"],
 }
 

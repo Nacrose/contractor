@@ -37599,32 +37599,6 @@
           ]
         },
         {
-          "destination": "Workflow / Mobile task list",
-          "packet": "T18",
-          "reachableActionIds": [
-            "ACTION-2CB4D0D7CB2B",
-            "ACTION-90FB750304F0",
-            "ACTION-9ABB4B6FBBF2",
-            "ACTION-AD59032BBE5D",
-            "ACTION-B9D5CFD75646"
-          ],
-          "routeId": "ROUTE-092",
-          "sourcePage": "src/app/m/tasks/page.tsx",
-          "status": "Unverified",
-          "triggerCandidateIds": [
-            "TRIGGER-0A4026F76B06",
-            "TRIGGER-1EC8949DBF6A",
-            "TRIGGER-2862BDA405DA",
-            "TRIGGER-3ED791A1CB73",
-            "TRIGGER-441511855595",
-            "TRIGGER-61C501A7D070",
-            "TRIGGER-7B541D8E9756",
-            "TRIGGER-9EF5CBEE8F25",
-            "TRIGGER-A53603262118",
-            "TRIGGER-DC4B644BCDF3"
-          ]
-        },
-        {
           "destination": "HR / Workforce hierarchy",
           "packet": "T08",
           "reachableActionIds": [
@@ -37811,7 +37785,6 @@
       "m13Packet": "T08/T18",
       "name": "Responsibility Handover & Delegation Rules",
       "offlinePolicies": [
-        "durable-offline-read-whitelist",
         "not-durably-persisted-offline",
         "online-only-hook; durable field outbox actions are inventoried separately"
       ],
@@ -37840,7 +37813,6 @@
         "ACTION-7B00CFA5816A",
         "ACTION-820835A9F34B",
         "ACTION-8E36305123A3",
-        "ACTION-90FB750304F0",
         "ACTION-A5BD76379E5A",
         "ACTION-B1F0F362CF05",
         "ACTION-E5EA31B07F3A",
@@ -37860,7 +37832,6 @@
         "project.get [Query]",
         "project.getModules [Query]",
         "project.getOrgProfile [Query]",
-        "project.list [Query]",
         "project.myOrgAccess [Query]",
         "responsibilityHandover.applyBatch [Mutation]",
         "responsibilityHandover.begin [Mutation]",
