@@ -9748,7 +9748,22 @@
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
       "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
-      "sourceReviewedTriggerIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-068A50CFD856",
+        "TRIGGER-3F8EFCD0A66B",
+        "TRIGGER-5056FDF32C83",
+        "TRIGGER-54CCF2A06430",
+        "TRIGGER-6943A49DC2A7",
+        "TRIGGER-70C5DD70614F",
+        "TRIGGER-7C321F3CCA37",
+        "TRIGGER-9F7149E3165D",
+        "TRIGGER-A98DD881BD60",
+        "TRIGGER-AC7BA879E9C3",
+        "TRIGGER-D83D41F3FC2B",
+        "TRIGGER-E1DF0B61E3E7",
+        "TRIGGER-E8DEFC28A0E2",
+        "TRIGGER-EAC25DD75AA4"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/requisition.test.ts",

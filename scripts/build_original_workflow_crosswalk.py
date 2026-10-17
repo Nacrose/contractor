@@ -98,6 +98,12 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "vatRegister.createDirectVatBill [Mutation]",
         "vatRegister.attachScannedBill [Mutation]",
     },
+    "WF-014": {
+        "requisition.create [Mutation]", "requisition.checkBudgetVariance [Query]",
+        "requisition.getDetails [Query]", "requisition.getBudgetVariance [Query]",
+        "requisition.approvePr [Mutation]", "requisition.rejectPr [Mutation]",
+        "requisition.generatePOs [Mutation]",
+    },
     "WF-024": {
         "projectCost.list [Query]", "projectCost.stats [Query]",
         "projectCost.create [Mutation]", "projectCost.delete [Mutation]",
@@ -416,6 +422,13 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     **{workflow_id: IPC_REVIEWED_TRIGGERS for workflow_id in ("WF-010", "WF-011", "WF-012")},
     **{workflow_id: EQUIPMENT_REVIEWED_TRIGGERS for workflow_id in ("WF-018", "WF-019", "WF-020")},
     "WF-013": VAT_REVIEWED_TRIGGERS,
+    "WF-014": {
+        "TRIGGER-E1DF0B61E3E7", "TRIGGER-70C5DD70614F", "TRIGGER-54CCF2A06430",
+        "TRIGGER-D83D41F3FC2B", "TRIGGER-3F8EFCD0A66B", "TRIGGER-AC7BA879E9C3",
+        "TRIGGER-EAC25DD75AA4", "TRIGGER-6943A49DC2A7", "TRIGGER-5056FDF32C83",
+        "TRIGGER-068A50CFD856", "TRIGGER-A98DD881BD60", "TRIGGER-9F7149E3165D",
+        "TRIGGER-7C321F3CCA37", "TRIGGER-E8DEFC28A0E2",
+    },
     "WF-009": BOQ_VERSION_REVIEWED_TRIGGERS | VARIATION_ORDER_REVIEWED_TRIGGERS,
     "WF-006": BOQ_ITEM_REVIEWED_TRIGGERS,
     "WF-007": RATE_ANALYSIS_REVIEWED_TRIGGERS,
