@@ -94,6 +94,10 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "projectCost.list [Query]", "projectCost.stats [Query]",
         "projectCost.create [Mutation]", "projectCost.delete [Mutation]",
         "projectCost.exportCsv [Query]",
+        "accounting.dayBook [Query]", "accounting.getLedgerSource [Query]",
+        "accounting.updateLedgerEntry [Mutation]",
+        "accounting.reverseLedgerEntry [Mutation]",
+        "accounting.attachLedgerFile [Mutation]",
     },
 }
 
@@ -202,6 +206,25 @@ PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS = {
     "TRIGGER-8CDD23EC64CA", "TRIGGER-D8EBE3D55A61", "TRIGGER-415BF96FCAE8",
     "TRIGGER-7E67AA76E0FE",
 }
+
+DAY_BOOK_REVIEWED_TRIGGERS = {
+    "TRIGGER-FDD9A7132ABB", "TRIGGER-4E259335A0D8", "TRIGGER-27764AC2BD19",
+    "TRIGGER-30E046D189F8", "TRIGGER-A8AAFBE54C67", "TRIGGER-25EC199BF41B",
+    "TRIGGER-29EF5FD7315D", "TRIGGER-85BA4EF32514", "TRIGGER-882D3BA4B1E3",
+    "TRIGGER-B311ADAE730C", "TRIGGER-AAE70D432CF5", "TRIGGER-99F95C9B08B2",
+    "TRIGGER-151C05849E6E", "TRIGGER-9EF906CF98A6", "TRIGGER-45025787647F",
+    "TRIGGER-9349694AE9F2", "TRIGGER-A076BF4389E2", "TRIGGER-FAA7EED3AB36",
+    "TRIGGER-4013CE5AF348", "TRIGGER-8060A397DDFA", "TRIGGER-EFE0B3915B64",
+    "TRIGGER-BEE3CE7CFEEF", "TRIGGER-FBDFF27226D5", "TRIGGER-2D936557691F",
+    "TRIGGER-87A609836ACD", "TRIGGER-E0CDDE290B01", "TRIGGER-C8B98ABFCEB1",
+    "TRIGGER-A90B6399CA26", "TRIGGER-C1BEF844D4DC", "TRIGGER-22F3ABF4046B",
+    "TRIGGER-E14D9F968F1A", "TRIGGER-EFB45BD348AA", "TRIGGER-CB8C57520244",
+    "TRIGGER-2BA300308256", "TRIGGER-D00CDD39E559", "TRIGGER-76B0B8302701",
+    "TRIGGER-4084B3BB38F2", "TRIGGER-DBA4CDD7E631", "TRIGGER-3B1AE7BFE053",
+    "TRIGGER-BEEE0DDB6460", "TRIGGER-66EFA0AD0914", "TRIGGER-E2BFEBF57B80",
+    "TRIGGER-8F45EDBC8BBD", "TRIGGER-F705EF29B314", "TRIGGER-AD6480D48C39",
+    "TRIGGER-D483E781BC65", "TRIGGER-B4CAF7F607F1", "TRIGGER-9A9EC5838F4A",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -225,7 +248,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     },
     "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS | MY_ACCESS_REVIEWED_TRIGGERS,
     "WF-041": DASHBOARD_REVIEWED_TRIGGERS,
-    "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS,
+    "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -433,7 +456,7 @@ def main():
                 if workflow_id == "WF-017" else
                 "handover manager, selected My Tasks controls and My Access delegation-visibility path traced to source handlers and server guards; remaining route/shared controls and runtime are unverified"
                 if workflow_id == "WF-040" else
-                "project-cost widgets on project home and dashboard routes traced through create/delete controls, draft and receipt handling, and accounting guards; other finance controls and runtime remain unverified"
+                "project-cost widgets on project home/dashboard and Day Book controls on finance/project accounting traced through source handlers, ledger guards and selected dialogs; other finance controls, nested dialog actions and runtime remain unverified"
                 if workflow_id == "WF-024" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
