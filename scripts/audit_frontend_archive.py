@@ -16,6 +16,187 @@ ROOT = "Construction-Manager-main/"
 IMPORT = re.compile(r"(?:from\s*|import\s*)[\"']([^\"']+)[\"']")
 HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(useQuery|useMutation)\b")
 DIALOG = re.compile(r"<([A-Z][A-Za-z0-9_]*Dialog)\b")
+JSX_TAG = re.compile(r"<([A-Za-z][A-Za-z0-9_.:-]*)\b")
+JSX_EVENT = re.compile(r"\bon([A-Z][A-Za-z0-9_]*)\s*=")
+
+
+def find_brace_end(text, start):
+    """Return the matching brace while skipping quoted strings and comments."""
+    depth = 0
+    quote = None
+    escaped = False
+    line_comment = False
+    block_comment = False
+    i = start
+    while i < len(text):
+        char = text[i]
+        following = text[i + 1] if i + 1 < len(text) else ""
+        if line_comment:
+            if char == "\n":
+                line_comment = False
+        elif block_comment:
+            if char == "*" and following == "/":
+                block_comment = False
+                i += 1
+        elif quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = None
+        elif char in "'\"`":
+            quote = char
+        elif char == "/" and following == "/":
+            line_comment = True
+            i += 1
+        elif char == "/" and following == "*":
+            block_comment = True
+            i += 1
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return i + 1
+        i += 1
+    return len(text)
+
+
+def is_top_level_jsx_attribute(tag_source, position):
+    """Ignore event-looking text in JSX expressions nested in another prop."""
+    depth = 0
+    quote = None
+    escaped = False
+    for char in tag_source[:position]:
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = None
+        elif char in "'\"`":
+            quote = char
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth = max(0, depth - 1)
+    return depth == 0
+
+
+def interactive_triggers(source, source_name, route_id, owner_task, mutation_bindings):
+    """Index JSX event attributes as candidates; do not infer runtime semantics."""
+    records = []
+    handler_bodies = {}
+    handler_patterns = (
+        re.compile(r"\bfunction\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*(?::[^{}]+)?\{"),
+        re.compile(r"\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>\s*\{"),
+    )
+    for pattern in handler_patterns:
+        for definition in pattern.finditer(source):
+            body_start = definition.end() - 1
+            handler_bodies[definition.group(1)] = source[body_start:find_brace_end(source, body_start)]
+    cursor = 0
+    while True:
+        start_match = JSX_TAG.search(source, cursor)
+        if not start_match:
+            break
+        tag = start_match.group(1)
+        i = start_match.end()
+        brace_depth = 0
+        quote = None
+        escaped = False
+        while i < len(source):
+            char = source[i]
+            if quote:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == quote:
+                    quote = None
+            elif char in "'\"`":
+                quote = char
+            elif char == "{":
+                brace_depth += 1
+            elif char == "}":
+                brace_depth = max(0, brace_depth - 1)
+            elif char == ">" and brace_depth == 0:
+                break
+            i += 1
+        if i >= len(source):
+            break
+        tag_source = source[start_match.start():i + 1]
+        for event_match in JSX_EVENT.finditer(tag_source):
+            if not is_top_level_jsx_attribute(tag_source, event_match.start()):
+                continue
+            value_start = event_match.end()
+            while value_start < len(tag_source) and tag_source[value_start].isspace():
+                value_start += 1
+            if value_start >= len(tag_source):
+                continue
+            if tag_source[value_start] == "{":
+                value_end = find_brace_end(tag_source, value_start)
+            elif tag_source[value_start] in "'\"`":
+                delim = tag_source[value_start]
+                value_end = value_start + 1
+                escaped_value = False
+                while value_end < len(tag_source):
+                    current = tag_source[value_end]
+                    if escaped_value:
+                        escaped_value = False
+                    elif current == "\\":
+                        escaped_value = True
+                    elif current == delim:
+                        value_end += 1
+                        break
+                    value_end += 1
+            else:
+                value_end = value_start
+                while value_end < len(tag_source) and not tag_source[value_end].isspace():
+                    value_end += 1
+            expression = tag_source[value_start:value_end].strip()
+            referenced_names = set(re.findall(r"\b[A-Za-z_$][\w$]*\b", expression))
+            mutation_candidates = {
+                hook for variable, hook in mutation_bindings.items()
+                if re.search(rf"\b{re.escape(variable)}\b", expression)
+            }
+            traced_handler_names = referenced_names & handler_bodies.keys()
+            for handler_name in traced_handler_names:
+                handler_body = handler_bodies[handler_name]
+                mutation_candidates.update(
+                    hook for variable, hook in mutation_bindings.items()
+                    if re.search(rf"\b{re.escape(variable)}\b", handler_body)
+                )
+            mutation_candidates = sorted(mutation_candidates)
+            line = source.count("\n", 0, start_match.start()) + 1
+            column = start_match.start() - source.rfind("\n", 0, start_match.start())
+            normalized = re.sub(r"\s+", " ", expression)
+            action_id = "TRIGGER-" + hashlib.sha256(
+                f"{route_id}|{source_name}|{line}|{column}|{event_match.start()}|{tag}|{event_match.group(1)}|{normalized}".encode()
+            ).hexdigest()[:12].upper()
+            records.append({
+                "actionId": action_id,
+                "ownerTask": owner_task,
+                "ownerReviewState": "proposed coverage-packet owner; trigger semantics require review",
+                "sourceFile": source_name,
+                "line": line,
+                "column": column,
+                "element": tag,
+                "event": "on" + event_match.group(1),
+                "handlerExpression": normalized[:500],
+                "candidateMutationHooks": mutation_candidates,
+                "mutationLinkReviewState": (
+                    "handler source references mutation binding; call path requires review"
+                    if traced_handler_names and mutation_candidates
+                    else "same-expression candidate only; not a proven call path"
+                ),
+            })
+        # Continue at the opening tag name so JSX nested in prop expressions is
+        # scanned separately, with its own top-level event attributes.
+        cursor = start_match.end()
+    return records
 
 
 def resolve_local_import(source_name, import_name, existing):
@@ -36,6 +217,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path, help="source ZIP archive or checked-out repository")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--trigger-output", type=Path, help="JSONL file for route-scoped UI trigger candidates")
     parser.add_argument("--coverage", type=Path, help="coverage markdown used to assign stable route IDs")
     args = parser.parse_args()
     is_archive = args.source.is_file()
@@ -214,6 +396,7 @@ def main():
             "reviewState": "source policy indexed; per-screen call behavior and compatibility require review",
         }
         route_actions = []
+        all_trigger_candidates = []
         route_ids = {}
         route_tasks = {}
         next_route_id = 1
@@ -253,6 +436,7 @@ def main():
                 next_route_id += 1
             pending, visited, hooks, dialogs = [page], set(), set(), set()
             hook_sources = {}
+            trigger_candidates = []
             while pending:
                 current = pending.pop()
                 if current in visited:
@@ -266,6 +450,20 @@ def main():
                     hook = f"{path} [{method.removeprefix('use')}]"
                     hooks.add(hook)
                     hook_sources.setdefault(hook, set()).add(current.removeprefix(ROOT))
+                mutation_bindings = {
+                    variable: f"{path} [Mutation]"
+                    for variable, path in re.findall(
+                        r"\b(?:const|let)\s+(\w+)\s*=\s*trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.useMutation\b",
+                        src,
+                    )
+                }
+                trigger_candidates.extend(interactive_triggers(
+                    src,
+                    current.removeprefix(ROOT),
+                    route_id,
+                    route_tasks.get(route_path, "unassigned"),
+                    mutation_bindings,
+                ))
                 dialogs.update(DIALOG.findall(src))
                 for imported in IMPORT.findall(src):
                     target = resolve_local_import(current, imported, files)
@@ -277,6 +475,11 @@ def main():
             all_hooks.update(hooks)
             total_hooks += len(direct_hooks)
             direct_dialogs += len(direct_dialog_names)
+            all_trigger_candidates.extend({
+                "routeId": route_id,
+                "originalRoute": route_path,
+                **candidate,
+            } for candidate in trigger_candidates)
             mapped_hooks = []
             for hook in sorted(hooks):
                 qualified = hook.rsplit(" [", 1)[0]
@@ -314,8 +517,12 @@ def main():
                 "reachableProcedureCandidates": mapped_hooks,
                 "directDialogComponents": direct_dialog_names,
                 "reachableDialogComponents": sorted(dialogs),
-                "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+                "interactiveTriggerCandidateCount": len(trigger_candidates),
+                "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
             })
+        trigger_output = args.trigger_output or (
+            args.output.with_name("original-interaction-trigger-candidates.jsonl") if args.output else None
+        )
         result = {
             "source": source_metadata,
             "counts": {
@@ -331,12 +538,19 @@ def main():
                 "directProcedureHooks": total_hooks,
                 "uniqueReachableProcedureHooks": len(all_hooks),
                 "directDialogComponentReferences": direct_dialogs,
+                "interactiveTriggerCandidates": len(all_trigger_candidates),
+            },
+            "interactionTriggerInventory": {
+                "format": "JSON Lines; one route-scoped JSX event-handler candidate per line",
+                "file": trigger_output.name if trigger_output else None,
+                "count": len(all_trigger_candidates),
+                "reviewState": "static trigger candidates; event call paths require review",
             },
             "limitations": [
                 "Archive comment is not proof that contents match a Git commit.",
                 "Reachable-source scan follows static relative and @/ TS/TSX imports only.",
                 "Procedure names do not establish effective permission or offline eligibility.",
-                "Button callbacks, runtime navigation, dynamic imports and generated code require review.",
+                "JSX event attributes are trigger candidates; callback call paths, runtime navigation, dynamic imports and generated code require review.",
             ],
             "procedureSources": procedure_sources,
             "offlineModel": offline_model,
@@ -346,6 +560,11 @@ def main():
         if args.output:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(output)
+        if trigger_output:
+            trigger_output.parent.mkdir(parents=True, exist_ok=True)
+            with trigger_output.open("w") as handle:
+                for candidate in all_trigger_candidates:
+                    handle.write(json.dumps(candidate, sort_keys=True, separators=(",", ":")) + "\n")
         print(json.dumps({"source": result["source"], "counts": result["counts"], "output": str(args.output) if args.output else None}, indent=2))
     finally:
         if archive is not None:

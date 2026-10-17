@@ -3,6 +3,7 @@
     "appRouterRegistrations": 60,
     "directDialogComponentReferences": 57,
     "directProcedureHooks": 219,
+    "interactiveTriggerCandidates": 9520,
     "otherPageRoutes": 51,
     "pageRoutes": 110,
     "procedureDefinitionCandidatesIncludingDomainWrappers": 702,
@@ -13,11 +14,17 @@
     "superAdminProceduresOmittedByHistoricalPattern": 22,
     "uniqueReachableProcedureHooks": 495
   },
+  "interactionTriggerInventory": {
+    "count": 9520,
+    "file": "original-interaction-trigger-candidates.jsonl",
+    "format": "JSON Lines; one route-scoped JSX event-handler candidate per line",
+    "reviewState": "static trigger candidates; event call paths require review"
+  },
   "limitations": [
     "Archive comment is not proof that contents match a Git commit.",
     "Reachable-source scan follows static relative and @/ TS/TSX imports only.",
     "Procedure names do not establish effective permission or offline eligibility.",
-    "Button callbacks, runtime navigation, dynamic imports and generated code require review."
+    "JSX event attributes are trigger candidates; callback call paths, runtime navigation, dynamic imports and generated code require review."
   ],
   "offlineModel": {
     "evidenceSourceFiles": [
@@ -10523,6 +10530,7 @@
         "dashboard.allProjectsActivityFeed [Query]",
         "project.accessibleWorkspaces [Query]"
       ],
+      "interactiveTriggerCandidateCount": 16,
       "originalRoute": "/activity",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T06",
@@ -10600,7 +10608,7 @@
         "project.myOrgAccess [Query]"
       ],
       "reachableSourceFileCount": 245,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-001",
       "routeSource": "src/app/(app)/activity/page.tsx"
     },
@@ -10609,6 +10617,7 @@
       "directPageProcedureHooks": [
         "admin.listAuditLogs [Query]"
       ],
+      "interactiveTriggerCandidateCount": 21,
       "originalRoute": "/admin/audit",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -10639,7 +10648,7 @@
         "admin.listAuditLogs [Query]"
       ],
       "reachableSourceFileCount": 239,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-002",
       "routeSource": "src/app/(app)/admin/audit/page.tsx"
     },
@@ -10648,6 +10657,7 @@
       "directPageProcedureHooks": [
         "admin.verifyDbSchema [Query]"
       ],
+      "interactiveTriggerCandidateCount": 8,
       "originalRoute": "/admin/database",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -10678,7 +10688,7 @@
         "admin.verifyDbSchema [Query]"
       ],
       "reachableSourceFileCount": 233,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-004",
       "routeSource": "src/app/(app)/admin/database/page.tsx"
     },
@@ -10691,6 +10701,7 @@
         "admin.holidayList [Query]",
         "admin.holidayUpsert [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 26,
       "originalRoute": "/admin/holidays",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -10769,13 +10780,14 @@
         "admin.holidayUpsert [Mutation]"
       ],
       "reachableSourceFileCount": 242,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-067",
       "routeSource": "src/app/(app)/admin/holidays/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 137,
       "originalRoute": "/admin/material-catalog",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -11114,7 +11126,7 @@
         "uncatalogedMaterial.stats [Query]"
       ],
       "reachableSourceFileCount": 273,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-069",
       "routeSource": "src/app/(app)/admin/material-catalog/page.tsx"
     },
@@ -11129,6 +11141,7 @@
         "admin.suspendOrganization [Mutation]",
         "admin.updateOrganization [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 63,
       "originalRoute": "/admin/organizations",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -11299,7 +11312,7 @@
         "admin.updateOrganization [Mutation]"
       ],
       "reachableSourceFileCount": 262,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-005",
       "routeSource": "src/app/(app)/admin/organizations/page.tsx"
     },
@@ -11308,6 +11321,7 @@
       "directPageProcedureHooks": [
         "admin.stats [Query]"
       ],
+      "interactiveTriggerCandidateCount": 7,
       "originalRoute": "/admin",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -11338,7 +11352,7 @@
         "admin.stats [Query]"
       ],
       "reachableSourceFileCount": 233,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-006",
       "routeSource": "src/app/(app)/admin/page.tsx"
     },
@@ -11347,6 +11361,7 @@
       "directPageProcedureHooks": [
         "uncatalogedMaterial.stats [Query]"
       ],
+      "interactiveTriggerCandidateCount": 95,
       "originalRoute": "/admin/rate-catalogs",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -11708,7 +11723,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 265,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-070",
       "routeSource": "src/app/(app)/admin/rate-catalogs/page.tsx"
     },
@@ -11717,6 +11732,7 @@
       "directPageProcedureHooks": [
         "admin.stats [Query]"
       ],
+      "interactiveTriggerCandidateCount": 7,
       "originalRoute": "/admin/settings",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -11747,7 +11763,7 @@
         "admin.stats [Query]"
       ],
       "reachableSourceFileCount": 233,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-007",
       "routeSource": "src/app/(app)/admin/settings/page.tsx"
     },
@@ -11756,6 +11772,7 @@
       "directPageProcedureHooks": [
         "admin.listOrganizations [Query]"
       ],
+      "interactiveTriggerCandidateCount": 7,
       "originalRoute": "/admin/trials",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -11786,7 +11803,7 @@
         "admin.listOrganizations [Query]"
       ],
       "reachableSourceFileCount": 235,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-008",
       "routeSource": "src/app/(app)/admin/trials/page.tsx"
     },
@@ -11799,6 +11816,7 @@
         "admin.resendUserActivation [Mutation]",
         "admin.updateUser [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 59,
       "originalRoute": "/admin/users",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -11919,7 +11937,7 @@
         "admin.updateUser [Mutation]"
       ],
       "reachableSourceFileCount": 261,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-009",
       "routeSource": "src/app/(app)/admin/users/page.tsx"
     },
@@ -11934,6 +11952,7 @@
         "correspondence.list [Query]",
         "project.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 100,
       "originalRoute": "/correspondence",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -12098,7 +12117,7 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 276,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-071",
       "routeSource": "src/app/(app)/correspondence/page.tsx"
     },
@@ -12108,6 +12127,7 @@
         "accounting.dayBook [Query]",
         "finance.orgBankAccounts [Query]"
       ],
+      "interactiveTriggerCandidateCount": 28,
       "originalRoute": "/dashboard",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T30",
@@ -12239,7 +12259,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 246,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-010",
       "routeSource": "src/app/(app)/dashboard/page.tsx"
     },
@@ -12250,6 +12270,7 @@
       "directPageProcedureHooks": [
         "project.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 322,
       "originalRoute": "/drawings",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -12780,13 +12801,14 @@
         "workflow.rfi.list [Query]"
       ],
       "reachableSourceFileCount": 319,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-072",
       "routeSource": "src/app/(app)/drawings/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 57,
       "originalRoute": "/field-submissions",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -12866,7 +12888,7 @@
         "fieldSubmission.reject [Mutation]"
       ],
       "reachableSourceFileCount": 242,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-073",
       "routeSource": "src/app/(app)/field-submissions/page.tsx"
     },
@@ -12875,6 +12897,7 @@
       "directPageProcedureHooks": [
         "project.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 690,
       "originalRoute": "/finance",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -14261,7 +14284,7 @@
         "workflow.rfi.list [Query]"
       ],
       "reachableSourceFileCount": 361,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-074",
       "routeSource": "src/app/(app)/finance/page.tsx"
     },
@@ -14283,6 +14306,7 @@
         "project.list [Query]",
         "project.myOrgAccess [Query]"
       ],
+      "interactiveTriggerCandidateCount": 284,
       "originalRoute": "/hr-organization",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -15394,13 +15418,14 @@
         "project.resetOrgUserPassword [Mutation]"
       ],
       "reachableSourceFileCount": 279,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-075",
       "routeSource": "src/app/(app)/hr-organization/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 298,
       "originalRoute": "/inventory",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -16137,13 +16162,14 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 321,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-076",
       "routeSource": "src/app/(app)/inventory/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/materials",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -16151,7 +16177,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-094",
       "routeSource": "src/app/(app)/materials/page.tsx"
     },
@@ -16161,6 +16187,7 @@
         "peopleAccess.catalog [Query]",
         "peopleAccess.myAccess [Query]"
       ],
+      "interactiveTriggerCandidateCount": 16,
       "originalRoute": "/my-access",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -16216,7 +16243,7 @@
         "peopleAccess.myAccess [Query]"
       ],
       "reachableSourceFileCount": 239,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-095",
       "routeSource": "src/app/(app)/my-access/page.tsx"
     },
@@ -16234,6 +16261,7 @@
         "globalPreset.update [Mutation]",
         "globalPreset.updateIngredient [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 51,
       "originalRoute": "/presets",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T09",
@@ -16428,13 +16456,14 @@
         "globalPreset.updateIngredient [Mutation]"
       ],
       "reachableSourceFileCount": 241,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-011",
       "routeSource": "src/app/(app)/presets/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 108,
       "originalRoute": "/projects/[id]/accounting",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -16791,7 +16820,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 286,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-096",
       "routeSource": "src/app/(app)/projects/[id]/accounting/page.tsx"
     },
@@ -16812,6 +16841,7 @@
         "project.lockBoq [Mutation]",
         "projectCost.boqCoverage [Query]"
       ],
+      "interactiveTriggerCandidateCount": 223,
       "originalRoute": "/projects/[id]/boq",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T10",
@@ -17657,7 +17687,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 286,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-012",
       "routeSource": "src/app/(app)/projects/[id]/boq/page.tsx"
     },
@@ -17666,6 +17696,7 @@
       "directPageProcedureHooks": [
         "finance.budgetVariance [Query]"
       ],
+      "interactiveTriggerCandidateCount": 14,
       "originalRoute": "/projects/[id]/budget-variance",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T25",
@@ -17747,7 +17778,7 @@
         "project.getOrgProfile [Query]"
       ],
       "reachableSourceFileCount": 242,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-014",
       "routeSource": "src/app/(app)/projects/[id]/budget-variance/page.tsx"
     },
@@ -17756,6 +17787,7 @@
       "directPageProcedureHooks": [
         "finance.cashFlow [Query]"
       ],
+      "interactiveTriggerCandidateCount": 20,
       "originalRoute": "/projects/[id]/cash-flow",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T25",
@@ -17840,7 +17872,7 @@
         "project.getOrgProfile [Query]"
       ],
       "reachableSourceFileCount": 248,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-015",
       "routeSource": "src/app/(app)/projects/[id]/cash-flow/page.tsx"
     },
@@ -17853,6 +17885,7 @@
         "chat.markRead [Mutation]",
         "chat.sendMessage [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 25,
       "originalRoute": "/projects/[id]/communication",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T18",
@@ -17968,7 +18001,7 @@
         "chat.sendMessage [Mutation]"
       ],
       "reachableSourceFileCount": 241,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-016",
       "routeSource": "src/app/(app)/projects/[id]/communication/page.tsx"
     },
@@ -17982,6 +18015,7 @@
         "correspondence.delete [Mutation]",
         "correspondence.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 109,
       "originalRoute": "/projects/[id]/correspondence",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T28",
@@ -18189,13 +18223,14 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 295,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-017",
       "routeSource": "src/app/(app)/projects/[id]/correspondence/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/daily-program",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T18",
@@ -18203,13 +18238,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-018",
       "routeSource": "src/app/(app)/projects/[id]/daily-program/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/daily-reports/[reportId]",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T07",
@@ -18217,13 +18253,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-019",
       "routeSource": "src/app/(app)/projects/[id]/daily-reports/[reportId]/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/daily-reports",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T07",
@@ -18231,7 +18268,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-020",
       "routeSource": "src/app/(app)/projects/[id]/daily-reports/page.tsx"
     },
@@ -18241,6 +18278,7 @@
         "project.get [Query]",
         "project.getModules [Query]"
       ],
+      "interactiveTriggerCandidateCount": 58,
       "originalRoute": "/projects/[id]/dashboard",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T30",
@@ -18754,7 +18792,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 267,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-021",
       "routeSource": "src/app/(app)/projects/[id]/dashboard/page.tsx"
     },
@@ -18766,6 +18804,7 @@
         "ipc.list [Query]",
         "submittal.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 38,
       "originalRoute": "/projects/[id]/document-center",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T28",
@@ -18911,7 +18950,7 @@
         "submittal.list [Query]"
       ],
       "reachableSourceFileCount": 254,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-022",
       "routeSource": "src/app/(app)/projects/[id]/document-center/page.tsx"
     },
@@ -18924,6 +18963,7 @@
         "project.get [Query]",
         "project.getModules [Query]"
       ],
+      "interactiveTriggerCandidateCount": 24,
       "originalRoute": "/projects/[id]/documents",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T28",
@@ -19002,7 +19042,7 @@
         "project.getModules [Query]"
       ],
       "reachableSourceFileCount": 242,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-023",
       "routeSource": "src/app/(app)/projects/[id]/documents/page.tsx"
     },
@@ -19019,6 +19059,7 @@
         "document.listSets [Query]",
         "gantt.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 344,
       "originalRoute": "/projects/[id]/drawings",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T27",
@@ -19695,7 +19736,7 @@
         "workflow.rfi.list [Query]"
       ],
       "reachableSourceFileCount": 326,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-024",
       "routeSource": "src/app/(app)/projects/[id]/drawings/page.tsx"
     },
@@ -19706,6 +19747,7 @@
         "project.get [Query]",
         "workflow.dailyReport.listReports [Query]"
       ],
+      "interactiveTriggerCandidateCount": 17,
       "originalRoute": "/projects/[id]/drawings/progress",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -19778,7 +19820,7 @@
         "workflow.dailyReport.listReports [Query]"
       ],
       "reachableSourceFileCount": 236,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-097",
       "routeSource": "src/app/(app)/projects/[id]/drawings/progress/page.tsx"
     },
@@ -19797,6 +19839,7 @@
         "equipment.updateStatus [Mutation]",
         "project.get [Query]"
       ],
+      "interactiveTriggerCandidateCount": 197,
       "originalRoute": "/projects/[id]/equipment",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T21",
@@ -20575,7 +20618,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 295,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-025",
       "routeSource": "src/app/(app)/projects/[id]/equipment/page.tsx"
     },
@@ -20584,6 +20627,7 @@
       "directPageProcedureHooks": [
         "equipment.utilizationReport [Query]"
       ],
+      "interactiveTriggerCandidateCount": 29,
       "originalRoute": "/projects/[id]/equipment/utilization",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -20614,7 +20658,7 @@
         "equipment.utilizationReport [Query]"
       ],
       "reachableSourceFileCount": 245,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-098",
       "routeSource": "src/app/(app)/projects/[id]/equipment/utilization/page.tsx"
     },
@@ -20633,6 +20677,7 @@
         "siteExpense.list [Query]",
         "siteExpense.reject [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 75,
       "originalRoute": "/projects/[id]/expenses",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -20824,13 +20869,14 @@
         "siteExpense.reject [Mutation]"
       ],
       "reachableSourceFileCount": 267,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-099",
       "routeSource": "src/app/(app)/projects/[id]/expenses/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 57,
       "originalRoute": "/projects/[id]/field-data",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -20910,13 +20956,14 @@
         "fieldSubmission.reject [Mutation]"
       ],
       "reachableSourceFileCount": 243,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-100",
       "routeSource": "src/app/(app)/projects/[id]/field-data/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/field-submissions",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -20924,7 +20971,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-101",
       "routeSource": "src/app/(app)/projects/[id]/field-submissions/page.tsx"
     },
@@ -20935,6 +20982,7 @@
         "ipc.list [Query]",
         "material.getRequirements [Query]"
       ],
+      "interactiveTriggerCandidateCount": 30,
       "originalRoute": "/projects/[id]/forms",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T28",
@@ -21064,13 +21112,14 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 251,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-026",
       "routeSource": "src/app/(app)/projects/[id]/forms/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 712,
       "originalRoute": "/projects/[id]/gantt",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T17",
@@ -22728,7 +22777,7 @@
         "workflow.rfi.uploadAttachment [Mutation]"
       ],
       "reachableSourceFileCount": 345,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-028",
       "routeSource": "src/app/(app)/projects/[id]/gantt/page.tsx"
     },
@@ -22739,6 +22788,7 @@
         "hierarchy.setProjectManager [Mutation]",
         "project.myOrgAccess [Query]"
       ],
+      "interactiveTriggerCandidateCount": 136,
       "originalRoute": "/projects/[id]/hr/hierarchy",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -23464,7 +23514,7 @@
         "responsibilityHandover.skipItem [Mutation]"
       ],
       "reachableSourceFileCount": 267,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-102",
       "routeSource": "src/app/(app)/projects/[id]/hr/hierarchy/page.tsx"
     },
@@ -23473,6 +23523,7 @@
       "directPageProcedureHooks": [
         "hr.viewAccess [Query]"
       ],
+      "interactiveTriggerCandidateCount": 223,
       "originalRoute": "/projects/[id]/hr",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T08/T23",
@@ -24405,13 +24456,14 @@
         "project.updateOrgUserRole [Mutation]"
       ],
       "reachableSourceFileCount": 288,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-029",
       "routeSource": "src/app/(app)/projects/[id]/hr/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/hr/team",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -24419,7 +24471,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-103",
       "routeSource": "src/app/(app)/projects/[id]/hr/team/page.tsx"
     },
@@ -24437,6 +24489,7 @@
         "partner.getSubcontractor [Query]",
         "project.get [Query]"
       ],
+      "interactiveTriggerCandidateCount": 69,
       "originalRoute": "/projects/[id]/ipc/[ipcId]",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T16",
@@ -24771,13 +24824,14 @@
         "vatRegister.attachScannedBill [Mutation]"
       ],
       "reachableSourceFileCount": 257,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-030",
       "routeSource": "src/app/(app)/projects/[id]/ipc/[ipcId]/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 598,
       "originalRoute": "/projects/[id]/ipc/[ipcId]/worksheets",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -25029,7 +25083,7 @@
         "worksheet.save [Mutation]"
       ],
       "reachableSourceFileCount": 323,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-104",
       "routeSource": "src/app/(app)/projects/[id]/ipc/[ipcId]/worksheets/page.tsx"
     },
@@ -25043,6 +25097,7 @@
         "ipc.delete [Mutation]",
         "ipc.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 62,
       "originalRoute": "/projects/[id]/ipc",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T13/T16",
@@ -25231,7 +25286,7 @@
         "project.getOrgProfile [Query]"
       ],
       "reachableSourceFileCount": 275,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-032",
       "routeSource": "src/app/(app)/projects/[id]/ipc/page.tsx"
     },
@@ -25243,6 +25298,7 @@
         "execution.resourceConflicts [Query]",
         "workflow.dailyProgram.getApprovedDailyProgramByDate [Query]"
       ],
+      "interactiveTriggerCandidateCount": 41,
       "originalRoute": "/projects/[id]/look-ahead",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T17",
@@ -25424,13 +25480,14 @@
         "workflow.dailyProgram.getApprovedDailyProgramByDate [Query]"
       ],
       "reachableSourceFileCount": 259,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-033",
       "routeSource": "src/app/(app)/projects/[id]/look-ahead/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/material-library",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -25438,13 +25495,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-105",
       "routeSource": "src/app/(app)/projects/[id]/material-library/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 298,
       "originalRoute": "/projects/[id]/materials",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T19/T20",
@@ -26181,7 +26239,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 320,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-034",
       "routeSource": "src/app/(app)/projects/[id]/materials/page.tsx"
     },
@@ -26192,6 +26250,7 @@
         "material.stockAlerts [Query]",
         "project.getModules [Query]"
       ],
+      "interactiveTriggerCandidateCount": 32,
       "originalRoute": "/projects/[id]/materials/stock-alerts",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -26272,7 +26331,7 @@
         "project.getModules [Query]"
       ],
       "reachableSourceFileCount": 246,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-106",
       "routeSource": "src/app/(app)/projects/[id]/materials/stock-alerts/page.tsx"
     },
@@ -26288,6 +26347,7 @@
         "projectOps.meeting.update [Mutation]",
         "projectOps.meeting.updateActionItem [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 58,
       "originalRoute": "/projects/[id]/meetings",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T18",
@@ -26520,7 +26580,7 @@
         "projectOps.meeting.updateActionItem [Mutation]"
       ],
       "reachableSourceFileCount": 258,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-035",
       "routeSource": "src/app/(app)/projects/[id]/meetings/page.tsx"
     },
@@ -26535,6 +26595,7 @@
         "workflow.rfi.actionAccess [Query]",
         "workflow.rfi.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 209,
       "originalRoute": "/projects/[id]",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T06",
@@ -27521,13 +27582,14 @@
         "workflow.rfi.list [Query]"
       ],
       "reachableSourceFileCount": 273,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-036",
       "routeSource": "src/app/(app)/projects/[id]/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 161,
       "originalRoute": "/projects/[id]/payments",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T24",
@@ -28104,13 +28166,14 @@
         "vatRegister.createDirectVatBill [Mutation]"
       ],
       "reachableSourceFileCount": 286,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-037",
       "routeSource": "src/app/(app)/projects/[id]/payments/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 315,
       "originalRoute": "/projects/[id]/pdf-canvas",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -28377,13 +28440,14 @@
         "workflow.rfi.list [Query]"
       ],
       "reachableSourceFileCount": 272,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-107",
       "routeSource": "src/app/(app)/projects/[id]/pdf-canvas/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 8,
       "originalRoute": "/projects/[id]/pdf-canvas/render",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -28391,13 +28455,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 8,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-108",
       "routeSource": "src/app/(app)/projects/[id]/pdf-canvas/render/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/planning-dashboard",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T30",
@@ -28405,7 +28470,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-038",
       "routeSource": "src/app/(app)/projects/[id]/planning-dashboard/page.tsx"
     },
@@ -28414,6 +28479,7 @@
       "directPageProcedureHooks": [
         "gantt.getRevisionDocument [Query]"
       ],
+      "interactiveTriggerCandidateCount": 8,
       "originalRoute": "/projects/[id]/planning/revision/[versionId]",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T17",
@@ -28448,7 +28514,7 @@
         "gantt.getRevisionDocument [Query]"
       ],
       "reachableSourceFileCount": 232,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-039",
       "routeSource": "src/app/(app)/projects/[id]/planning/revision/[versionId]/page.tsx"
     },
@@ -28457,6 +28523,7 @@
       "directPageProcedureHooks": [
         "hr.viewAccess [Query]"
       ],
+      "interactiveTriggerCandidateCount": 13,
       "originalRoute": "/projects/[id]/planning/roles",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -28542,7 +28609,7 @@
         "project.getOrgProfile [Query]"
       ],
       "reachableSourceFileCount": 241,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-109",
       "routeSource": "src/app/(app)/projects/[id]/planning/roles/page.tsx"
     },
@@ -28562,6 +28629,7 @@
         "plantProduction.updateSiloStock [Mutation]",
         "project.get [Query]"
       ],
+      "interactiveTriggerCandidateCount": 56,
       "originalRoute": "/projects/[id]/production",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -28926,7 +28994,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 268,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-110",
       "routeSource": "src/app/(app)/projects/[id]/production/page.tsx"
     },
@@ -28937,6 +29005,7 @@
       "directPageProcedureHooks": [
         "punchList.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 56,
       "originalRoute": "/projects/[id]/punch-list",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T26",
@@ -29115,7 +29184,7 @@
         "punchList.updateStatus [Mutation]"
       ],
       "reachableSourceFileCount": 275,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-040",
       "routeSource": "src/app/(app)/projects/[id]/punch-list/page.tsx"
     },
@@ -29126,6 +29195,7 @@
         "projectOps.quality.create [Mutation]",
         "projectOps.quality.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 62,
       "originalRoute": "/projects/[id]/quality",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T26",
@@ -29254,7 +29324,7 @@
         "projectOps.quality.list [Query]"
       ],
       "reachableSourceFileCount": 258,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-041",
       "routeSource": "src/app/(app)/projects/[id]/quality/page.tsx"
     },
@@ -29263,6 +29333,7 @@
       "directPageProcedureHooks": [
         "project.getModules [Query]"
       ],
+      "interactiveTriggerCandidateCount": 145,
       "originalRoute": "/projects/[id]/rate-library",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -29690,13 +29761,14 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 285,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-111",
       "routeSource": "src/app/(app)/projects/[id]/rate-library/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/rfis",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T18",
@@ -29704,7 +29776,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-042",
       "routeSource": "src/app/(app)/projects/[id]/rfis/page.tsx"
     },
@@ -29715,6 +29787,7 @@
         "projectOps.safety.list [Query]",
         "projectOps.safety.updateStatus [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 38,
       "originalRoute": "/projects/[id]/safety",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T26",
@@ -29843,7 +29916,7 @@
         "projectOps.safety.updateStatus [Mutation]"
       ],
       "reachableSourceFileCount": 257,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-043",
       "routeSource": "src/app/(app)/projects/[id]/safety/page.tsx"
     },
@@ -29859,6 +29932,7 @@
         "subcontractorBill.get [Query]",
         "subcontractorBill.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 94,
       "originalRoute": "/projects/[id]/subcontractors/billing",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -30272,7 +30346,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 282,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-112",
       "routeSource": "src/app/(app)/projects/[id]/subcontractors/billing/page.tsx"
     },
@@ -30286,6 +30360,7 @@
         "partner.getSubcontractorWorks [Query]",
         "project.get [Query]"
       ],
+      "interactiveTriggerCandidateCount": 46,
       "originalRoute": "/projects/[id]/subcontractors",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T22",
@@ -30501,7 +30576,7 @@
         "project.getOrgProfile [Query]"
       ],
       "reachableSourceFileCount": 255,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-044",
       "routeSource": "src/app/(app)/projects/[id]/subcontractors/page.tsx"
     },
@@ -30515,6 +30590,7 @@
         "submittal.delete [Mutation]",
         "submittal.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 79,
       "originalRoute": "/projects/[id]/submittals",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T28",
@@ -30698,13 +30774,14 @@
         "submittal.submit [Mutation]"
       ],
       "reachableSourceFileCount": 279,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-045",
       "routeSource": "src/app/(app)/projects/[id]/submittals/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 399,
       "originalRoute": "/projects/[id]/tax-summary",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T25",
@@ -31162,7 +31239,7 @@
         "workflow.rfi.list [Query]"
       ],
       "reachableSourceFileCount": 316,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-046",
       "routeSource": "src/app/(app)/projects/[id]/tax-summary/page.tsx"
     },
@@ -31176,6 +31253,7 @@
         "variationOrder.update [Mutation]",
         "variationOrder.updateStatus [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 51,
       "originalRoute": "/projects/[id]/variations/[voId]",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T12",
@@ -31294,7 +31372,7 @@
         "variationOrder.updateStatus [Mutation]"
       ],
       "reachableSourceFileCount": 251,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-047",
       "routeSource": "src/app/(app)/projects/[id]/variations/[voId]/page.tsx"
     },
@@ -31307,6 +31385,7 @@
         "variationOrder.create [Mutation]",
         "variationOrder.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 44,
       "originalRoute": "/projects/[id]/variations",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T12",
@@ -31458,7 +31537,7 @@
         "variationOrder.list [Query]"
       ],
       "reachableSourceFileCount": 272,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-048",
       "routeSource": "src/app/(app)/projects/[id]/variations/page.tsx"
     },
@@ -31472,6 +31551,7 @@
         "partner.actionAccess [Query]",
         "partner.deletePartner [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 96,
       "originalRoute": "/projects/[id]/vendors",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -31713,7 +31793,7 @@
         "project.getOrgProfile [Query]"
       ],
       "reachableSourceFileCount": 277,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-113",
       "routeSource": "src/app/(app)/projects/[id]/vendors/page.tsx"
     },
@@ -31723,6 +31803,7 @@
         "partner.performanceScore [Query]",
         "project.get [Query]"
       ],
+      "interactiveTriggerCandidateCount": 8,
       "originalRoute": "/projects/[id]/vendors/performance",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -31783,7 +31864,7 @@
         "project.get [Query]"
       ],
       "reachableSourceFileCount": 233,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-114",
       "routeSource": "src/app/(app)/projects/[id]/vendors/performance/page.tsx"
     },
@@ -31794,6 +31875,7 @@
         "workflow.dailyProgram.listPrograms [Query]",
         "workflow.dailyProgram.updateTaskExecution [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 50,
       "originalRoute": "/projects/[id]/workflow/program/my-tasks",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -31910,7 +31992,7 @@
         "workflow.dailyProgram.updateTaskExecution [Mutation]"
       ],
       "reachableSourceFileCount": 273,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-115",
       "routeSource": "src/app/(app)/projects/[id]/workflow/program/my-tasks/page.tsx"
     },
@@ -31928,6 +32010,7 @@
         "workflow.dailyProgram.listPrograms [Query]",
         "workflow.dailyProgram.resyncProgram [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 79,
       "originalRoute": "/projects/[id]/workflow/program",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T18",
@@ -32266,13 +32349,14 @@
         "workflow.dailyProgram.updateTaskExecution [Mutation]"
       ],
       "reachableSourceFileCount": 267,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-049",
       "routeSource": "src/app/(app)/projects/[id]/workflow/program/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/[id]/workflow/reports/[reportId]/edit",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T07",
@@ -32280,7 +32364,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-050",
       "routeSource": "src/app/(app)/projects/[id]/workflow/reports/[reportId]/edit/page.tsx"
     },
@@ -32289,6 +32373,7 @@
         "ShareReportDialog"
       ],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 157,
       "originalRoute": "/projects/[id]/workflow/reports/[reportId]",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T07",
@@ -32581,7 +32666,7 @@
         "workflow.dailyReport.uploadAttachment [Mutation]"
       ],
       "reachableSourceFileCount": 264,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-051",
       "routeSource": "src/app/(app)/projects/[id]/workflow/reports/[reportId]/page.tsx"
     },
@@ -32595,6 +32680,7 @@
         "workflow.dailyReport.createReport [Mutation]",
         "workflow.dailyReport.deleteReport [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 57,
       "originalRoute": "/projects/[id]/workflow/reports",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T07",
@@ -32735,7 +32821,7 @@
         "workflow.dailyReport.deleteReport [Mutation]"
       ],
       "reachableSourceFileCount": 274,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-055",
       "routeSource": "src/app/(app)/projects/[id]/workflow/reports/page.tsx"
     },
@@ -32750,6 +32836,7 @@
         "workflow.rfi.delete [Mutation]",
         "workflow.rfi.update [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 196,
       "originalRoute": "/projects/[id]/workflow/rfi",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T18",
@@ -33326,13 +33413,14 @@
         "workflow.rfi.uploadAttachment [Mutation]"
       ],
       "reachableSourceFileCount": 299,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-057",
       "routeSource": "src/app/(app)/projects/[id]/workflow/rfi/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 0,
       "originalRoute": "/projects/new",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -33340,7 +33428,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 3,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-116",
       "routeSource": "src/app/(app)/projects/new/page.tsx"
     },
@@ -33356,6 +33444,7 @@
         "project.myOrgAccess [Query]",
         "project.organizationDirectory [Query]"
       ],
+      "interactiveTriggerCandidateCount": 68,
       "originalRoute": "/projects",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T06",
@@ -33551,13 +33640,14 @@
         "project.uploadProjectDocument [Mutation]"
       ],
       "reachableSourceFileCount": 252,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-058",
       "routeSource": "src/app/(app)/projects/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 154,
       "originalRoute": "/rate-catalogs",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34166,7 +34256,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 274,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-117",
       "routeSource": "src/app/(app)/rate-catalogs/page.tsx"
     },
@@ -34176,6 +34266,7 @@
         "project.getOrgProfile [Query]",
         "project.updateOrgProfile [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 35,
       "originalRoute": "/settings",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34278,7 +34369,7 @@
         "userPreferences.update [Mutation]"
       ],
       "reachableSourceFileCount": 251,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-118",
       "routeSource": "src/app/(app)/settings/page.tsx"
     },
@@ -34287,6 +34378,7 @@
         "ConfirmDialog"
       ],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 10,
       "originalRoute": "/sync",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T04/T29",
@@ -34297,7 +34389,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 17,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-059",
       "routeSource": "src/app/(app)/sync/page.tsx"
     },
@@ -34306,6 +34398,7 @@
       "directPageProcedureHooks": [
         "project.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 96,
       "originalRoute": "/vendors",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34568,13 +34661,14 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 280,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-119",
       "routeSource": "src/app/(app)/vendors/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 516,
       "originalRoute": "/worksheet-lab",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34598,13 +34692,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 105,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-120",
       "routeSource": "src/app/(app)/worksheet-lab/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 6,
       "originalRoute": "/activate-account",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34612,13 +34707,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 7,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-066",
       "routeSource": "src/app/activate-account/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 7,
       "originalRoute": "/admin/login",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34626,13 +34722,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 12,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-068",
       "routeSource": "src/app/admin/login/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 17,
       "originalRoute": "/login",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T03/T29",
@@ -34640,7 +34737,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 21,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-061",
       "routeSource": "src/app/login/page.tsx"
     },
@@ -34651,6 +34748,7 @@
         "chat.markRead [Mutation]",
         "chat.sendMessage [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 7,
       "originalRoute": "/m/chat/[channelId]",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34736,7 +34834,7 @@
         "chat.sendMessage [Mutation]"
       ],
       "reachableSourceFileCount": 237,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-079",
       "routeSource": "src/app/m/chat/[channelId]/page.tsx"
     },
@@ -34745,6 +34843,7 @@
       "directPageProcedureHooks": [
         "chat.listChannels [Query]"
       ],
+      "interactiveTriggerCandidateCount": 3,
       "originalRoute": "/m/chat",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34775,13 +34874,14 @@
         "chat.listChannels [Query]"
       ],
       "reachableSourceFileCount": 241,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-078",
       "routeSource": "src/app/m/chat/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 27,
       "originalRoute": "/m/log/expense",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -34889,13 +34989,14 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 247,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-081",
       "routeSource": "src/app/m/log/expense/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 20,
       "originalRoute": "/m/log/material",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35003,7 +35104,7 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 245,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-082",
       "routeSource": "src/app/m/log/material/page.tsx"
     },
@@ -35012,6 +35113,7 @@
       "directPageProcedureHooks": [
         "project.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 14,
       "originalRoute": "/m/log",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35120,13 +35222,14 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 245,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-080",
       "routeSource": "src/app/m/log/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 61,
       "originalRoute": "/m/log/report",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35234,7 +35337,7 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 247,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-083",
       "routeSource": "src/app/m/log/report/page.tsx"
     },
@@ -35244,6 +35347,7 @@
         "notification.list [Query]",
         "notification.markAllRead [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 11,
       "originalRoute": "/m/more",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35295,7 +35399,7 @@
         "notification.markAllRead [Mutation]"
       ],
       "reachableSourceFileCount": 240,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-084",
       "routeSource": "src/app/m/more/page.tsx"
     },
@@ -35306,6 +35410,7 @@
         "notification.markAllRead [Mutation]",
         "notification.markRead [Mutation]"
       ],
+      "interactiveTriggerCandidateCount": 5,
       "originalRoute": "/m/notifications",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35378,7 +35483,7 @@
         "notification.markRead [Mutation]"
       ],
       "reachableSourceFileCount": 241,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-085",
       "routeSource": "src/app/m/notifications/page.tsx"
     },
@@ -35388,6 +35493,7 @@
         "notification.list [Query]",
         "project.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 18,
       "originalRoute": "/m",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35544,7 +35650,7 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 257,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-077",
       "routeSource": "src/app/m/page.tsx"
     },
@@ -35553,6 +35659,7 @@
       "directPageProcedureHooks": [
         "fieldPhotos.mine [Query]"
       ],
+      "interactiveTriggerCandidateCount": 5,
       "originalRoute": "/m/photos",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35685,13 +35792,14 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 242,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-086",
       "routeSource": "src/app/m/photos/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 22,
       "originalRoute": "/m/simple/expense",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35799,7 +35907,7 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 247,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-087",
       "routeSource": "src/app/m/simple/expense/page.tsx"
     },
@@ -35808,6 +35916,7 @@
       "directPageProcedureHooks": [
         "partner.subcontractorOptions [Query]"
       ],
+      "interactiveTriggerCandidateCount": 22,
       "originalRoute": "/m/simple/labour",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -35940,13 +36049,14 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 247,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-088",
       "routeSource": "src/app/m/simple/labour/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 21,
       "originalRoute": "/m/simple/material",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -36054,7 +36164,7 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 247,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-089",
       "routeSource": "src/app/m/simple/material/page.tsx"
     },
@@ -36063,6 +36173,7 @@
       "directPageProcedureHooks": [
         "project.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 3,
       "originalRoute": "/m/sites",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -36093,7 +36204,7 @@
         "project.list [Query]"
       ],
       "reachableSourceFileCount": 241,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-090",
       "routeSource": "src/app/m/sites/page.tsx"
     },
@@ -36102,6 +36213,7 @@
       "directPageProcedureHooks": [
         "fieldSubmission.mySubmissions [Query]"
       ],
+      "interactiveTriggerCandidateCount": 6,
       "originalRoute": "/m/sync",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -36132,13 +36244,14 @@
         "fieldSubmission.mySubmissions [Query]"
       ],
       "reachableSourceFileCount": 239,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-091",
       "routeSource": "src/app/m/sync/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 26,
       "originalRoute": "/m/tasks/new",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -36271,7 +36384,7 @@
         "punchList.eligibleAssignees [Query]"
       ],
       "reachableSourceFileCount": 241,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-093",
       "routeSource": "src/app/m/tasks/new/page.tsx"
     },
@@ -36281,6 +36394,7 @@
         "project.list [Query]",
         "punchList.list [Query]"
       ],
+      "interactiveTriggerCandidateCount": 10,
       "originalRoute": "/m/tasks",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T01",
@@ -36414,13 +36528,14 @@
         "punchList.list [Query]"
       ],
       "reachableSourceFileCount": 243,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-092",
       "routeSource": "src/app/m/tasks/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 1,
       "originalRoute": "/offline",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T04/T29",
@@ -36428,13 +36543,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 1,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-062",
       "routeSource": "src/app/offline/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 1,
       "originalRoute": "/",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T03/T05",
@@ -36442,13 +36558,14 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 6,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-063",
       "routeSource": "src/app/page.tsx"
     },
     {
       "directDialogComponents": [],
       "directPageProcedureHooks": [],
+      "interactiveTriggerCandidateCount": 12,
       "originalRoute": "/signup",
       "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
       "plannedTask": "T29",
@@ -36456,7 +36573,7 @@
       "reachableProcedureCandidates": [],
       "reachableProcedureHooks": [],
       "reachableSourceFileCount": 17,
-      "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
+      "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
       "routeId": "ROUTE-064",
       "routeSource": "src/app/signup/page.tsx"
     }
