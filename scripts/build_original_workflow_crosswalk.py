@@ -573,6 +573,12 @@ RFI_DETAIL_REVIEWED_TRIGGERS = {
     "TRIGGER-A1DAC89B74F5", "TRIGGER-05A8F93A51A2", "TRIGGER-0B5040963475",
     "TRIGGER-0B78C091026C", "TRIGGER-FD9C91AE84E3",
 }
+RFI_IMPORT_COMMENT_REVIEWED_TRIGGERS = {
+    "TRIGGER-903B7B4C8F5D", "TRIGGER-F2B147D96D5B", "TRIGGER-B390961E0801",
+    "TRIGGER-52978B204BDC", "TRIGGER-FFEE4F2A663A", "TRIGGER-DACF57521145",
+    "TRIGGER-708FE4C7A1E1", "TRIGGER-7F2E1C710AFA", "TRIGGER-4A73D883B749",
+    "TRIGGER-305790D6808F", "TRIGGER-6037AAABA06C", "TRIGGER-F941D734D6DF",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -608,7 +614,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS | FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS | ORG_BANK_ACCOUNT_REVIEWED_TRIGGERS | ORG_PAYABLES_REVIEWED_TRIGGERS | RECORD_INFLOW_REVIEWED_TRIGGERS | RECORD_PAYMENT_REVIEWED_TRIGGERS | DAY_BOOK_INSPECTOR_REVIEWED_TRIGGERS | EXTERNAL_BOOKKEEPING_REVIEWED_TRIGGERS,
     "WF-025": GUARANTEE_FINANCE_REVIEWED_TRIGGERS,
     "WF-038": JV_COMMISSION_REVIEWED_TRIGGERS,
-    "WF-039": SUBMITTALS_REGISTER_REVIEWED_TRIGGERS | RFI_REGISTER_REVIEWED_TRIGGERS | RFI_CREATE_REVIEWED_TRIGGERS | RFI_DETAIL_REVIEWED_TRIGGERS,
+    "WF-039": SUBMITTALS_REGISTER_REVIEWED_TRIGGERS | RFI_REGISTER_REVIEWED_TRIGGERS | RFI_CREATE_REVIEWED_TRIGGERS | RFI_DETAIL_REVIEWED_TRIGGERS | RFI_IMPORT_COMMENT_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -848,7 +854,7 @@ def main():
                 if workflow_id == "WF-025" else
                 "JV agreement and commission payout controls on organization finance traced through IPC basis, project grants, delegation and ledger mutations; remaining JV and runtime paths remain unverified"
                 if workflow_id == "WF-038" else
-                "all 79 submittal-register controls plus 56 RFI route/list/create-form and 32 detail/edit/respond controls traced; CSV import, comments and runtime remain unverified"
+                "all 79 submittal-register controls plus 100 RFI route/list/create, detail/respond, import and comment controls traced; linked-document and remaining shared controls and runtime remain unverified"
                 if workflow_id == "WF-039" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else

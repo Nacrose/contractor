@@ -122,4 +122,15 @@ An additional 32 `ROUTE-057` IDs are traced through `EditRfiDialog`, `ViewRfiDia
 
 The detail/editor/response controls bring the reviewed portion of `ROUTE-057` to 88 of 196 candidates. CSV import, comments, component-internal file drop interactions and the remaining conditional shared controls still require review. Source tests cover RFI create reference isolation, edit/status transitions, response decisions, attachment handling and delete behavior in `src/server/routers/__tests__/rfi.test.ts`; tests were not run as part of this static source trace.
 
+### RFI CSV import and threaded comments
+
+Twelve additional `ROUTE-057` IDs cover all four CSV importer controls and all eight comment/reply/delete controls:
+
+| Control group | Trigger IDs | Source behavior and server boundary |
+|---|---|---|
+| CSV parse, reset, cancel and import | `TRIGGER-903B7B4C8F5D`, `TRIGGER-F2B147D96D5B`, `TRIGGER-B390961E0801`, `TRIGGER-52978B204BDC` | File selection parses in the browser, reset clears the selected file/preview, cancel closes the dialog, and import maps accepted headers into `workflow.rfi.bulkCreate`. The client parser splits lines and commas directly, so quoted commas and embedded newlines are not handled. It silently drops rows without number/subject and previews at most 20 rows. The server caps a request at 500 records, validates status/priority/discipline and work dates, requires RFI edit permission, writes the batch in a tenant transaction, stamps submitted dates and audits the count. A bad server row rejects the entire batch. |
+| Add comment, reply and delete own comment | `TRIGGER-FFEE4F2A663A`, `TRIGGER-DACF57521145`, `TRIGGER-708FE4C7A1E1`, `TRIGGER-7F2E1C710AFA`, `TRIGGER-4A73D883B749`, `TRIGGER-305790D6808F`, `TRIGGER-6037AAABA06C`, `TRIGGER-F941D734D6DF` | Top-level comments and nested replies call `workflow.rfi.addComment`; each requires project RFI edit authority and is rechecked in a tenant transaction. Delete is exposed only for the authenticated author's own comment and the server rechecks ownership and edit access before removal. The UI deletes immediately without a confirmation prompt. All are online-only mutations. |
+
+These controls bring WF-039 review coverage to 79/79 submittal-register triggers and 100/196 RFI route triggers. RFI document-trail upload/sign-off, attachment open/delete/preview, knowledge-base suggestion, calendar and remaining conditional shared controls still need trigger-level review.
+
 Contractor should keep JV payout and IPC payment-summary semantics aligned with the user-approved IPC contract, preserve RFI/submittal cross-record validation, and make handover a recipient-authorized, auditable batch process. Dashboard visibility should be composed from per-metric grants. Do not treat M00's implemented/partial labels as runtime acceptance.
