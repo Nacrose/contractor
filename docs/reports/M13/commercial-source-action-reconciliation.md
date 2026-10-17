@@ -1,6 +1,6 @@
 # BOQ, rate-analysis and version source-action reconciliation
 
-Status: **Core service and permission boundaries reviewed for WF-006–009; 202 of 223 BOQ route trigger candidates are traced through the register, table hierarchy, row controls, create forms, rate-analysis inspector, resource picker, Excel paste import, floating action bar and query-error recovery. The full catalog lifecycle and runtime behavior remain unverified.**
+Status: **Core service and permission boundaries reviewed for WF-006–009; all 223 BOQ route trigger candidates are traced through the register, table hierarchy, row controls, create forms, rate-analysis inspector, resource picker, Excel paste import, floating action bar, navigation and shared dialog/error controls. The full catalog lifecycle and runtime behavior remain unverified.**
 
 Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Stable route, hook-action and event-candidate IDs are in the [workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) and [canonical action index](../../frontend/original-action-component-index.json).
 
@@ -123,13 +123,19 @@ The floating action bar delegates each button to page-provided behavior and uses
 
 All five floating-action-bar and seven query-error-alert stable trigger candidates are marked source-reviewed for WF-006; the seven shared query-error controls are also recorded for WF-007 and WF-008 because their rate-analysis and profile paths use the same component.
 
+## Shared BOQ navigation, input and dialog controls
+
+The module tabs track the active route, optimistically mark a pending destination on an unmodified click, reset that pending value after pathname change, and prefetch route data on focus or pointer hover. Their context menu supports same-tab open, a new tab with `noopener,noreferrer`, and copying an absolute URL; clipboard failure has no user feedback. The shared input wrapper forwards ordinary change/blur/keyboard events; its arithmetic-expression evaluator is not enabled by the BOQ controls audited here. The anchored menu closes on outside pointer, Escape or resize and repositions on scroll/resize. BOQ form dialogs use controlled state; the shared dialog primitive blocks Escape/outside dismissal only when callers pass `busy`, and the mapped Add Item, paste and profile-refresh dialogs do not pass it. Closing one of those dialogs therefore hides it while its async operation can continue. The separate confirmation dialog disables its buttons and blocks Escape while `isLoading` is true, then awaits the caller's confirmation handler.
+
+These remaining shared component triggers were traced through their route uses and stable IDs, completing the 223/223 `ROUTE-012` candidate inventory for WF-006. This is source-level control coverage; it does not establish browser behavior or complete the wider rate-catalog workflow.
+
 ## BOQ Excel import and paste review
 
 The Excel file picker in the BOQ page accepts `.xlsx`, `.xls` and `.csv`, rejects files over 10 MB before parsing, then reads the `BOQ` sheet or falls back to the workbook's first sheet. It maps common code/description/unit/quantity/rate/category/section headings, strips formatting characters before numeric parsing, skips rows without code/description and `GRAND TOTAL`, then calls `boq.create` separately for each remaining row. The server requires BOQ edit permission and checks project lock and duplicate project/code, but each created row commits independently. The UI counts any row error as skipped, shows aggregate imported/skipped totals, and invalidates the list after the loop; a malformed workbook fails as a whole.
 
 The direct-paste dialog parses tab-separated columns into a preview and supports five-column rows plus shorter positional formats. It also creates each row separately. Per-row errors are swallowed and omitted from the imported count; the dialog still reports a success toast with the number created and closes, without saying how many were rejected. Its Cancel and backdrop-close paths remain active during import. There is no paste-size or row-count cap, and the parser turns malformed quantity/rate cells into zero. The normal page's toolbar hides the paste entry when the user lacks BOQ edit access or the BOQ is locked, while `boq.create` remains the final server guard. Contractor should validate a complete import before writing, expose row-level errors and partial completion, and keep dialog state and progress clear until all row writes settle.
 
-The four stable trigger IDs from `ExcelPasteDialog` are marked source-reviewed for WF-006. Together with the inspector, resource-picker and shared-control passes, WF-006 covers 202 of 223 `ROUTE-012` candidates; 21 route candidates and the full catalog lifecycle remain open.
+The four stable trigger IDs from `ExcelPasteDialog` are marked source-reviewed for WF-006. Together with the inspector, resource-picker and shared-control passes, WF-006 covers all 223 `ROUTE-012` trigger candidates; the full catalog lifecycle and runtime remain open.
 
 ## Rate-profile refresh trigger review
 

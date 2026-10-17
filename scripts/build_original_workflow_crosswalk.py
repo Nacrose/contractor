@@ -852,6 +852,16 @@ BOQ_FLOATING_ACTION_REVIEWED_SOURCE_FILES = {
 BOQ_QUERY_ERROR_REVIEWED_SOURCE_FILES = {
     "src/components/ui/query-error-alert.tsx",
 }
+BOQ_SHARED_CONTROL_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/boq/components/rate-profile-refresh.tsx",
+    "src/components/module-tabs.tsx",
+    "src/components/navigation-context-menu.tsx",
+    "src/components/ui/alert-dialog.tsx",
+    "src/components/ui/anchored-menu.tsx",
+    "src/components/ui/confirm-dialog.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/input.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -1086,7 +1096,7 @@ def main():
                 if (indexed_route := routes_by_path.get(route_path))
                 and indexed_route["routeId"] == "ROUTE-012"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
-                if action["sourceFile"] in BOQ_FLOATING_ACTION_REVIEWED_SOURCE_FILES | BOQ_QUERY_ERROR_REVIEWED_SOURCE_FILES
+                if action["sourceFile"] in BOQ_FLOATING_ACTION_REVIEWED_SOURCE_FILES | BOQ_QUERY_ERROR_REVIEWED_SOURCE_FILES | BOQ_SHARED_CONTROL_REVIEWED_SOURCE_FILES
             )
         if workflow_id == "WF-007":
             reviewed_ids.update(
@@ -1215,7 +1225,7 @@ def main():
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
-                "core BOQ/rate/snapshot routes and permission contracts reviewed; 202 of 223 BOQ register/header/create/table-row/rate-inspector/paste/resource-picker/action-bar/error-feedback triggers reviewed; full catalog lifecycle and runtime remain unverified"
+                "core BOQ/rate/snapshot routes and permission contracts reviewed; all 223 BOQ register/header/create/table-row/rate-inspector/paste/resource-picker/action-bar/navigation/dialog/error-feedback triggers traced; full catalog lifecycle and runtime remain unverified"
                 if workflow_id == "WF-006" else
                 "rate-analysis ingredient, preset, read-only inspector, resource-picker and error-feedback controls on ROUTE-012 reviewed; ROUTE-111 rate-library controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id == "WF-007" else
