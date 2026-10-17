@@ -808,6 +808,8 @@ DAILY_REPORT_DETAIL_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/workflow/reports/[reportId]/sections/meetings-section.tsx",
     "src/components/workflow/report-photo-section.tsx",
     "src/components/reports/share-report-dialog.tsx",
+    "src/components/documents/document-trail.tsx",
+    "src/components/documents/upload-signed-copy-dialog.tsx",
 }
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
@@ -1076,7 +1078,7 @@ def main():
             "sourceReviewedActionIds": ipc_reviewed_actions,
             "sourceReviewedTriggerIds": reviewed_trigger_ids,
             "sourceReviewState": (
-                "all 61 mobile capture and all 57 office register trigger candidates, 116 selected section/status/photo/share triggers on each report detail/edit route, and selected office lifecycle triggers reviewed; signed-copy and RFI dialog controls, runtime and deployed service compatibility remain unverified"
+                "all 61 mobile capture and all 57 office register trigger candidates, 136 selected section/status/photo/share/document-trail controls on each report detail/edit route, and selected office lifecycle triggers reviewed; RFI-from-progress dialog controls, runtime and deployed service compatibility remain unverified"
                 if workflow_id == "WF-001" else
                 "all 79 mapped field-photo, shared field-review and drawing-progress route trigger candidates traced; photo-progress data gap, runtime and deployed service compatibility remain unverified"
                 if workflow_id == "WF-002" else
