@@ -27,7 +27,7 @@ WORKFLOW_ROUTES = {
     # Snapshot controls are rendered by BoqVersionsTab on the Variation Orders
     # page; the planning revision route is Gantt-owned. IPC detail also reads
     # a snapshot diff for the selected baseline.
-    "WF-009": ["/projects/[id]/variations", "/projects/[id]/ipc/[ipcId]"],
+    "WF-009": ["/projects/[id]/variations", "/projects/[id]/variations/[voId]", "/projects/[id]/ipc/[ipcId]"],
     "WF-010": ["/projects/[id]/ipc", "/projects/[id]/ipc/[ipcId]", "/projects/[id]/ipc/[ipcId]/worksheets"],
     "WF-011": ["/projects/[id]/ipc", "/projects/[id]/ipc/[ipcId]", "/projects/[id]/ipc/[ipcId]/worksheets"],
     "WF-012": ["/projects/[id]/ipc", "/projects/[id]/ipc/[ipcId]", "/projects/[id]/ipc/[ipcId]/worksheets"],
@@ -67,7 +67,7 @@ SERVICE_HINTS = {
     "WF-003": ["fieldSubmission", "expense", "pettyCash"], "WF-004": ["fieldSubmission", "material", "partner"],
     "WF-005": ["project.list", "notification.list", "dailyReport.listReports", "fieldSubmission", "punchList", "chat", "partner.subcontractorOptions"],
     "WF-006": ["boq."], "WF-007": ["rate", "norm", "boq."], "WF-008": ["rate", "marketRate", "profile"],
-    "WF-009": ["boqVersion", "boq."], "WF-010": ["ipc."], "WF-011": ["ipc."], "WF-012": ["ipc.", "price", "adjust"],
+    "WF-009": ["boqVersion", "boq.", "variationOrder."], "WF-010": ["ipc."], "WF-011": ["ipc."], "WF-012": ["ipc.", "price", "adjust"],
     "WF-013": ["tax", "vat", "finance."], "WF-014": ["requisition", "purchaseOrder", "material."],
     "WF-015": ["purchaseOrder"], "WF-016": ["material."], "WF-017": ["material.transfer", "transfer"],
     "WF-018": ["equipment."], "WF-019": ["equipment.", "fuel"], "WF-020": ["equipment."],
@@ -117,6 +117,11 @@ BOQ_VERSION_REVIEWED_TRIGGERS = {
     "TRIGGER-F14D6523985F", "TRIGGER-71B0E7A01082", "TRIGGER-36F13A858CDC",
     "TRIGGER-017A47B74357", "TRIGGER-138F80DC4953", "TRIGGER-6D216F1E99C9",
 }
+VARIATION_ORDER_REVIEWED_TRIGGERS = {
+    "TRIGGER-628518F1BB88", "TRIGGER-0B74FB1AD490", "TRIGGER-DF05F79A9F31",
+    "TRIGGER-A6C23BC29477", "TRIGGER-791450CABBB6", "TRIGGER-98B8F794AA82",
+    "TRIGGER-C6A6DA29D436",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -126,7 +131,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     **{workflow_id: IPC_REVIEWED_TRIGGERS for workflow_id in ("WF-010", "WF-011", "WF-012")},
     **{workflow_id: EQUIPMENT_REVIEWED_TRIGGERS for workflow_id in ("WF-018", "WF-019", "WF-020")},
     "WF-013": VAT_REVIEWED_TRIGGERS,
-    "WF-009": BOQ_VERSION_REVIEWED_TRIGGERS,
+    "WF-009": BOQ_VERSION_REVIEWED_TRIGGERS | VARIATION_ORDER_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
@@ -288,7 +293,7 @@ def main():
                 if workflow_id in COMMERCIAL_WORKFLOWS else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
-                "BOQ/version service and permission boundaries reviewed; snapshot create/approve/compare triggers reviewed; other BOQ/rate controls and runtime remain unverified"
+                "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified"
                 if workflow_id == "WF-009" else
                 "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified"
                 if workflow_id in EQUIPMENT_WORKFLOWS else
