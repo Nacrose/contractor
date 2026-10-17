@@ -38,6 +38,18 @@ The `ResponsibilityHandoverManager` imported by `ROUTE-102` was followed from ea
 
 One visible control combines `begin` and the first `applyBatch`; the plan may therefore be persisted even if a later batch fails. The UI preserves the plan ID and reloads pending items for recovery. All reviewed handlers are online-only tRPC operations or local form state; none is a durable offline mutation. Query-backed form availability and effective permission behavior still need target-runtime verification. The update does not close WF-040 or T01.
 
+## WF-040 hierarchy position and approval-route controls
+
+An additional 24 `ROUTE-102` triggers are source-reviewed across scoped positions, approval vacancies, grant-duration selection and the effective-access panel:
+
+| Control group | Trigger IDs | Source behavior and server boundary |
+|---|---|---|
+| Scoped position creation, staffing and reporting lines (18) | `TRIGGER-B4C12B1C6614`, `TRIGGER-D6D97DCBE082`, `TRIGGER-C7F5C881BA12`, `TRIGGER-729EDE5D8445`, `TRIGGER-B67ADA3CA104`, `TRIGGER-9A110AF90AC9`, `TRIGGER-83EC5F5B0E1D`, `TRIGGER-5776E2A65E95`, `TRIGGER-D648D6F79597`, `TRIGGER-A17371B7C814`, `TRIGGER-CB440D37D071`, `TRIGGER-0B0F8D589690`, `TRIGGER-F11AF9678BDC`, `TRIGGER-C0F55A9E9548`, `TRIGGER-135EEAAD9344`, `TRIGGER-540ADE4E07ED`, `TRIGGER-D0FDA773E13E`, `TRIGGER-C83A20654449` | Creates a vacant position, searches/pages eligible people and linked accounts, retries those queries, assigns or ends dated occupancies, sets a project-head designation and versions reporting lines. Acting-cover inputs remain local until submitted with a linked eligible account, end date and reason. Position reads are scope-gated; server mutations recheck scoped-position edit access in the tenant transaction and audit the change. Position titles and reporting lines do not grant module permissions. |
+| Approval vacancy list (2) | `TRIGGER-BD5A1ECAB139`, `TRIGGER-C09F2C7A904B` | Refreshes the saved approver for a pending item or loads the next vacancy batch. The mutation rechecks scope authority and the todo's organization/project/status under lock; it updates routing only and does not approve the work. The query's visible error state has no retry control. |
+| Grant duration and effective-access search (4) | `TRIGGER-96E0E623D5D6`, `TRIGGER-EE525DF89410`, `TRIGGER-DF7EAAB2299A`, `TRIGGER-79422772288D` | Duration presets/custom-date selection update the surrounding grant form's local value; the effective-access query filter is local search. These controls do not themselves mutate grants or change the effective-access calculation. |
+
+This extends the source-reviewed set on `ROUTE-102`; the broader `PeopleAccessManager` grant editor and hierarchy page controls remain open. The crosswalk deliberately keeps these distinct from the 18 handover-manager triggers because position assignment, effective access, temporary cover and responsibility transfer are separate operations.
+
 Route ownership correction: `/m/tasks` is a punch-list register with durable field status updates, not a responsibility-handover screen. It is assigned to M13-T26 and removed from WF-040's route crosswalk; `/m/tasks/new` already belongs to T26. The full source trace is in [quality and safety reconciliation](quality-safety-source-action-reconciliation.md).
 
 ## WF-040 My Tasks route controls
