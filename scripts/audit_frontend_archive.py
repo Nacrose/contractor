@@ -187,6 +187,9 @@ def main():
             outbox_write_sources[entry["procedure"]].add("src/lib/field-entry-builders.ts")
         outbox_writes = [
             {
+                "actionId": "ACTION-OUTBOX-" + hashlib.sha256(
+                    f"{endpoint}|{'|'.join(sorted(source_names))}".encode()
+                ).hexdigest()[:10].upper(),
                 "procedure": endpoint,
                 "sourceFiles": sorted(source_names),
                 "draftTypes": sorted({item["draftType"] for item in field_draft_endpoints if item["procedure"] == endpoint}),
@@ -212,6 +215,7 @@ def main():
         }
         route_actions = []
         route_ids = {}
+        route_tasks = {}
         next_route_id = 1
         if args.coverage:
             coverage_text = args.coverage.read_text()
@@ -221,6 +225,14 @@ def main():
                     r"\|\s*`(ROUTE-\d+)`\s*\|\s*`([^`]+)`", coverage_text
                 )
             }
+            route_tasks = {
+                path: planned_task
+                for _, path, _, planned_task in re.findall(
+                    r"\|\s*`(ROUTE-\d+)`\s*\|\s*`([^`]+)`\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|",
+                    coverage_text,
+                )
+            }
+            route_tasks = {path: task.strip() for path, task in route_tasks.items()}
             next_route_id = max(
                 (int(route_id.removeprefix("ROUTE-")) for route_id in route_ids.values()),
                 default=0,
@@ -240,6 +252,7 @@ def main():
                 route_id = f"ROUTE-{next_route_id:03d}"
                 next_route_id += 1
             pending, visited, hooks, dialogs = [page], set(), set(), set()
+            hook_sources = {}
             while pending:
                 current = pending.pop()
                 if current in visited:
@@ -249,7 +262,10 @@ def main():
                     src = read_source(current).decode(errors="ignore")
                 except (KeyError, FileNotFoundError):
                     continue
-                hooks.update(f"{path} [{method.removeprefix('use')}]" for path, method in HOOK.findall(src))
+                for path, method in HOOK.findall(src):
+                    hook = f"{path} [{method.removeprefix('use')}]"
+                    hooks.add(hook)
+                    hook_sources.setdefault(hook, set()).add(current.removeprefix(ROOT))
                 dialogs.update(DIALOG.findall(src))
                 for imported in IMPORT.findall(src):
                     target = resolve_local_import(current, imported, files)
@@ -275,14 +291,22 @@ def main():
                 else:
                     offline_policy = "unclassified"
                 mapped_hooks.append({
+                    "actionId": "ACTION-" + hashlib.sha256(
+                        f"{route_id}|{hook}|{'|'.join(sorted(hook_sources.get(hook, set())))}".encode()
+                    ).hexdigest()[:12].upper(),
+                    "ownerTask": route_tasks.get(route_path, "unassigned"),
+                    "ownerReviewState": "proposed coverage-packet owner; requires action-level assignment",
                     "hook": hook,
                     "candidateDefinition": service_key,
+                    "uiSourceFiles": sorted(hook_sources.get(hook, set())),
                     "serverSource": definition,
                     "offlinePolicy": offline_policy,
                 })
             route_actions.append({
                 "routeId": route_id,
                 "originalRoute": route_path,
+                "plannedTask": route_tasks.get(route_path, "unassigned"),
+                "ownerReviewState": "proposed route-to-task mapping; requires source-action review",
                 "routeSource": page.removeprefix(ROOT),
                 "reachableSourceFileCount": len(visited),
                 "directPageProcedureHooks": sorted(set(direct_hooks)),
@@ -290,7 +314,7 @@ def main():
                 "reachableProcedureCandidates": mapped_hooks,
                 "directDialogComponents": direct_dialog_names,
                 "reachableDialogComponents": sorted(dialogs),
-                "reviewState": "component graph indexed; button semantics, effective guards and offline policy require review",
+                "reviewState": "component graph indexed; hook actions have IDs/source maps; control semantics, effective guards and policy call sites require review",
             })
         result = {
             "source": source_metadata,

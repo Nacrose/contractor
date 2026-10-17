@@ -33,9 +33,14 @@ The same scanner was run against the verified `7d06a8a` checkout. The current ca
 | Router source files | 79 | Excludes `_app.ts` and router test files |
 | Procedure definitions | 702 candidates | Includes 645 historical wrapper matches, 22 `superAdminProcedure` definitions and 35 `proc.*` domain-wrapper definitions |
 | Direct/reachable procedure hooks | 219 page occurrences / 495 unique reachable hooks | Static TS/TSX component traversal; runtime actions remain to be reviewed |
+| Route-scoped hook action records | 991 | Stable action IDs with UI component and candidate server source paths |
 | Direct dialog references | 57 route occurrences | Dialog component names only; inputs and behavior remain to be reviewed |
 
-All 495 distinct reachable hook names now resolve to a source procedure file in the canonical index, including procedures assembled through material, equipment and schedule router modules. The index records the declared wrapper plus candidate permission guard calls/keys where they appear in the procedure body. These are review leads only; effective guards and per-operation offline eligibility remain unverified.
+All 495 distinct reachable hook names now resolve to a source procedure file in the canonical index, including procedures assembled through material, equipment and schedule router modules. The 991 route-scoped hook records have stable action IDs and record the UI component, declared server wrapper, candidate permission guard calls/keys, offline policy, and proposed M13 packet owner inherited from the route coverage seed. Packet ownership is provisional until the control is reviewed; it is not a confirmed individual owner. These are review leads only; control semantics and effective guards remain unverified.
+
+The current inventory is deliberately at the reachable-hook level. It does not yet map each visible button, row menu, form submission, dialog field, cancellation path, background job or notification to its own action record. The 57 dialog references are component names, not a reviewed dialog/action inventory. M13-T01 therefore remains open until those controls and lifecycles are inspected, the 41 M00 workflows and route additions are reconciled, the ten archive-only candidates are dispositioned, and the compatible deployed backend is identified. The ZIP-versus-commit choice remains explicit: this audit uses the verified `7d06a8a` checkout as the canonical source index and keeps ZIP-only routes disputed pending the user's source-baseline decision.
+
+User-directed IPC boundary to carry into implementation: Contractor creates each IPC and its separate linked GridCraft workbook; GridCraft owns workbook/payment editing; Contractor is view-only for workbook content and accepts only a validated Summary of Payment. This replaces the original app's in-app IPC editing behavior for this product. The detailed boundary and sync acceptance criteria remain in the [IPC/GridCraft plan](../plans/ipc-summary-gridcraft-agent-plan.md).
 
 ## Offline policy evidence at the verified revision
 
@@ -111,7 +116,7 @@ The archive sidebar has one organisation/top-level list, one project list, and a
 
 ## Route-by-route direct-source index
 
-The [route component index](../../frontend/original-action-component-index.json) now traverses static local imports for all 110 canonical pages and records 495 reachable procedure hooks plus reachable dialog components. It gives reviewers a component-level source index; it does not claim to capture all controls, effective permission checks, offline policy or lifecycle behavior. The table below is retained as a direct-page index for the supplied ZIP snapshot only.
+The [route component index](../../frontend/original-action-component-index.json) now traverses static local imports for all 110 canonical pages and records 991 route-scoped hook actions, 495 unique reachable procedure hooks, and reachable dialog components. It gives reviewers a component-level source index; it does not claim to capture all controls, effective permission checks or lifecycle behavior. The table below is retained as a direct-page index for the supplied ZIP snapshot only.
 
 | Route | Source page | Direct procedure hooks | Dialog components |
 |---|---|---|---|
