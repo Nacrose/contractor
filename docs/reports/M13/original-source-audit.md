@@ -168,6 +168,24 @@ The coverage appendix assigns stable IDs to 110 canonical routes and nine disput
 5. Reconcile the 41 workflows with pages, mobile journeys, background jobs and cross-module consumers; add omitted actions and preserve source partial/deferred status.
 6. Give each verified action a stable coverage ID, owner, source, service, permission, offline policy, scenario and platform evidence. Keep unresolved rows unverified.
 
+### Disputed archive-only route dispositions
+
+The nine ZIP-only paths remain in the denominator as target requirements. The verified tree has no matching page file for any of them, so the generic route alternatives below are navigation/function candidates, not proof of complete parity.
+
+| Archive-only path | Verified-tree evidence and disposition |
+|---|---|
+| `/admin/data` | No matching route. `/admin/database` exists, but its navigation label is “Database & Health”; equivalent data-management behavior is unproven. Retain as unresolved. |
+| `/projects/[id]/boq/pdf-designer` | No matching route or proven BOQ-specific design surface. Retain as unresolved under BOQ/PDF output acceptance. |
+| `/projects/[id]/gantt/[versionId]/pdf-designer` | No matching route. A PDF canvas exists elsewhere, but it only recognizes RFI and daily-report entity scopes; Gantt-specific schedule layout/export parity is unproven. Retain as unresolved. |
+| `/projects/[id]/ipc/[ipcId]/pdf-designer` | No matching route or IPC-specific designer. Generic PDF canvas does not declare IPC as a supported entity type. Retain as unresolved; Contractor IPC output must also honor the user-directed GridCraft summary boundary. |
+| `/projects/[id]/workflow/reports/[reportId]/pdf-designer` | No matching route. The report share dialog opens `/projects/[id]/pdf-canvas?entityType=daily_report&entityId=…`; this is a moved generic editor entry point, but exact legacy deep-link compatibility is absent. Keep the old path as a required alias or explicitly test migration to the generic route. |
+| `/projects/[id]/workflow/reports/[reportId]/pdf-render` | No matching route. The share dialog opens `/projects/[id]/pdf-canvas/render` with the daily-report entity query. Same output flow is evidenced through a different route; old deep-link compatibility remains unresolved. |
+| `/projects/[id]/workflow/reports/[reportId]/print` | No matching route. Quick Print in the share dialog opens the generic renderer route. Treat as a candidate moved flow, pending print/readback acceptance. |
+| `/projects/[id]/workflow/rfi/[rfiId]/pdf-designer` | No matching route. The generic canvas explicitly supports `entityType=rfi`, so the designer capability has a query-based route, while the legacy deep link is absent. Keep route alias/migration behavior for implementation acceptance. |
+| `/team` | No matching route. Organization people directory and project HR team pages exist, but the old path’s scope and redirect behavior are unknown. Retain as unresolved until the correct target scope is established from the source archive. |
+
+This disposition separates exact route preservation from candidate feature equivalents. It does not remove any archive-only path from product scope or mark the specialized BOQ, Gantt or IPC output routes as implemented.
+
 ## Evidence
 
 - Bundle route/sidebar counts were inspected with Python `zipfile`; the hash and unverified ZIP comment are recorded above.
