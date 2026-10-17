@@ -1,6 +1,6 @@
 # BOQ, rate-analysis and version source-action reconciliation
 
-Status: **Core service and permission boundaries reviewed for WF-006–009; 177 of 223 BOQ route trigger candidates are traced through the register, table hierarchy, row controls, create forms and rate-analysis inspector. Import/paste validation, the full catalog lifecycle and runtime behavior remain unverified.**
+Status: **Core service and permission boundaries reviewed for WF-006–009; 181 of 223 BOQ route trigger candidates are traced through the register, table hierarchy, row controls, create forms, rate-analysis inspector and Excel paste import. The full catalog lifecycle and runtime behavior remain unverified.**
 
 Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Stable route, hook-action and event-candidate IDs are in the [workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) and [canonical action index](../../frontend/original-action-component-index.json).
 
@@ -112,6 +112,14 @@ The inspector's analysis and ingredient queries require BOQ view access and veri
 The UI state review found several behaviors Contractor should account for: changing the selected analysis is local state; collapsing ingredient categories and expanding read-only breakdowns are view-only; the read-only breakdown nevertheless exposes an “Edit in Analysis tab” route link. Ingredient deletion is immediate with no confirmation. Invalid/empty quantity and rate text is converted to zero on blur; invalid/zero batch input becomes one, while negative server inputs are rejected. The fixed-resource quick-add Enter handler does not guard `addMutation.isPending` even though its button does, so repeated Enter can submit duplicates while the first request is pending. Cancelling quick-add clears the catalog material ID but leaves other resource selection/name state, which can carry into a later add form. Copy's `mutateAsync` error is toasted both by the mutation callback and its caller catch. Applying a preset clears its confirmation state immediately after mutation starts, so the dialog's loading state is not visible while the replacement is pending. These are source-level UX/reliability findings to qualify against the deployed revision.
 
 All 49 `ROUTE-012` inspector/read-only trigger candidates are marked source-reviewed for WF-006 and WF-007. WF-006 now covers 177 of 223 route candidates; WF-007 review is limited to the BOQ route's rate inspector and read-only breakdown. `ROUTE-111` rate-library controls, norm import, full catalog lifecycle and runtime remain open.
+
+## BOQ Excel import and paste review
+
+The Excel file picker in the BOQ page accepts `.xlsx`, `.xls` and `.csv`, rejects files over 10 MB before parsing, then reads the `BOQ` sheet or falls back to the workbook's first sheet. It maps common code/description/unit/quantity/rate/category/section headings, strips formatting characters before numeric parsing, skips rows without code/description and `GRAND TOTAL`, then calls `boq.create` separately for each remaining row. The server requires BOQ edit permission and checks project lock and duplicate project/code, but each created row commits independently. The UI counts any row error as skipped, shows aggregate imported/skipped totals, and invalidates the list after the loop; a malformed workbook fails as a whole.
+
+The direct-paste dialog parses tab-separated columns into a preview and supports five-column rows plus shorter positional formats. It also creates each row separately. Per-row errors are swallowed and omitted from the imported count; the dialog still reports a success toast with the number created and closes, without saying how many were rejected. Its Cancel and backdrop-close paths remain active during import. There is no paste-size or row-count cap, and the parser turns malformed quantity/rate cells into zero. The normal page's toolbar hides the paste entry when the user lacks BOQ edit access or the BOQ is locked, while `boq.create` remains the final server guard. Contractor should validate a complete import before writing, expose row-level errors and partial completion, and keep dialog state and progress clear until all row writes settle.
+
+The four stable trigger IDs from `ExcelPasteDialog` are marked source-reviewed for WF-006. Together with the inspector pass, WF-006 covers 181 of 223 `ROUTE-012` candidates; 42 route candidates and the full catalog lifecycle remain open.
 
 ## Rate-profile refresh trigger review
 

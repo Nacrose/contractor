@@ -837,6 +837,9 @@ RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/boq/components/rate-analysis-inspector.tsx",
     "src/app/(app)/projects/[id]/boq/components/read-only-rate-analysis.tsx",
 }
+BOQ_PASTE_REVIEWED_SOURCE_FILES = {
+    "src/components/boq/excel-paste-dialog.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -1049,6 +1052,14 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES
             )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-012"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in BOQ_PASTE_REVIEWED_SOURCE_FILES
+            )
         if workflow_id == "WF-007":
             reviewed_ids.update(
                 action["actionId"]
@@ -1143,7 +1154,7 @@ def main():
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
-                "core BOQ/rate/snapshot routes and permission contracts reviewed; 177 of 223 BOQ register/header/create/table-row/rate-inspector triggers reviewed; import/paste, full catalog lifecycle and runtime remain unverified"
+                "core BOQ/rate/snapshot routes and permission contracts reviewed; 181 of 223 BOQ register/header/create/table-row/rate-inspector/paste triggers reviewed; full catalog lifecycle and runtime remain unverified"
                 if workflow_id == "WF-006" else
                 "rate-analysis ingredient, preset and read-only inspector controls on ROUTE-012 reviewed; ROUTE-111 rate-library controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id == "WF-007" else
