@@ -1,10 +1,10 @@
 # Original-product coverage seed — 2026-10-17
 
-Current source audit: [M13 source reconciliation](../reports/M13/original-source-audit.md), with a [64-route reachable-component/procedure index](original-action-component-index.json). The local archive declares `7a5cccfd01484cc17b01e7c840fc0f35e87c1e58`; the earlier ledger declares `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Their relationship remains unverified, so all coverage statuses stay unverified.
+Current source audit: [M13 source reconciliation](../reports/M13/original-source-audit.md), with a [64-route reachable-component/procedure index](original-action-component-index.json) for the supplied archive only. That archive is not a copy of canonical source commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`; its ZIP comment claims a nonexistent commit. The canonical commit contains 110 page routes, so these 64 route IDs are an incomplete seed and must be reconciled and extended before parity work is considered complete. All coverage statuses stay unverified.
 
 Companion to the [implementation plan](../plans/full-product-feature-navigation-plan.md) and [M13 register](../plans/milestones/M13-product-feature-navigation-closure.md).
 
-These are proposed target destinations and task ownership, not verified implementation. All rows start **unverified**. The existing ledger supplies 64 routes; M00 supplies 41 workflows. T01 must reconcile their source revisions, inspect nested actions and mobile paths, add omissions and replace guessed service/offline bindings. Existing source status refers to the original product, never to Contractor.
+These are proposed target destinations and task ownership, not verified implementation. All rows start **unverified**. The archive index supplies 64 routes; the canonical checkout contains 55 additional routes and lacks 9 archive-only routes. M00 supplies 41 workflows. T01 must reconcile route identities, inspect nested actions and mobile paths, add omissions and replace guessed service/offline bindings. Existing source status refers to the original product, never to Contractor.
 
 ## Route coverage
 

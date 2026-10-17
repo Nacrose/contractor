@@ -4,11 +4,13 @@ Status: **In progress**. The available source bundle is pinned for audit. Action
 
 ## Source identity and confidence
 
-- Bundle: `Construction-Manager-main.zip` (local path `/Users/aakashdhakal/Construction-Manager-main.zip`), SHA-256 `8b3cb347083cfe25d484724116f87d1ab3fec80d81a0206a73e4f9b55a2de23d`; ZIP comment declares source revision `7a5cccfd01484cc17b01e7c840fc0f35e87c1e58`.
-- Earlier frontend artifacts declare `7d06a8a51826639b554e30d11a8b0b8f7d095259`, which differs from the ZIP comment. The ZIP has no `.git` object database, so the comment does not prove its contents match that commit. Locate the canonical checkout or verify the archive against a Git tree before finalizing parity scope.
-- The bundle includes the original Next.js app and server source together. Its package declares Construction Manager 1.0.0, Next.js 16, React 19, tRPC v11 and Prisma 6. This is a source backend contract, not proof that any deployed backend/API/schema is compatible.
+- Canonical source repository: private `Nacrose/Construction_Manager`; the earlier frontend artifacts reference commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`, which exists and checks out as a merge commit.
+- Supplied bundle: `Construction-Manager-main.zip` (local path `/Users/aakashdhakal/Construction-Manager-main.zip`), SHA-256 `8b3cb347083cfe25d484724116f87d1ab3fec80d81a0206a73e4f9b55a2de23d`. Its ZIP comment claims revision `7a5cccfd01484cc17b01e7c840fc0f35e87c1e58`; GitHub reports that commit does not exist in the canonical repository.
+- The bundle is **not** a copy of commit `7d06a8a`. A file-content comparison against that checkout found 1,698 tracked files versus 351 bundle files: 1,419 tracked files absent from the bundle, 72 bundle-only paths, and 242 shared paths with different contents. Both ZIP files in Downloads have the same SHA-256. Treat the bundle as an independently pinned but incomplete/unidentified snapshot, not as the canonical source revision.
+- The verified commit has 110 App Router `page.tsx` files. The bundle has 64; 55 routes occur only in the verified commit and 9 only in the bundle. The M00 41-workflow matrix and current 64-route appendix therefore do not yet cover the canonical route surface. Regenerate/extend coverage from the verified commit before implementation scope is called complete.
+- The bundle declares Construction Manager 1.0.0, Next.js 16, React 19, tRPC v11 and Prisma 6. This establishes only a source backend contract; no deployed backend/API/schema compatibility has been verified.
 
-## Verified source counts
+## Supplied bundle counts (not canonical-revision counts)
 
 | Surface | Observed | Meaning |
 |---|---:|---|
@@ -160,6 +162,9 @@ The coverage appendix assigns stable `ROUTE-001`–`ROUTE-064` and `WF-001`–`W
 
 ## Evidence
 
-- Route/sidebar counts were inspected in the ZIP with Python `zipfile`; exact bundle hash and archive comment appear above. The counts are recorded so the source scan can be independently repeated from the same archive.
-- Compared archive pages/router source with `docs/frontend/route-parity.json`, `service-bindings.json`, `manifest.md` and `docs/reports/M00/feature-matrix.json`. These artifacts are not a verified common source snapshot.
-- No original Git checkout was found in the inspected DSH session path. GitHub API access failed in this environment, so remote branches and open PRs could not be checked.
+- Bundle route/sidebar counts were inspected with Python `zipfile`; the hash and unverified ZIP comment are recorded above.
+- Checked both recorded revision identifiers against the canonical GitHub repository. `7d06a8a` exists; `7a5cccfd` does not.
+- Compared every regular bundle file with the checked-out `7d06a8a` tree by SHA-256. The comparison establishes that the bundle is not a complete or byte-identical export of that revision.
+- Canonical commit page count was computed from the checkout; bundle page count was independently computed from the archive. The route deltas are listed above.
+- Compared the bundle with `docs/frontend/route-parity.json`, `service-bindings.json`, `manifest.md` and `docs/reports/M00/feature-matrix.json`. These artifacts do not represent a verified common source snapshot.
+- Deployed backend identity and compatibility remain unknown. Obtain deployment/schema evidence before a task claims production service compatibility.
