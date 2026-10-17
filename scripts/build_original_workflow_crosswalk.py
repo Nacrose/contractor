@@ -794,6 +794,16 @@ DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS = {
     "TRIGGER-E837C0B7CA2C", "TRIGGER-F1F4E49C4BA6", "TRIGGER-F451C75D0448",
     "TRIGGER-F8C1DA83B51D", "TRIGGER-FAFB8E769382", "TRIGGER-FDDC4A6EB76B",
 }
+DAILY_REPORT_DETAIL_REVIEWED_ROUTES = {"ROUTE-050", "ROUTE-051"}
+DAILY_REPORT_DETAIL_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/workflow/reports/[reportId]/sections/daily-report-sidebar.tsx",
+    "src/app/(app)/projects/[id]/workflow/reports/[reportId]/sections/daily-report-header.tsx",
+    "src/app/(app)/projects/[id]/workflow/reports/[reportId]/sections/weather-section.tsx",
+    "src/app/(app)/projects/[id]/workflow/reports/[reportId]/sections/progress-section.tsx",
+    "src/app/(app)/projects/[id]/workflow/reports/[reportId]/sections/notes-section.tsx",
+    "src/components/workflow/report-photo-section.tsx",
+    "src/components/reports/share-report-dialog.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -980,7 +990,17 @@ def main():
             if (indexed_route := routes_by_path.get(route_path))
             for action in triggers_by_route.get(indexed_route["routeId"], [])
         }
-        reviewed_trigger_ids = sorted(REVIEWED_TRIGGERS_BY_WORKFLOW.get(workflow_id, set()))
+        reviewed_ids = set(REVIEWED_TRIGGERS_BY_WORKFLOW.get(workflow_id, set()))
+        if workflow_id == "WF-001":
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] in DAILY_REPORT_DETAIL_REVIEWED_ROUTES
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in DAILY_REPORT_DETAIL_REVIEWED_SOURCE_FILES
+            )
+        reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
         if missing_reviewed_triggers:
             raise SystemExit(
@@ -1051,7 +1071,7 @@ def main():
             "sourceReviewedActionIds": ipc_reviewed_actions,
             "sourceReviewedTriggerIds": reviewed_trigger_ids,
             "sourceReviewState": (
-                "all 61 mobile capture and all 57 office register trigger candidates, plus selected office lifecycle triggers, reviewed; report detail/edit controls, runtime and deployed service compatibility remain unverified"
+                "all 61 mobile capture and all 57 office register trigger candidates, 59 selected section/status/photo/share triggers on each report detail/edit route, and selected office lifecycle triggers reviewed; workforce/equipment/materials/visitors/meetings, signed-copy and RFI dialog controls, runtime and deployed service compatibility remain unverified"
                 if workflow_id == "WF-001" else
                 "all 79 mapped field-photo, shared field-review and drawing-progress route trigger candidates traced; photo-progress data gap, runtime and deployed service compatibility remain unverified"
                 if workflow_id == "WF-002" else
