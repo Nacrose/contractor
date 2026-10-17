@@ -18194,10 +18194,26 @@
         "interSiteTransfer.transferMaterial [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
-      "sourceReviewState": "transfer dispatch trigger reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes",
+      "sourceReviewState": "transfer dialog fields, mode, submit, dismiss and success callbacks reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes",
       "sourceReviewedActionIds": [],
       "sourceReviewedTriggerIds": [
-        "TRIGGER-9A6B3C859E69"
+        "TRIGGER-00DDAB0064FC",
+        "TRIGGER-37BB12FF0D68",
+        "TRIGGER-384576D431E6",
+        "TRIGGER-3C237593FDBE",
+        "TRIGGER-508D05085F32",
+        "TRIGGER-842BE67AE68F",
+        "TRIGGER-85BB3BF22449",
+        "TRIGGER-8E44C8B59904",
+        "TRIGGER-9A6B3C859E69",
+        "TRIGGER-9FFF9BB421CA",
+        "TRIGGER-B2A27D1834F5",
+        "TRIGGER-CFE26C3FCA70",
+        "TRIGGER-D9346EA9F06E",
+        "TRIGGER-E432F3F3EDEB",
+        "TRIGGER-E6F608699D18",
+        "TRIGGER-EF439838F4C1",
+        "TRIGGER-FD2052CFC435"
       ],
       "sourceTestFiles": [
         {

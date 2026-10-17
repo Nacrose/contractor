@@ -147,7 +147,14 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-006": BOQ_ITEM_REVIEWED_TRIGGERS,
     "WF-007": RATE_ANALYSIS_REVIEWED_TRIGGERS,
     "WF-008": RATE_PROFILE_REVIEWED_TRIGGERS,
-    "WF-017": {"TRIGGER-9A6B3C859E69"},
+    "WF-017": {
+        "TRIGGER-9A6B3C859E69", "TRIGGER-D9346EA9F06E", "TRIGGER-E432F3F3EDEB",
+        "TRIGGER-85BB3BF22449", "TRIGGER-8E44C8B59904", "TRIGGER-842BE67AE68F",
+        "TRIGGER-3C237593FDBE", "TRIGGER-E6F608699D18", "TRIGGER-FD2052CFC435",
+        "TRIGGER-9FFF9BB421CA", "TRIGGER-EF439838F4C1", "TRIGGER-508D05085F32",
+        "TRIGGER-384576D431E6", "TRIGGER-00DDAB0064FC", "TRIGGER-37BB12FF0D68",
+        "TRIGGER-CFE26C3FCA70", "TRIGGER-B2A27D1834F5",
+    },
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
@@ -319,7 +326,7 @@ def main():
                 if workflow_id in FIELD_WORKFLOWS else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
-                "transfer dispatch trigger reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes"
+                "transfer dialog fields, mode, submit, dismiss and success callbacks reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes"
                 if workflow_id == "WF-017" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
