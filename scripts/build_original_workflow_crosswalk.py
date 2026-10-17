@@ -886,6 +886,22 @@ IPC_DETAIL_REVIEWED_SOURCE_FILES = {
     "src/components/ui/input.tsx",
     "src/components/ui/query-error-alert.tsx",
 }
+IPC_REGISTER_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/ipc/page.tsx",
+    "src/app/(app)/projects/[id]/ipc/dialogs/add-ipc-dialog.tsx",
+    "src/components/module-tabs.tsx",
+    "src/components/navigation-context-menu.tsx",
+    "src/components/ui/action-bar.tsx",
+    "src/components/ui/action-pending.tsx",
+    "src/components/ui/alert-dialog.tsx",
+    "src/components/ui/confirm-dialog.tsx",
+    "src/components/ui/construction-table.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/input.tsx",
+    "src/components/ui/query-error-alert.tsx",
+    "src/components/ux/query-boundary.tsx",
+    "src/components/ux/register-page.tsx",
+}
 RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/rate-library/page.tsx",
     "src/app/(app)/projects/[id]/boq/components/catalog-rates-library.tsx",
@@ -1402,6 +1418,15 @@ def main():
                 and indexed_route["routeId"] == "ROUTE-030"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in IPC_DETAIL_REVIEWED_SOURCE_FILES
+            )
+        if workflow_id in {"WF-010", "WF-011", "WF-012"}:
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-032"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in IPC_REGISTER_REVIEWED_SOURCE_FILES
             )
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
