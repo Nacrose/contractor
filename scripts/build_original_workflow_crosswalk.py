@@ -157,6 +157,15 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     },
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
+ORPHAN_UI_WORKFLOW_OVERRIDES = {
+    # These focused source reviews prevent shared material-list queries from
+    # attributing store management to purchasing or field-material workflows.
+    "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx": {"WF-016"},
+    "src/app/(app)/projects/[id]/materials/components/inter-site-transfers-tab.tsx": {"WF-017"},
+    "src/components/inventory/transfer-acknowledgement-dialog.tsx": {"WF-017"},
+    "src/components/inventory/reconciliation-report.tsx": {"WF-016"},
+    "src/app/(app)/finance/components/org-inventory-tab.tsx": {"WF-016"},
+}
 
 
 def main():
@@ -278,9 +287,13 @@ def main():
         service_hints = SERVICE_HINTS[workflow_id]
         orphaned_ui = [
             component for component in unreferenced_ui
-            if any(
-                any(hint.casefold() in hook.casefold() for hint in service_hints)
-                for hook in component["hooks"]
+            if (
+                workflow_id in ORPHAN_UI_WORKFLOW_OVERRIDES[component["sourceFile"]]
+                if component["sourceFile"] in ORPHAN_UI_WORKFLOW_OVERRIDES
+                else any(
+                    any(hint.casefold() in hook.casefold() for hint in service_hints)
+                    for hook in component["hooks"]
+                )
             )
         ]
         result.append({
@@ -326,6 +339,8 @@ def main():
                 if workflow_id in FIELD_WORKFLOWS else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
+                "inventory route/source transactions reviewed; store management, organization inventory and physical-count reconciliation screens are unreferenced from mapped routes"
+                if workflow_id == "WF-016" else
                 "transfer dialog fields, mode, submit, dismiss and success callbacks reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes"
                 if workflow_id == "WF-017" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
