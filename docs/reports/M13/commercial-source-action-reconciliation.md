@@ -56,3 +56,18 @@ Route reconciliation showed that the route used for BOQ snapshots also owns Vari
 | `TRIGGER-DF05F79A9F31`, `TRIGGER-C6A6DA29D436` | Opens and confirms “Approve & Merge.” Approval requires both `project.variations.approve` and BOQ edit, plus an unlocked accounting period. In one serializable transaction it transitions the VO, merges items into the project BOQ and creates an approved linked BOQ version snapshot. It intentionally creates no revenue journal entry; revenue is recognized by later IPC billing. | Treat approval as a consequential contract baseline change. Preserve atomic merge+snapshot, cross-project rejection and no double-counted approval revenue. Do not expose it as an ordinary status edit. |
 
 The generator records these reviewed IDs on WF-009 and includes `ROUTE-047` in its canonical route list. Other VO controls, attachment/export behavior and the complete post-approval downstream projection remain open for T01/T12 acceptance.
+
+## BOQ item hierarchy trigger review
+
+The BOQ item create, inline quantity/rate edit, delete and duplicate paths were traced from `ROUTE-012` through the row/dialog components into `src/server/routers/boq.ts`. This reviews those core hierarchy actions, not import/export or all grouping and rate-analysis controls.
+
+| Trigger ID | Source behavior | Target acceptance consequence |
+|---|---|---|
+| `TRIGGER-EAF23A01937F` | The Add BOQ Item form validates description and local lock state, then calls `boq.create` with code, unit, quantity, rate and section. The server checks `project.boq.edit`, checks project lock and duplicate code, then creates the item and its rate-analysis rows transactionally. | Preserve project-scoped code validation and atomic item/analysis creation. Duplicate or concurrent code allocation must return a recoverable conflict. |
+| `TRIGGER-1998DB7344D9`, `TRIGGER-81DDE2B1EE4A` | Inline quantity and rate controls call `boq.update`. The server checks edit permission and lock state, locks/re-reads the item row within a transaction, and recalculates amount as quantity × rate from the current row. | Keep quantity and contractual rate as separate inputs and prove concurrent edits never calculate against a stale row. |
+| `TRIGGER-C06F1EFC6E55` | The table's delete action opens a confirmation; confirmation calls `boq.delete`, which checks the separate `project.boq.delete` permission and project/item lock before deleting and auditing. | Keep deletion distinct from edit permission and require an explicit confirmation. |
+| `TRIGGER-5E15163DB887` | “Copy to section” calls `boq.duplicate`; the server checks edit and lock state, creates a non-colliding code, and clones the item's rate analyses and ingredients in a transaction. | Preserve provenance and rate-analysis contents when duplicating; do not treat a copy as a new blank line. |
+
+The review found a source-level concurrency gap to carry into T10 qualification: `boq.create` checks the project lock before its transaction but does not recheck it inside; `boq.delete` and `boq.duplicate` also recheck permission in their transactions but do not recheck the lock/item state there. A lock or item-state change racing those requests may pass the preflight check. `boq.update` does recheck under its row lock. Contractor must enforce the approved-baseline invariant atomically across create, edit, delete, duplicate and lock transitions, and test the race explicitly.
+
+These trigger IDs are now marked source-reviewed for WF-006. The observed lock gap remains an unresolved source compatibility finding, not proof that every runtime exhibits the race; the source procedures and transaction shapes should be confirmed against the deployed revision before translating it into a repair.
