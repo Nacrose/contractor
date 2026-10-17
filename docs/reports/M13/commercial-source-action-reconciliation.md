@@ -1,6 +1,6 @@
 # BOQ, rate-analysis and version source-action reconciliation
 
-Status: **Core service and permission boundaries reviewed for WF-006–009; 52 of 223 BOQ route trigger candidates are also traced through register/header/create forms. BOQ row controls, the rate inspector, import/paste validation, the full catalog lifecycle and runtime behavior remain unverified.**
+Status: **Core service and permission boundaries reviewed for WF-006–009; 128 of 223 BOQ route trigger candidates are also traced through the register, table hierarchy, row controls and create forms. The rate inspector, import/paste validation, the full catalog lifecycle and runtime behavior remain unverified.**
 
 Source baseline: private `Nacrose/Construction_Manager` commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`. Stable route, hook-action and event-candidate IDs are in the [workflow crosswalk](../../frontend/original-workflow-source-crosswalk.json) and [canonical action index](../../frontend/original-action-component-index.json).
 
@@ -74,7 +74,7 @@ These trigger IDs are now marked source-reviewed for WF-006. The observed lock g
 
 ## BOQ register, toolbar and create-form trigger review
 
-An additional 52 `ROUTE-012` candidates are traced through the page, BOQ header, inline add row and Add BOQ Item dialog. Exact stable IDs are marked on WF-006 in the crosswalk; 171 of the route's 223 candidates remain open, especially row editing/menus and the rate-analysis inspector.
+An additional 52 `ROUTE-012` candidates are traced through the page, BOQ header, inline add row and Add BOQ Item dialog. Exact stable IDs are marked on WF-006 in the crosswalk. A subsequent pass traced the hierarchy table, row editor, section group, tags, unit selector, preset combobox and the comparison table integration, bringing the reviewed set to 128 of the route's 223 candidates; the 95 remaining include the rate-analysis inspector and import/paste flows.
 
 | Control group | Source behavior and service boundary |
 |---|---|
@@ -83,6 +83,18 @@ An additional 52 `ROUTE-012` candidates are traced through the page, BOQ header,
 | Table action routing | The page wires analysis, section move, duplicate-to-section, copy-rate-analysis, delete confirmation and keyword editing into `BoqTable`. The corresponding duplicate/update/delete service contracts are traced in the existing hierarchy review; table row editors and contextual-menu controls are not yet covered by this subset. |
 
 The two create forms accept quantity and rate as text and convert with `parseFloat(...) || 0`; negative values are rejected by the server schema, while malformed/empty input becomes zero. There is no auto-retry for a duplicate code: users receive the conflict toast and must correct the code. The source dialog's disabled button and server lock check are good safeguards, but the create lock check occurs before its transaction and is not reasserted inside; the existing race finding applies to both create surfaces.
+
+## BOQ hierarchy table and row-control trigger review
+
+The next 78 route candidates trace the grouped hierarchy, row editing, tags/units, selection and comparison-table callbacks. The crosswalk keeps the stable IDs; 93 of 223 route candidates remain open after this pass.
+
+| Control group | Source behavior and service boundary |
+|---|---|
+| Inline row editing | Row editing is available only when the user has BOQ edit access and enters row-edit mode. Code, description, unit, quantity, rate and tags save through `boq.update`; each save checks BOQ/item lock and edit access, re-reads the item under row lock inside a transaction, and derives amount from the current quantity and rate. Optimistic cache changes roll back on error and the list invalidates when the mutation settles. Unit changes use the configured unit selector; tags and keywords are stored as serialized string arrays. |
+| Sections, WBS and row menus | Items group by section/category and display derived WBS numbering; collapse, expansion, selection and description expansion are local view state. Context menus route to add-in-section, open-analysis, row-edit mode, move-section, duplicate, copy-rate-analysis, keyword edit/remove and confirmed delete callbacks. Renaming a section calls one `boq.update` per row through `Promise.all`, not one transaction; a partial failure can rename only part of the section and the UI reports a generic failure without invalidating the list. Contractor should make the group change atomic or expose partial completion and repair. |
+| Comparison table integration | In BOQ comparison mode, row click opens that item's rate analysis; recorded-cost mode exposes a source-line preview drawer. The shared `ConstructionTable` has selection, bulk-action, expansion and load-more handlers, but this page passes none of those props; its current instances are read-only tables with row-click or source-preview behavior. The candidate inventory retains those shared handlers as conditional component candidates. |
+
+The source item-lock and project-lock checks are enforced again by `boq.update`, and the row component also blocks edits when the BOQ is locked. Inline edit commits on Enter or blur and Escape restores the original value. Table selection, expansion, tags menus and unit menus are client state until their specific update callback runs; they are not independent server records.
 
 ## Government rate-analysis trigger review
 

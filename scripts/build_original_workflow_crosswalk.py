@@ -824,6 +824,14 @@ BOQ_ITEM_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/boq/components/boq-tab-header.tsx",
     "src/app/(app)/projects/[id]/boq/components/inline-add-row.tsx",
     "src/app/(app)/projects/[id]/boq/components/add-boq-item-dialog.tsx",
+    "src/app/(app)/projects/[id]/boq/components/boq-table.tsx",
+    "src/app/(app)/projects/[id]/boq/components/boq-section-group.tsx",
+    "src/app/(app)/projects/[id]/boq/components/boq-row.tsx",
+    "src/app/(app)/projects/[id]/boq/components/inline-edit.tsx",
+    "src/app/(app)/projects/[id]/boq/components/tags-dropdown.tsx",
+    "src/app/(app)/projects/[id]/boq/components/unit-select.tsx",
+    "src/app/(app)/projects/[id]/boq/components/preset-combobox.tsx",
+    "src/components/ui/construction-table.tsx",
 }
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
@@ -1114,7 +1122,7 @@ def main():
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
-                "core BOQ/rate/snapshot routes and permission contracts reviewed; 52 BOQ register/header/create-form triggers reviewed; row editing, rate inspector, import/paste and full catalog lifecycle remain unverified"
+                "core BOQ/rate/snapshot routes and permission contracts reviewed; 128 BOQ register/header/create/table-row triggers reviewed; rate inspector, import/paste and full catalog lifecycle remain unverified"
                 if workflow_id == "WF-006" else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
