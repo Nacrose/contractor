@@ -98,6 +98,7 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "accounting.updateLedgerEntry [Mutation]",
         "accounting.reverseLedgerEntry [Mutation]",
         "accounting.attachLedgerFile [Mutation]",
+        "finance.orgBankAccounts [Query]", "finance.createBankAccount [Mutation]",
     },
     "WF-025": {
         "bankGuarantee.list [Query]", "bankGuarantee.portfolioAlerts [Query]",
@@ -237,6 +238,13 @@ FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS = {
     "TRIGGER-ADC823E9BCAA", "TRIGGER-781FDB47C4A5",
 }
 
+ORG_BANK_ACCOUNT_REVIEWED_TRIGGERS = {
+    "TRIGGER-2FB31DCE534E", "TRIGGER-D99E477E72F9", "TRIGGER-95147E24E767",
+    "TRIGGER-ECD1C4CC38A8", "TRIGGER-440E045FC87E", "TRIGGER-7180CD5FF89A",
+    "TRIGGER-E9119DFDD216", "TRIGGER-5194D10CE2C1", "TRIGGER-09338892FE9A",
+    "TRIGGER-16F114FAC1D6", "TRIGGER-1B22D6F7DFAD", "TRIGGER-06E63FF364B9",
+}
+
 GUARANTEE_FINANCE_REVIEWED_TRIGGERS = {
     "TRIGGER-AD9D7CF6CF40", "TRIGGER-AA8753F79BAF", "TRIGGER-F2C866CE0895",
     "TRIGGER-AF9DBA8D7C06", "TRIGGER-91583E49D1ED", "TRIGGER-7B0DC4A7EA8C",
@@ -284,7 +292,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     },
     "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS | MY_ACCESS_REVIEWED_TRIGGERS,
     "WF-041": DASHBOARD_REVIEWED_TRIGGERS,
-    "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS | FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS,
+    "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS | FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS | ORG_BANK_ACCOUNT_REVIEWED_TRIGGERS,
     "WF-025": GUARANTEE_FINANCE_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
@@ -493,7 +501,7 @@ def main():
                 if workflow_id == "WF-017" else
                 "handover manager, selected My Tasks controls and My Access delegation-visibility path traced to source handlers and server guards; remaining route/shared controls and runtime are unverified"
                 if workflow_id == "WF-040" else
-                "Finance route tab/project navigation, project-cost widgets on project home/dashboard, and Day Book controls on finance/project accounting traced through source handlers and ledger guards; other finance controls, nested dialog actions and runtime remain unverified"
+                "Finance route tab/project navigation, organization bank-account controls, project-cost widgets on project home/dashboard, and Day Book controls on finance/project accounting traced through source handlers and ledger guards; other finance controls, nested dialog actions and runtime remain unverified"
                 if workflow_id == "WF-024" else
                 "organization guarantee register, create/edit form, extension dialog, view handoff, conversion, project link/unlink, release and deletion controls traced to source operations; remaining finance controls and runtime remain unverified"
                 if workflow_id == "WF-025" else
