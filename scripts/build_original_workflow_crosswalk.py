@@ -906,7 +906,9 @@ RATE_LIBRARY_SHARED_CONTROL_REVIEWED_SOURCE_FILES = {
     "src/components/ui/anchored-menu.tsx",
     "src/components/ui/batch-bar.tsx",
     "src/components/ui/construction-table.tsx",
+    "src/components/ui/confirm-dialog.tsx",
     "src/components/ui/dialog.tsx",
+    "src/components/ui/alert-dialog.tsx",
     "src/components/ui/input.tsx",
     "src/components/ui/query-error-alert.tsx",
     "src/components/ui/tabs.tsx",
@@ -919,6 +921,16 @@ RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/rate-catalogs/components/unrecognized-materials-tab.tsx",
     "src/app/(app)/rate-catalogs/page.tsx",
 }
+RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES |= (
+    RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES
+    | RATE_LIBRARY_EDITOR_REVIEWED_SOURCE_FILES
+    | RATE_LIBRARY_FINANCIAL_DIALOG_REVIEWED_SOURCE_FILES
+    | RATE_LIBRARY_COPY_SYNC_REVIEWED_SOURCE_FILES
+    | RATE_LIBRARY_MATERIAL_REGISTER_REVIEWED_SOURCE_FILES
+    | RATE_LIBRARY_MATERIAL_LIFECYCLE_REVIEWED_SOURCE_FILES
+    | RATE_LIBRARY_MATERIAL_EDITOR_REVIEWED_SOURCE_FILES
+    | RATE_LIBRARY_SHARED_CONTROL_REVIEWED_SOURCE_FILES
+)
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
