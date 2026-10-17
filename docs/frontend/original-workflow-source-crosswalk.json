@@ -617,6 +617,7 @@
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
       "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/field-submission.test.ts",
@@ -824,6 +825,7 @@
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
       "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/field-photos.test.ts",
@@ -1067,6 +1069,7 @@
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
       "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/site-expense.test.ts",
@@ -1800,6 +1803,7 @@
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
       "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/material-transaction.test.ts",
@@ -1984,6 +1988,7 @@
       "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
       "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/__tests__/field-query-persist.test.ts",
@@ -2332,6 +2337,7 @@
       "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
       "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/boq.test.ts",
@@ -2991,6 +2997,7 @@
       "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
       "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/rate-analysis.test.ts",
@@ -4276,6 +4283,7 @@
       "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
       "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/rate-profile.test.ts",
@@ -4557,6 +4565,7 @@
       "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
       "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/boq-version.test.ts",
@@ -5426,7 +5435,7 @@
         "ipc.update [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
-      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified",
       "sourceReviewedActionIds": [
         "ACTION-00E7966752C0",
         "ACTION-03FF583E0081",
@@ -5445,6 +5454,22 @@
         "ACTION-E6BCDEA706BB",
         "ACTION-F617D101CF35",
         "ACTION-FC14906C0521"
+      ],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-04AC43923638",
+        "TRIGGER-0A11FC0C6A59",
+        "TRIGGER-1DB6CCB24286",
+        "TRIGGER-27818C545EEB",
+        "TRIGGER-4354716F93F7",
+        "TRIGGER-698410CA6A2C",
+        "TRIGGER-7D8ED9A4EF29",
+        "TRIGGER-996E4159F385",
+        "TRIGGER-A276C14EF416",
+        "TRIGGER-A68E4F96FDAE",
+        "TRIGGER-CDC0053D7775",
+        "TRIGGER-D67AA39CC9B7",
+        "TRIGGER-EE2AF38FDE6F",
+        "TRIGGER-F568B9FF5A62"
       ],
       "sourceTestFiles": [
         {
@@ -6331,7 +6356,7 @@
         "ipc.update [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
-      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified",
       "sourceReviewedActionIds": [
         "ACTION-00E7966752C0",
         "ACTION-03FF583E0081",
@@ -6350,6 +6375,22 @@
         "ACTION-E6BCDEA706BB",
         "ACTION-F617D101CF35",
         "ACTION-FC14906C0521"
+      ],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-04AC43923638",
+        "TRIGGER-0A11FC0C6A59",
+        "TRIGGER-1DB6CCB24286",
+        "TRIGGER-27818C545EEB",
+        "TRIGGER-4354716F93F7",
+        "TRIGGER-698410CA6A2C",
+        "TRIGGER-7D8ED9A4EF29",
+        "TRIGGER-996E4159F385",
+        "TRIGGER-A276C14EF416",
+        "TRIGGER-A68E4F96FDAE",
+        "TRIGGER-CDC0053D7775",
+        "TRIGGER-D67AA39CC9B7",
+        "TRIGGER-EE2AF38FDE6F",
+        "TRIGGER-F568B9FF5A62"
       ],
       "sourceTestFiles": [
         {
@@ -7230,7 +7271,7 @@
         "ipc.update [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
-      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified",
       "sourceReviewedActionIds": [
         "ACTION-00E7966752C0",
         "ACTION-03FF583E0081",
@@ -7249,6 +7290,22 @@
         "ACTION-E6BCDEA706BB",
         "ACTION-F617D101CF35",
         "ACTION-FC14906C0521"
+      ],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-04AC43923638",
+        "TRIGGER-0A11FC0C6A59",
+        "TRIGGER-1DB6CCB24286",
+        "TRIGGER-27818C545EEB",
+        "TRIGGER-4354716F93F7",
+        "TRIGGER-698410CA6A2C",
+        "TRIGGER-7D8ED9A4EF29",
+        "TRIGGER-996E4159F385",
+        "TRIGGER-A276C14EF416",
+        "TRIGGER-A68E4F96FDAE",
+        "TRIGGER-CDC0053D7775",
+        "TRIGGER-D67AA39CC9B7",
+        "TRIGGER-EE2AF38FDE6F",
+        "TRIGGER-F568B9FF5A62"
       ],
       "sourceTestFiles": [
         {
@@ -8798,8 +8855,12 @@
         "vatRegister.getVatReturnSchedule10 [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
-      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-2E2F9FBCDE13",
+        "TRIGGER-A748EE47C9C7"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/vat-register.test.ts",
@@ -9508,8 +9569,9 @@
         "requisition.rejectPr [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
-      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/requisition.test.ts",
@@ -10212,8 +10274,9 @@
         "purchaseOrder.list [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
-      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/purchase-order.test.ts",
@@ -11328,8 +11391,9 @@
         "material.stockAlerts [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
-      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/material.test.ts",
@@ -12376,8 +12440,9 @@
         "interSiteTransfer.transferMaterial [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/tax-procurement-inventory-source-action-reconciliation.md",
-      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified",
+      "sourceReviewState": "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/inter-site-transfer.test.ts",
@@ -12874,8 +12939,18 @@
         "equipment.utilizationReport [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/equipment-source-action-reconciliation.md",
-      "sourceReviewState": "equipment router composition, selected UI entry points, permission and transaction boundaries reviewed; full control mapping and runtime remain unverified",
+      "sourceReviewState": "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-1C45C28218B4",
+        "TRIGGER-1F0F9C94B216",
+        "TRIGGER-37BBD120CF25",
+        "TRIGGER-567340D7370A",
+        "TRIGGER-65A0A3AED373",
+        "TRIGGER-9BCF1C2C7E6E",
+        "TRIGGER-BA0CD062C13B",
+        "TRIGGER-DC9604592B07"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/equipment.test.ts",
@@ -13369,8 +13444,18 @@
         "equipment.utilizationReport [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/equipment-source-action-reconciliation.md",
-      "sourceReviewState": "equipment router composition, selected UI entry points, permission and transaction boundaries reviewed; full control mapping and runtime remain unverified",
+      "sourceReviewState": "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-1C45C28218B4",
+        "TRIGGER-1F0F9C94B216",
+        "TRIGGER-37BBD120CF25",
+        "TRIGGER-567340D7370A",
+        "TRIGGER-65A0A3AED373",
+        "TRIGGER-9BCF1C2C7E6E",
+        "TRIGGER-BA0CD062C13B",
+        "TRIGGER-DC9604592B07"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/equipment-fuel.test.ts",
@@ -13864,8 +13949,18 @@
         "equipment.utilizationReport [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/equipment-source-action-reconciliation.md",
-      "sourceReviewState": "equipment router composition, selected UI entry points, permission and transaction boundaries reviewed; full control mapping and runtime remain unverified",
+      "sourceReviewState": "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [
+        "TRIGGER-1C45C28218B4",
+        "TRIGGER-1F0F9C94B216",
+        "TRIGGER-37BBD120CF25",
+        "TRIGGER-567340D7370A",
+        "TRIGGER-65A0A3AED373",
+        "TRIGGER-9BCF1C2C7E6E",
+        "TRIGGER-BA0CD062C13B",
+        "TRIGGER-DC9604592B07"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/equipment-spot-hire.test.ts",
@@ -14858,6 +14953,7 @@
       "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
       "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/hr.test.ts",
@@ -15327,6 +15423,7 @@
       "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
       "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/leave.test.ts",
@@ -15817,6 +15914,7 @@
       "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
       "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/payroll.test.ts",
@@ -17130,6 +17228,7 @@
       "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
       "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/accounting.test.ts",
@@ -18238,6 +18337,7 @@
       "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
       "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/bank-guarantee.test.ts",
@@ -19338,6 +19438,7 @@
       "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
       "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/fiscal-year.test.ts",
@@ -20254,6 +20355,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/dwg/dwg-native.test.ts",
@@ -21500,6 +21602,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/cad/__tests__/command-registry.test.ts",
@@ -22409,6 +22512,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/cad/__tests__/plot-engine.test.ts",
@@ -23256,6 +23360,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/document-engine/__tests__/measurement.test.ts",
@@ -23970,6 +24075,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/components/pdf-canvas/__tests__/storage-db.test.ts",
@@ -24925,6 +25031,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/gantt.test.ts",
@@ -25877,6 +25984,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/utils/__tests__/gantt-cpm.test.ts",
@@ -26829,6 +26937,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/__tests__/nepal-calendar.test.ts",
@@ -27776,6 +27885,7 @@
       "sourceReviewReference": "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md",
       "sourceReviewState": "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/utils/__tests__/xer-import.test.ts",
@@ -29282,7 +29392,7 @@
         "ipc.update [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
-      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified",
       "sourceReviewedActionIds": [
         "ACTION-00E7966752C0",
         "ACTION-03FF583E0081",
@@ -29292,6 +29402,7 @@
         "ACTION-E6BCDEA706BB",
         "ACTION-F617D101CF35"
       ],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/worksheet/__tests__/spreadsheet-engine.test.ts",
@@ -30806,7 +30917,7 @@
         "ipc.update [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
-      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified",
       "sourceReviewedActionIds": [
         "ACTION-00E7966752C0",
         "ACTION-03FF583E0081",
@@ -30816,6 +30927,7 @@
         "ACTION-E6BCDEA706BB",
         "ACTION-F617D101CF35"
       ],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/worksheet/__tests__/workbook-excel.test.ts",
@@ -31932,6 +32044,7 @@
       "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
       "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/jv-partner.test.ts",
@@ -32383,6 +32496,7 @@
       "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
       "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/rfi.test.ts",
@@ -32783,6 +32897,7 @@
       "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
       "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/responsibility-handover.test.ts",
@@ -33029,6 +33144,7 @@
       "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
       "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
+      "sourceReviewedTriggerIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/dashboard.test.ts",

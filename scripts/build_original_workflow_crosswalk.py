@@ -96,6 +96,28 @@ EQUIPMENT_WORKFLOWS = {"WF-018", "WF-019", "WF-020"}
 WORKFORCE_FINANCE_WORKFLOWS = {"WF-021", "WF-022", "WF-023", "WF-024", "WF-025", "WF-026"}
 DRAWING_PLANNING_WORKFLOWS = {"WF-027", "WF-028", "WF-029", "WF-030", "WF-031", "WF-032", "WF-033", "WF-034", "WF-035"}
 COMPLETION_WORKFLOWS = {"WF-038", "WF-039", "WF-040", "WF-041"}
+# Stable trigger IDs that have been followed from the rendered control through
+# its source handler. Keep this list deliberately narrower than the indexed
+# candidate set: inclusion means source behavior was reviewed, not runtime
+# parity was accepted. Evidence lives in the linked M13 reconciliation reports.
+IPC_REVIEWED_TRIGGERS = {
+    "TRIGGER-0A11FC0C6A59", "TRIGGER-27818C545EEB", "TRIGGER-1DB6CCB24286",
+    "TRIGGER-D67AA39CC9B7", "TRIGGER-04AC43923638", "TRIGGER-EE2AF38FDE6F",
+    "TRIGGER-A68E4F96FDAE", "TRIGGER-7D8ED9A4EF29", "TRIGGER-CDC0053D7775",
+    "TRIGGER-996E4159F385", "TRIGGER-F568B9FF5A62", "TRIGGER-698410CA6A2C",
+    "TRIGGER-4354716F93F7", "TRIGGER-A276C14EF416",
+}
+EQUIPMENT_REVIEWED_TRIGGERS = {
+    "TRIGGER-DC9604592B07", "TRIGGER-BA0CD062C13B", "TRIGGER-567340D7370A",
+    "TRIGGER-37BBD120CF25", "TRIGGER-65A0A3AED373", "TRIGGER-1C45C28218B4",
+    "TRIGGER-1F0F9C94B216", "TRIGGER-9BCF1C2C7E6E",
+}
+VAT_REVIEWED_TRIGGERS = {"TRIGGER-A748EE47C9C7", "TRIGGER-2E2F9FBCDE13"}
+REVIEWED_TRIGGERS_BY_WORKFLOW = {
+    **{workflow_id: IPC_REVIEWED_TRIGGERS for workflow_id in ("WF-010", "WF-011", "WF-012")},
+    **{workflow_id: EQUIPMENT_REVIEWED_TRIGGERS for workflow_id in ("WF-018", "WF-019", "WF-020")},
+    "WF-013": VAT_REVIEWED_TRIGGERS,
+}
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
 
@@ -182,6 +204,18 @@ def main():
             for action in indexed_route["reachableProcedureCandidates"]
             if action["candidateDefinition"].startswith(("ipc.", "worksheet."))
         ) if workflow_id in USER_DECISIONS else []
+        workflow_trigger_ids = {
+            action["actionId"] for route_path in path_list
+            if (indexed_route := routes_by_path.get(route_path))
+            for action in triggers_by_route.get(indexed_route["routeId"], [])
+        }
+        reviewed_trigger_ids = sorted(REVIEWED_TRIGGERS_BY_WORKFLOW.get(workflow_id, set()))
+        missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
+        if missing_reviewed_triggers:
+            raise SystemExit(
+                f"reviewed trigger IDs not reachable from {workflow_id} routes: "
+                + ", ".join(missing_reviewed_triggers)
+            )
         engine_files = sorted(set(re.findall(r"(?:src|tests)/[A-Za-z0-9_./-]+\.(?:ts|tsx|js|jsx)", original.get("engine", ""))))
         test_files = sorted(set(re.findall(r"(?:src|tests)/[A-Za-z0-9_./-]+\.(?:ts|tsx|js|jsx)", original.get("tests", ""))))
         service_hints = SERVICE_HINTS[workflow_id]
@@ -232,16 +266,17 @@ def main():
             "offlinePolicies": sorted({action["offlinePolicy"] for action in unique_actions.values()}),
             "userDirectedDisposition": USER_DECISIONS.get(workflow_id),
             "sourceReviewedActionIds": ipc_reviewed_actions,
+            "sourceReviewedTriggerIds": reviewed_trigger_ids,
             "sourceReviewState": (
-                "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified"
+                "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified"
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS else
-                "tax, procurement, stock and transfer server permissions/transitions reviewed; UI paths and transaction acceptance remain unverified"
+                "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
-                "equipment router composition, selected UI entry points, permission and transaction boundaries reviewed; full control mapping and runtime remain unverified"
+                "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified"
                 if workflow_id in EQUIPMENT_WORKFLOWS else
                 "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified"
                 if workflow_id in WORKFORCE_FINANCE_WORKFLOWS else
