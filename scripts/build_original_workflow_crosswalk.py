@@ -101,6 +101,23 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "responsibilityHandover.accountOptions [Query]",
         "responsibilityHandover.discoverAssignments [Query]",
         "responsibilityHandover.pendingItems [Query]",
+        # Access administration lives in the imported PeopleAccessManager,
+        # rather than in the hierarchy page's direct hook inventory.
+        "peopleAccess.catalog [Query]",
+        "peopleAccess.eligibleUsers [Query]",
+        "peopleAccess.eligibleProjects [Query]",
+        "peopleAccess.listUserGrants [Query]",
+        "peopleAccess.effectiveAccess [Query]",
+        "peopleAccess.templates [Query]",
+        "peopleAccess.listGrantAuthorities [Query]",
+        "peopleAccess.grant [Mutation]",
+        "peopleAccess.revoke [Mutation]",
+        "peopleAccess.revokeAllForUser [Mutation]",
+        "peopleAccess.copyGrants [Mutation]",
+        "peopleAccess.createTemplate [Mutation]",
+        "peopleAccess.applyTemplate [Mutation]",
+        "peopleAccess.setGrantAuthority [Mutation]",
+        "peopleAccess.revokeGrantAuthority [Mutation]",
     },
     "WF-041": {"GET /api/dashboard"},
     "WF-013": {
@@ -958,6 +975,20 @@ HIERARCHY_POSITION_REVIEWED_SOURCE_FILES = {
     "src/components/people-access/effective-access-panel.tsx",
     "src/components/scoped-position-manager.tsx",
 }
+HIERARCHY_REMAINING_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/hr/hierarchy/page.tsx",
+    "src/components/people-access-manager.tsx",
+    "src/components/people-access/permission-tree-picker.tsx",
+    "src/components/people-access/grant-list.tsx",
+    "src/components/people-access/effective-access-panel.tsx",
+    "src/components/people-access/duration-field.tsx",
+    "src/components/ui/confirm-dialog.tsx",
+    "src/components/ui/alert-dialog.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/input.tsx",
+    "src/components/module-tabs.tsx",
+    "src/components/navigation-context-menu.tsx",
+}
 RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/rate-library/page.tsx",
     "src/app/(app)/projects/[id]/boq/components/catalog-rates-library.tsx",
@@ -1526,6 +1557,14 @@ def main():
                 and indexed_route["routeId"] == "ROUTE-102"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in HIERARCHY_POSITION_REVIEWED_SOURCE_FILES
+            )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-102"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in HIERARCHY_REMAINING_REVIEWED_SOURCE_FILES
             )
         replacement_trigger_ids = sorted({
             action["actionId"]
