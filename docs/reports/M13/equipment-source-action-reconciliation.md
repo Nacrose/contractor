@@ -27,3 +27,17 @@ The shared equipment route includes fleet, logs, maintenance, rentals, fuel and 
 Contractor implementations should preserve separate permissions for operational edits, financial visibility, accounting postings, approvals and reversals. Fuel issuance and physical tank reconciliation must keep inventory and ledger consequences atomic. Spot-hire approval must remain distinct from bill consolidation, and billed tickets must not be editable or voidable through a bypass. None of these operations appears in the documented field outbox; do not assume offline mutation support.
 
 M00 marks all three source workflows implemented, but that status and source-file presence do not establish runtime acceptance. Full UI-trigger mapping, transaction tests and deployed-backend compatibility remain open under T01/T04.
+
+## Consequential UI trigger review
+
+These stable trigger IDs were checked against their source handlers in the equipment route and imported dialogs. They cover the fuel-audit and commercial commit points called out above; they do not complete the route's full control inventory.
+
+| Trigger ID | Observed user action and source procedure | Review consequence |
+|---|---|---|
+| `TRIGGER-DC9604592B07`, `TRIGGER-BA0CD062C13B` | Opens the fuel dip-reading dialog for a new tank or selected tank. | Dialog entry alone records no stock change; retain distinction from reconciliation. |
+| `TRIGGER-567340D7370A` | Submits a dip reading to `equipment.recordDipReading` after tank/material and measured level checks. | Record an immutable observation; do not represent it as an inventory correction. |
+| `TRIGGER-37BBD120CF25` | Submits spot-hire ticket details through `equipment.createSpotHire`. | Keep ticket creation separate from submission/approval and bill creation. |
+| `TRIGGER-65A0A3AED373` | Submits selected tickets and bill identity to `equipment.consolidateToBill`. | Preserve server-side same-vendor, approved/unbilled checks, row locks and duplicate-bill protection. |
+| `TRIGGER-1C45C28218B4` | Calls `equipment.approveBillingRun` for a rental billing run. | Requires distinct approval plus accounting permission and unlocked period; do not collapse into generation. |
+| `TRIGGER-1F0F9C94B216` | Calls `equipment.reverseBillingRun` with a required reason. | Preserve reversal as a separate audited accounting action with its period/state checks. |
+| `TRIGGER-9BCF1C2C7E6E` | Creates a rental with equipment, vendor, type and rate through `equipment.createRental`. | Keep rental contract creation distinct from billing-run generation and approval. |
