@@ -862,6 +862,16 @@ BOQ_SHARED_CONTROL_REVIEWED_SOURCE_FILES = {
     "src/components/ui/dialog.tsx",
     "src/components/ui/input.tsx",
 }
+BOQ_ROUTE_REVIEWED_SOURCE_FILES = (
+    BOQ_ITEM_REVIEWED_SOURCE_FILES
+    | RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES
+    | BOQ_PASTE_REVIEWED_SOURCE_FILES
+    | RATE_PROFILE_REFRESH_REVIEWED_SOURCE_FILES
+    | RATE_INGREDIENT_PICKER_REVIEWED_SOURCE_FILES
+    | BOQ_FLOATING_ACTION_REVIEWED_SOURCE_FILES
+    | BOQ_QUERY_ERROR_REVIEWED_SOURCE_FILES
+    | BOQ_SHARED_CONTROL_REVIEWED_SOURCE_FILES
+)
 RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/rate-library/page.tsx",
     "src/app/(app)/projects/[id]/boq/components/catalog-rates-library.tsx",
@@ -1175,6 +1185,14 @@ def main():
                 if (indexed_route := routes_by_path.get(route_path))
                 and indexed_route["routeId"] == "ROUTE-012"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in BOQ_ROUTE_REVIEWED_SOURCE_FILES
+            )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-012"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES
             )
             reviewed_ids.update(
@@ -1258,6 +1276,14 @@ def main():
                 if action["sourceFile"] in RATE_LIBRARY_SHARED_CONTROL_REVIEWED_SOURCE_FILES
             )
         if workflow_id == "WF-008":
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-012"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in BOQ_ROUTE_REVIEWED_SOURCE_FILES
+            )
             reviewed_ids.update(
                 action["actionId"]
                 for route_path in path_list
