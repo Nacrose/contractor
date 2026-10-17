@@ -912,6 +912,13 @@ RATE_LIBRARY_SHARED_CONTROL_REVIEWED_SOURCE_FILES = {
     "src/components/ui/tabs.tsx",
     "src/components/unit-select.tsx",
 }
+RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/rate-catalogs/components/catalog-detail.tsx",
+    "src/app/(app)/rate-catalogs/components/org-presets-panel.tsx",
+    "src/app/(app)/rate-catalogs/components/promote-uncataloged-dialog.tsx",
+    "src/app/(app)/rate-catalogs/components/unrecognized-materials-tab.tsx",
+    "src/app/(app)/rate-catalogs/page.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -1317,6 +1324,14 @@ def main():
                 and indexed_route["routeId"] == "ROUTE-111"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_LIBRARY_SHARED_CONTROL_REVIEWED_SOURCE_FILES
+            )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-117"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES
             )
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
