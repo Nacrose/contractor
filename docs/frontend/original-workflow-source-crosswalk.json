@@ -22500,7 +22500,7 @@
         "projectCost.stats [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
-      "sourceReviewState": "project-cost widgets on project home/dashboard and Day Book controls on finance/project accounting traced through source handlers, ledger guards and selected dialogs; other finance controls, nested dialog actions and runtime remain unverified",
+      "sourceReviewState": "Finance route tab/project navigation, project-cost widgets on project home/dashboard, and Day Book controls on finance/project accounting traced through source handlers and ledger guards; other finance controls, nested dialog actions and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceReviewedTriggerIds": [
         "TRIGGER-025C4A917A18",
@@ -22546,6 +22546,7 @@
         "TRIGGER-66EFA0AD0914",
         "TRIGGER-6B5CBE94E918",
         "TRIGGER-76B0B8302701",
+        "TRIGGER-781FDB47C4A5",
         "TRIGGER-7C8CB45B34E4",
         "TRIGGER-7E67AA76E0FE",
         "TRIGGER-8060A397DDFA",
@@ -22567,6 +22568,7 @@
         "TRIGGER-A90B6399CA26",
         "TRIGGER-AAE70D432CF5",
         "TRIGGER-AD6480D48C39",
+        "TRIGGER-ADC823E9BCAA",
         "TRIGGER-ADEE960DC6BC",
         "TRIGGER-B311ADAE730C",
         "TRIGGER-B4CAF7F607F1",
