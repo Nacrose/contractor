@@ -902,6 +902,24 @@ IPC_REGISTER_REVIEWED_SOURCE_FILES = {
     "src/components/ux/query-boundary.tsx",
     "src/components/ux/register-page.tsx",
 }
+VO_VERSION_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/variations/page.tsx",
+    "src/app/(app)/projects/[id]/variations/[voId]/page.tsx",
+    "src/app/(app)/projects/[id]/boq/components/boq-versions-tab.tsx",
+    "src/components/module-tabs.tsx",
+    "src/components/navigation-context-menu.tsx",
+    "src/components/ui/action-bar.tsx",
+    "src/components/ui/alert-dialog.tsx",
+    "src/components/ui/confirm-dialog.tsx",
+    "src/components/ui/construction-table.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/input.tsx",
+    "src/components/ui/query-error-alert.tsx",
+    "src/components/ui/tabs.tsx",
+    "src/components/ux/form-dialog.tsx",
+    "src/components/ux/query-boundary.tsx",
+    "src/components/ux/register-page.tsx",
+}
 RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/projects/[id]/rate-library/page.tsx",
     "src/app/(app)/projects/[id]/boq/components/catalog-rates-library.tsx",
@@ -1428,6 +1446,15 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in IPC_REGISTER_REVIEWED_SOURCE_FILES
             )
+        if workflow_id == "WF-009":
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] in {"ROUTE-047", "ROUTE-048"}
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in VO_VERSION_REVIEWED_SOURCE_FILES
+            )
         replacement_trigger_ids = sorted({
             action["actionId"]
             for route_path in path_list
@@ -1528,6 +1555,8 @@ def main():
                 if workflow_id == "WF-007" else
                 "all 218 ROUTE-111 rate-library trigger candidates traced across page, material and rate catalogs, shared controls and dialogs; broader WF-008 controls and runtime remain open"
                 if workflow_id == "WF-008" else
+                "all 189 mapped BOQ-version, Variation Order register/detail and IPC-detail trigger candidates source-reviewed; downstream projections, runtime and deployed service compatibility remain open"
+                if workflow_id == "WF-009" else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS - {"WF-006", "WF-007", "WF-008", "WF-009"} else
                 "purchase-order service boundaries reviewed; vendor bill and payment controls are in an unreferenced materials component"
@@ -1549,7 +1578,6 @@ def main():
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
                 "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified"
-                if workflow_id == "WF-009" else
                 "BOQ item create/edit/delete/duplicate service guards reviewed; principal hierarchy controls source-reviewed; import/export, remaining controls and runtime remain unverified"
                 if workflow_id == "WF-006" else
                 "rate-analysis batch, ingredient and copy controls source-reviewed; distinct from contractual BOQ rate editing; catalog/profile controls and runtime remain unverified"
