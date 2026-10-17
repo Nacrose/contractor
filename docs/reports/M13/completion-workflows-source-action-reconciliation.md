@@ -69,6 +69,8 @@ The global route reads `GET /api/dashboard`, `accounting.dayBook`, and `finance.
 
 ## WF-039 submittals register trigger review
 
+`ROUTE-042` (`/projects/[id]/rfis`) is an actionless compatibility alias: its page resolves the project ID and redirects to `/projects/{id}/workflow/rfi`. It has no JSX interaction candidates or direct service calls. The destination route owns all RFI reads, writes, guards and online-only behavior; preserve this redirect when implementing canonical route aliases.
+
 `ROUTE-045` (`/projects/[id]/submittals`) has 79 stable trigger candidates. All 79 are now marked reviewed in the crosswalk. The reviewed boundary covers the page, create/review dialogs, submit button, upload drop zone, register/action bar/table, confirmation and error surfaces, module navigation, and the shared context menu. This is source tracing only; it does not prove deployed behavior or runtime reachability in Contractor.
 
 | Control group | Trigger IDs | Source behavior and server boundary |
