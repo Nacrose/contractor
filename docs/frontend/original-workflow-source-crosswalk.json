@@ -110,8 +110,8 @@
         "workflow.dailyReport.updateReport [Mutation]",
         "workflow.dailyReport.uploadAttachment [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
+      "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -215,8 +215,8 @@
         "fieldSubmission.list [Query]",
         "fieldSubmission.reject [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
+      "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -307,8 +307,8 @@
         "siteExpense.list [Query]",
         "siteExpense.reject [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
+      "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -450,8 +450,8 @@
         "partner.listSubcontractors [Query]",
         "partner.listSuppliers [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
+      "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -606,8 +606,8 @@
       "sourceOperations": [
         "fieldSubmission.mySubmissions [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/field-and-sync-source-action-reconciliation.md",
+      "sourceReviewState": "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {

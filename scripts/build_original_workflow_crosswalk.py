@@ -86,6 +86,7 @@ USER_DECISIONS = {
     "WF-036": "Workbook editing uses the full GridCraft app; Contractor does not embed a separate editable worksheet surface for IPCs.",
     "WF-037": "Excel-compatible round-trip is qualified through the separate GridCraft workbook; preserve original data and fail closed on unproven round-trip fidelity.",
 }
+FIELD_WORKFLOWS = {"WF-001", "WF-002", "WF-003", "WF-004", "WF-005"}
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
 
@@ -216,11 +217,15 @@ def main():
             "sourceReviewState": (
                 "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified"
                 if workflow_id in USER_DECISIONS else
+                "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
+                if workflow_id in FIELD_WORKFLOWS else
                 "candidate crosswalk only; source action semantics require review"
             ),
             "sourceReviewReference": (
                 "docs/reports/M13/ipc-source-action-reconciliation.md"
-                if workflow_id in USER_DECISIONS else None
+                if workflow_id in USER_DECISIONS else
+                "docs/reports/M13/field-and-sync-source-action-reconciliation.md"
+                if workflow_id in FIELD_WORKFLOWS else None
             ),
             "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
         })
