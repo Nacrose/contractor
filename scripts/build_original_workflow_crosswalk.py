@@ -79,7 +79,7 @@ SERVICE_HINTS = {
     "WF-032": ["gantt."], "WF-033": ["gantt."], "WF-034": ["gantt."], "WF-035": ["gantt."],
     "WF-036": ["boq.", "ipc."], "WF-037": ["boq.", "ipc."], "WF-038": ["finance.", "partner."],
     "WF-039": ["rfi.", "submittal"], "WF-040": ["responsibility", "delegation", "dailyProgram", "peopleAccess.myAccess", "peopleAccess.catalog", "project."],
-    "WF-041": ["dashboard.", "finance.", "gantt."],
+    "WF-041": ["dashboard.", "finance.", "accounting.dayBook", "gantt."],
 }
 SOURCE_OPERATION_SUPPLEMENTS = {
     # Imported child component hooks on the hierarchy route are represented in
@@ -89,6 +89,7 @@ SOURCE_OPERATION_SUPPLEMENTS = {
         "responsibilityHandover.discoverAssignments [Query]",
         "responsibilityHandover.pendingItems [Query]",
     },
+    "WF-041": {"GET /api/dashboard"},
 }
 
 USER_DECISIONS = {
@@ -162,6 +163,20 @@ MY_ACCESS_REVIEWED_TRIGGERS = {
     "TRIGGER-2C664B8129E3", "TRIGGER-C17FCB1D0FA4",
     "TRIGGER-15FC9E72FF20", "TRIGGER-31435AE658F1",
 }
+DASHBOARD_REVIEWED_TRIGGERS = {
+    "TRIGGER-411DC4973510", "TRIGGER-DDB36BDCA5D0",
+    "TRIGGER-ECE6AF337ECD", "TRIGGER-FBAC827BFFF1",
+    "TRIGGER-D991132AC94B", "TRIGGER-010C5CF7DFFE",
+    "TRIGGER-80A4706EB42A", "TRIGGER-2F2D8B83FC9A",
+    "TRIGGER-AD196927821A",
+    "TRIGGER-EF1999667A41", "TRIGGER-F76C2E527C07", "TRIGGER-15A5F26D4086",
+    "TRIGGER-BD93B1C75FC9", "TRIGGER-21E13CFD5C6D", "TRIGGER-8B5866ACBFAF",
+    "TRIGGER-194E4D31C1AB", "TRIGGER-E1882D799ECF", "TRIGGER-253461056C2F",
+    "TRIGGER-814A2AF88617", "TRIGGER-203A8103B686", "TRIGGER-F71C8A446E3E",
+    "TRIGGER-5DE1F1541D26", "TRIGGER-E1BF273DACD1", "TRIGGER-81652519CD81",
+    "TRIGGER-E3E265BFE082", "TRIGGER-D2BB7F275340", "TRIGGER-BD39F906727A",
+    "TRIGGER-37C0252549E9",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -184,6 +199,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
         "TRIGGER-CFE26C3FCA70", "TRIGGER-B2A27D1834F5",
     },
     "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS | MY_ACCESS_REVIEWED_TRIGGERS,
+    "WF-041": DASHBOARD_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -407,7 +423,7 @@ def main():
                 if workflow_id == "WF-022" else
                 "advances, payroll management and payroll-allocation controls are in unreferenced components; calculation and approval journeys remain unmapped"
                 if workflow_id == "WF-023" else
-                "cross-project finance card is unreferenced from mapped finance/dashboard routes; remaining service and runtime coverage is open"
+                "global dashboard tab and conditional error controls plus its permission-filtered REST/query sources traced; project dashboard controls and runtime remain open"
                 if workflow_id in ("WF-024", "WF-041") else
                 "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified"
                 if workflow_id in EQUIPMENT_WORKFLOWS else
