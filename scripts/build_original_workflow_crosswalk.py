@@ -548,6 +548,18 @@ RFI_REGISTER_REVIEWED_TRIGGERS = {
     "TRIGGER-1E0E232B625C", "TRIGGER-76085F328A90", "TRIGGER-8FFEB57EF118",
     "TRIGGER-DA519346394A", "TRIGGER-D053199E80E0", "TRIGGER-EBE0C56E3111",
 }
+RFI_CREATE_REVIEWED_TRIGGERS = {
+    "TRIGGER-8D7045DBB57E", "TRIGGER-2529222ECCC0", "TRIGGER-D90CCB46BD51",
+    "TRIGGER-25A827B02CBA", "TRIGGER-88BD69A4ABE5", "TRIGGER-15320D1A4F48",
+    "TRIGGER-D23A032DF321", "TRIGGER-A1808F0767D5", "TRIGGER-D1BE7E8763E1",
+    "TRIGGER-46B378A84B27", "TRIGGER-446D666DB885", "TRIGGER-ECE80C7B9FF0",
+    "TRIGGER-A3BF525CDD35", "TRIGGER-491C29853F39", "TRIGGER-055AD2CFB561",
+    "TRIGGER-05BDB050A697", "TRIGGER-389A3D01B148", "TRIGGER-571CDA85A6D6",
+    "TRIGGER-F1BD07DDA76E", "TRIGGER-CF6E8F4839BB", "TRIGGER-18DFBF7CF5EC",
+    "TRIGGER-E16A712DA520", "TRIGGER-92FA3D396DC8", "TRIGGER-47DECF772BF8",
+    "TRIGGER-A87F09E2ADB0", "TRIGGER-A5EE30F7C601", "TRIGGER-C9D08EE937FC",
+    "TRIGGER-C160959B682A", "TRIGGER-93929269DA2B",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -583,7 +595,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-024": PROJECT_COST_DASHBOARD_REVIEWED_TRIGGERS | DAY_BOOK_REVIEWED_TRIGGERS | FINANCE_ROUTE_NAV_REVIEWED_TRIGGERS | ORG_BANK_ACCOUNT_REVIEWED_TRIGGERS | ORG_PAYABLES_REVIEWED_TRIGGERS | RECORD_INFLOW_REVIEWED_TRIGGERS | RECORD_PAYMENT_REVIEWED_TRIGGERS | DAY_BOOK_INSPECTOR_REVIEWED_TRIGGERS | EXTERNAL_BOOKKEEPING_REVIEWED_TRIGGERS,
     "WF-025": GUARANTEE_FINANCE_REVIEWED_TRIGGERS,
     "WF-038": JV_COMMISSION_REVIEWED_TRIGGERS,
-    "WF-039": SUBMITTALS_REGISTER_REVIEWED_TRIGGERS | RFI_REGISTER_REVIEWED_TRIGGERS,
+    "WF-039": SUBMITTALS_REGISTER_REVIEWED_TRIGGERS | RFI_REGISTER_REVIEWED_TRIGGERS | RFI_CREATE_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -823,7 +835,7 @@ def main():
                 if workflow_id == "WF-025" else
                 "JV agreement and commission payout controls on organization finance traced through IPC basis, project grants, delegation and ledger mutations; remaining JV and runtime paths remain unverified"
                 if workflow_id == "WF-038" else
-                "all 79 submittal-register controls plus the RFI route's page, toolbar and table selection/detail controls traced; RFI dialogs/import and the remaining lifecycle and runtime remain unverified"
+                "all 79 submittal-register controls plus 56 RFI route/list/create-form controls traced; RFI detail/respond, import/attachments, comments and runtime remain unverified"
                 if workflow_id == "WF-039" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
