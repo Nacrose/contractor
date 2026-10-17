@@ -5244,11 +5244,12 @@
         "rateProfile.previewApply [Query]"
       ],
       "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
-      "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
+      "sourceReviewState": "all five rate-profile refresh dialog controls, protected-rate replacement and fingerprint-bound apply reviewed; profile lifecycle, catalogs and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceReviewedTriggerIds": [
         "TRIGGER-6F74FFB4BB45",
         "TRIGGER-9499BC675885",
+        "TRIGGER-9FB16AC5E432",
         "TRIGGER-B91D32C59628",
         "TRIGGER-F6A5AA529D38"
       ],
@@ -5612,7 +5613,7 @@
         "variationOrder.updateStatus [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/commercial-source-action-reconciliation.md",
-      "sourceReviewState": "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified",
+      "sourceReviewState": "BOQ/version and variation-order service/permission boundaries reviewed; selected snapshot and VO lifecycle triggers reviewed; remaining BOQ/rate controls and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceReviewedTriggerIds": [
         "TRIGGER-017A47B74357",

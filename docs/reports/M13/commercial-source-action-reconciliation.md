@@ -123,8 +123,8 @@ The four stable trigger IDs from `ExcelPasteDialog` are marked source-reviewed f
 
 ## Rate-profile refresh trigger review
 
-The “Refresh profile rates” dialog in `ROUTE-012` was traced through preview and apply. `TRIGGER-B91D32C59628` opens the dialog; `TRIGGER-F6A5AA529D38` selects a profile and clears prior replacement choices; `TRIGGER-9499BC675885` opts a protected ingredient rate into replacement; and `TRIGGER-6F74FFB4BB45` submits the selected set with the preview fingerprint.
+The “Refresh profile rates” dialog in `ROUTE-012` was traced through open, close, preview and apply. `TRIGGER-B91D32C59628` opens it; `TRIGGER-9FB16AC5E432` follows the dialog open state; `TRIGGER-F6A5AA529D38` selects a profile and clears prior replacement choices; `TRIGGER-9499BC675885` opts a protected ingredient rate into replacement; and `TRIGGER-6F74FFB4BB45` submits the selected set with the preview fingerprint.
 
 The preview is a BOQ-view query. Applying is a BOQ-edit mutation that rechecks the target analysis and BOQ item belong to the project, rejects locked baselines, recomputes the preview inside a serializable transaction, rejects a stale fingerprint or ineligible replacement ID, applies only eligible rows, records rate provenance and recalculates the analysis. The UI also refetches the preview after a conflict. Contractor acceptance should preserve “fill missing rates” as the default, require explicit replacement for protected rates, and never silently apply a stale preview.
 
-All four controls are marked source-reviewed for WF-008. This does not cover profile creation/edit/deletion or the scoped rate-catalog import/synchronization lifecycle.
+All five refresh-dialog controls are marked source-reviewed for WF-008. Closing the dialog only changes local visibility state; it does not cancel a pending apply or clear the selected profile, and the parent can reopen the dialog while the mutation is pending. Apply itself is disabled while submitting. This does not cover profile creation/edit/deletion or the scoped rate-catalog import/synchronization lifecycle.

@@ -840,6 +840,9 @@ RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES = {
 BOQ_PASTE_REVIEWED_SOURCE_FILES = {
     "src/components/boq/excel-paste-dialog.tsx",
 }
+RATE_PROFILE_REFRESH_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/projects/[id]/boq/components/rate-profile-refresh.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -1069,6 +1072,15 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_ANALYSIS_INSPECTOR_REVIEWED_SOURCE_FILES
             )
+        if workflow_id == "WF-008":
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-012"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in RATE_PROFILE_REFRESH_REVIEWED_SOURCE_FILES
+            )
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
         if missing_reviewed_triggers:
@@ -1158,8 +1170,10 @@ def main():
                 if workflow_id == "WF-006" else
                 "rate-analysis ingredient, preset and read-only inspector controls on ROUTE-012 reviewed; ROUTE-111 rate-library controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id == "WF-007" else
+                "all five rate-profile refresh dialog controls, protected-rate replacement and fingerprint-bound apply reviewed; profile lifecycle, catalogs and runtime remain unverified"
+                if workflow_id == "WF-008" else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
-                if workflow_id in COMMERCIAL_WORKFLOWS else
+                if workflow_id in COMMERCIAL_WORKFLOWS - {"WF-006", "WF-007", "WF-008", "WF-009"} else
                 "purchase-order service boundaries reviewed; vendor bill and payment controls are in an unreferenced materials component"
                 if workflow_id == "WF-015" else
                 "inventory route/source transactions reviewed; store management, organization inventory and physical-count reconciliation screens are unreferenced from mapped routes"
@@ -1184,7 +1198,7 @@ def main():
                 if workflow_id == "WF-006" else
                 "rate-analysis batch, ingredient and copy controls source-reviewed; distinct from contractual BOQ rate editing; catalog/profile controls and runtime remain unverified"
                 if workflow_id == "WF-007" else
-                "rate-profile preview selection, protected-rate replacement and fingerprint-bound apply controls reviewed; catalogs and runtime remain unverified"
+                "all five rate-profile refresh dialog controls, protected-rate replacement and fingerprint-bound apply reviewed; profile lifecycle, catalogs and runtime remain unverified"
                 if workflow_id == "WF-008" else
                 "organization employment actions are in an unreferenced component and do not currently form a mapped employee lifecycle"
                 if workflow_id == "WF-021" else
