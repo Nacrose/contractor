@@ -37803,13 +37803,16 @@
       "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
       "serverSourceFiles": [
         "src/server/routers/daily-program.ts",
+        "src/server/routers/people-access.ts",
         "src/server/routers/project.ts",
         "src/server/routers/responsibility-handover.ts"
       ],
       "sourceActionIds": [
         "ACTION-0536CD78B2BB",
         "ACTION-1F8BC7B56D49",
+        "ACTION-29B1F084D7EE",
         "ACTION-2F96602DF4B3",
+        "ACTION-3B53D21ECDEA",
         "ACTION-4740A3AE2127",
         "ACTION-47D42A0DABBB",
         "ACTION-48E57F673E1B",
@@ -37818,6 +37821,7 @@
         "ACTION-8E36305123A3",
         "ACTION-A5BD76379E5A",
         "ACTION-B1F0F362CF05",
+        "ACTION-CAA77072E15D",
         "ACTION-E5EA31B07F3A",
         "ACTION-E6305AB8A61D"
       ],
@@ -37832,6 +37836,8 @@
         }
       ],
       "sourceOperations": [
+        "peopleAccess.catalog [Query]",
+        "peopleAccess.myAccess [Query]",
         "project.get [Query]",
         "project.getModules [Query]",
         "project.getOrgProfile [Query]",
@@ -37845,14 +37851,17 @@
         "workflow.dailyProgram.updateTaskExecution [Mutation]"
       ],
       "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
-      "sourceReviewState": "responsibility-handover manager controls and selected My Tasks date/search/edit/export controls traced to source handlers and server guards; remaining route/shared controls and runtime are unverified",
+      "sourceReviewState": "handover manager, selected My Tasks controls and My Access delegation-visibility path traced to source handlers and server guards; remaining route/shared controls and runtime are unverified",
       "sourceReviewedActionIds": [],
       "sourceReviewedTriggerIds": [
         "TRIGGER-0186CA25FFD2",
         "TRIGGER-01FAD93F5D39",
         "TRIGGER-04860F834927",
         "TRIGGER-04A3391ABA1E",
+        "TRIGGER-15FC9E72FF20",
         "TRIGGER-16D21EDDDF6B",
+        "TRIGGER-2C664B8129E3",
+        "TRIGGER-31435AE658F1",
         "TRIGGER-357F0099599C",
         "TRIGGER-480DA02FE40B",
         "TRIGGER-5CFB8DB4A5CD",
@@ -37872,6 +37881,7 @@
         "TRIGGER-B07BE401825D",
         "TRIGGER-B38B26A28EA4",
         "TRIGGER-BD0B4703148B",
+        "TRIGGER-C17FCB1D0FA4",
         "TRIGGER-CA3BDCDFD65A",
         "TRIGGER-CB0DC7C2D9F5",
         "TRIGGER-DC28ECDC49A6",

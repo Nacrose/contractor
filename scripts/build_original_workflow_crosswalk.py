@@ -78,7 +78,7 @@ SERVICE_HINTS = {
     "WF-030": ["drawing", "pdf"], "WF-031": ["boq.", "drawing", "takeoff"],
     "WF-032": ["gantt."], "WF-033": ["gantt."], "WF-034": ["gantt."], "WF-035": ["gantt."],
     "WF-036": ["boq.", "ipc."], "WF-037": ["boq.", "ipc."], "WF-038": ["finance.", "partner."],
-    "WF-039": ["rfi.", "submittal"], "WF-040": ["responsibility", "delegation", "dailyProgram", "project."],
+    "WF-039": ["rfi.", "submittal"], "WF-040": ["responsibility", "delegation", "dailyProgram", "peopleAccess.myAccess", "peopleAccess.catalog", "project."],
     "WF-041": ["dashboard.", "finance.", "gantt."],
 }
 
@@ -149,6 +149,10 @@ HANDOVER_MY_TASKS_REVIEWED_TRIGGERS = {
     "TRIGGER-DC28ECDC49A6", "TRIGGER-AE8B71BFA76D", "TRIGGER-6286A652A3CC",
     "TRIGGER-04A3391ABA1E",
 }
+MY_ACCESS_REVIEWED_TRIGGERS = {
+    "TRIGGER-2C664B8129E3", "TRIGGER-C17FCB1D0FA4",
+    "TRIGGER-15FC9E72FF20", "TRIGGER-31435AE658F1",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -170,7 +174,7 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
         "TRIGGER-384576D431E6", "TRIGGER-00DDAB0064FC", "TRIGGER-37BB12FF0D68",
         "TRIGGER-CFE26C3FCA70", "TRIGGER-B2A27D1834F5",
     },
-    "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS,
+    "WF-040": HANDOVER_REVIEWED_TRIGGERS | HANDOVER_MY_TASKS_REVIEWED_TRIGGERS | MY_ACCESS_REVIEWED_TRIGGERS,
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
@@ -373,7 +377,7 @@ def main():
                 if workflow_id == "WF-016" else
                 "transfer dialog fields, mode, submit, dismiss and success callbacks reviewed; transfer list, GRN receipt and cancellation controls are in unreferenced components and are not reachable from the mapped routes"
                 if workflow_id == "WF-017" else
-                "responsibility-handover manager controls and selected My Tasks date/search/edit/export controls traced to source handlers and server guards; remaining route/shared controls and runtime are unverified"
+                "handover manager, selected My Tasks controls and My Access delegation-visibility path traced to source handlers and server guards; remaining route/shared controls and runtime are unverified"
                 if workflow_id == "WF-040" else
                 "tax, procurement, stock and transfer server permissions/transitions reviewed; selected direct VAT bill/attachment triggers reviewed; remaining UI paths and transaction acceptance remain unverified"
                 if workflow_id in TAX_MATERIALS_WORKFLOWS else
