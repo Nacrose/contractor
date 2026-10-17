@@ -158,14 +158,25 @@ REVIEWED_TRIGGERS_BY_WORKFLOW = {
 }
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 ORPHAN_UI_WORKFLOW_OVERRIDES = {
-    # These focused source reviews prevent shared material-list queries from
-    # attributing store management to purchasing or field-material workflows.
+    # Explicit source-to-workflow assignments prevent shared hooks such as
+    # `project.get`, `material.list` and `hr.*` from creating false ownership.
+    "src/app/(app)/finance/components/org-inventory-tab.tsx": {"WF-016"},
+    "src/app/(app)/projects/[id]/hr/components/advances-ledger-tab.tsx": {"WF-023"},
+    "src/app/(app)/projects/[id]/hr/components/daily-attendance-tab.tsx": {"WF-022"},
+    "src/app/(app)/projects/[id]/hr/components/leaves-tab.tsx": {"WF-022"},
+    "src/app/(app)/projects/[id]/hr/components/muster-roll-tab.tsx": {"WF-022"},
+    "src/app/(app)/projects/[id]/hr/components/payroll-management-tab.tsx": {"WF-023"},
+    "src/app/(app)/projects/[id]/hr/dialogs/payroll-allocation-dialog.tsx": {"WF-023"},
+    "src/components/organization-employment-manager.tsx": {"WF-021"},
     "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx": {"WF-016"},
     "src/app/(app)/projects/[id]/materials/components/inter-site-transfers-tab.tsx": {"WF-017"},
+    "src/app/(app)/projects/[id]/materials/components/materials-transactions-tab.tsx": {"WF-016"},
+    "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx": {"WF-015"},
     "src/components/inventory/transfer-acknowledgement-dialog.tsx": {"WF-017"},
     "src/components/inventory/reconciliation-report.tsx": {"WF-016"},
-    "src/app/(app)/finance/components/org-inventory-tab.tsx": {"WF-016"},
-    "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx": {"WF-015"},
+    "src/components/inventory/procurement-lookahead-widget.tsx": {"WF-014", "WF-033"},
+    "src/components/people-access/access-review-report.tsx": {"WF-040"},
+    "src/components/dashboard/cross-project-financials-card.tsx": {"WF-024", "WF-041"},
 }
 
 
@@ -356,6 +367,14 @@ def main():
                 if workflow_id == "WF-007" else
                 "rate-profile preview selection, protected-rate replacement and fingerprint-bound apply controls reviewed; catalogs and runtime remain unverified"
                 if workflow_id == "WF-008" else
+                "organization employment actions are in an unreferenced component and do not currently form a mapped employee lifecycle"
+                if workflow_id == "WF-021" else
+                "attendance, leave and muster-roll components are unreferenced from the mapped routes; server endpoints do not establish a navigable workflow"
+                if workflow_id == "WF-022" else
+                "advances, payroll management and payroll-allocation controls are in unreferenced components; calculation and approval journeys remain unmapped"
+                if workflow_id == "WF-023" else
+                "cross-project finance card is unreferenced from mapped finance/dashboard routes; remaining service and runtime coverage is open"
+                if workflow_id in ("WF-024", "WF-041") else
                 "equipment router composition, permission and transaction boundaries reviewed; selected fuel, spot-hire and rental billing triggers reviewed; remaining control mapping and runtime remain unverified"
                 if workflow_id in EQUIPMENT_WORKFLOWS else
                 "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified"
