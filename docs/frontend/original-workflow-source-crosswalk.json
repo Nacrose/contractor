@@ -2802,8 +2802,8 @@
         "hr.uploadStaffDocument [Mutation]",
         "hr.viewAccess [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
+      "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -2949,8 +2949,8 @@
         "hr.bulkLogAttendance [Mutation]",
         "hr.getAttendanceByDate [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
+      "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3053,8 +3053,8 @@
         "hr.bulkLogAttendance [Mutation]",
         "hr.getAttendanceByDate [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
+      "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3173,8 +3173,8 @@
         "finance.orgPayables [Query]",
         "finance.orgSettleMultiBill [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
+      "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3276,8 +3276,8 @@
         "finance.orgPayables [Query]",
         "finance.orgSettleMultiBill [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
+      "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -3371,8 +3371,8 @@
         "finance.orgPayables [Query]",
         "finance.orgSettleMultiBill [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md",
+      "sourceReviewState": "workforce, accounting, payroll and fiscal-lock source boundaries reviewed; full control mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
