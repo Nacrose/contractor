@@ -1,0 +1,5206 @@
+{
+  "limitations": [
+    "Route and service links are explicit review candidates; shared route services can serve more than one workflow.",
+    "M00 engine/test entries are compared for file existence only; existence does not prove execution or current behavior.",
+    "A present M00 engine file absent from mapped route/action source links may be a server lifecycle, orphaned UI module or incomplete route mapping; it is retained for review.",
+    "Unreferenced UI components with matching service hooks are candidates only; they may be intentionally dormant, legacy or omitted from the route graph.",
+    "User-directed IPC/GridCraft dispositions supersede only the listed source editing/import outcomes."
+  ],
+  "sourceCommit": "7d06a8a51826639b554e30d11a8b0b8f7d095259",
+  "sourceMatrix": "docs/reports/M00/feature-matrix.json",
+  "workflowCount": 41,
+  "workflows": [
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Field Data / Daily report capture",
+          "packet": "T07",
+          "routeId": "ROUTE-083",
+          "sourcePage": "src/app/m/log/report/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Workflow / Daily reports",
+          "packet": "T07",
+          "routeId": "ROUTE-055",
+          "sourcePage": "src/app/(app)/projects/[id]/workflow/reports/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Workflow / Report detail",
+          "packet": "T07",
+          "routeId": "ROUTE-051",
+          "sourcePage": "src/app/(app)/projects/[id]/workflow/reports/[reportId]/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Workflow / Report edit",
+          "packet": "T07",
+          "routeId": "ROUTE-050",
+          "sourcePage": "src/app/(app)/projects/[id]/workflow/reports/[reportId]/edit/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/field-entry-builders.ts"
+      ],
+      "description": "Capture daily site logs, weather conditions, hindrances, site notes, and general site progress from mobile/tablet.",
+      "domain": "Field Operations",
+      "m13Packet": "T07",
+      "name": "Daily Site Log & Diary",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [
+        "ACTION-OUTBOX-983FB40FCD",
+        "ACTION-OUTBOX-413198CCB7"
+      ],
+      "outboxOperations": [
+        "fieldSubmission.create",
+        "workflow.dailyReport.createFieldReport"
+      ],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M04)",
+        "webDesktop": "Partial (Office review)",
+        "webMobile": "Implemented (/m/log)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/daily-report-attachments.ts",
+        "src/server/routers/daily-report.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-034DC29AD82B",
+        "ACTION-11911D87D753",
+        "ACTION-131DA7EBCBF6",
+        "ACTION-565FFEDD3B18",
+        "ACTION-5ECE6E309A43",
+        "ACTION-68FD3343321B",
+        "ACTION-6CA14B20E8FB",
+        "ACTION-73B13C8E4136",
+        "ACTION-749C361057F4",
+        "ACTION-9F04A5990AF1",
+        "ACTION-A5D33F09DC9E",
+        "ACTION-B0061C2B0ED4",
+        "ACTION-B2DB46D8799F",
+        "ACTION-DB1955E9D70B",
+        "ACTION-E06EC11FD05B",
+        "ACTION-E49C3A70D878",
+        "ACTION-E5FF352511D5"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/field-entry-builders.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "workflow.dailyReport.actionAccess [Query]",
+        "workflow.dailyReport.createReport [Mutation]",
+        "workflow.dailyReport.deleteAttachment [Mutation]",
+        "workflow.dailyReport.deleteReport [Mutation]",
+        "workflow.dailyReport.emailReport [Mutation]",
+        "workflow.dailyReport.getReport [Query]",
+        "workflow.dailyReport.updateReport [Mutation]",
+        "workflow.dailyReport.uploadAttachment [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/field-submission.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-2558933B6963",
+        "TRIGGER-2F8A8B854986",
+        "TRIGGER-510ECA8EE44C",
+        "TRIGGER-5F6BFA9B4D80",
+        "TRIGGER-67DCC90776A7",
+        "TRIGGER-844E79497A1E",
+        "TRIGGER-AF0646E6F737",
+        "TRIGGER-BE59F25879E8",
+        "TRIGGER-F6DA9D71F8CA",
+        "TRIGGER-FEF203CCDA21"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-001"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Field Data / Photo capture",
+          "packet": "T07",
+          "routeId": "ROUTE-086",
+          "sourcePage": "src/app/m/photos/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Field Data / Project field records",
+          "packet": "T07",
+          "routeId": "ROUTE-100",
+          "sourcePage": "src/app/(app)/projects/[id]/field-data/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Drawing progress",
+          "packet": "T27",
+          "routeId": "ROUTE-097",
+          "sourcePage": "src/app/(app)/projects/[id]/drawings/progress/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/field-photo.ts"
+      ],
+      "description": "Site photo capture via device camera, automatic canvas compression (<=1280px JPEG q0.75), GPS stamping, and outbox sync.",
+      "domain": "Field Operations",
+      "m13Packet": "T07",
+      "name": "Field Photo Snap & Geotagging",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [
+        "ACTION-OUTBOX-9872C1AE1B",
+        "ACTION-OUTBOX-983FB40FCD"
+      ],
+      "outboxOperations": [
+        "fieldPhotos.create",
+        "fieldSubmission.create"
+      ],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M04)",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/photos)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/field-photos.ts",
+        "src/server/routers/field-submission.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-1774A2845739",
+        "ACTION-17B1E902B382",
+        "ACTION-43C2BFC25E08",
+        "ACTION-73F0E1A0AD83"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/field-photo.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/routers/field-photos.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "fieldPhotos.mine [Query]",
+        "fieldSubmission.confirm [Mutation]",
+        "fieldSubmission.list [Query]",
+        "fieldSubmission.reject [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/field-photos.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-76A84DB843A9",
+        "TRIGGER-9C0895DC383F"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-002"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Field Data / Expense capture",
+          "packet": "T07",
+          "routeId": "ROUTE-081",
+          "sourcePage": "src/app/m/log/expense/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Field Data / Simple expense capture alias",
+          "packet": "T07",
+          "routeId": "ROUTE-087",
+          "sourcePage": "src/app/m/simple/expense/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Field Data / Project expenses",
+          "packet": "T07/T24",
+          "routeId": "ROUTE-099",
+          "sourcePage": "src/app/(app)/projects/[id]/expenses/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Site engineer petty cash expense logging, receipt photo attachment, office verification gate.",
+      "domain": "Field Operations",
+      "m13Packet": "T07",
+      "name": "Site Petty Cash & Expense Logging",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [
+        "ACTION-OUTBOX-983FB40FCD"
+      ],
+      "outboxOperations": [
+        "fieldSubmission.create"
+      ],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M05)",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/log)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/site-expense.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-216819EF6A8F",
+        "ACTION-8DA1F8CE265D",
+        "ACTION-9BDCE8220309",
+        "ACTION-AC12366B0ED3",
+        "ACTION-C69CF203ED41",
+        "ACTION-D648CBD6DCC4"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/site-expense.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "siteExpense.actionAccess [Query]",
+        "siteExpense.approve [Mutation]",
+        "siteExpense.create [Mutation]",
+        "siteExpense.delete [Mutation]",
+        "siteExpense.list [Query]",
+        "siteExpense.reject [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/site-expense.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-5915D62EB2C3",
+        "TRIGGER-7C85BD722CD4",
+        "TRIGGER-EEC0B8563EF4",
+        "TRIGGER-F165D8B21473"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-003"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Field Data / Material capture",
+          "packet": "T07",
+          "routeId": "ROUTE-082",
+          "sourcePage": "src/app/m/log/material/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Field Data / Simple material capture alias",
+          "packet": "T07/T20",
+          "routeId": "ROUTE-089",
+          "sourcePage": "src/app/m/simple/material/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Field Data / Submission review inbox",
+          "packet": "T07",
+          "routeId": "ROUTE-101",
+          "sourcePage": "src/app/(app)/projects/[id]/field-submissions/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Materials / Procurement and stock",
+          "packet": "T19/T20",
+          "routeId": "ROUTE-034",
+          "sourcePage": "src/app/(app)/projects/[id]/materials/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Receive materials directly at jobsite, record delivery note/challan, update site stock ledger with clientUuid idempotency.",
+      "domain": "Field Operations",
+      "m13Packet": "T07/T20",
+      "name": "Direct Site Material Delivery",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [
+        "ACTION-OUTBOX-983FB40FCD"
+      ],
+      "outboxOperations": [
+        "fieldSubmission.create"
+      ],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M05)",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/log)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/catalog-v2.ts",
+        "src/server/routers/field-submission.ts",
+        "src/server/routers/inter-site-transfer.ts",
+        "src/server/routers/material-crud.ts",
+        "src/server/routers/material-reconciliation.ts",
+        "src/server/routers/material-transaction.ts",
+        "src/server/routers/partner.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-13C9B600ABDF",
+        "ACTION-14BB46313C12",
+        "ACTION-1911FDE3600E",
+        "ACTION-2D44D79B3B4C",
+        "ACTION-4CCD0835F1BE",
+        "ACTION-4E4FB6A5EAA2",
+        "ACTION-50BAAB9D52B3",
+        "ACTION-5B98DBA6C1AA",
+        "ACTION-6332383C6FE8",
+        "ACTION-72C43E6BD381",
+        "ACTION-755118ACE445",
+        "ACTION-8361A2ADD06A",
+        "ACTION-8EBBA86E862C",
+        "ACTION-9F1A0A2ADF90",
+        "ACTION-A63C2D511902",
+        "ACTION-A7A7559CC78E",
+        "ACTION-B3449B972F59",
+        "ACTION-C4D39672665B",
+        "ACTION-C8E87F31E1E0",
+        "ACTION-CCFE6AB13FE8",
+        "ACTION-CDE1DB8624D7",
+        "ACTION-F0AF30DB8AE9",
+        "ACTION-F0C18AC09CED",
+        "ACTION-F3CA144D1FBB",
+        "ACTION-FB83BF210262"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/material-transaction.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "catalogV2.listMaterials [Query]",
+        "fieldSubmission.confirm [Mutation]",
+        "fieldSubmission.list [Query]",
+        "fieldSubmission.reject [Mutation]",
+        "interSiteTransfer.transferMaterial [Mutation]",
+        "material.actionAccess [Query]",
+        "material.checkProjectDeleteImpact [Query]",
+        "material.create [Mutation]",
+        "material.createBulkReceive [Mutation]",
+        "material.createGateEntry [Mutation]",
+        "material.createTransaction [Mutation]",
+        "material.delete [Mutation]",
+        "material.deleteMany [Mutation]",
+        "material.list [Query]",
+        "material.listByType [Query]",
+        "material.listCounts [Query]",
+        "material.listGateEntries [Query]",
+        "material.listTransactions [Query]",
+        "material.logDirectDelivery [Mutation]",
+        "partner.createSupplier [Mutation]",
+        "partner.listPartners [Query]",
+        "partner.listSubcontractors [Query]",
+        "partner.listSuppliers [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/material-transaction.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0195F2519309",
+        "TRIGGER-2A095E597430",
+        "TRIGGER-4183E96B0AFF",
+        "TRIGGER-58E07494D6C5",
+        "TRIGGER-87296E85AF7B",
+        "TRIGGER-A512EE0580A4",
+        "TRIGGER-EA65F9C65160",
+        "TRIGGER-EAAADCD04449",
+        "TRIGGER-F9B0E1166C9F",
+        "TRIGGER-FA95C96C955C",
+        "TRIGGER-FE034AAE2979"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "material.listOrgInventory"
+          ],
+          "sourceFile": "src/app/(app)/finance/components/org-inventory-tab.tsx"
+        },
+        {
+          "hooks": [
+            "material.list",
+            "storeLocation.create",
+            "storeLocation.list",
+            "storeLocation.transferStock"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx"
+        },
+        {
+          "hooks": [
+            "partner.listPartners",
+            "project.get",
+            "purchaseOrder.list",
+            "purchaseOrder.openBillablePOs",
+            "vendorBill.checkDuplicate",
+            "vendorBill.create",
+            "vendorBill.getThreeWayMatchData",
+            "vendorBill.list",
+            "vendorBill.recordPayment"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx"
+        },
+        {
+          "hooks": [
+            "material.approveCount",
+            "material.listCounts",
+            "material.physicalCount",
+            "material.reconciliation",
+            "material.rejectCount"
+          ],
+          "sourceFile": "src/components/inventory/reconciliation-report.tsx"
+        },
+        {
+          "hooks": [
+            "interSiteTransfer.receiveMaterial",
+            "storeLocation.list"
+          ],
+          "sourceFile": "src/components/inventory/transfer-acknowledgement-dialog.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-004"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Utility / Sync Status",
+          "packet": "T04/T29",
+          "routeId": "ROUTE-059",
+          "sourcePage": "src/app/(app)/sync/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Utility / Mobile sync status",
+          "packet": "T04",
+          "routeId": "ROUTE-091",
+          "sourcePage": "src/app/m/sync/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Utility / Offline",
+          "packet": "T04/T29",
+          "routeId": "ROUTE-062",
+          "sourcePage": "src/app/offline/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/field-query-persist.ts"
+      ],
+      "description": "Read query caching in IndexedDB for offline viewing of projects, tasks, daily reports, and chat channels.",
+      "domain": "Field Operations",
+      "m13Packet": "T04",
+      "name": "Field Offline Query Persistence & Sync",
+      "offlinePolicies": [
+        "durable-offline-read-whitelist"
+      ],
+      "offlineReadPaths": [
+        "chat.getMessages",
+        "chat.listChannels",
+        "fieldSubmission.mySubmissions",
+        "notification.list",
+        "partner.subcontractorOptions",
+        "project.list",
+        "punchList.list",
+        "workflow.dailyReport.listReports"
+      ],
+      "originalStatus": "implemented",
+      "outboxActionIds": [
+        "ACTION-OUTBOX-9872C1AE1B",
+        "ACTION-OUTBOX-983FB40FCD",
+        "ACTION-OUTBOX-DDA5119BD0",
+        "ACTION-OUTBOX-B02AA58064",
+        "ACTION-OUTBOX-413198CCB7"
+      ],
+      "outboxOperations": [
+        "fieldPhotos.create",
+        "fieldSubmission.create",
+        "punchList.create",
+        "punchList.updateStatus",
+        "workflow.dailyReport.createFieldReport"
+      ],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M03 SQLite)",
+        "webDesktop": "Not applicable",
+        "webMobile": "Implemented (/m)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/field-submission.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-12A71BAFE22E"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/field-query-persist.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "fieldSubmission.mySubmissions [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/__tests__/field-query-persist.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "notification.list"
+          ],
+          "sourceFile": "src/components/mobile/bottom-tab-bar.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-005"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / BOQ",
+          "packet": "T10",
+          "routeId": "ROUTE-012",
+          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/utils/boq-calc.ts"
+      ],
+      "description": "Multi-level contractual BoQ tree structure (Bill, Sub-bill, Item) with contract rates, quantities, and amounts.",
+      "domain": "Contractual BoQ & Rate Analysis",
+      "m13Packet": "T10",
+      "name": "BoQ Item Hierarchy & Quantities",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M06)",
+        "nativeMobile": "Target (M06)",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/boq.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-14D856AEA885",
+        "ACTION-3A0D9CA2B83E",
+        "ACTION-4B97D1189D71",
+        "ACTION-511359DF7F79",
+        "ACTION-5D52935A12A7",
+        "ACTION-8BEAEB63136A",
+        "ACTION-C267A6E68582"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/boq.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/boq-calc.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "boq.actionAccess [Query]",
+        "boq.compare [Query]",
+        "boq.create [Mutation]",
+        "boq.delete [Mutation]",
+        "boq.duplicate [Mutation]",
+        "boq.list [Query]",
+        "boq.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/boq.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0F7D742D81ED",
+        "TRIGGER-1998DB7344D9",
+        "TRIGGER-377CF47BC4E7",
+        "TRIGGER-3D523DC87758",
+        "TRIGGER-4BD0C700B7DE",
+        "TRIGGER-50DE23E8FF1F",
+        "TRIGGER-574B9B0DDE35",
+        "TRIGGER-5E15163DB887",
+        "TRIGGER-64D9713FB90B",
+        "TRIGGER-6AE063CAE705",
+        "TRIGGER-7B439089BC0C",
+        "TRIGGER-81DDE2B1EE4A",
+        "TRIGGER-9E5E48182CD0",
+        "TRIGGER-B9F704535421",
+        "TRIGGER-C6D702DE839B",
+        "TRIGGER-CF2A568A3433",
+        "TRIGGER-EAF23A01937F",
+        "TRIGGER-EB047350E1CD"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-006"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / BOQ",
+          "packet": "T10",
+          "routeId": "ROUTE-012",
+          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / Rate library",
+          "packet": "T11",
+          "routeId": "ROUTE-111",
+          "sourcePage": "src/app/(app)/projects/[id]/rate-library/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/utils/boq-calc.ts"
+      ],
+      "description": "Detailed unit rate breakdown into labor, material, equipment, and contractor overhead/profit per Nepal public procurement standards.",
+      "domain": "Contractual BoQ & Rate Analysis",
+      "m13Packet": "T11",
+      "name": "Government Rate Analysis (DoR/DUDBC Norms)",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M06)",
+        "nativeMobile": "Target (M06)",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/boq.ts",
+        "src/server/routers/catalog-v2.ts",
+        "src/server/routers/rate-analysis.ts",
+        "src/server/routers/rate-profile.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0A65DA5C5D70",
+        "ACTION-10A39374C024",
+        "ACTION-14D856AEA885",
+        "ACTION-1C303A2B4262",
+        "ACTION-3A0D9CA2B83E",
+        "ACTION-3E7953FE45EB",
+        "ACTION-409FA389644D",
+        "ACTION-4B97D1189D71",
+        "ACTION-511359DF7F79",
+        "ACTION-51E9B1ADAC8E",
+        "ACTION-53F27DDA6154",
+        "ACTION-5D52935A12A7",
+        "ACTION-78FDD76460E3",
+        "ACTION-8BEAEB63136A",
+        "ACTION-99ECE63DE479",
+        "ACTION-9A35F56A9FA5",
+        "ACTION-B12DB96A5178",
+        "ACTION-B9E4CEB5A3EF",
+        "ACTION-BAF7203CA2E2",
+        "ACTION-BDBC4F4D7E60",
+        "ACTION-C267A6E68582",
+        "ACTION-C6D45FAB8908",
+        "ACTION-CAC75E539DF2",
+        "ACTION-DCB1C6EE5475",
+        "ACTION-E13082A6D5CE",
+        "ACTION-F4E2A1531C60"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/rate-analysis.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/boq-calc.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "boq.actionAccess [Query]",
+        "boq.compare [Query]",
+        "boq.create [Mutation]",
+        "boq.delete [Mutation]",
+        "boq.duplicate [Mutation]",
+        "boq.list [Query]",
+        "boq.update [Mutation]",
+        "catalogV2.bulkSetRates [Mutation]",
+        "catalogV2.createRateCatalog [Mutation]",
+        "catalogV2.getRateCatalog [Query]",
+        "catalogV2.listRateCatalogs [Query]",
+        "catalogV2.setRate [Mutation]",
+        "catalogV2.syncRateCatalog [Mutation]",
+        "catalogV2.updateRateCatalog [Mutation]",
+        "rateAnalysis.addIngredient [Mutation]",
+        "rateAnalysis.copyIngredients [Mutation]",
+        "rateAnalysis.deleteIngredient [Mutation]",
+        "rateAnalysis.list [Query]",
+        "rateAnalysis.listIngredients [Query]",
+        "rateAnalysis.update [Mutation]",
+        "rateAnalysis.updateIngredient [Mutation]",
+        "rateProfile.batchApply [Mutation]",
+        "rateProfile.list [Query]",
+        "rateProfile.previewApply [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/rate-analysis.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0F0522853284",
+        "TRIGGER-0F7D742D81ED",
+        "TRIGGER-1998DB7344D9",
+        "TRIGGER-1A3276D5ABE2",
+        "TRIGGER-1FEB346A8037",
+        "TRIGGER-243036477F30",
+        "TRIGGER-25326B7B97B1",
+        "TRIGGER-377CF47BC4E7",
+        "TRIGGER-3D523DC87758",
+        "TRIGGER-3E358AFC4451",
+        "TRIGGER-3FBD0B444F36",
+        "TRIGGER-4BD0C700B7DE",
+        "TRIGGER-50DE23E8FF1F",
+        "TRIGGER-52EC4E26386E",
+        "TRIGGER-574B9B0DDE35",
+        "TRIGGER-5E15163DB887",
+        "TRIGGER-64D9713FB90B",
+        "TRIGGER-658500EA6E10",
+        "TRIGGER-6AE063CAE705",
+        "TRIGGER-6F74FFB4BB45",
+        "TRIGGER-7B439089BC0C",
+        "TRIGGER-81DDE2B1EE4A",
+        "TRIGGER-88F718E26151",
+        "TRIGGER-9E5E48182CD0",
+        "TRIGGER-A1D6D192CFE2",
+        "TRIGGER-A2B025FE25FC",
+        "TRIGGER-B3AC961395C5",
+        "TRIGGER-B845C172E98A",
+        "TRIGGER-B979DC32E0C9",
+        "TRIGGER-B9F704535421",
+        "TRIGGER-BEC1AD0CD5BD",
+        "TRIGGER-C6D702DE839B",
+        "TRIGGER-C7DD504DC818",
+        "TRIGGER-CF2A568A3433",
+        "TRIGGER-EAF23A01937F",
+        "TRIGGER-EB047350E1CD",
+        "TRIGGER-F230134DAA60",
+        "TRIGGER-F74505D880B4"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-007"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Materials / Rate catalogs",
+          "packet": "T09/T11",
+          "routeId": "ROUTE-117",
+          "sourcePage": "src/app/(app)/rate-catalogs/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / Rate library",
+          "packet": "T11",
+          "routeId": "ROUTE-111",
+          "sourcePage": "src/app/(app)/projects/[id]/rate-library/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / BOQ",
+          "packet": "T10",
+          "routeId": "ROUTE-012",
+          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Materials / Privileged rate catalogs",
+          "packet": "T09/T29",
+          "routeId": "ROUTE-070",
+          "sourcePage": "src/app/(app)/admin/rate-catalogs/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Tenant-wide and project-specific material/labor rate profiles with market rate adjustment logs.",
+      "domain": "Contractual BoQ & Rate Analysis",
+      "m13Packet": "T09/T11",
+      "name": "Rate Profiles & Market Rate Revisions",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/catalog-v2.ts",
+        "src/server/routers/project.ts",
+        "src/server/routers/rate-analysis.ts",
+        "src/server/routers/rate-profile.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-002812AD7169",
+        "ACTION-0A65DA5C5D70",
+        "ACTION-10A39374C024",
+        "ACTION-120AE1CB07EE",
+        "ACTION-1C303A2B4262",
+        "ACTION-21957E9AD621",
+        "ACTION-2BFD19B44A07",
+        "ACTION-3E7953FE45EB",
+        "ACTION-409FA389644D",
+        "ACTION-4642EBA4A59A",
+        "ACTION-48665E307739",
+        "ACTION-5172C5F2B8D0",
+        "ACTION-51E042F4B17C",
+        "ACTION-51E9B1ADAC8E",
+        "ACTION-52DEB9588102",
+        "ACTION-53F27DDA6154",
+        "ACTION-55B11D502A42",
+        "ACTION-6A65D6306862",
+        "ACTION-78FDD76460E3",
+        "ACTION-7D82F9A352AC",
+        "ACTION-7EDE546D89F9",
+        "ACTION-99ECE63DE479",
+        "ACTION-9A35F56A9FA5",
+        "ACTION-A4941353C9F1",
+        "ACTION-B12DB96A5178",
+        "ACTION-B9E4CEB5A3EF",
+        "ACTION-BAF7203CA2E2",
+        "ACTION-BDBC4F4D7E60",
+        "ACTION-C6D45FAB8908",
+        "ACTION-CAC75E539DF2",
+        "ACTION-DCB1C6EE5475",
+        "ACTION-E13082A6D5CE",
+        "ACTION-E7826A2EA82D",
+        "ACTION-F4E2A1531C60",
+        "ACTION-FAB30FF06BAF"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/rate-profile.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "catalogV2.bulkSetRates [Mutation]",
+        "catalogV2.createRateCatalog [Mutation]",
+        "catalogV2.getRateCatalog [Query]",
+        "catalogV2.listRateCatalogs [Query]",
+        "catalogV2.setRate [Mutation]",
+        "catalogV2.syncRateCatalog [Mutation]",
+        "catalogV2.updateRateCatalog [Mutation]",
+        "project.getOrgProfile [Query]",
+        "rateAnalysis.addIngredient [Mutation]",
+        "rateAnalysis.copyIngredients [Mutation]",
+        "rateAnalysis.deleteIngredient [Mutation]",
+        "rateAnalysis.list [Query]",
+        "rateAnalysis.listIngredients [Query]",
+        "rateAnalysis.update [Mutation]",
+        "rateAnalysis.updateIngredient [Mutation]",
+        "rateProfile.batchApply [Mutation]",
+        "rateProfile.list [Query]",
+        "rateProfile.previewApply [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/rate-profile.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-021898DA1098",
+        "TRIGGER-022873B6672E",
+        "TRIGGER-086A79291269",
+        "TRIGGER-0F0522853284",
+        "TRIGGER-122AA75C319F",
+        "TRIGGER-1A3276D5ABE2",
+        "TRIGGER-1FEB346A8037",
+        "TRIGGER-243036477F30",
+        "TRIGGER-25326B7B97B1",
+        "TRIGGER-30F1FCF6957A",
+        "TRIGGER-3BB50141D02A",
+        "TRIGGER-3E358AFC4451",
+        "TRIGGER-3FBD0B444F36",
+        "TRIGGER-52EC4E26386E",
+        "TRIGGER-658500EA6E10",
+        "TRIGGER-6F74FFB4BB45",
+        "TRIGGER-745C3530C35E",
+        "TRIGGER-7974A729CF84",
+        "TRIGGER-88F718E26151",
+        "TRIGGER-9D6B7E985B13",
+        "TRIGGER-9ED19847F1FA",
+        "TRIGGER-A1D6D192CFE2",
+        "TRIGGER-A2B025FE25FC",
+        "TRIGGER-B3AC961395C5",
+        "TRIGGER-B75C60CC12BB",
+        "TRIGGER-B845C172E98A",
+        "TRIGGER-B979DC32E0C9",
+        "TRIGGER-BEC1AD0CD5BD",
+        "TRIGGER-C3BE57757927",
+        "TRIGGER-C7DD504DC818",
+        "TRIGGER-CDD1AA07E03F",
+        "TRIGGER-F230134DAA60",
+        "TRIGGER-F74505D880B4"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-008"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / BOQ",
+          "packet": "T10",
+          "routeId": "ROUTE-012",
+          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Planning / Revision",
+          "packet": "T17",
+          "routeId": "ROUTE-039",
+          "sourcePage": "src/app/(app)/projects/[id]/planning/revision/[versionId]/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/boq-version.ts"
+      ],
+      "description": "Snapshot contractual BoQ versions (As-Awarded, Revision 1, Variation Order) and compare delta.",
+      "domain": "Contractual BoQ & Rate Analysis",
+      "m13Packet": "T10",
+      "name": "BoQ Versioning & Change Comparison",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/boq.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-14D856AEA885",
+        "ACTION-3A0D9CA2B83E",
+        "ACTION-4B97D1189D71",
+        "ACTION-511359DF7F79",
+        "ACTION-5D52935A12A7",
+        "ACTION-8BEAEB63136A",
+        "ACTION-C267A6E68582"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/boq-version.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "boq.actionAccess [Query]",
+        "boq.compare [Query]",
+        "boq.create [Mutation]",
+        "boq.delete [Mutation]",
+        "boq.duplicate [Mutation]",
+        "boq.list [Query]",
+        "boq.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/boq-version.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0F7D742D81ED",
+        "TRIGGER-1998DB7344D9",
+        "TRIGGER-377CF47BC4E7",
+        "TRIGGER-3D523DC87758",
+        "TRIGGER-4BD0C700B7DE",
+        "TRIGGER-50DE23E8FF1F",
+        "TRIGGER-574B9B0DDE35",
+        "TRIGGER-5E15163DB887",
+        "TRIGGER-64D9713FB90B",
+        "TRIGGER-6AE063CAE705",
+        "TRIGGER-7B439089BC0C",
+        "TRIGGER-81DDE2B1EE4A",
+        "TRIGGER-9E5E48182CD0",
+        "TRIGGER-B9F704535421",
+        "TRIGGER-C6D702DE839B",
+        "TRIGGER-CF2A568A3433",
+        "TRIGGER-EAF23A01937F",
+        "TRIGGER-EB047350E1CD"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-009"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / IPC register",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-032",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / IPC detail, view only",
+          "packet": "T16",
+          "routeId": "ROUTE-030",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / Open this IPC workbook in full GridCraft",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-104",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/worksheets/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Running bill generation from BoQ items, previous/this bill cumulative quantities, and deduction schedules.",
+      "domain": "Billing, IPC & Invoicing",
+      "m13Packet": "T13/T15/T16",
+      "name": "Interim Payment Certificate (IPC) Preparation",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/ipc.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-050111F6F088",
+        "ACTION-24682356A943",
+        "ACTION-3BDA09EAED26",
+        "ACTION-3CC9AC93F85E",
+        "ACTION-5243EDEA0A82",
+        "ACTION-589EE4DF16CF",
+        "ACTION-76C574C731AD",
+        "ACTION-7C49DAE3E737",
+        "ACTION-84BBB7B9F434",
+        "ACTION-AF18E56F8D85",
+        "ACTION-AFD2E1CF6A12",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35",
+        "ACTION-FC14906C0521"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/ipc.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "ipc.actionAccess [Query]",
+        "ipc.create [Mutation]",
+        "ipc.delete [Mutation]",
+        "ipc.getPaymentSummary [Query]",
+        "ipc.list [Query]",
+        "ipc.listItems [Query]",
+        "ipc.loadBoq [Mutation]",
+        "ipc.syncQuantities [Mutation]",
+        "ipc.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/ipc.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-04AC43923638",
+        "TRIGGER-27818C545EEB",
+        "TRIGGER-289B0E1270CD",
+        "TRIGGER-527B4C83FFF5",
+        "TRIGGER-52A76913EC2B",
+        "TRIGGER-7D810484BF99",
+        "TRIGGER-83A5E2920A29",
+        "TRIGGER-A68E4F96FDAE",
+        "TRIGGER-CDC0053D7775",
+        "TRIGGER-EC55E72A3A20",
+        "TRIGGER-EE2AF38FDE6F",
+        "TRIGGER-F568B9FF5A62",
+        "TRIGGER-F9F5934423AC"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": "Contractor creates each IPC and a separate workbook; full GridCraft edits it; Contractor consumes only a validated Summary of Payment.",
+      "workflowId": "WF-010"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / IPC register",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-032",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / IPC detail, view only",
+          "packet": "T16",
+          "routeId": "ROUTE-030",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / Open this IPC workbook in full GridCraft",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-104",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/worksheets/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/utils/retention.ts"
+      ],
+      "description": "Automated retention money deduction (typically 5%), mobilization advance recovery amortized across bills, and tax withholding.",
+      "domain": "Billing, IPC & Invoicing",
+      "m13Packet": "T13/T15/T16",
+      "name": "Contract Deductions & Advance Recovery",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/ipc.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-050111F6F088",
+        "ACTION-24682356A943",
+        "ACTION-3BDA09EAED26",
+        "ACTION-3CC9AC93F85E",
+        "ACTION-5243EDEA0A82",
+        "ACTION-589EE4DF16CF",
+        "ACTION-76C574C731AD",
+        "ACTION-7C49DAE3E737",
+        "ACTION-84BBB7B9F434",
+        "ACTION-AF18E56F8D85",
+        "ACTION-AFD2E1CF6A12",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35",
+        "ACTION-FC14906C0521"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/ipc.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/retention.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "ipc.actionAccess [Query]",
+        "ipc.create [Mutation]",
+        "ipc.delete [Mutation]",
+        "ipc.getPaymentSummary [Query]",
+        "ipc.list [Query]",
+        "ipc.listItems [Query]",
+        "ipc.loadBoq [Mutation]",
+        "ipc.syncQuantities [Mutation]",
+        "ipc.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/ipc.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-04AC43923638",
+        "TRIGGER-27818C545EEB",
+        "TRIGGER-289B0E1270CD",
+        "TRIGGER-527B4C83FFF5",
+        "TRIGGER-52A76913EC2B",
+        "TRIGGER-7D810484BF99",
+        "TRIGGER-83A5E2920A29",
+        "TRIGGER-A68E4F96FDAE",
+        "TRIGGER-CDC0053D7775",
+        "TRIGGER-EC55E72A3A20",
+        "TRIGGER-EE2AF38FDE6F",
+        "TRIGGER-F568B9FF5A62",
+        "TRIGGER-F9F5934423AC"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": "Deduction and advance-recovery calculations stay in GridCraft workbook sheets; app ingestion is limited to the validated Summary of Payment.",
+      "workflowId": "WF-011"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / IPC register",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-032",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / IPC detail, view only",
+          "packet": "T16",
+          "routeId": "ROUTE-030",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / Open this IPC workbook in full GridCraft",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-104",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/worksheets/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Labor, fuel, and material price index adjustment formula calculations for public infrastructure contracts.",
+      "domain": "Billing, IPC & Invoicing",
+      "m13Packet": "T14/T15/T16",
+      "name": "Price Escalation Billing (FIDIC / Standard Formula)",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "partial",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Partial",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/ipc.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-050111F6F088",
+        "ACTION-24682356A943",
+        "ACTION-3BDA09EAED26",
+        "ACTION-3CC9AC93F85E",
+        "ACTION-5243EDEA0A82",
+        "ACTION-589EE4DF16CF",
+        "ACTION-76C574C731AD",
+        "ACTION-7C49DAE3E737",
+        "ACTION-84BBB7B9F434",
+        "ACTION-AF18E56F8D85",
+        "ACTION-AFD2E1CF6A12",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35",
+        "ACTION-FC14906C0521"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/ipc.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "ipc.actionAccess [Query]",
+        "ipc.create [Mutation]",
+        "ipc.delete [Mutation]",
+        "ipc.getPaymentSummary [Query]",
+        "ipc.list [Query]",
+        "ipc.listItems [Query]",
+        "ipc.loadBoq [Mutation]",
+        "ipc.syncQuantities [Mutation]",
+        "ipc.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/ipc.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-04AC43923638",
+        "TRIGGER-27818C545EEB",
+        "TRIGGER-289B0E1270CD",
+        "TRIGGER-527B4C83FFF5",
+        "TRIGGER-52A76913EC2B",
+        "TRIGGER-7D810484BF99",
+        "TRIGGER-83A5E2920A29",
+        "TRIGGER-A68E4F96FDAE",
+        "TRIGGER-CDC0053D7775",
+        "TRIGGER-EC55E72A3A20",
+        "TRIGGER-EE2AF38FDE6F",
+        "TRIGGER-F568B9FF5A62",
+        "TRIGGER-F9F5934423AC"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": "Price-adjustment summary/calculation stay in GridCraft; preserve M00 partial source status and ingest only Summary of Payment.",
+      "workflowId": "WF-012"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Finance / Tax summary",
+          "packet": "T25",
+          "routeId": "ROUTE-046",
+          "sourcePage": "src/app/(app)/projects/[id]/tax-summary/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Finance / Organisation finance overview",
+          "packet": "T24/T25",
+          "routeId": "ROUTE-074",
+          "sourcePage": "src/app/(app)/finance/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Finance / Project accounting",
+          "packet": "T24",
+          "routeId": "ROUTE-096",
+          "sourcePage": "src/app/(app)/projects/[id]/accounting/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Annex-5/Annex-7 standard sales & purchase VAT register for Nepal Inland Revenue Department (IRD).",
+      "domain": "Billing, IPC & Invoicing",
+      "m13Packet": "T25",
+      "name": "VAT Register & Tax Invoicing",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/finance.ts",
+        "src/server/routers/vat-register.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0C4315C0E5DA",
+        "ACTION-306DE3D03A18",
+        "ACTION-3762F728472B",
+        "ACTION-38690396F512",
+        "ACTION-4295F9A6B259",
+        "ACTION-49C23AE00B4C",
+        "ACTION-49CB70CFD7BC",
+        "ACTION-5D3D5373FCEF",
+        "ACTION-7014225EF6B6",
+        "ACTION-78BA637F19F4",
+        "ACTION-7B9ED0BF1DF7",
+        "ACTION-7C81A9BFEA76",
+        "ACTION-7FC2850D48F1",
+        "ACTION-828D904A3EFB",
+        "ACTION-913D02FC6C80",
+        "ACTION-9E034C4E5451",
+        "ACTION-E7F6ECC6B26A",
+        "ACTION-E850FAB306BF",
+        "ACTION-EE119AEBD397",
+        "ACTION-F454E2A37842"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/vat-register.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/vat-registers.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "sourceOperations": [
+        "finance.createBankAccount [Mutation]",
+        "finance.createHeadOfficeExpense [Mutation]",
+        "finance.orgBankAccounts [Query]",
+        "finance.orgPayables [Query]",
+        "finance.orgSettleMultiBill [Mutation]",
+        "vatRegister.actionAccess [Query]",
+        "vatRegister.attachScannedBill [Mutation]",
+        "vatRegister.createDirectVatBill [Mutation]",
+        "vatRegister.getPurchaseRegister [Query]",
+        "vatRegister.getSalesRegister [Query]",
+        "vatRegister.getVatReturnSchedule10 [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/vat-register.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-2E2F9FBCDE13",
+        "TRIGGER-371153107A66",
+        "TRIGGER-400D621EB264",
+        "TRIGGER-5CC36946AFDF",
+        "TRIGGER-7DCBBE18FDEF",
+        "TRIGGER-A748EE47C9C7",
+        "TRIGGER-A78B766CA7F1",
+        "TRIGGER-C3AC79524130",
+        "TRIGGER-DE420D493651",
+        "TRIGGER-ECD1C4CC38A8"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-013"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Materials / Procurement and stock",
+          "packet": "T19/T20",
+          "routeId": "ROUTE-034",
+          "sourcePage": "src/app/(app)/projects/[id]/materials/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Materials / Project vendors",
+          "packet": "T09",
+          "routeId": "ROUTE-113",
+          "sourcePage": "src/app/(app)/projects/[id]/vendors/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Site engineer material demand requisition, multi-level capability approval, item quote comparison.",
+      "domain": "Procurement & Supply Chain",
+      "m13Packet": "T19",
+      "name": "Site Purchase Requisitions & Approval",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M05)",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/material-crud.ts",
+        "src/server/routers/material-reconciliation.ts",
+        "src/server/routers/material-transaction.ts",
+        "src/server/routers/purchase-order.ts",
+        "src/server/routers/requisition.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-1911FDE3600E",
+        "ACTION-23FC7A321BA4",
+        "ACTION-2A771B27F927",
+        "ACTION-2B92FE5034FD",
+        "ACTION-2D44D79B3B4C",
+        "ACTION-305C605BCFAF",
+        "ACTION-38FAA007ADF5",
+        "ACTION-609D62E8B76F",
+        "ACTION-61796F674CFC",
+        "ACTION-755118ACE445",
+        "ACTION-7AF41DBE14FC",
+        "ACTION-811136079C88",
+        "ACTION-8361A2ADD06A",
+        "ACTION-8A75421B9129",
+        "ACTION-987506B5862B",
+        "ACTION-9F1A0A2ADF90",
+        "ACTION-A63C2D511902",
+        "ACTION-A7A7559CC78E",
+        "ACTION-B3449B972F59",
+        "ACTION-C4D39672665B",
+        "ACTION-CCFE6AB13FE8",
+        "ACTION-CDE1DB8624D7",
+        "ACTION-D48AC525E5DB",
+        "ACTION-E866DA416420",
+        "ACTION-F3CA144D1FBB",
+        "ACTION-FB83BF210262"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/requisition.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "material.actionAccess [Query]",
+        "material.checkProjectDeleteImpact [Query]",
+        "material.create [Mutation]",
+        "material.createBulkReceive [Mutation]",
+        "material.createGateEntry [Mutation]",
+        "material.createTransaction [Mutation]",
+        "material.delete [Mutation]",
+        "material.deleteMany [Mutation]",
+        "material.list [Query]",
+        "material.listCounts [Query]",
+        "material.listGateEntries [Query]",
+        "material.listTransactions [Query]",
+        "material.logDirectDelivery [Mutation]",
+        "purchaseOrder.create [Mutation]",
+        "purchaseOrder.delete [Mutation]",
+        "purchaseOrder.get [Query]",
+        "purchaseOrder.list [Query]",
+        "requisition.approvePr [Mutation]",
+        "requisition.checkBudgetVariance [Query]",
+        "requisition.create [Mutation]",
+        "requisition.generatePOs [Mutation]",
+        "requisition.getBudgetVariance [Query]",
+        "requisition.getDetails [Query]",
+        "requisition.list [Query]",
+        "requisition.rejectPr [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/requisition.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-068A50CFD856",
+        "TRIGGER-130A403710F6",
+        "TRIGGER-4183E96B0AFF",
+        "TRIGGER-72B0F16C4841",
+        "TRIGGER-7E6E50ABA01F",
+        "TRIGGER-87296E85AF7B",
+        "TRIGGER-A512EE0580A4",
+        "TRIGGER-EA65F9C65160",
+        "TRIGGER-EAAADCD04449",
+        "TRIGGER-F9B0E1166C9F",
+        "TRIGGER-FE034AAE2979"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "material.listOrgInventory"
+          ],
+          "sourceFile": "src/app/(app)/finance/components/org-inventory-tab.tsx"
+        },
+        {
+          "hooks": [
+            "material.list",
+            "storeLocation.create",
+            "storeLocation.list",
+            "storeLocation.transferStock"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx"
+        },
+        {
+          "hooks": [
+            "partner.listPartners",
+            "project.get",
+            "purchaseOrder.list",
+            "purchaseOrder.openBillablePOs",
+            "vendorBill.checkDuplicate",
+            "vendorBill.create",
+            "vendorBill.getThreeWayMatchData",
+            "vendorBill.list",
+            "vendorBill.recordPayment"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx"
+        },
+        {
+          "hooks": [
+            "material.approveCount",
+            "material.listCounts",
+            "material.physicalCount",
+            "material.reconciliation",
+            "material.rejectCount"
+          ],
+          "sourceFile": "src/components/inventory/reconciliation-report.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-014"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Materials / Procurement and stock",
+          "packet": "T19/T20",
+          "routeId": "ROUTE-034",
+          "sourcePage": "src/app/(app)/projects/[id]/materials/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Materials / Project vendors",
+          "packet": "T09",
+          "routeId": "ROUTE-113",
+          "sourcePage": "src/app/(app)/projects/[id]/vendors/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Official PO generation with sequence numbering, delivery schedules, payment terms, and vendor dispatch.",
+      "domain": "Procurement & Supply Chain",
+      "m13Packet": "T19",
+      "name": "Purchase Orders (PO) Generation & Tracking",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/purchase-order.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-23FC7A321BA4",
+        "ACTION-609D62E8B76F",
+        "ACTION-61796F674CFC",
+        "ACTION-811136079C88"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/purchase-order.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "purchaseOrder.create [Mutation]",
+        "purchaseOrder.delete [Mutation]",
+        "purchaseOrder.get [Query]",
+        "purchaseOrder.list [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/purchase-order.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-4183E96B0AFF",
+        "TRIGGER-72B0F16C4841",
+        "TRIGGER-7E6E50ABA01F"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "partner.listPartners",
+            "project.get",
+            "purchaseOrder.list",
+            "purchaseOrder.openBillablePOs",
+            "vendorBill.checkDuplicate",
+            "vendorBill.create",
+            "vendorBill.getThreeWayMatchData",
+            "vendorBill.list",
+            "vendorBill.recordPayment"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-015"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Materials / Inventory",
+          "packet": "T20",
+          "routeId": "ROUTE-076",
+          "sourcePage": "src/app/(app)/inventory/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Materials / Procurement and stock",
+          "packet": "T19/T20",
+          "routeId": "ROUTE-034",
+          "sourcePage": "src/app/(app)/projects/[id]/materials/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Materials / Stock alerts",
+          "packet": "T20",
+          "routeId": "ROUTE-106",
+          "sourcePage": "src/app/(app)/projects/[id]/materials/stock-alerts/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/material.ts"
+      ],
+      "description": "Multi-store material receipt, stock issues, bin cards, moving average valuation, and physical reconciliation.",
+      "domain": "Procurement & Supply Chain",
+      "m13Packet": "T20",
+      "name": "Warehouse Inventory & Stock Ledgers",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/material-crud.ts",
+        "src/server/routers/material-reconciliation.ts",
+        "src/server/routers/material-transaction.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0808F3266A78",
+        "ACTION-1911FDE3600E",
+        "ACTION-2D44D79B3B4C",
+        "ACTION-35634577CC5C",
+        "ACTION-39F26831FD2E",
+        "ACTION-406498471349",
+        "ACTION-410986F67529",
+        "ACTION-439DC31F7E91",
+        "ACTION-4861E29CF7B6",
+        "ACTION-70186232DDC9",
+        "ACTION-755118ACE445",
+        "ACTION-75B3BE552FBF",
+        "ACTION-8361A2ADD06A",
+        "ACTION-908B84DAE9E9",
+        "ACTION-9F1A0A2ADF90",
+        "ACTION-A63C2D511902",
+        "ACTION-A7A7559CC78E",
+        "ACTION-B3449B972F59",
+        "ACTION-C4D39672665B",
+        "ACTION-CB1F7B1BDE31",
+        "ACTION-CCFE6AB13FE8",
+        "ACTION-CDE1DB8624D7",
+        "ACTION-D158CF2827B9",
+        "ACTION-D6B901F8F4F3",
+        "ACTION-EBEA0749693F",
+        "ACTION-F02FBAF97296",
+        "ACTION-F3CA144D1FBB",
+        "ACTION-FB83BF210262"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/material.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "material.actionAccess [Query]",
+        "material.checkProjectDeleteImpact [Query]",
+        "material.create [Mutation]",
+        "material.createBulkReceive [Mutation]",
+        "material.createGateEntry [Mutation]",
+        "material.createTransaction [Mutation]",
+        "material.delete [Mutation]",
+        "material.deleteMany [Mutation]",
+        "material.list [Query]",
+        "material.listCounts [Query]",
+        "material.listGateEntries [Query]",
+        "material.listTransactions [Query]",
+        "material.logDirectDelivery [Mutation]",
+        "material.setThresholds [Mutation]",
+        "material.stockAlerts [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/material.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-4183E96B0AFF",
+        "TRIGGER-4BA9ACEEE308",
+        "TRIGGER-524198518C40",
+        "TRIGGER-6B95876A5AC0",
+        "TRIGGER-6D58C627261D",
+        "TRIGGER-87296E85AF7B",
+        "TRIGGER-9655A5FC48BE",
+        "TRIGGER-A512EE0580A4",
+        "TRIGGER-B376E05270B5",
+        "TRIGGER-D4DA9AB35074",
+        "TRIGGER-EA6346A68996",
+        "TRIGGER-EA65F9C65160",
+        "TRIGGER-EAAADCD04449",
+        "TRIGGER-F9B0E1166C9F",
+        "TRIGGER-FE034AAE2979"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "material.listOrgInventory"
+          ],
+          "sourceFile": "src/app/(app)/finance/components/org-inventory-tab.tsx"
+        },
+        {
+          "hooks": [
+            "material.list",
+            "storeLocation.create",
+            "storeLocation.list",
+            "storeLocation.transferStock"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx"
+        },
+        {
+          "hooks": [
+            "material.approveCount",
+            "material.listCounts",
+            "material.physicalCount",
+            "material.reconciliation",
+            "material.rejectCount"
+          ],
+          "sourceFile": "src/components/inventory/reconciliation-report.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-016"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Materials / Inventory",
+          "packet": "T20",
+          "routeId": "ROUTE-076",
+          "sourcePage": "src/app/(app)/inventory/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Materials / Procurement and stock",
+          "packet": "T19/T20",
+          "routeId": "ROUTE-034",
+          "sourcePage": "src/app/(app)/projects/[id]/materials/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Transfer material between projects/stores with dispatch challan, transit tracking, and gate receipt acknowledgment.",
+      "domain": "Procurement & Supply Chain",
+      "m13Packet": "T20",
+      "name": "Inter-Site Material Transfers",
+      "offlinePolicies": [
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/inter-site-transfer.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-1BCCB400A322",
+        "ACTION-4E4FB6A5EAA2"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/inter-site-transfer.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "interSiteTransfer.transferMaterial [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/inter-site-transfer.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0195F2519309",
+        "TRIGGER-9A6B3C859E69"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "interSiteTransfer.cancelTransfer",
+            "interSiteTransfer.list"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/inter-site-transfers-tab.tsx"
+        },
+        {
+          "hooks": [
+            "material.list",
+            "storeLocation.create",
+            "storeLocation.list",
+            "storeLocation.transferStock"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/store-locations-tab.tsx"
+        },
+        {
+          "hooks": [
+            "interSiteTransfer.receiveMaterial",
+            "storeLocation.list"
+          ],
+          "sourceFile": "src/components/inventory/transfer-acknowledgement-dialog.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-017"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Equipment / Fleet and production",
+          "packet": "T21",
+          "routeId": "ROUTE-025",
+          "sourcePage": "src/app/(app)/projects/[id]/equipment/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Equipment / Utilization",
+          "packet": "T21",
+          "routeId": "ROUTE-098",
+          "sourcePage": "src/app/(app)/projects/[id]/equipment/utilization/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/equipment.ts"
+      ],
+      "description": "Internal & vendor equipment asset tracking, hourly/monthly rental contracts, billing runs, and maintenance logs.",
+      "domain": "Equipment Management & Fuel",
+      "m13Packet": "T21",
+      "name": "Fleet Registry & Rental Contracts",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/equipment-core.ts",
+        "src/server/routers/equipment-fuel.ts",
+        "src/server/routers/equipment-rental.ts",
+        "src/server/routers/equipment-spot-hire.ts",
+        "src/server/routers/equipment-vendor.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0062ACB57242",
+        "ACTION-030D4D0A2D5F",
+        "ACTION-0AACA26BA051",
+        "ACTION-0C7444555647",
+        "ACTION-12059E31788A",
+        "ACTION-185B51AD079C",
+        "ACTION-23870276E765",
+        "ACTION-28D4E7E45E35",
+        "ACTION-31A968B0A22D",
+        "ACTION-35C2C9DA44C2",
+        "ACTION-4B2BC656F4AD",
+        "ACTION-4BE4F6E8DA1A",
+        "ACTION-4DA02B90B39B",
+        "ACTION-50F39EE16215",
+        "ACTION-51C52D52A24D",
+        "ACTION-5ED4BA511910",
+        "ACTION-7542DEB351A9",
+        "ACTION-7CEE452B002C",
+        "ACTION-9130A09CE47B",
+        "ACTION-988CA690E4EF",
+        "ACTION-A004CACFA37A",
+        "ACTION-A89B1A96073F",
+        "ACTION-B5868DB8DAA0",
+        "ACTION-B59AA9069597",
+        "ACTION-BA5878983BDA",
+        "ACTION-C881A4E65726",
+        "ACTION-CB09C7A76CA1",
+        "ACTION-CECD57CB8B3E",
+        "ACTION-D7AAEDDA26B9",
+        "ACTION-E510D09583DE",
+        "ACTION-FC3CD97005F7",
+        "ACTION-FCCDAF678D8B",
+        "ACTION-FD5C22AB41F0",
+        "ACTION-FF6B76C4F720"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/equipment.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "equipment.actionAccess [Query]",
+        "equipment.addCrew [Mutation]",
+        "equipment.approveBillingRun [Mutation]",
+        "equipment.consolidateToBill [Mutation]",
+        "equipment.create [Mutation]",
+        "equipment.createLog [Mutation]",
+        "equipment.createMaintenance [Mutation]",
+        "equipment.createRental [Mutation]",
+        "equipment.createSpotHire [Mutation]",
+        "equipment.delete [Mutation]",
+        "equipment.deleteSpotTicket [Mutation]",
+        "equipment.generateBillingRun [Mutation]",
+        "equipment.getEfficiencyStats [Query]",
+        "equipment.getTaskEquipmentStats [Query]",
+        "equipment.getVendorHireStatement [Query]",
+        "equipment.list [Query]",
+        "equipment.listBillingRuns [Query]",
+        "equipment.listCrew [Query]",
+        "equipment.listDamages [Query]",
+        "equipment.listTankBalances [Query]",
+        "equipment.listVendors [Query]",
+        "equipment.markReturned [Mutation]",
+        "equipment.markStored [Mutation]",
+        "equipment.previewBillingRun [Query]",
+        "equipment.previewConsolidation [Query]",
+        "equipment.reactivate [Mutation]",
+        "equipment.recordDipReading [Mutation]",
+        "equipment.removeCrew [Mutation]",
+        "equipment.rentalStats [Query]",
+        "equipment.reportDamage [Mutation]",
+        "equipment.resolveMaintenance [Mutation]",
+        "equipment.reverseBillingRun [Mutation]",
+        "equipment.updateStatus [Mutation]",
+        "equipment.utilizationReport [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/equipment.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0C9D463C77FD",
+        "TRIGGER-0FB6250A8E75",
+        "TRIGGER-1C45C28218B4",
+        "TRIGGER-1F0F9C94B216",
+        "TRIGGER-37BBD120CF25",
+        "TRIGGER-4EA2C3F41227",
+        "TRIGGER-567340D7370A",
+        "TRIGGER-65A0A3AED373",
+        "TRIGGER-7D5F6770E4E0",
+        "TRIGGER-7E43DEE3F752",
+        "TRIGGER-8769121DABED",
+        "TRIGGER-8834228762D4",
+        "TRIGGER-9BCF1C2C7E6E",
+        "TRIGGER-A65AB74FAFA9",
+        "TRIGGER-B05953FC6F1D",
+        "TRIGGER-BF84EC29BB12",
+        "TRIGGER-DE113ECFE41F",
+        "TRIGGER-E86A2BB4F42D",
+        "TRIGGER-F1AE17F85E84"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-018"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Equipment / Fleet and production",
+          "packet": "T21",
+          "routeId": "ROUTE-025",
+          "sourcePage": "src/app/(app)/projects/[id]/equipment/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Equipment / Utilization",
+          "packet": "T21",
+          "routeId": "ROUTE-098",
+          "sourcePage": "src/app/(app)/projects/[id]/equipment/utilization/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/services/equipment-fuel.ts"
+      ],
+      "description": "Fuel bowser / storage tank dip-readings, per-machine fuel issue logs, operating hours, and loss variance audit.",
+      "domain": "Equipment Management & Fuel",
+      "m13Packet": "T21",
+      "name": "Daily Fuel Dispensing & Dip-Reading Reconciliation",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M05)",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m/log)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/equipment-core.ts",
+        "src/server/routers/equipment-fuel.ts",
+        "src/server/routers/equipment-rental.ts",
+        "src/server/routers/equipment-spot-hire.ts",
+        "src/server/routers/equipment-vendor.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0062ACB57242",
+        "ACTION-030D4D0A2D5F",
+        "ACTION-0AACA26BA051",
+        "ACTION-0C7444555647",
+        "ACTION-12059E31788A",
+        "ACTION-185B51AD079C",
+        "ACTION-23870276E765",
+        "ACTION-28D4E7E45E35",
+        "ACTION-31A968B0A22D",
+        "ACTION-35C2C9DA44C2",
+        "ACTION-4B2BC656F4AD",
+        "ACTION-4BE4F6E8DA1A",
+        "ACTION-4DA02B90B39B",
+        "ACTION-50F39EE16215",
+        "ACTION-51C52D52A24D",
+        "ACTION-5ED4BA511910",
+        "ACTION-7542DEB351A9",
+        "ACTION-7CEE452B002C",
+        "ACTION-9130A09CE47B",
+        "ACTION-988CA690E4EF",
+        "ACTION-A004CACFA37A",
+        "ACTION-A89B1A96073F",
+        "ACTION-B5868DB8DAA0",
+        "ACTION-B59AA9069597",
+        "ACTION-BA5878983BDA",
+        "ACTION-C881A4E65726",
+        "ACTION-CB09C7A76CA1",
+        "ACTION-CECD57CB8B3E",
+        "ACTION-D7AAEDDA26B9",
+        "ACTION-E510D09583DE",
+        "ACTION-FC3CD97005F7",
+        "ACTION-FCCDAF678D8B",
+        "ACTION-FD5C22AB41F0",
+        "ACTION-FF6B76C4F720"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/equipment-fuel.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/services/equipment-fuel.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "equipment.actionAccess [Query]",
+        "equipment.addCrew [Mutation]",
+        "equipment.approveBillingRun [Mutation]",
+        "equipment.consolidateToBill [Mutation]",
+        "equipment.create [Mutation]",
+        "equipment.createLog [Mutation]",
+        "equipment.createMaintenance [Mutation]",
+        "equipment.createRental [Mutation]",
+        "equipment.createSpotHire [Mutation]",
+        "equipment.delete [Mutation]",
+        "equipment.deleteSpotTicket [Mutation]",
+        "equipment.generateBillingRun [Mutation]",
+        "equipment.getEfficiencyStats [Query]",
+        "equipment.getTaskEquipmentStats [Query]",
+        "equipment.getVendorHireStatement [Query]",
+        "equipment.list [Query]",
+        "equipment.listBillingRuns [Query]",
+        "equipment.listCrew [Query]",
+        "equipment.listDamages [Query]",
+        "equipment.listTankBalances [Query]",
+        "equipment.listVendors [Query]",
+        "equipment.markReturned [Mutation]",
+        "equipment.markStored [Mutation]",
+        "equipment.previewBillingRun [Query]",
+        "equipment.previewConsolidation [Query]",
+        "equipment.reactivate [Mutation]",
+        "equipment.recordDipReading [Mutation]",
+        "equipment.removeCrew [Mutation]",
+        "equipment.rentalStats [Query]",
+        "equipment.reportDamage [Mutation]",
+        "equipment.resolveMaintenance [Mutation]",
+        "equipment.reverseBillingRun [Mutation]",
+        "equipment.updateStatus [Mutation]",
+        "equipment.utilizationReport [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/equipment-fuel.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0C9D463C77FD",
+        "TRIGGER-0FB6250A8E75",
+        "TRIGGER-1C45C28218B4",
+        "TRIGGER-1F0F9C94B216",
+        "TRIGGER-37BBD120CF25",
+        "TRIGGER-4EA2C3F41227",
+        "TRIGGER-567340D7370A",
+        "TRIGGER-65A0A3AED373",
+        "TRIGGER-7D5F6770E4E0",
+        "TRIGGER-7E43DEE3F752",
+        "TRIGGER-8769121DABED",
+        "TRIGGER-8834228762D4",
+        "TRIGGER-9BCF1C2C7E6E",
+        "TRIGGER-A65AB74FAFA9",
+        "TRIGGER-B05953FC6F1D",
+        "TRIGGER-BF84EC29BB12",
+        "TRIGGER-DE113ECFE41F",
+        "TRIGGER-E86A2BB4F42D",
+        "TRIGGER-F1AE17F85E84"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-019"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Equipment / Fleet and production",
+          "packet": "T21",
+          "routeId": "ROUTE-025",
+          "sourcePage": "src/app/(app)/projects/[id]/equipment/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Equipment / Utilization",
+          "packet": "T21",
+          "routeId": "ROUTE-098",
+          "sourcePage": "src/app/(app)/projects/[id]/equipment/utilization/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/utils/equipment-spot-hire.test.ts"
+      ],
+      "description": "Emergency local machine spot-hire with automated verification and hourly rate reconciliation.",
+      "domain": "Equipment Management & Fuel",
+      "m13Packet": "T21",
+      "name": "Spot-Hire Equipment Work Orders",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/equipment-core.ts",
+        "src/server/routers/equipment-fuel.ts",
+        "src/server/routers/equipment-rental.ts",
+        "src/server/routers/equipment-spot-hire.ts",
+        "src/server/routers/equipment-vendor.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0062ACB57242",
+        "ACTION-030D4D0A2D5F",
+        "ACTION-0AACA26BA051",
+        "ACTION-0C7444555647",
+        "ACTION-12059E31788A",
+        "ACTION-185B51AD079C",
+        "ACTION-23870276E765",
+        "ACTION-28D4E7E45E35",
+        "ACTION-31A968B0A22D",
+        "ACTION-35C2C9DA44C2",
+        "ACTION-4B2BC656F4AD",
+        "ACTION-4BE4F6E8DA1A",
+        "ACTION-4DA02B90B39B",
+        "ACTION-50F39EE16215",
+        "ACTION-51C52D52A24D",
+        "ACTION-5ED4BA511910",
+        "ACTION-7542DEB351A9",
+        "ACTION-7CEE452B002C",
+        "ACTION-9130A09CE47B",
+        "ACTION-988CA690E4EF",
+        "ACTION-A004CACFA37A",
+        "ACTION-A89B1A96073F",
+        "ACTION-B5868DB8DAA0",
+        "ACTION-B59AA9069597",
+        "ACTION-BA5878983BDA",
+        "ACTION-C881A4E65726",
+        "ACTION-CB09C7A76CA1",
+        "ACTION-CECD57CB8B3E",
+        "ACTION-D7AAEDDA26B9",
+        "ACTION-E510D09583DE",
+        "ACTION-FC3CD97005F7",
+        "ACTION-FCCDAF678D8B",
+        "ACTION-FD5C22AB41F0",
+        "ACTION-FF6B76C4F720"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/equipment-spot-hire.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/equipment-spot-hire.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "equipment.actionAccess [Query]",
+        "equipment.addCrew [Mutation]",
+        "equipment.approveBillingRun [Mutation]",
+        "equipment.consolidateToBill [Mutation]",
+        "equipment.create [Mutation]",
+        "equipment.createLog [Mutation]",
+        "equipment.createMaintenance [Mutation]",
+        "equipment.createRental [Mutation]",
+        "equipment.createSpotHire [Mutation]",
+        "equipment.delete [Mutation]",
+        "equipment.deleteSpotTicket [Mutation]",
+        "equipment.generateBillingRun [Mutation]",
+        "equipment.getEfficiencyStats [Query]",
+        "equipment.getTaskEquipmentStats [Query]",
+        "equipment.getVendorHireStatement [Query]",
+        "equipment.list [Query]",
+        "equipment.listBillingRuns [Query]",
+        "equipment.listCrew [Query]",
+        "equipment.listDamages [Query]",
+        "equipment.listTankBalances [Query]",
+        "equipment.listVendors [Query]",
+        "equipment.markReturned [Mutation]",
+        "equipment.markStored [Mutation]",
+        "equipment.previewBillingRun [Query]",
+        "equipment.previewConsolidation [Query]",
+        "equipment.reactivate [Mutation]",
+        "equipment.recordDipReading [Mutation]",
+        "equipment.removeCrew [Mutation]",
+        "equipment.rentalStats [Query]",
+        "equipment.reportDamage [Mutation]",
+        "equipment.resolveMaintenance [Mutation]",
+        "equipment.reverseBillingRun [Mutation]",
+        "equipment.updateStatus [Mutation]",
+        "equipment.utilizationReport [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/equipment-spot-hire.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0C9D463C77FD",
+        "TRIGGER-0FB6250A8E75",
+        "TRIGGER-1C45C28218B4",
+        "TRIGGER-1F0F9C94B216",
+        "TRIGGER-37BBD120CF25",
+        "TRIGGER-4EA2C3F41227",
+        "TRIGGER-567340D7370A",
+        "TRIGGER-65A0A3AED373",
+        "TRIGGER-7D5F6770E4E0",
+        "TRIGGER-7E43DEE3F752",
+        "TRIGGER-8769121DABED",
+        "TRIGGER-8834228762D4",
+        "TRIGGER-9BCF1C2C7E6E",
+        "TRIGGER-A65AB74FAFA9",
+        "TRIGGER-B05953FC6F1D",
+        "TRIGGER-BF84EC29BB12",
+        "TRIGGER-DE113ECFE41F",
+        "TRIGGER-E86A2BB4F42D",
+        "TRIGGER-F1AE17F85E84"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-020"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "HR / Team",
+          "packet": "T08",
+          "routeId": "ROUTE-060",
+          "sourcePage": null,
+          "status": "Archive-only snapshot; unverified"
+        },
+        {
+          "destination": "HR / Organisation people directory",
+          "packet": "T08",
+          "routeId": "ROUTE-075",
+          "sourcePage": "src/app/(app)/hr-organization/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "HR / Workforce",
+          "packet": "T08/T23",
+          "routeId": "ROUTE-029",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "HR / Project team",
+          "packet": "T08",
+          "routeId": "ROUTE-103",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/team/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "HR / Workforce hierarchy",
+          "packet": "T08",
+          "routeId": "ROUTE-102",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/hierarchy/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/services/workforce.ts"
+      ],
+      "description": "Physical person identity separated from login accounts (ADR-0005); multi-project staff assignments.",
+      "domain": "Workforce, HR & Payroll",
+      "m13Packet": "T08",
+      "name": "Person-Grain Identity & Employment Contracts",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/hr.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0019C474A455",
+        "ACTION-05D493FB3B29",
+        "ACTION-063350F6664D",
+        "ACTION-0890989245E2",
+        "ACTION-0EF355C73F7A",
+        "ACTION-104883C07433",
+        "ACTION-1098CA8E8BB5",
+        "ACTION-2916E81DE600",
+        "ACTION-3B57EC17D9B1",
+        "ACTION-47AA430A3E98",
+        "ACTION-4C3F0F0CA679",
+        "ACTION-5635BACD4513",
+        "ACTION-596796D3625C",
+        "ACTION-63AAB73DC7C4",
+        "ACTION-65D0D91E7FB0",
+        "ACTION-76723FB93724",
+        "ACTION-78BB701ED6A3",
+        "ACTION-79E5D38B51F0",
+        "ACTION-7B264FABF36F",
+        "ACTION-7DFC0C598C3F",
+        "ACTION-851C0817FAA7",
+        "ACTION-8D411FC1A7E3",
+        "ACTION-AA8370F2D2A4",
+        "ACTION-AAD977C70BC0",
+        "ACTION-AAF3FF693F13",
+        "ACTION-AB6A304A790C",
+        "ACTION-B118150C2227",
+        "ACTION-B8A13CC38D21",
+        "ACTION-BD628E6021EB",
+        "ACTION-BF826B305A6B",
+        "ACTION-D398C43D2019",
+        "ACTION-DD86A1EABFEA",
+        "ACTION-E6DCC6F6967B",
+        "ACTION-F590E38828A0"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/hr.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/services/workforce.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "hr.assignStaffPosition [Mutation]",
+        "hr.attach [Mutation]",
+        "hr.bulkLogAttendance [Mutation]",
+        "hr.canViewPersonHistory [Query]",
+        "hr.create [Mutation]",
+        "hr.createStaffCategory [Mutation]",
+        "hr.delete [Mutation]",
+        "hr.deleteStaffCategory [Mutation]",
+        "hr.deleteStaffDocument [Mutation]",
+        "hr.endOrganizationEmployment [Mutation]",
+        "hr.getAttendanceByDate [Query]",
+        "hr.getMusterRoll [Query]",
+        "hr.getPersonHistory [Query]",
+        "hr.linkUser [Mutation]",
+        "hr.list [Query]",
+        "hr.listOrgStaff [Query]",
+        "hr.listOrganizationEmployments [Query]",
+        "hr.listStaffCategories [Query]",
+        "hr.searchPersons [Query]",
+        "hr.startOrganizationEmployment [Mutation]",
+        "hr.transfer [Mutation]",
+        "hr.unlinkUser [Mutation]",
+        "hr.update [Mutation]",
+        "hr.uploadStaffDocument [Mutation]",
+        "hr.viewAccess [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/hr.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-033383F2E335",
+        "TRIGGER-10901BB88083",
+        "TRIGGER-2A5DEBA3D0E1",
+        "TRIGGER-44B6CF97ED1E",
+        "TRIGGER-4777D114E9D8",
+        "TRIGGER-72964735E566",
+        "TRIGGER-7B60605E77B8",
+        "TRIGGER-7D0F6EB461DC",
+        "TRIGGER-86855FB43F6F",
+        "TRIGGER-89003F79DF69",
+        "TRIGGER-89E82AC043A7",
+        "TRIGGER-8FDB416B5B90",
+        "TRIGGER-A21B313A685C",
+        "TRIGGER-A4DC211E902D",
+        "TRIGGER-B1CB8641A844",
+        "TRIGGER-B3DCCFE42796",
+        "TRIGGER-B5DDF68555FD",
+        "TRIGGER-BC7568D1A908",
+        "TRIGGER-D30907B30B24",
+        "TRIGGER-E8A2E97AB77F",
+        "TRIGGER-EE0003CDAD49"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "hr.createStaffAdvance",
+            "hr.deleteStaffAdvance",
+            "hr.getAdvanceCandidates",
+            "hr.getStaffAdvances"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/components/advances-ledger-tab.tsx"
+        },
+        {
+          "hooks": [
+            "hr.bulkLogAttendance",
+            "hr.getAttendanceByDate"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/components/daily-attendance-tab.tsx"
+        },
+        {
+          "hooks": [
+            "hr.getMusterRoll"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/components/muster-roll-tab.tsx"
+        },
+        {
+          "hooks": [
+            "hr.getPersonHistory",
+            "payroll.createPayrollRun"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/dialogs/payroll-allocation-dialog.tsx"
+        },
+        {
+          "hooks": [
+            "hr.endOrganizationEmployment",
+            "hr.startOrganizationEmployment"
+          ],
+          "sourceFile": "src/components/organization-employment-manager.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-021"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "HR / Workforce",
+          "packet": "T08/T23",
+          "routeId": "ROUTE-029",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "HR / Project team",
+          "packet": "T08",
+          "routeId": "ROUTE-103",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/team/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Field Data / Mobile capture menu",
+          "packet": "T07",
+          "routeId": "ROUTE-080",
+          "sourcePage": "src/app/m/log/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/leave.ts",
+        "src/server/utils/holiday-db.ts"
+      ],
+      "description": "Daily muster roll attendance, leave balance tracking, public holiday calendar integration (Nepal BS calendar).",
+      "domain": "Workforce, HR & Payroll",
+      "m13Packet": "T07/T23",
+      "name": "Staff Attendance & Leave Management",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [
+        "ACTION-OUTBOX-983FB40FCD"
+      ],
+      "outboxOperations": [
+        "fieldSubmission.create"
+      ],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M05)",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/hr.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-05D493FB3B29",
+        "ACTION-78BB701ED6A3"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/leave.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/holiday-db.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "hr.bulkLogAttendance [Mutation]",
+        "hr.getAttendanceByDate [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/leave.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-B1CB8641A844"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "hr.bulkLogAttendance",
+            "hr.getAttendanceByDate"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/components/daily-attendance-tab.tsx"
+        },
+        {
+          "hooks": [
+            "leave.actionAccess",
+            "leave.approve",
+            "leave.create",
+            "leave.list",
+            "leave.reject"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/components/leaves-tab.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-022"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "HR / Workforce",
+          "packet": "T08/T23",
+          "routeId": "ROUTE-029",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "HR / Project team",
+          "packet": "T08",
+          "routeId": "ROUTE-103",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/team/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Field Data / Project expenses",
+          "packet": "T07/T24",
+          "routeId": "ROUTE-099",
+          "sourcePage": "src/app/(app)/projects/[id]/expenses/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/payroll.ts",
+        "src/server/utils/payroll-calc.ts"
+      ],
+      "description": "Monthly payroll runs, gross salary, tax withholding, provident fund / citizen investment trust deductions, and project cost allocations.",
+      "domain": "Workforce, HR & Payroll",
+      "m13Packet": "T07/T23",
+      "name": "Payroll Calculation & Person Allocations (ADR-0007)",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/hr.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-05D493FB3B29",
+        "ACTION-78BB701ED6A3"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/payroll.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/payroll-calc.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "hr.bulkLogAttendance [Mutation]",
+        "hr.getAttendanceByDate [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/payroll.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-B1CB8641A844"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "hr.bulkLogAttendance",
+            "hr.getAttendanceByDate"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/components/daily-attendance-tab.tsx"
+        },
+        {
+          "hooks": [
+            "payroll.calculate",
+            "payroll.createPayrollRun",
+            "payroll.getRun",
+            "payroll.updateRunStatus"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/components/payroll-management-tab.tsx"
+        },
+        {
+          "hooks": [
+            "hr.getPersonHistory",
+            "payroll.createPayrollRun"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/hr/dialogs/payroll-allocation-dialog.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-023"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Finance / Project accounting",
+          "packet": "T24",
+          "routeId": "ROUTE-096",
+          "sourcePage": "src/app/(app)/projects/[id]/accounting/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Finance / Payments",
+          "packet": "T24",
+          "routeId": "ROUTE-037",
+          "sourcePage": "src/app/(app)/projects/[id]/payments/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Finance / Organisation finance overview",
+          "packet": "T24/T25",
+          "routeId": "ROUTE-074",
+          "sourcePage": "src/app/(app)/finance/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/journal-entry.ts",
+        "src/server/routers/accounting.ts"
+      ],
+      "description": "Lightweight Tally / Swastik-compatible single and double-entry day book statements, cash/bank accounts, and journal vouchers.",
+      "domain": "Accounting & Bahi Khata",
+      "m13Packet": "T24",
+      "name": "Day Book (Bahi Khata) & Project Ledgers",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/finance.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0C4315C0E5DA",
+        "ACTION-306DE3D03A18",
+        "ACTION-3762F728472B",
+        "ACTION-38690396F512",
+        "ACTION-46949EEA9080",
+        "ACTION-49CB70CFD7BC",
+        "ACTION-7FC2850D48F1",
+        "ACTION-E460AB8EE417",
+        "ACTION-EE119AEBD397"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/journal-entry.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/routers/accounting.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "finance.createBankAccount [Mutation]",
+        "finance.createHeadOfficeExpense [Mutation]",
+        "finance.orgBankAccounts [Query]",
+        "finance.orgPayables [Query]",
+        "finance.orgSettleMultiBill [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/accounting.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-371153107A66",
+        "TRIGGER-400D621EB264",
+        "TRIGGER-4CCC187B90D6",
+        "TRIGGER-67CF937DA1E1",
+        "TRIGGER-A54213BAEE7A",
+        "TRIGGER-C3AC79524130",
+        "TRIGGER-ECD1C4CC38A8"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-024"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Finance / Organisation finance overview",
+          "packet": "T24/T25",
+          "routeId": "ROUTE-074",
+          "sourcePage": "src/app/(app)/finance/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Finance / Project accounting",
+          "packet": "T24",
+          "routeId": "ROUTE-096",
+          "sourcePage": "src/app/(app)/projects/[id]/accounting/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Performance bonds, bid bonds, and advance payment guarantees with bank tracking, counter-guarantees, and automated expiry sweeps.",
+      "domain": "Accounting & Bahi Khata",
+      "m13Packet": "T25",
+      "name": "Bank Guarantee Expiration & Release",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/bank-guarantee.ts",
+        "src/server/routers/finance.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0C4315C0E5DA",
+        "ACTION-306DE3D03A18",
+        "ACTION-3762F728472B",
+        "ACTION-37D18B71305B",
+        "ACTION-38690396F512",
+        "ACTION-3993A06FF5C8",
+        "ACTION-49CB70CFD7BC",
+        "ACTION-5586A479813C",
+        "ACTION-5DFA0B76F97B",
+        "ACTION-7481788F0F46",
+        "ACTION-789A03AA5E9A",
+        "ACTION-7FC2850D48F1",
+        "ACTION-8E1ABE912E09",
+        "ACTION-AD6EA0A96C41",
+        "ACTION-EE119AEBD397"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/bank-guarantee.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "bankGuarantee.create [Mutation]",
+        "bankGuarantee.delete [Mutation]",
+        "bankGuarantee.extend [Mutation]",
+        "bankGuarantee.linkToProject [Mutation]",
+        "bankGuarantee.list [Query]",
+        "bankGuarantee.release [Mutation]",
+        "bankGuarantee.unlinkFromProject [Mutation]",
+        "bankGuarantee.update [Mutation]",
+        "finance.createBankAccount [Mutation]",
+        "finance.createHeadOfficeExpense [Mutation]",
+        "finance.orgBankAccounts [Query]",
+        "finance.orgPayables [Query]",
+        "finance.orgSettleMultiBill [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/bank-guarantee.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-21BBDAD08442",
+        "TRIGGER-371153107A66",
+        "TRIGGER-400D621EB264",
+        "TRIGGER-B1D5BC49A27E",
+        "TRIGGER-C3AC79524130",
+        "TRIGGER-CEE87C313385",
+        "TRIGGER-D572D9BAACCA",
+        "TRIGGER-E375F7D18517",
+        "TRIGGER-ECD1C4CC38A8"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-025"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Finance / Organisation finance overview",
+          "packet": "T24/T25",
+          "routeId": "ROUTE-074",
+          "sourcePage": "src/app/(app)/finance/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Finance / Project accounting",
+          "packet": "T24",
+          "routeId": "ROUTE-096",
+          "sourcePage": "src/app/(app)/projects/[id]/accounting/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/fiscal-year-lock.ts",
+        "src/server/routers/fiscal-year.ts"
+      ],
+      "description": "Strict fiscal period freezing preventing back-dated postings or edits to financial records in closed periods.",
+      "domain": "Accounting & Bahi Khata",
+      "m13Packet": "T25",
+      "name": "Fiscal Year Boundary Locks (ADR-0001)",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Enforced by API",
+        "nativeMobile": "Enforced by API",
+        "webDesktop": "Implemented",
+        "webMobile": "Enforced by API"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/finance.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0C4315C0E5DA",
+        "ACTION-306DE3D03A18",
+        "ACTION-3762F728472B",
+        "ACTION-38690396F512",
+        "ACTION-49CB70CFD7BC",
+        "ACTION-7FC2850D48F1",
+        "ACTION-EE119AEBD397"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/fiscal-year-lock.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/routers/fiscal-year.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "finance.createBankAccount [Mutation]",
+        "finance.createHeadOfficeExpense [Mutation]",
+        "finance.orgBankAccounts [Query]",
+        "finance.orgPayables [Query]",
+        "finance.orgSettleMultiBill [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/fiscal-year.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-371153107A66",
+        "TRIGGER-400D621EB264",
+        "TRIGGER-C3AC79524130",
+        "TRIGGER-ECD1C4CC38A8"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-026"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Documents / Drawing register",
+          "packet": "T27",
+          "routeId": "ROUTE-072",
+          "sourcePage": "src/app/(app)/drawings/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Drawings",
+          "packet": "T27",
+          "routeId": "ROUTE-024",
+          "sourcePage": "src/app/(app)/projects/[id]/drawings/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/dwg/dwg-native.ts",
+        "src/lib/dxf/dxf-parser.ts"
+      ],
+      "description": "Vector CAD viewer supporting AutoCAD DXF and binary DWG files, layer toggling, zoom/pan, coordinate display.",
+      "domain": "CAD Drawings & Geometry",
+      "m13Packet": "T27",
+      "name": "AutoCAD DXF / DWG Viewer",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M07)",
+        "nativeMobile": "Target (M07)",
+        "webDesktop": "Implemented (WebGL/Canvas)",
+        "webMobile": "Partial (View only)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/document.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-01E9CF99C4D2",
+        "ACTION-07D4737424DC",
+        "ACTION-0CD8D77C97B7",
+        "ACTION-1416FF504200",
+        "ACTION-1C4FAB5CDA87",
+        "ACTION-1EAA36341569",
+        "ACTION-21CC18154041",
+        "ACTION-2864014C63D9",
+        "ACTION-2E7C7E3C4E2B",
+        "ACTION-3993523DA892",
+        "ACTION-3E57670E91F1",
+        "ACTION-426A26389F3F",
+        "ACTION-4855820CE3F6",
+        "ACTION-504442210CDD",
+        "ACTION-55959AE0BEC4",
+        "ACTION-569DB6E88A7A",
+        "ACTION-648BEC8E771B",
+        "ACTION-68BEC6C17808",
+        "ACTION-73C18E37608F",
+        "ACTION-754FFC6653D6",
+        "ACTION-76FEDF7F959A",
+        "ACTION-8C59348AE0D5",
+        "ACTION-8FB7ACC8CAFC",
+        "ACTION-95AD146173E6",
+        "ACTION-A4A666033901",
+        "ACTION-A69FC776DE11",
+        "ACTION-AA3D234A9CFD",
+        "ACTION-B09B8E0E3B71",
+        "ACTION-BB0B01716BD4",
+        "ACTION-BC90C2D1533A",
+        "ACTION-C5D41FCE45F2",
+        "ACTION-D9AF84CA8DDB",
+        "ACTION-E1B7BAC9072A",
+        "ACTION-E7BC981E2B4F",
+        "ACTION-EEE3259ED73D",
+        "ACTION-F0403285A5A6",
+        "ACTION-F1C76B3D12AF",
+        "ACTION-F79D7A6444FA",
+        "ACTION-FABA59B710F1"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/dwg/dwg-native.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/lib/dxf/dxf-parser.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "document.addMarkup [Mutation]",
+        "document.addRevision [Mutation]",
+        "document.approveDrawing [Mutation]",
+        "document.assignMarkup [Mutation]",
+        "document.assignToSet [Mutation]",
+        "document.cadConverterStatus [Query]",
+        "document.createDrawing [Mutation]",
+        "document.createRfiFromDrawing [Mutation]",
+        "document.createSet [Mutation]",
+        "document.deleteDrawing [Mutation]",
+        "document.deleteMarkup [Mutation]",
+        "document.drawingAssignees [Query]",
+        "document.getDrawing [Query]",
+        "document.getRevisionFile [Query]",
+        "document.listDrawings [Query]",
+        "document.listMarkups [Query]",
+        "document.listSets [Query]",
+        "document.markupStats [Query]",
+        "document.setMarkupStatus [Mutation]",
+        "document.updateDrawing [Mutation]",
+        "document.updateMarkup [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/dwg/dwg-native.test.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/lib/dxf/dxf-parser.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-06C9F7787D32",
+        "TRIGGER-0D6140241A19",
+        "TRIGGER-0E905783B682",
+        "TRIGGER-1970A8DB1415",
+        "TRIGGER-19EFE5DD76E4",
+        "TRIGGER-1C3951481FA6",
+        "TRIGGER-2A1C61476FFD",
+        "TRIGGER-327DCE5E9700",
+        "TRIGGER-33BBF41B7827",
+        "TRIGGER-3ACC7F7C2E67",
+        "TRIGGER-3B388B28F1C8",
+        "TRIGGER-415462896003",
+        "TRIGGER-4A66143271B9",
+        "TRIGGER-5286D8AFEC9C",
+        "TRIGGER-5FC6E1073CE6",
+        "TRIGGER-6941165324EE",
+        "TRIGGER-6BF757ED83A5",
+        "TRIGGER-79FB9096A8BB",
+        "TRIGGER-7A1C9BB10BB7",
+        "TRIGGER-859DBB314497",
+        "TRIGGER-8D7AC2509DC4",
+        "TRIGGER-9E051BC102E2",
+        "TRIGGER-A5756A4E59AE",
+        "TRIGGER-AA2C7D2F2013",
+        "TRIGGER-BA2960DDC3EC",
+        "TRIGGER-BAADB7865EEE",
+        "TRIGGER-BD572CA74FCC",
+        "TRIGGER-D83040C1DAD1",
+        "TRIGGER-D8D3D7312DE8",
+        "TRIGGER-D983A9D9F4A9",
+        "TRIGGER-D9C5BD362AC1",
+        "TRIGGER-F032C1D8D108",
+        "TRIGGER-F33479D35209",
+        "TRIGGER-F8A023F7ADBD"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-027"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Documents / Drawing register",
+          "packet": "T27",
+          "routeId": "ROUTE-072",
+          "sourcePage": "src/app/(app)/drawings/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Drawings",
+          "packet": "T27",
+          "routeId": "ROUTE-024",
+          "sourcePage": "src/app/(app)/projects/[id]/drawings/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Project PDF canvas",
+          "packet": "T27/T28",
+          "routeId": "ROUTE-107",
+          "sourcePage": "src/app/(app)/projects/[id]/pdf-canvas/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/cad/command-registry.ts"
+      ],
+      "description": "AutoCAD-style command bar (LINE, PLINE, CIRCLE, ARC, DIST, AREA, ERASE, UNDO/REDO) and entity snapping.",
+      "domain": "CAD Drawings & Geometry",
+      "m13Packet": "T27",
+      "name": "Interactive CAD Command Engine",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M07)",
+        "nativeMobile": "Tablet only",
+        "webDesktop": "Implemented",
+        "webMobile": "Not feasible (touch)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/document.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-01E9CF99C4D2",
+        "ACTION-07D4737424DC",
+        "ACTION-1C4FAB5CDA87",
+        "ACTION-1EAA36341569",
+        "ACTION-426A26389F3F",
+        "ACTION-648BEC8E771B",
+        "ACTION-68BEC6C17808",
+        "ACTION-73C18E37608F",
+        "ACTION-754FFC6653D6",
+        "ACTION-95AD146173E6",
+        "ACTION-A69FC776DE11",
+        "ACTION-AA3D234A9CFD",
+        "ACTION-BB0B01716BD4",
+        "ACTION-BC90C2D1533A",
+        "ACTION-E1B7BAC9072A",
+        "ACTION-F0403285A5A6"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/cad/command-registry.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "document.approveDrawing [Mutation]",
+        "document.createDrawing [Mutation]",
+        "document.createRfiFromDrawing [Mutation]",
+        "document.deleteDrawing [Mutation]",
+        "document.drawingAssignees [Query]",
+        "document.getDrawing [Query]",
+        "document.listDrawings [Query]",
+        "document.updateDrawing [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/cad/__tests__/command-registry.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-1C3951481FA6",
+        "TRIGGER-2A1C61476FFD",
+        "TRIGGER-3ACC7F7C2E67",
+        "TRIGGER-3B388B28F1C8",
+        "TRIGGER-415462896003",
+        "TRIGGER-5286D8AFEC9C",
+        "TRIGGER-6941165324EE",
+        "TRIGGER-79FB9096A8BB",
+        "TRIGGER-8D7AC2509DC4",
+        "TRIGGER-A5756A4E59AE",
+        "TRIGGER-BD572CA74FCC",
+        "TRIGGER-D83040C1DAD1",
+        "TRIGGER-D8D3D7312DE8",
+        "TRIGGER-D983A9D9F4A9",
+        "TRIGGER-D9C5BD362AC1"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-028"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Documents / Drawing register",
+          "packet": "T27",
+          "routeId": "ROUTE-072",
+          "sourcePage": "src/app/(app)/drawings/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Drawings",
+          "packet": "T27",
+          "routeId": "ROUTE-024",
+          "sourcePage": "src/app/(app)/projects/[id]/drawings/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Project PDF rendering",
+          "packet": "T27/T28",
+          "routeId": "ROUTE-108",
+          "sourcePage": "src/app/(app)/projects/[id]/pdf-canvas/render/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/cad/plot-engine.ts",
+        "src/lib/dxf/dxf-to-svg.ts"
+      ],
+      "description": "Export CAD viewport and layouts to vector PDF and SVG with scale bar, north arrow, and border templates.",
+      "domain": "CAD Drawings & Geometry",
+      "m13Packet": "T27",
+      "name": "CAD Plotting & Vector Export",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/document.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-01E9CF99C4D2",
+        "ACTION-07D4737424DC",
+        "ACTION-1C4FAB5CDA87",
+        "ACTION-1EAA36341569",
+        "ACTION-426A26389F3F",
+        "ACTION-648BEC8E771B",
+        "ACTION-68BEC6C17808",
+        "ACTION-73C18E37608F",
+        "ACTION-754FFC6653D6",
+        "ACTION-95AD146173E6",
+        "ACTION-A69FC776DE11",
+        "ACTION-AA3D234A9CFD",
+        "ACTION-BB0B01716BD4",
+        "ACTION-BC90C2D1533A",
+        "ACTION-E1B7BAC9072A",
+        "ACTION-F0403285A5A6"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/cad/plot-engine.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/lib/dxf/dxf-to-svg.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "document.approveDrawing [Mutation]",
+        "document.createDrawing [Mutation]",
+        "document.createRfiFromDrawing [Mutation]",
+        "document.deleteDrawing [Mutation]",
+        "document.drawingAssignees [Query]",
+        "document.getDrawing [Query]",
+        "document.listDrawings [Query]",
+        "document.updateDrawing [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/cad/__tests__/plot-engine.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-1C3951481FA6",
+        "TRIGGER-2A1C61476FFD",
+        "TRIGGER-3ACC7F7C2E67",
+        "TRIGGER-3B388B28F1C8",
+        "TRIGGER-415462896003",
+        "TRIGGER-5286D8AFEC9C",
+        "TRIGGER-6941165324EE",
+        "TRIGGER-79FB9096A8BB",
+        "TRIGGER-8D7AC2509DC4",
+        "TRIGGER-A5756A4E59AE",
+        "TRIGGER-BD572CA74FCC",
+        "TRIGGER-D83040C1DAD1",
+        "TRIGGER-D8D3D7312DE8",
+        "TRIGGER-D983A9D9F4A9",
+        "TRIGGER-D9C5BD362AC1"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-029"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Documents / Drawings",
+          "packet": "T27",
+          "routeId": "ROUTE-024",
+          "sourcePage": "src/app/(app)/projects/[id]/drawings/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Project PDF canvas",
+          "packet": "T27/T28",
+          "routeId": "ROUTE-107",
+          "sourcePage": "src/app/(app)/projects/[id]/pdf-canvas/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Project PDF rendering",
+          "packet": "T27/T28",
+          "routeId": "ROUTE-108",
+          "sourcePage": "src/app/(app)/projects/[id]/pdf-canvas/render/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/document-engine/measurement.ts"
+      ],
+      "description": "Multi-page PDF drawing viewer with arbitrary line scale calibration (known dimension setting) in metric/imperial.",
+      "domain": "Takeoff & Document Engine",
+      "m13Packet": "T27",
+      "name": "PDF Blueprint Viewer & Calibration",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M08)",
+        "nativeMobile": "Target (M08)",
+        "webDesktop": "Implemented",
+        "webMobile": "Partial"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/document.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-1C4FAB5CDA87",
+        "ACTION-1EAA36341569",
+        "ACTION-426A26389F3F",
+        "ACTION-73C18E37608F",
+        "ACTION-A69FC776DE11",
+        "ACTION-AA3D234A9CFD",
+        "ACTION-BB0B01716BD4",
+        "ACTION-E1B7BAC9072A"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/document-engine/measurement.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "document.approveDrawing [Mutation]",
+        "document.createDrawing [Mutation]",
+        "document.createRfiFromDrawing [Mutation]",
+        "document.deleteDrawing [Mutation]",
+        "document.drawingAssignees [Query]",
+        "document.getDrawing [Query]",
+        "document.listDrawings [Query]",
+        "document.updateDrawing [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/document-engine/__tests__/measurement.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-1C3951481FA6",
+        "TRIGGER-2A1C61476FFD",
+        "TRIGGER-3ACC7F7C2E67",
+        "TRIGGER-3B388B28F1C8",
+        "TRIGGER-6941165324EE",
+        "TRIGGER-8D7AC2509DC4",
+        "TRIGGER-D8D3D7312DE8",
+        "TRIGGER-D9C5BD362AC1"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-030"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Documents / Drawing progress",
+          "packet": "T27",
+          "routeId": "ROUTE-097",
+          "sourcePage": "src/app/(app)/projects/[id]/drawings/progress/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Project PDF canvas",
+          "packet": "T27/T28",
+          "routeId": "ROUTE-107",
+          "sourcePage": "src/app/(app)/projects/[id]/pdf-canvas/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / BOQ",
+          "packet": "T10",
+          "routeId": "ROUTE-012",
+          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/document.ts"
+      ],
+      "description": "Polygon area takeoff, linear polyline measurement, and count stamps linked to specific BoQ item quantities.",
+      "domain": "Takeoff & Document Engine",
+      "m13Packet": "T27",
+      "name": "Measurement Takeoff & BoQ Linking",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M08)",
+        "nativeMobile": "Target (M08)",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/boq.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-14D856AEA885",
+        "ACTION-3A0D9CA2B83E",
+        "ACTION-4B97D1189D71",
+        "ACTION-511359DF7F79",
+        "ACTION-5D52935A12A7",
+        "ACTION-8BEAEB63136A",
+        "ACTION-C267A6E68582"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/document.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "boq.actionAccess [Query]",
+        "boq.compare [Query]",
+        "boq.create [Mutation]",
+        "boq.delete [Mutation]",
+        "boq.duplicate [Mutation]",
+        "boq.list [Query]",
+        "boq.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/components/pdf-canvas/__tests__/storage-db.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0F7D742D81ED",
+        "TRIGGER-1998DB7344D9",
+        "TRIGGER-377CF47BC4E7",
+        "TRIGGER-3D523DC87758",
+        "TRIGGER-4BD0C700B7DE",
+        "TRIGGER-50DE23E8FF1F",
+        "TRIGGER-574B9B0DDE35",
+        "TRIGGER-5E15163DB887",
+        "TRIGGER-64D9713FB90B",
+        "TRIGGER-6AE063CAE705",
+        "TRIGGER-7B439089BC0C",
+        "TRIGGER-81DDE2B1EE4A",
+        "TRIGGER-9E5E48182CD0",
+        "TRIGGER-B9F704535421",
+        "TRIGGER-C6D702DE839B",
+        "TRIGGER-CF2A568A3433",
+        "TRIGGER-EAF23A01937F",
+        "TRIGGER-EB047350E1CD"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-031"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Planning / Schedule",
+          "packet": "T17",
+          "routeId": "ROUTE-028",
+          "sourcePage": "src/app/(app)/projects/[id]/gantt/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Planning / Overview",
+          "packet": "T30",
+          "routeId": "ROUTE-038",
+          "sourcePage": "src/app/(app)/projects/[id]/planning-dashboard/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/gantt.ts",
+        "src/server/services/scheduler/progress.ts"
+      ],
+      "description": "Interactive task bar dragging, progress tracking, milestone rendering, and WBS outline levels.",
+      "domain": "CPM Scheduling & Gantt",
+      "m13Packet": "T17",
+      "name": "Interactive Gantt Chart Timeline",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M09)",
+        "nativeMobile": "Target (M09)",
+        "webDesktop": "Implemented",
+        "webMobile": "Read-only"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/gantt-analytics.ts",
+        "src/server/routers/gantt-calendar.ts",
+        "src/server/routers/gantt-dependencies.ts",
+        "src/server/routers/gantt-import.ts",
+        "src/server/routers/gantt-tasks.ts",
+        "src/server/routers/gantt-versions.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-035A514847DD",
+        "ACTION-09E8D39F2972",
+        "ACTION-1BF9FAB0FFAD",
+        "ACTION-233BB0394EF8",
+        "ACTION-2D5AA102A81E",
+        "ACTION-46FCDC371540",
+        "ACTION-4B0B0CCEAF24",
+        "ACTION-4B126A5D940C",
+        "ACTION-526141D527F3",
+        "ACTION-5BAEDDF59689",
+        "ACTION-5D7B1893948D",
+        "ACTION-66BF8ED7BD7E",
+        "ACTION-68EEAF58754C",
+        "ACTION-6CB26B5720EB",
+        "ACTION-6FF2932D1CC1",
+        "ACTION-731AF4D3FBA7",
+        "ACTION-839E9EE7876B",
+        "ACTION-89EDD7ACFBDB",
+        "ACTION-8B0A87852C33",
+        "ACTION-92D3874C9EB5",
+        "ACTION-9512DE2E76EA",
+        "ACTION-95222BB70A24",
+        "ACTION-95EFF9C4A061",
+        "ACTION-9D457E4423F1",
+        "ACTION-A7F3FD774450",
+        "ACTION-AA8C4D2FDD26",
+        "ACTION-AC1527B05A22",
+        "ACTION-B01966E9DE76",
+        "ACTION-B7F1642BB044",
+        "ACTION-D54B8A4A3A81",
+        "ACTION-DB6478EE4132",
+        "ACTION-E42076EF84DC",
+        "ACTION-F0CFAC9E7FE3",
+        "ACTION-FAE0D6029E58",
+        "ACTION-FB2AEBFBC8A2",
+        "ACTION-FBF46A5D8CAB"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/gantt.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/services/scheduler/progress.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "gantt.actionAccess [Query]",
+        "gantt.addDependency [Mutation]",
+        "gantt.applyLeveling [Mutation]",
+        "gantt.calculateAll [Mutation]",
+        "gantt.clearLevelingDelay [Mutation]",
+        "gantt.commitImport [Mutation]",
+        "gantt.create [Mutation]",
+        "gantt.createExecutionSchedule [Mutation]",
+        "gantt.createRevision [Mutation]",
+        "gantt.createVersion [Mutation]",
+        "gantt.delete [Mutation]",
+        "gantt.deleteException [Mutation]",
+        "gantt.deleteTemplate [Mutation]",
+        "gantt.getEVM [Query]",
+        "gantt.getEffectiveCalendar [Query]",
+        "gantt.getResourceConflicts [Query]",
+        "gantt.getVariance [Query]",
+        "gantt.insertFromTemplate [Mutation]",
+        "gantt.linkBoq [Mutation]",
+        "gantt.list [Query]",
+        "gantt.listCalendars [Query]",
+        "gantt.listTemplates [Query]",
+        "gantt.listVersions [Query]",
+        "gantt.move [Mutation]",
+        "gantt.previewImport [Mutation]",
+        "gantt.recordHardcopyApproval [Mutation]",
+        "gantt.removeDependency [Mutation]",
+        "gantt.reorder [Mutation]",
+        "gantt.replicateBranch [Mutation]",
+        "gantt.resolveContext [Query]",
+        "gantt.saveAsTemplate [Mutation]",
+        "gantt.saveCalendar [Mutation]",
+        "gantt.syncDailyReports [Mutation]",
+        "gantt.unlinkBoq [Mutation]",
+        "gantt.update [Mutation]",
+        "gantt.upsertException [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/gantt.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-06942D31DEF7",
+        "TRIGGER-12B3EF1BD9CC",
+        "TRIGGER-3093424902C1",
+        "TRIGGER-5A2CB20F374C",
+        "TRIGGER-5B2678FCEC4D",
+        "TRIGGER-92F936938328",
+        "TRIGGER-9906C0D8AC46",
+        "TRIGGER-A67B49E485F3",
+        "TRIGGER-B29CD1D2D263",
+        "TRIGGER-B5F1F8697B65",
+        "TRIGGER-B7D9684E02A8",
+        "TRIGGER-C841E0A37C6C",
+        "TRIGGER-CCAEA7278D4E",
+        "TRIGGER-DDAAFE921E9A",
+        "TRIGGER-F9E7631CA42C"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-032"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Planning / Schedule",
+          "packet": "T17",
+          "routeId": "ROUTE-028",
+          "sourcePage": "src/app/(app)/projects/[id]/gantt/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Planning / Overview",
+          "packet": "T30",
+          "routeId": "ROUTE-038",
+          "sourcePage": "src/app/(app)/projects/[id]/planning-dashboard/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/cpm-engine.ts",
+        "src/server/utils/gantt-cpm-engine.ts"
+      ],
+      "description": "Forward pass / backward pass early/late date calculation, total float, free float, and critical path identification.",
+      "domain": "CPM Scheduling & Gantt",
+      "m13Packet": "T17",
+      "name": "Critical Path Method (CPM) Engine",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target (M09 Shared Kernel)",
+        "webDesktop": "Implemented",
+        "webMobile": "Server-side"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/gantt-analytics.ts",
+        "src/server/routers/gantt-calendar.ts",
+        "src/server/routers/gantt-dependencies.ts",
+        "src/server/routers/gantt-import.ts",
+        "src/server/routers/gantt-tasks.ts",
+        "src/server/routers/gantt-versions.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-035A514847DD",
+        "ACTION-09E8D39F2972",
+        "ACTION-1BF9FAB0FFAD",
+        "ACTION-233BB0394EF8",
+        "ACTION-2D5AA102A81E",
+        "ACTION-46FCDC371540",
+        "ACTION-4B0B0CCEAF24",
+        "ACTION-4B126A5D940C",
+        "ACTION-526141D527F3",
+        "ACTION-5BAEDDF59689",
+        "ACTION-5D7B1893948D",
+        "ACTION-66BF8ED7BD7E",
+        "ACTION-68EEAF58754C",
+        "ACTION-6CB26B5720EB",
+        "ACTION-6FF2932D1CC1",
+        "ACTION-731AF4D3FBA7",
+        "ACTION-839E9EE7876B",
+        "ACTION-89EDD7ACFBDB",
+        "ACTION-8B0A87852C33",
+        "ACTION-92D3874C9EB5",
+        "ACTION-9512DE2E76EA",
+        "ACTION-95222BB70A24",
+        "ACTION-95EFF9C4A061",
+        "ACTION-9D457E4423F1",
+        "ACTION-A7F3FD774450",
+        "ACTION-AA8C4D2FDD26",
+        "ACTION-AC1527B05A22",
+        "ACTION-B01966E9DE76",
+        "ACTION-B7F1642BB044",
+        "ACTION-D54B8A4A3A81",
+        "ACTION-DB6478EE4132",
+        "ACTION-E42076EF84DC",
+        "ACTION-F0CFAC9E7FE3",
+        "ACTION-FAE0D6029E58",
+        "ACTION-FB2AEBFBC8A2",
+        "ACTION-FBF46A5D8CAB"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/cpm-engine.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/utils/gantt-cpm-engine.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "gantt.actionAccess [Query]",
+        "gantt.addDependency [Mutation]",
+        "gantt.applyLeveling [Mutation]",
+        "gantt.calculateAll [Mutation]",
+        "gantt.clearLevelingDelay [Mutation]",
+        "gantt.commitImport [Mutation]",
+        "gantt.create [Mutation]",
+        "gantt.createExecutionSchedule [Mutation]",
+        "gantt.createRevision [Mutation]",
+        "gantt.createVersion [Mutation]",
+        "gantt.delete [Mutation]",
+        "gantt.deleteException [Mutation]",
+        "gantt.deleteTemplate [Mutation]",
+        "gantt.getEVM [Query]",
+        "gantt.getEffectiveCalendar [Query]",
+        "gantt.getResourceConflicts [Query]",
+        "gantt.getVariance [Query]",
+        "gantt.insertFromTemplate [Mutation]",
+        "gantt.linkBoq [Mutation]",
+        "gantt.list [Query]",
+        "gantt.listCalendars [Query]",
+        "gantt.listTemplates [Query]",
+        "gantt.listVersions [Query]",
+        "gantt.move [Mutation]",
+        "gantt.previewImport [Mutation]",
+        "gantt.recordHardcopyApproval [Mutation]",
+        "gantt.removeDependency [Mutation]",
+        "gantt.reorder [Mutation]",
+        "gantt.replicateBranch [Mutation]",
+        "gantt.resolveContext [Query]",
+        "gantt.saveAsTemplate [Mutation]",
+        "gantt.saveCalendar [Mutation]",
+        "gantt.syncDailyReports [Mutation]",
+        "gantt.unlinkBoq [Mutation]",
+        "gantt.update [Mutation]",
+        "gantt.upsertException [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/utils/__tests__/gantt-cpm.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-06942D31DEF7",
+        "TRIGGER-12B3EF1BD9CC",
+        "TRIGGER-3093424902C1",
+        "TRIGGER-5A2CB20F374C",
+        "TRIGGER-5B2678FCEC4D",
+        "TRIGGER-92F936938328",
+        "TRIGGER-9906C0D8AC46",
+        "TRIGGER-A67B49E485F3",
+        "TRIGGER-B29CD1D2D263",
+        "TRIGGER-B5F1F8697B65",
+        "TRIGGER-B7D9684E02A8",
+        "TRIGGER-C841E0A37C6C",
+        "TRIGGER-CCAEA7278D4E",
+        "TRIGGER-DDAAFE921E9A",
+        "TRIGGER-F9E7631CA42C"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-033"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Planning / Schedule",
+          "packet": "T17",
+          "routeId": "ROUTE-028",
+          "sourcePage": "src/app/(app)/projects/[id]/gantt/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Planning / Overview",
+          "packet": "T30",
+          "routeId": "ROUTE-038",
+          "sourcePage": "src/app/(app)/projects/[id]/planning-dashboard/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/calendar-snapshot.ts",
+        "src/lib/nepali-calendar.ts"
+      ],
+      "description": "Official Nepal Bikram Sambat calendar conversions, Saturday weekend rules, and government holiday schedules.",
+      "domain": "CPM Scheduling & Gantt",
+      "m13Packet": "T17",
+      "name": "Bikram Sambat (BS) & Working Calendar",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M09)",
+        "nativeMobile": "Target (M09)",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/gantt-analytics.ts",
+        "src/server/routers/gantt-calendar.ts",
+        "src/server/routers/gantt-dependencies.ts",
+        "src/server/routers/gantt-import.ts",
+        "src/server/routers/gantt-tasks.ts",
+        "src/server/routers/gantt-versions.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-035A514847DD",
+        "ACTION-09E8D39F2972",
+        "ACTION-1BF9FAB0FFAD",
+        "ACTION-233BB0394EF8",
+        "ACTION-2D5AA102A81E",
+        "ACTION-46FCDC371540",
+        "ACTION-4B0B0CCEAF24",
+        "ACTION-4B126A5D940C",
+        "ACTION-526141D527F3",
+        "ACTION-5BAEDDF59689",
+        "ACTION-5D7B1893948D",
+        "ACTION-66BF8ED7BD7E",
+        "ACTION-68EEAF58754C",
+        "ACTION-6CB26B5720EB",
+        "ACTION-6FF2932D1CC1",
+        "ACTION-731AF4D3FBA7",
+        "ACTION-839E9EE7876B",
+        "ACTION-89EDD7ACFBDB",
+        "ACTION-8B0A87852C33",
+        "ACTION-92D3874C9EB5",
+        "ACTION-9512DE2E76EA",
+        "ACTION-95222BB70A24",
+        "ACTION-95EFF9C4A061",
+        "ACTION-9D457E4423F1",
+        "ACTION-A7F3FD774450",
+        "ACTION-AA8C4D2FDD26",
+        "ACTION-AC1527B05A22",
+        "ACTION-B01966E9DE76",
+        "ACTION-B7F1642BB044",
+        "ACTION-D54B8A4A3A81",
+        "ACTION-DB6478EE4132",
+        "ACTION-E42076EF84DC",
+        "ACTION-F0CFAC9E7FE3",
+        "ACTION-FAE0D6029E58",
+        "ACTION-FB2AEBFBC8A2",
+        "ACTION-FBF46A5D8CAB"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/calendar-snapshot.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/lib/nepali-calendar.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "gantt.actionAccess [Query]",
+        "gantt.addDependency [Mutation]",
+        "gantt.applyLeveling [Mutation]",
+        "gantt.calculateAll [Mutation]",
+        "gantt.clearLevelingDelay [Mutation]",
+        "gantt.commitImport [Mutation]",
+        "gantt.create [Mutation]",
+        "gantt.createExecutionSchedule [Mutation]",
+        "gantt.createRevision [Mutation]",
+        "gantt.createVersion [Mutation]",
+        "gantt.delete [Mutation]",
+        "gantt.deleteException [Mutation]",
+        "gantt.deleteTemplate [Mutation]",
+        "gantt.getEVM [Query]",
+        "gantt.getEffectiveCalendar [Query]",
+        "gantt.getResourceConflicts [Query]",
+        "gantt.getVariance [Query]",
+        "gantt.insertFromTemplate [Mutation]",
+        "gantt.linkBoq [Mutation]",
+        "gantt.list [Query]",
+        "gantt.listCalendars [Query]",
+        "gantt.listTemplates [Query]",
+        "gantt.listVersions [Query]",
+        "gantt.move [Mutation]",
+        "gantt.previewImport [Mutation]",
+        "gantt.recordHardcopyApproval [Mutation]",
+        "gantt.removeDependency [Mutation]",
+        "gantt.reorder [Mutation]",
+        "gantt.replicateBranch [Mutation]",
+        "gantt.resolveContext [Query]",
+        "gantt.saveAsTemplate [Mutation]",
+        "gantt.saveCalendar [Mutation]",
+        "gantt.syncDailyReports [Mutation]",
+        "gantt.unlinkBoq [Mutation]",
+        "gantt.update [Mutation]",
+        "gantt.upsertException [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/__tests__/nepal-calendar.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-06942D31DEF7",
+        "TRIGGER-12B3EF1BD9CC",
+        "TRIGGER-3093424902C1",
+        "TRIGGER-5A2CB20F374C",
+        "TRIGGER-5B2678FCEC4D",
+        "TRIGGER-92F936938328",
+        "TRIGGER-9906C0D8AC46",
+        "TRIGGER-A67B49E485F3",
+        "TRIGGER-B29CD1D2D263",
+        "TRIGGER-B5F1F8697B65",
+        "TRIGGER-B7D9684E02A8",
+        "TRIGGER-C841E0A37C6C",
+        "TRIGGER-CCAEA7278D4E",
+        "TRIGGER-DDAAFE921E9A",
+        "TRIGGER-F9E7631CA42C"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-034"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Planning / Schedule",
+          "packet": "T17",
+          "routeId": "ROUTE-028",
+          "sourcePage": "src/app/(app)/projects/[id]/gantt/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Planning / Schedule PDF designer",
+          "packet": "T17",
+          "routeId": "ROUTE-027",
+          "sourcePage": null,
+          "status": "Archive-only snapshot; unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/utils/xer-import.ts"
+      ],
+      "description": "Import enterprise Primavera .xer and Microsoft Project .xml schedules into native Gantt task hierarchy.",
+      "domain": "CPM Scheduling & Gantt",
+      "m13Packet": "T17",
+      "name": "Primavera P6 & MS Project Schedule Import",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/gantt-analytics.ts",
+        "src/server/routers/gantt-calendar.ts",
+        "src/server/routers/gantt-dependencies.ts",
+        "src/server/routers/gantt-import.ts",
+        "src/server/routers/gantt-tasks.ts",
+        "src/server/routers/gantt-versions.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-035A514847DD",
+        "ACTION-09E8D39F2972",
+        "ACTION-1BF9FAB0FFAD",
+        "ACTION-233BB0394EF8",
+        "ACTION-2D5AA102A81E",
+        "ACTION-46FCDC371540",
+        "ACTION-4B0B0CCEAF24",
+        "ACTION-4B126A5D940C",
+        "ACTION-526141D527F3",
+        "ACTION-5BAEDDF59689",
+        "ACTION-5D7B1893948D",
+        "ACTION-66BF8ED7BD7E",
+        "ACTION-68EEAF58754C",
+        "ACTION-6CB26B5720EB",
+        "ACTION-6FF2932D1CC1",
+        "ACTION-731AF4D3FBA7",
+        "ACTION-839E9EE7876B",
+        "ACTION-89EDD7ACFBDB",
+        "ACTION-8B0A87852C33",
+        "ACTION-92D3874C9EB5",
+        "ACTION-9512DE2E76EA",
+        "ACTION-95222BB70A24",
+        "ACTION-95EFF9C4A061",
+        "ACTION-9D457E4423F1",
+        "ACTION-A7F3FD774450",
+        "ACTION-AA8C4D2FDD26",
+        "ACTION-AC1527B05A22",
+        "ACTION-B01966E9DE76",
+        "ACTION-B7F1642BB044",
+        "ACTION-D54B8A4A3A81",
+        "ACTION-DB6478EE4132",
+        "ACTION-E42076EF84DC",
+        "ACTION-F0CFAC9E7FE3",
+        "ACTION-FAE0D6029E58",
+        "ACTION-FB2AEBFBC8A2",
+        "ACTION-FBF46A5D8CAB"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/utils/xer-import.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "gantt.actionAccess [Query]",
+        "gantt.addDependency [Mutation]",
+        "gantt.applyLeveling [Mutation]",
+        "gantt.calculateAll [Mutation]",
+        "gantt.clearLevelingDelay [Mutation]",
+        "gantt.commitImport [Mutation]",
+        "gantt.create [Mutation]",
+        "gantt.createExecutionSchedule [Mutation]",
+        "gantt.createRevision [Mutation]",
+        "gantt.createVersion [Mutation]",
+        "gantt.delete [Mutation]",
+        "gantt.deleteException [Mutation]",
+        "gantt.deleteTemplate [Mutation]",
+        "gantt.getEVM [Query]",
+        "gantt.getEffectiveCalendar [Query]",
+        "gantt.getResourceConflicts [Query]",
+        "gantt.getVariance [Query]",
+        "gantt.insertFromTemplate [Mutation]",
+        "gantt.linkBoq [Mutation]",
+        "gantt.list [Query]",
+        "gantt.listCalendars [Query]",
+        "gantt.listTemplates [Query]",
+        "gantt.listVersions [Query]",
+        "gantt.move [Mutation]",
+        "gantt.previewImport [Mutation]",
+        "gantt.recordHardcopyApproval [Mutation]",
+        "gantt.removeDependency [Mutation]",
+        "gantt.reorder [Mutation]",
+        "gantt.replicateBranch [Mutation]",
+        "gantt.resolveContext [Query]",
+        "gantt.saveAsTemplate [Mutation]",
+        "gantt.saveCalendar [Mutation]",
+        "gantt.syncDailyReports [Mutation]",
+        "gantt.unlinkBoq [Mutation]",
+        "gantt.update [Mutation]",
+        "gantt.upsertException [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/utils/__tests__/xer-import.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-06942D31DEF7",
+        "TRIGGER-12B3EF1BD9CC",
+        "TRIGGER-3093424902C1",
+        "TRIGGER-5A2CB20F374C",
+        "TRIGGER-5B2678FCEC4D",
+        "TRIGGER-92F936938328",
+        "TRIGGER-9906C0D8AC46",
+        "TRIGGER-A67B49E485F3",
+        "TRIGGER-B29CD1D2D263",
+        "TRIGGER-B5F1F8697B65",
+        "TRIGGER-B7D9684E02A8",
+        "TRIGGER-C841E0A37C6C",
+        "TRIGGER-CCAEA7278D4E",
+        "TRIGGER-DDAAFE921E9A",
+        "TRIGGER-F9E7631CA42C"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-035"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / Open this IPC workbook in full GridCraft",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-104",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/worksheets/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / Worksheet capability laboratory",
+          "packet": "T10/T14",
+          "routeId": "ROUTE-120",
+          "sourcePage": "src/app/(app)/worksheet-lab/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / BOQ",
+          "packet": "T10",
+          "routeId": "ROUTE-012",
+          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/worksheet/spreadsheet-engine.ts"
+      ],
+      "description": "High-performance virtual scrolling grid with formula evaluation, cell formatting, merging, and formulas.",
+      "domain": "Worksheets & Virtual Grid",
+      "m13Packet": "T10/T14",
+      "name": "Excel-Compatible Virtual Grid Spreadsheet",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target (M06)",
+        "nativeMobile": "Tablet only",
+        "webDesktop": "Implemented",
+        "webMobile": "Not feasible (touch grid)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/boq.ts",
+        "src/server/routers/ipc.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-14D856AEA885",
+        "ACTION-24682356A943",
+        "ACTION-3A0D9CA2B83E",
+        "ACTION-4B97D1189D71",
+        "ACTION-511359DF7F79",
+        "ACTION-589EE4DF16CF",
+        "ACTION-5D52935A12A7",
+        "ACTION-8BEAEB63136A",
+        "ACTION-C267A6E68582",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/worksheet/spreadsheet-engine.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "boq.actionAccess [Query]",
+        "boq.compare [Query]",
+        "boq.create [Mutation]",
+        "boq.delete [Mutation]",
+        "boq.duplicate [Mutation]",
+        "boq.list [Query]",
+        "boq.update [Mutation]",
+        "ipc.actionAccess [Query]",
+        "ipc.getPaymentSummary [Query]",
+        "ipc.listItems [Query]",
+        "ipc.syncQuantities [Mutation]",
+        "ipc.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/worksheet/__tests__/spreadsheet-engine.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0F7D742D81ED",
+        "TRIGGER-1998DB7344D9",
+        "TRIGGER-289B0E1270CD",
+        "TRIGGER-377CF47BC4E7",
+        "TRIGGER-3D523DC87758",
+        "TRIGGER-4BD0C700B7DE",
+        "TRIGGER-50DE23E8FF1F",
+        "TRIGGER-527B4C83FFF5",
+        "TRIGGER-52A76913EC2B",
+        "TRIGGER-574B9B0DDE35",
+        "TRIGGER-5E15163DB887",
+        "TRIGGER-64D9713FB90B",
+        "TRIGGER-6AE063CAE705",
+        "TRIGGER-7B439089BC0C",
+        "TRIGGER-81DDE2B1EE4A",
+        "TRIGGER-83A5E2920A29",
+        "TRIGGER-9E5E48182CD0",
+        "TRIGGER-B9F704535421",
+        "TRIGGER-C6D702DE839B",
+        "TRIGGER-CF2A568A3433",
+        "TRIGGER-EAF23A01937F",
+        "TRIGGER-EB047350E1CD",
+        "TRIGGER-F9F5934423AC"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": "Workbook editing uses the full GridCraft app; Contractor does not embed a separate editable worksheet surface for IPCs.",
+      "workflowId": "WF-036"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "BOQ, VO & IPC / Open this IPC workbook in full GridCraft",
+          "packet": "T13/T16",
+          "routeId": "ROUTE-104",
+          "sourcePage": "src/app/(app)/projects/[id]/ipc/[ipcId]/worksheets/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / Worksheet capability laboratory",
+          "packet": "T10/T14",
+          "routeId": "ROUTE-120",
+          "sourcePage": "src/app/(app)/worksheet-lab/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "BOQ, VO & IPC / BOQ",
+          "packet": "T10",
+          "routeId": "ROUTE-012",
+          "sourcePage": "src/app/(app)/projects/[id]/boq/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/lib/worksheet/workbook-excel.ts"
+      ],
+      "description": "Import and export complex multi-sheet Excel files preserving formula text, numbers, and basic formatting.",
+      "domain": "Worksheets & Virtual Grid",
+      "m13Packet": "T10/T14",
+      "name": "Excel (.xlsx) Round-Trip Import / Export",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/boq.ts",
+        "src/server/routers/ipc.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-14D856AEA885",
+        "ACTION-24682356A943",
+        "ACTION-3A0D9CA2B83E",
+        "ACTION-4B97D1189D71",
+        "ACTION-511359DF7F79",
+        "ACTION-589EE4DF16CF",
+        "ACTION-5D52935A12A7",
+        "ACTION-8BEAEB63136A",
+        "ACTION-C267A6E68582",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/lib/worksheet/workbook-excel.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "boq.actionAccess [Query]",
+        "boq.compare [Query]",
+        "boq.create [Mutation]",
+        "boq.delete [Mutation]",
+        "boq.duplicate [Mutation]",
+        "boq.list [Query]",
+        "boq.update [Mutation]",
+        "ipc.actionAccess [Query]",
+        "ipc.getPaymentSummary [Query]",
+        "ipc.listItems [Query]",
+        "ipc.syncQuantities [Mutation]",
+        "ipc.update [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/lib/worksheet/__tests__/workbook-excel.test.ts",
+          "presentInCanonicalCommit": false
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-0F7D742D81ED",
+        "TRIGGER-1998DB7344D9",
+        "TRIGGER-289B0E1270CD",
+        "TRIGGER-377CF47BC4E7",
+        "TRIGGER-3D523DC87758",
+        "TRIGGER-4BD0C700B7DE",
+        "TRIGGER-50DE23E8FF1F",
+        "TRIGGER-527B4C83FFF5",
+        "TRIGGER-52A76913EC2B",
+        "TRIGGER-574B9B0DDE35",
+        "TRIGGER-5E15163DB887",
+        "TRIGGER-64D9713FB90B",
+        "TRIGGER-6AE063CAE705",
+        "TRIGGER-7B439089BC0C",
+        "TRIGGER-81DDE2B1EE4A",
+        "TRIGGER-83A5E2920A29",
+        "TRIGGER-9E5E48182CD0",
+        "TRIGGER-B9F704535421",
+        "TRIGGER-C6D702DE839B",
+        "TRIGGER-CF2A568A3433",
+        "TRIGGER-EAF23A01937F",
+        "TRIGGER-EB047350E1CD",
+        "TRIGGER-F9F5934423AC"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": "Excel-compatible round-trip is qualified through the separate GridCraft workbook; preserve original data and fail closed on unproven round-trip fidelity.",
+      "workflowId": "WF-037"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Finance / Organisation finance overview",
+          "packet": "T24/T25",
+          "routeId": "ROUTE-074",
+          "sourcePage": "src/app/(app)/finance/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Finance / Project accounting",
+          "packet": "T24",
+          "routeId": "ROUTE-096",
+          "sourcePage": "src/app/(app)/projects/[id]/accounting/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Multi-party contractor JV agreements, equity share ratios, capital contributions, and dividend payouts.",
+      "domain": "Joint Ventures & Governance",
+      "m13Packet": "T25",
+      "name": "Joint Venture (JV) Partner Agreements & Profit Sharing",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/finance.ts",
+        "src/server/routers/jv-partner.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0C4315C0E5DA",
+        "ACTION-16D60C792496",
+        "ACTION-271CACED61F1",
+        "ACTION-2BF898E1CD44",
+        "ACTION-306DE3D03A18",
+        "ACTION-3762F728472B",
+        "ACTION-38690396F512",
+        "ACTION-49CB70CFD7BC",
+        "ACTION-7FC2850D48F1",
+        "ACTION-A1D080561F8C",
+        "ACTION-EE119AEBD397"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/jv-partner.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "finance.createBankAccount [Mutation]",
+        "finance.createHeadOfficeExpense [Mutation]",
+        "finance.orgBankAccounts [Query]",
+        "finance.orgPayables [Query]",
+        "finance.orgSettleMultiBill [Mutation]",
+        "jvPartner.deletePayout [Mutation]",
+        "jvPartner.getAgreement [Query]",
+        "jvPartner.recordPayout [Mutation]",
+        "jvPartner.saveAgreement [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/jv-partner.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-371153107A66",
+        "TRIGGER-400D621EB264",
+        "TRIGGER-78E354CFFBFE",
+        "TRIGGER-B47004B64081",
+        "TRIGGER-C3AC79524130",
+        "TRIGGER-D64B482B85D1",
+        "TRIGGER-ECD1C4CC38A8"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "partner.listPartners",
+            "project.get",
+            "purchaseOrder.list",
+            "purchaseOrder.openBillablePOs",
+            "vendorBill.checkDuplicate",
+            "vendorBill.create",
+            "vendorBill.getThreeWayMatchData",
+            "vendorBill.list",
+            "vendorBill.recordPayment"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-038"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Workflow / RFI alias",
+          "packet": "T18",
+          "routeId": "ROUTE-042",
+          "sourcePage": "src/app/(app)/projects/[id]/rfis/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Documents / Submittals",
+          "packet": "T28",
+          "routeId": "ROUTE-045",
+          "sourcePage": "src/app/(app)/projects/[id]/submittals/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Workflow / RFIs",
+          "packet": "T18",
+          "routeId": "ROUTE-057",
+          "sourcePage": "src/app/(app)/projects/[id]/workflow/rfi/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/workflow.ts"
+      ],
+      "description": "Formal Request for Information (RFI) and Material Submittal workflows with PDF export and approval states.",
+      "domain": "Joint Ventures & Governance",
+      "m13Packet": "T18/T28",
+      "name": "RFI & Submittal Workflow Lifecycles",
+      "offlinePolicies": [
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "Implemented (/m)"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/rfi.ts",
+        "src/server/routers/submittal.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-0ED2F2647A21",
+        "ACTION-314D0B9350D6",
+        "ACTION-398BC0ECCA95",
+        "ACTION-448F474259AC",
+        "ACTION-4732F10F2BC5",
+        "ACTION-4EA9EC1D898E",
+        "ACTION-5214C78E1578",
+        "ACTION-54D0EAC46D09",
+        "ACTION-5E2AD7E739B1",
+        "ACTION-715831F24B21",
+        "ACTION-8A3E95CA1EC2",
+        "ACTION-97AED0587DBE",
+        "ACTION-A0164FA1E8D0",
+        "ACTION-BF7EA61EE673",
+        "ACTION-D5A1601838F1",
+        "ACTION-D6FB79C5B2D4",
+        "ACTION-EC59880C638D",
+        "ACTION-F848AE8C1E0B"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/workflow.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "submittal.create [Mutation]",
+        "submittal.delete [Mutation]",
+        "submittal.list [Query]",
+        "submittal.review [Mutation]",
+        "submittal.submit [Mutation]",
+        "workflow.rfi.actionAccess [Query]",
+        "workflow.rfi.addComment [Mutation]",
+        "workflow.rfi.assignableMembers [Query]",
+        "workflow.rfi.bulkCreate [Mutation]",
+        "workflow.rfi.countAll [Query]",
+        "workflow.rfi.create [Mutation]",
+        "workflow.rfi.delete [Mutation]",
+        "workflow.rfi.deleteComment [Mutation]",
+        "workflow.rfi.get [Query]",
+        "workflow.rfi.respond [Mutation]",
+        "workflow.rfi.searchSimilar [Query]",
+        "workflow.rfi.update [Mutation]",
+        "workflow.rfi.uploadAttachment [Mutation]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/rfi.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-05A8F93A51A2",
+        "TRIGGER-19E8327A72A1",
+        "TRIGGER-305790D6808F",
+        "TRIGGER-410DA2CAEF28",
+        "TRIGGER-52978B204BDC",
+        "TRIGGER-7231E14F51D8",
+        "TRIGGER-88B6CEF2F7F7",
+        "TRIGGER-A1808F0767D5",
+        "TRIGGER-A1DAC89B74F5",
+        "TRIGGER-A3510EA4CC50",
+        "TRIGGER-A656331B50C4",
+        "TRIGGER-D90CCB46BD51",
+        "TRIGGER-DACF57521145",
+        "TRIGGER-E05B5230D1F5",
+        "TRIGGER-E6486265472E",
+        "TRIGGER-F96F4523EA0D",
+        "TRIGGER-FEE398701514",
+        "TRIGGER-FFEE4F2A663A"
+      ],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-039"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Authentication / Access request status",
+          "packet": "T03/T29",
+          "routeId": "ROUTE-095",
+          "sourcePage": "src/app/(app)/my-access/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Workflow / My tasks",
+          "packet": "T18",
+          "routeId": "ROUTE-115",
+          "sourcePage": "src/app/(app)/projects/[id]/workflow/program/my-tasks/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Workflow / Mobile task list",
+          "packet": "T18",
+          "routeId": "ROUTE-092",
+          "sourcePage": "src/app/m/tasks/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [
+        "src/server/routers/responsibility-handover.ts",
+        "src/server/services/responsibility-handover.ts"
+      ],
+      "description": "Formal site handover protocol reassigning pending approvals and role scopes upon engineer transfer.",
+      "domain": "Joint Ventures & Governance",
+      "m13Packet": "T08/T18",
+      "name": "Responsibility Handover & Delegation Rules",
+      "offlinePolicies": [
+        "durable-offline-read-whitelist",
+        "not-durably-persisted-offline"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "implemented",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Target",
+        "nativeMobile": "Target",
+        "webDesktop": "Implemented",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/project.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-1F8BC7B56D49",
+        "ACTION-4740A3AE2127",
+        "ACTION-7B00CFA5816A",
+        "ACTION-90FB750304F0"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/responsibility-handover.ts",
+          "presentInCanonicalCommit": true
+        },
+        {
+          "path": "src/server/services/responsibility-handover.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "project.get [Query]",
+        "project.getModules [Query]",
+        "project.getOrgProfile [Query]",
+        "project.list [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/responsibility-handover.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [],
+      "unreferencedUiComponentsWithRelatedHooks": [
+        {
+          "hooks": [
+            "partner.listPartners",
+            "project.get",
+            "purchaseOrder.list",
+            "purchaseOrder.openBillablePOs",
+            "vendorBill.checkDuplicate",
+            "vendorBill.create",
+            "vendorBill.getThreeWayMatchData",
+            "vendorBill.list",
+            "vendorBill.recordPayment"
+          ],
+          "sourceFile": "src/app/(app)/projects/[id]/materials/components/vendor-bills-tab.tsx"
+        },
+        {
+          "hooks": [
+            "project.crossProjectFinancials"
+          ],
+          "sourceFile": "src/components/dashboard/cross-project-financials-card.tsx"
+        }
+      ],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-040"
+    },
+    {
+      "canonicalRoutes": [
+        {
+          "destination": "Desk / Existing dashboard",
+          "packet": "T30",
+          "routeId": "ROUTE-010",
+          "sourcePage": "src/app/(app)/dashboard/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Overview / Existing dashboard",
+          "packet": "T30",
+          "routeId": "ROUTE-021",
+          "sourcePage": "src/app/(app)/projects/[id]/dashboard/page.tsx",
+          "status": "Unverified"
+        },
+        {
+          "destination": "Planning / Overview",
+          "packet": "T30",
+          "routeId": "ROUTE-038",
+          "sourcePage": "src/app/(app)/projects/[id]/planning-dashboard/page.tsx",
+          "status": "Unverified"
+        }
+      ],
+      "declaredSourceFilesNotLinkedFromMappedRoutes": [],
+      "description": "Executive project summaries, cash flow graphs, and cross-project performance gauges.",
+      "domain": "Joint Ventures & Governance",
+      "m13Packet": "T30",
+      "name": "Analytical Dashboard & Management KPIs",
+      "offlinePolicies": [
+        "not-durably-persisted-offline"
+      ],
+      "offlineReadPaths": [],
+      "originalStatus": "partial",
+      "outboxActionIds": [],
+      "outboxOperations": [],
+      "parityType": "existing-product",
+      "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
+      "platforms": {
+        "nativeDesktop": "Deferred",
+        "nativeMobile": "Deferred",
+        "webDesktop": "Partial (Deferred Policy)",
+        "webMobile": "None"
+      },
+      "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
+      "serverSourceFiles": [
+        "src/server/routers/dashboard.ts",
+        "src/server/routers/finance.ts"
+      ],
+      "sourceActionIds": [
+        "ACTION-32D0F59343C4",
+        "ACTION-427FCA9C01AE",
+        "ACTION-46FB1BAD8CC9",
+        "ACTION-4C0E74F42564",
+        "ACTION-6732CAEE9017",
+        "ACTION-75FC8B087722",
+        "ACTION-8866F37B0234",
+        "ACTION-8A5F05250F50",
+        "ACTION-95D02E296E52",
+        "ACTION-A25282352828",
+        "ACTION-D3AAE430B374",
+        "ACTION-F62BDC01F231"
+      ],
+      "sourceEngineFiles": [
+        {
+          "path": "src/server/routers/dashboard.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "sourceOperations": [
+        "dashboard.activityFeed [Query]",
+        "dashboard.cashFlow [Query]",
+        "dashboard.costVsBudget [Query]",
+        "dashboard.delayAnalytics [Query]",
+        "dashboard.delayRegister [Query]",
+        "dashboard.photoTimeline [Query]",
+        "dashboard.progressSCurve [Query]",
+        "dashboard.qualityTestRegister [Query]",
+        "dashboard.rfiMetrics [Query]",
+        "dashboard.visitorLog [Query]",
+        "dashboard.weatherImpact [Query]",
+        "finance.orgBankAccounts [Query]"
+      ],
+      "sourceTestFiles": [
+        {
+          "path": "src/server/routers/__tests__/dashboard.test.ts",
+          "presentInCanonicalCommit": true
+        }
+      ],
+      "triggerActionIdsWithMutationCandidates": [],
+      "unreferencedUiComponentsWithRelatedHooks": [],
+      "userDirectedDisposition": null,
+      "workflowId": "WF-041"
+    }
+  ]
+}

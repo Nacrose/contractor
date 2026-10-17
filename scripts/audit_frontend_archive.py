@@ -2,18 +2,20 @@
 """Audit a Construction Manager ZIP or checkout and source reachable from its pages.
 
 Usage: python3 scripts/audit_frontend_archive.py SOURCE.zip-or-checkout [--coverage FILE.md] [--output FILE.json]
-This index does not infer effective guards/offline policy.
+This index records static candidates and source policy evidence; it does not prove
+effective guards, event call paths, or deployed/runtime offline behavior.
 """
 import argparse
 import hashlib
 import json
+import posixpath
 import re
 import subprocess
 import zipfile
 from pathlib import Path, PurePosixPath
 
 ROOT = "Construction-Manager-main/"
-IMPORT = re.compile(r"(?:from\s*|import\s*)[\"']([^\"']+)[\"']")
+IMPORT = re.compile(r"(?:from\s*|import\s*(?:\(\s*)?)[\"']([^\"']+)[\"']")
 HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(useQuery|useMutation)\b")
 DIALOG = re.compile(r"<([A-Z][A-Za-z0-9_]*Dialog)\b")
 JSX_TAG = re.compile(r"<([A-Za-z][A-Za-z0-9_.:-]*)\b")
@@ -206,7 +208,9 @@ def resolve_local_import(source_name, import_name, existing):
         base = str(PurePosixPath(source_name).parent / import_name)
     else:
         return None
-    base = str(PurePosixPath(base))
+    # PurePosixPath preserves `..`; normalize it before resolving against the
+    # source inventory or parent-relative barrels and their children vanish.
+    base = posixpath.normpath(str(PurePosixPath(base)))
     candidates = [base] if PurePosixPath(base).suffix else [
         base + ext for ext in (".tsx", ".ts", ".jsx", ".js")
     ] + [base + "/index" + ext for ext in (".tsx", ".ts", ".jsx", ".js")]
@@ -269,6 +273,51 @@ def main():
             and name.endswith(".ts") and not name.endswith("/_app.ts")
             and "/__tests__/" not in name
         )
+        api_route_files = sorted(
+            name for name in files
+            if name.startswith(ROOT + "src/app/api/")
+            and name.endswith("/route.ts")
+            and ".test." not in name
+        )
+        api_routes = []
+        method_pattern = re.compile(
+            r"export\s+(?:async\s+)?(?:function|const)\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\b"
+            r"|export\s*\{([^}]+)\}", re.S
+        )
+        api_security_markers = (
+            "getCurrentUser", "withTenantRoute", "withOrganizationRoute", "requireAuth",
+            "Authorization", "CRON_SECRET", "assertSameOrigin", "protectedProcedure",
+            "assertProject", "requireProject", "checkPermission", "verifySession",
+        )
+        for name in api_route_files:
+            src = read_source(name).decode(errors="ignore")
+            methods = set()
+            for match in method_pattern.finditer(src):
+                if match.group(1):
+                    methods.add(match.group(1))
+                if match.group(2):
+                    methods.update(re.findall(r"\bas\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\b", match.group(2)))
+            api_path = "/api/" + name.removeprefix(ROOT + "src/app/api/").removesuffix("/route.ts")
+            api_routes.append({
+                "path": api_path,
+                "methods": sorted(methods),
+                "sourceFile": name.removeprefix(ROOT),
+                "securityMarkerCandidates": [marker for marker in api_security_markers if marker in src],
+                "reviewState": "handler and security marker indexed; effective authentication/authorization requires review",
+            })
+        scheduled_workflows = []
+        for workflow_name in (".github/workflows/cron.yml", ".github/workflows/backup.yml"):
+            source_name = ROOT + workflow_name
+            if source_name not in files:
+                continue
+            workflow_source = read_source(source_name).decode(errors="ignore")
+            scheduled_workflows.append({
+                "sourceFile": workflow_name,
+                "cronExpressions": re.findall(r"\bcron:\s*[\"']([^\"']+)[\"']", workflow_source),
+                "apiEndpoints": sorted(set(re.findall(r"\$SITE_URL(/api/[A-Za-z0-9_./${}\[\]-]+)", workflow_source))),
+                "scriptReferences": sorted(set(re.findall(r"(?:bash|sh|node)\s+([\w./-]+\.mjs?)", workflow_source))),
+                "reviewState": "scheduler source indexed; deployed secrets, schedule activation and last-run status are unverified",
+            })
         app = read_source(ROOT + "src/server/routers/_app.ts").decode()
         root_routers = re.findall(r"^\s*(\w+):\s*\w+Router,", app, re.M)
         old_pattern = re.compile(
@@ -520,14 +569,140 @@ def main():
                 "interactiveTriggerCandidateCount": len(trigger_candidates),
                 "reviewState": "component graph and event-handler candidates indexed; trigger-to-action semantics, effective guards and lifecycle require review",
             })
+        layout_specs = [
+            ("LAYOUT-ROOT", "src/app/layout.tsx", "T05"),
+            ("LAYOUT-APP", "src/app/(app)/layout.tsx", "T05/T06"),
+            ("LAYOUT-ADMIN", "src/app/(app)/admin/layout.tsx", "T29"),
+            ("LAYOUT-PROJECT", "src/app/(app)/projects/[id]/layout.tsx", "T05/T06"),
+            ("LAYOUT-WORKFLOW", "src/app/(app)/projects/[id]/workflow/layout.tsx", "T05/T18"),
+            ("LAYOUT-LOGIN", "src/app/login/layout.tsx", "T03/T29"),
+            ("LAYOUT-MOBILE", "src/app/m/layout.tsx", "T07"),
+        ]
+        shared_shells = []
+        for layout_id, relative_layout, owner_task in layout_specs:
+            source_name = ROOT + relative_layout
+            if source_name not in files:
+                continue
+            pending, visited, hooks, dialogs, hook_sources = [source_name], set(), set(), set(), {}
+            layout_triggers = []
+            while pending:
+                current = pending.pop()
+                if current in visited:
+                    continue
+                visited.add(current)
+                src = read_source(current).decode(errors="ignore")
+                for path, method in HOOK.findall(src):
+                    hook = f"{path} [{method.removeprefix('use')}]"
+                    hooks.add(hook)
+                    hook_sources.setdefault(hook, set()).add(current.removeprefix(ROOT))
+                mutation_bindings = {
+                    variable: f"{path} [Mutation]"
+                    for variable, path in re.findall(
+                        r"\b(?:const|let)\s+(\w+)\s*=\s*trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.useMutation\b",
+                        src,
+                    )
+                }
+                layout_triggers.extend(interactive_triggers(
+                    src, current.removeprefix(ROOT), layout_id, owner_task, mutation_bindings
+                ))
+                dialogs.update(DIALOG.findall(src))
+                for imported in IMPORT.findall(src):
+                    target = resolve_local_import(current, imported, files)
+                    if target:
+                        pending.append(target)
+            layout_hooks = []
+            for hook in sorted(hooks):
+                qualified = hook.rsplit(" [", 1)[0]
+                pieces = qualified.split(".")
+                service_key = f"{pieces[1]}.{pieces[-1]}" if pieces[0] == "workflow" and len(pieces) >= 3 else f"{pieces[0]}.{pieces[-1]}"
+                definition = procedure_sources.get(service_key)
+                kind = hook.rsplit(" [", 1)[1].removesuffix("]") if " [" in hook else "unclassified"
+                offline_policy = (
+                    "durable-offline-read-whitelist" if qualified in persisted_query_paths else "not-durably-persisted-offline"
+                ) if kind == "Query" else (
+                    "online-only-hook; durable field outbox actions are inventoried separately"
+                    if kind == "Mutation" else "unclassified"
+                )
+                layout_hooks.append({
+                    "actionId": "ACTION-SHELL-" + hashlib.sha256(
+                        f"{layout_id}|{hook}|{'|'.join(sorted(hook_sources.get(hook, set())))}".encode()
+                    ).hexdigest()[:12].upper(),
+                    "ownerTask": owner_task,
+                    "hook": hook,
+                    "candidateDefinition": service_key,
+                    "uiSourceFiles": sorted(hook_sources.get(hook, set())),
+                    "serverSource": definition,
+                    "offlinePolicy": offline_policy,
+                    "reviewState": "shared-layout action candidate; effective permission and call behavior require review",
+                })
+            for candidate in layout_triggers:
+                all_trigger_candidates.append({
+                    "routeId": layout_id,
+                    "originalRoute": "shared-layout:" + relative_layout,
+                    "scopeType": "shared-layout",
+                    **candidate,
+                })
+            shared_shells.append({
+                "layoutId": layout_id,
+                "sourceLayout": relative_layout,
+                "ownerTask": owner_task,
+                "reachableSourceFileCount": len(visited),
+                "sourceFiles": sorted(path.removeprefix(ROOT) for path in visited),
+                "reachableProcedureHooks": sorted(hooks),
+                "reachableProcedureCandidates": layout_hooks,
+                "triggerCandidateCount": len(layout_triggers),
+                "directDialogComponents": sorted(dialogs),
+                "reviewState": "shared layout source indexed separately from page routes; interaction behavior requires review",
+            })
         trigger_output = args.trigger_output or (
             args.output.with_name("original-interaction-trigger-candidates.jsonl") if args.output else None
         )
+        outbox_endpoints = {entry["procedure"] for entry in outbox_writes}
+        for trigger in all_trigger_candidates:
+            service_candidates = []
+            for candidate_hook in trigger.get("candidateMutationHooks", []):
+                qualified = candidate_hook.rsplit(" [", 1)[0]
+                pieces = qualified.split(".")
+                service_key = f"{pieces[1]}.{pieces[-1]}" if pieces[0] == "workflow" and len(pieces) >= 3 else f"{pieces[0]}.{pieces[-1]}"
+                definition = procedure_sources.get(service_key)
+                service_candidates.append({
+                    "procedure": qualified,
+                    "sourceFile": definition.get("sourceFile") if definition else None,
+                    "declaredProcedureWrapper": definition.get("declaredProcedureWrapper") if definition else None,
+                    "permissionGuardCandidates": definition.get("permissionGuardCandidates", []) if definition else [],
+                    "permissionKeyCandidates": definition.get("permissionKeyCandidates", []) if definition else [],
+                    "permissionReviewState": "candidate source evidence; effective policy requires review",
+                    "offlinePolicyCandidate": (
+                        "durable-field-outbox-action"
+                        if qualified in outbox_endpoints
+                        else "online-only mutation unless an inspected outbox path overrides this hook"
+                    ),
+                })
+            trigger["serviceCandidates"] = service_candidates
+            trigger["serviceReviewState"] = (
+                "same-file mutation binding candidate; runtime call path requires review"
+                if service_candidates
+                else "no same-file mutation binding found; action may be local, indirect or unresolved"
+            )
+            trigger["permissionReviewState"] = (
+                "candidate guards attached to linked procedure; effective policy requires review"
+                if service_candidates
+                else "no linked procedure; permission applicability requires review"
+            )
+            trigger["offlinePolicyCandidate"] = (
+                "durable-field-outbox-action"
+                if any(item["offlinePolicyCandidate"] == "durable-field-outbox-action" for item in service_candidates)
+                else "online-only mutation candidate"
+                if service_candidates
+                else "local-or-unlinked; offline eligibility requires review"
+            )
         result = {
             "source": source_metadata,
             "counts": {
                 "appRouterRegistrations": len(root_routers),
                 "routerSourceFiles": len(routers),
+                "apiRouteHandlers": len(api_routes),
+                "sharedLayoutRoots": len(shared_shells),
                 "pageRoutes": len(pages),
                 "projectPageRoutes": sum("/projects/[id]/" in p for p in pages),
                 "otherPageRoutes": sum("/projects/[id]/" not in p for p in pages),
@@ -539,6 +714,11 @@ def main():
                 "uniqueReachableProcedureHooks": len(all_hooks),
                 "directDialogComponentReferences": direct_dialogs,
                 "interactiveTriggerCandidates": len(all_trigger_candidates),
+                "sharedLayoutHookActions": sum(len(shell["reachableProcedureCandidates"]) for shell in shared_shells),
+                "sharedLayoutTriggerCandidates": sum(shell["triggerCandidateCount"] for shell in shared_shells),
+                "triggersWithMutationCandidates": sum(bool(item["serviceCandidates"]) for item in all_trigger_candidates),
+                "triggersWithPermissionMarkers": sum(any(item["permissionGuardCandidates"] or item["permissionKeyCandidates"] for item in trigger["serviceCandidates"]) for trigger in all_trigger_candidates),
+                "triggersLinkedToFieldOutbox": sum(trigger["offlinePolicyCandidate"] == "durable-field-outbox-action" for trigger in all_trigger_candidates),
             },
             "interactionTriggerInventory": {
                 "format": "JSON Lines; one route-scoped JSX event-handler candidate per line",
@@ -548,11 +728,14 @@ def main():
             },
             "limitations": [
                 "Archive comment is not proof that contents match a Git commit.",
-                "Reachable-source scan follows static relative and @/ TS/TSX imports only.",
+                "Reachable-source scan follows static and literal dynamic relative/@/ TS/TSX imports; computed import targets are not resolved.",
                 "Procedure names do not establish effective permission or offline eligibility.",
-                "JSX event attributes are trigger candidates; callback call paths, runtime navigation, dynamic imports and generated code require review.",
+                "Literal dynamic imports are followed; computed imports, callback call paths, runtime navigation and generated code require review.",
             ],
             "procedureSources": procedure_sources,
+            "apiSurface": api_routes,
+            "scheduledWorkflows": scheduled_workflows,
+            "sharedShells": shared_shells,
             "offlineModel": offline_model,
             "routes": route_actions,
         }
