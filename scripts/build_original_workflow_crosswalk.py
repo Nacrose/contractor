@@ -1428,6 +1428,14 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in IPC_REGISTER_REVIEWED_SOURCE_FILES
             )
+        replacement_trigger_ids = sorted({
+            action["actionId"]
+            for route_path in path_list
+            if workflow_id in {"WF-010", "WF-011", "WF-012"}
+            and (indexed_route := routes_by_path.get(route_path))
+            and indexed_route["routeId"] == "ROUTE-104"
+            for action in triggers_by_route.get(indexed_route["routeId"], [])
+        })
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
         if missing_reviewed_triggers:
@@ -1498,6 +1506,7 @@ def main():
             "userDirectedDisposition": USER_DECISIONS.get(workflow_id),
             "sourceReviewedActionIds": ipc_reviewed_actions,
             "sourceReviewedTriggerIds": reviewed_trigger_ids,
+            "userDirectedReplacementTriggerIds": replacement_trigger_ids,
             "sourceReviewState": (
                 "all 61 mobile capture, all 57 office register and all 165 report detail/edit trigger candidates reviewed, plus selected office lifecycle triggers; runtime behavior and deployed service compatibility remain unverified"
                 if workflow_id == "WF-001" else
@@ -1509,7 +1518,7 @@ def main():
                 if workflow_id == "WF-004" else
                 "all 17 desktop/mobile Sync and offline route trigger candidates traced; data durability/runtime and deployed service compatibility remain unverified"
                 if workflow_id == "WF-005" else
-                "IPC/worksheet procedure permissions and user-directed disposition reviewed; selected register/detail triggers reviewed; remaining route triggers and GridCraft runtime remain unverified"
+                "IPC/worksheet procedure permissions and user-directed disposition reviewed; all 62 register and 69 detail triggers source-reviewed; all 598 legacy worksheet-editor trigger candidates explicitly mapped to the GridCraft replacement; GridCraft runtime and deployed service compatibility remain unverified"
                 if workflow_id in USER_DECISIONS else
                 "field capture, office review gates and outbox/offline policy reviewed; detailed form controls and full module lifecycle remain unverified"
                 if workflow_id in FIELD_WORKFLOWS else
