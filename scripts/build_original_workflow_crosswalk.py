@@ -920,6 +920,7 @@ RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES = {
     "src/app/(app)/rate-catalogs/components/promote-uncataloged-dialog.tsx",
     "src/app/(app)/rate-catalogs/components/unrecognized-materials-tab.tsx",
     "src/app/(app)/rate-catalogs/page.tsx",
+    "src/app/(app)/admin/rate-catalogs/page.tsx",
 }
 RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES |= (
     RATE_LIBRARY_CORE_REVIEWED_SOURCE_FILES
@@ -1342,6 +1343,14 @@ def main():
                 for route_path in path_list
                 if (indexed_route := routes_by_path.get(route_path))
                 and indexed_route["routeId"] == "ROUTE-117"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES
+            )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-070"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_CATALOGS_ORG_REVIEWED_SOURCE_FILES
             )
