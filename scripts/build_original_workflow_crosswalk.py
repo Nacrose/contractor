@@ -58,7 +58,7 @@ WORKFLOW_ROUTES = {
     "WF-037": ["/projects/[id]/ipc/[ipcId]/worksheets", "/worksheet-lab", "/projects/[id]/boq"],
     "WF-038": ["/finance", "/projects/[id]/accounting"],
     "WF-039": ["/projects/[id]/rfis", "/projects/[id]/submittals", "/projects/[id]/workflow/rfi"],
-    "WF-040": ["/my-access", "/projects/[id]/workflow/program/my-tasks", "/m/tasks"],
+    "WF-040": ["/my-access", "/projects/[id]/workflow/program/my-tasks", "/m/tasks", "/projects/[id]/hr/hierarchy"],
     "WF-041": ["/dashboard", "/projects/[id]/dashboard", "/projects/[id]/planning-dashboard"],
 }
 
@@ -95,6 +95,7 @@ TAX_MATERIALS_WORKFLOWS = {"WF-013", "WF-014", "WF-015", "WF-016", "WF-017"}
 EQUIPMENT_WORKFLOWS = {"WF-018", "WF-019", "WF-020"}
 WORKFORCE_FINANCE_WORKFLOWS = {"WF-021", "WF-022", "WF-023", "WF-024", "WF-025", "WF-026"}
 DRAWING_PLANNING_WORKFLOWS = {"WF-027", "WF-028", "WF-029", "WF-030", "WF-031", "WF-032", "WF-033", "WF-034", "WF-035"}
+COMPLETION_WORKFLOWS = {"WF-038", "WF-039", "WF-040", "WF-041"}
 UI_HOOK = re.compile(r"trpc\.((?:[A-Za-z0-9_]+\.)*[A-Za-z0-9_]+)\.(?:useQuery|useMutation)\b")
 
 
@@ -237,6 +238,8 @@ def main():
                 if workflow_id in WORKFORCE_FINANCE_WORKFLOWS else
                 "drawing, takeoff, scheduling, calendar and import source boundaries reviewed; full trigger mapping and runtime remain unverified"
                 if workflow_id in DRAWING_PLANNING_WORKFLOWS else
+                "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified"
+                if workflow_id in COMPLETION_WORKFLOWS else
                 "candidate crosswalk only; source action semantics require review"
             ),
             "sourceReviewReference": (
@@ -253,7 +256,9 @@ def main():
                 "docs/reports/M13/workforce-and-finance-source-action-reconciliation.md"
                 if workflow_id in WORKFORCE_FINANCE_WORKFLOWS else
                 "docs/reports/M13/drawings-and-planning-source-action-reconciliation.md"
-                if workflow_id in DRAWING_PLANNING_WORKFLOWS else None
+                if workflow_id in DRAWING_PLANNING_WORKFLOWS else
+                "docs/reports/M13/completion-workflows-source-action-reconciliation.md"
+                if workflow_id in COMPLETION_WORKFLOWS else None
             ),
             "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
         })

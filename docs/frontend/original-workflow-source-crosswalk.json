@@ -5001,8 +5001,8 @@
         "jvPartner.recordPayout [Mutation]",
         "jvPartner.saveAgreement [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
+      "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -5136,8 +5136,8 @@
         "workflow.rfi.update [Mutation]",
         "workflow.rfi.uploadAttachment [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
+      "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -5191,10 +5191,16 @@
           "routeId": "ROUTE-092",
           "sourcePage": "src/app/m/tasks/page.tsx",
           "status": "Unverified"
+        },
+        {
+          "destination": "HR / Workforce hierarchy",
+          "packet": "T08",
+          "routeId": "ROUTE-102",
+          "sourcePage": "src/app/(app)/projects/[id]/hr/hierarchy/page.tsx",
+          "status": "Unverified"
         }
       ],
       "declaredSourceFilesNotLinkedFromMappedRoutes": [
-        "src/server/routers/responsibility-handover.ts",
         "src/server/services/responsibility-handover.ts"
       ],
       "description": "Formal site handover protocol reassigning pending approvals and role scopes upon engineer transfer.",
@@ -5203,7 +5209,8 @@
       "name": "Responsibility Handover & Delegation Rules",
       "offlinePolicies": [
         "durable-offline-read-whitelist",
-        "not-durably-persisted-offline"
+        "not-durably-persisted-offline",
+        "online-only-hook; durable field outbox actions are inventoried separately"
       ],
       "offlineReadPaths": [],
       "originalStatus": "implemented",
@@ -5219,13 +5226,22 @@
       },
       "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
       "serverSourceFiles": [
-        "src/server/routers/project.ts"
+        "src/server/routers/project.ts",
+        "src/server/routers/responsibility-handover.ts"
       ],
       "sourceActionIds": [
         "ACTION-1F8BC7B56D49",
+        "ACTION-2F96602DF4B3",
         "ACTION-4740A3AE2127",
+        "ACTION-47D42A0DABBB",
         "ACTION-7B00CFA5816A",
-        "ACTION-90FB750304F0"
+        "ACTION-820835A9F34B",
+        "ACTION-8E36305123A3",
+        "ACTION-90FB750304F0",
+        "ACTION-A5BD76379E5A",
+        "ACTION-B1F0F362CF05",
+        "ACTION-E5EA31B07F3A",
+        "ACTION-E6305AB8A61D"
       ],
       "sourceEngineFiles": [
         {
@@ -5241,10 +5257,16 @@
         "project.get [Query]",
         "project.getModules [Query]",
         "project.getOrgProfile [Query]",
-        "project.list [Query]"
+        "project.list [Query]",
+        "project.myOrgAccess [Query]",
+        "responsibilityHandover.applyBatch [Mutation]",
+        "responsibilityHandover.begin [Mutation]",
+        "responsibilityHandover.listPlans [Query]",
+        "responsibilityHandover.offboardAccount [Mutation]",
+        "responsibilityHandover.skipItem [Mutation]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
+      "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
@@ -5252,7 +5274,12 @@
           "presentInCanonicalCommit": true
         }
       ],
-      "triggerActionIdsWithMutationCandidates": [],
+      "triggerActionIdsWithMutationCandidates": [
+        "TRIGGER-7E1D4FC80E3F",
+        "TRIGGER-81923AAD264F",
+        "TRIGGER-B38B26A28EA4",
+        "TRIGGER-EFA2D8B3C464"
+      ],
       "unreferencedUiComponentsWithRelatedHooks": [
         {
           "hooks": [
@@ -5361,8 +5388,8 @@
         "dashboard.weatherImpact [Query]",
         "finance.orgBankAccounts [Query]"
       ],
-      "sourceReviewReference": null,
-      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewReference": "docs/reports/M13/completion-workflows-source-action-reconciliation.md",
+      "sourceReviewState": "JV, RFI/submittal, responsibility handover and dashboard source boundaries reviewed; full trigger mapping and runtime remain unverified",
       "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
