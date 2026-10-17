@@ -156,6 +156,13 @@ def main():
                 if any(any(hint.casefold() in hook.casefold() for hint in hints) for hook in linked):
                     trigger_actions.append(action)
         unique_actions = {action["actionId"]: action for action in hook_actions}
+        ipc_reviewed_actions = sorted(
+            action["actionId"]
+            for route_path in path_list
+            if (indexed_route := routes_by_path.get(route_path))
+            for action in indexed_route["reachableProcedureCandidates"]
+            if action["candidateDefinition"].startswith(("ipc.", "worksheet."))
+        ) if workflow_id in USER_DECISIONS else []
         engine_files = sorted(set(re.findall(r"(?:src|tests)/[A-Za-z0-9_./-]+\.(?:ts|tsx|js|jsx)", original.get("engine", ""))))
         test_files = sorted(set(re.findall(r"(?:src|tests)/[A-Za-z0-9_./-]+\.(?:ts|tsx|js|jsx)", original.get("tests", ""))))
         service_hints = SERVICE_HINTS[workflow_id]
@@ -205,6 +212,16 @@ def main():
             "permissionReviewState": "candidate guards are in the source action index; effective permissions require T01 review",
             "offlinePolicies": sorted({action["offlinePolicy"] for action in unique_actions.values()}),
             "userDirectedDisposition": USER_DECISIONS.get(workflow_id),
+            "sourceReviewedActionIds": ipc_reviewed_actions,
+            "sourceReviewState": (
+                "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified"
+                if workflow_id in USER_DECISIONS else
+                "candidate crosswalk only; source action semantics require review"
+            ),
+            "sourceReviewReference": (
+                "docs/reports/M13/ipc-source-action-reconciliation.md"
+                if workflow_id in USER_DECISIONS else None
+            ),
             "reviewState": "M00-to-route/service crosswalk candidate; not parity or runtime acceptance evidence",
         })
     OUTPUT.write_text(json.dumps({

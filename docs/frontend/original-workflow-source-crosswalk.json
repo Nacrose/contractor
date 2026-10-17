@@ -110,6 +110,9 @@
         "workflow.dailyReport.updateReport [Mutation]",
         "workflow.dailyReport.uploadAttachment [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/field-submission.test.ts",
@@ -212,6 +215,9 @@
         "fieldSubmission.list [Query]",
         "fieldSubmission.reject [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/field-photos.test.ts",
@@ -301,6 +307,9 @@
         "siteExpense.list [Query]",
         "siteExpense.reject [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/site-expense.test.ts",
@@ -441,6 +450,9 @@
         "partner.listSubcontractors [Query]",
         "partner.listSuppliers [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/material-transaction.test.ts",
@@ -594,6 +606,9 @@
       "sourceOperations": [
         "fieldSubmission.mySubmissions [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/__tests__/field-query-persist.test.ts",
@@ -677,6 +692,9 @@
         "boq.list [Query]",
         "boq.update [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/boq.test.ts",
@@ -818,6 +836,9 @@
         "rateProfile.list [Query]",
         "rateProfile.previewApply [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/rate-analysis.test.ts",
@@ -990,6 +1011,9 @@
         "rateProfile.list [Query]",
         "rateProfile.previewApply [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/rate-profile.test.ts",
@@ -1103,6 +1127,9 @@
         "boq.list [Query]",
         "boq.update [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/boq-version.test.ts",
@@ -1215,6 +1242,27 @@
         "ipc.loadBoq [Mutation]",
         "ipc.syncQuantities [Mutation]",
         "ipc.update [Mutation]"
+      ],
+      "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewedActionIds": [
+        "ACTION-00E7966752C0",
+        "ACTION-03FF583E0081",
+        "ACTION-050111F6F088",
+        "ACTION-24682356A943",
+        "ACTION-3BDA09EAED26",
+        "ACTION-3CC9AC93F85E",
+        "ACTION-5243EDEA0A82",
+        "ACTION-589EE4DF16CF",
+        "ACTION-76C574C731AD",
+        "ACTION-7C49DAE3E737",
+        "ACTION-84BBB7B9F434",
+        "ACTION-AF18E56F8D85",
+        "ACTION-AFD2E1CF6A12",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35",
+        "ACTION-FC14906C0521"
       ],
       "sourceTestFiles": [
         {
@@ -1330,6 +1378,27 @@
         "ipc.syncQuantities [Mutation]",
         "ipc.update [Mutation]"
       ],
+      "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewedActionIds": [
+        "ACTION-00E7966752C0",
+        "ACTION-03FF583E0081",
+        "ACTION-050111F6F088",
+        "ACTION-24682356A943",
+        "ACTION-3BDA09EAED26",
+        "ACTION-3CC9AC93F85E",
+        "ACTION-5243EDEA0A82",
+        "ACTION-589EE4DF16CF",
+        "ACTION-76C574C731AD",
+        "ACTION-7C49DAE3E737",
+        "ACTION-84BBB7B9F434",
+        "ACTION-AF18E56F8D85",
+        "ACTION-AFD2E1CF6A12",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35",
+        "ACTION-FC14906C0521"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/ipc.test.ts",
@@ -1437,6 +1506,27 @@
         "ipc.loadBoq [Mutation]",
         "ipc.syncQuantities [Mutation]",
         "ipc.update [Mutation]"
+      ],
+      "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewedActionIds": [
+        "ACTION-00E7966752C0",
+        "ACTION-03FF583E0081",
+        "ACTION-050111F6F088",
+        "ACTION-24682356A943",
+        "ACTION-3BDA09EAED26",
+        "ACTION-3CC9AC93F85E",
+        "ACTION-5243EDEA0A82",
+        "ACTION-589EE4DF16CF",
+        "ACTION-76C574C731AD",
+        "ACTION-7C49DAE3E737",
+        "ACTION-84BBB7B9F434",
+        "ACTION-AF18E56F8D85",
+        "ACTION-AFD2E1CF6A12",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35",
+        "ACTION-FC14906C0521"
       ],
       "sourceTestFiles": [
         {
@@ -1558,6 +1648,9 @@
         "vatRegister.getSalesRegister [Query]",
         "vatRegister.getVatReturnSchedule10 [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/vat-register.test.ts",
@@ -1687,6 +1780,9 @@
         "requisition.list [Query]",
         "requisition.rejectPr [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/requisition.test.ts",
@@ -1810,6 +1906,9 @@
         "purchaseOrder.get [Query]",
         "purchaseOrder.list [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/purchase-order.test.ts",
@@ -1946,6 +2045,9 @@
         "material.setThresholds [Mutation]",
         "material.stockAlerts [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/material.test.ts",
@@ -2053,6 +2155,9 @@
       "sourceOperations": [
         "interSiteTransfer.transferMaterial [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/inter-site-transfer.test.ts",
@@ -2217,6 +2322,9 @@
         "equipment.updateStatus [Mutation]",
         "equipment.utilizationReport [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/equipment.test.ts",
@@ -2378,6 +2486,9 @@
         "equipment.updateStatus [Mutation]",
         "equipment.utilizationReport [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/equipment-fuel.test.ts",
@@ -2539,6 +2650,9 @@
         "equipment.updateStatus [Mutation]",
         "equipment.utilizationReport [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/equipment-spot-hire.test.ts",
@@ -2708,6 +2822,9 @@
         "hr.uploadStaffDocument [Mutation]",
         "hr.viewAccess [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/hr.test.ts",
@@ -2852,6 +2969,9 @@
         "hr.bulkLogAttendance [Mutation]",
         "hr.getAttendanceByDate [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/leave.test.ts",
@@ -2953,6 +3073,9 @@
         "hr.bulkLogAttendance [Mutation]",
         "hr.getAttendanceByDate [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/payroll.test.ts",
@@ -3070,6 +3193,9 @@
         "finance.orgPayables [Query]",
         "finance.orgSettleMultiBill [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/accounting.test.ts",
@@ -3170,6 +3296,9 @@
         "finance.orgPayables [Query]",
         "finance.orgSettleMultiBill [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/bank-guarantee.test.ts",
@@ -3262,6 +3391,9 @@
         "finance.orgPayables [Query]",
         "finance.orgSettleMultiBill [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/fiscal-year.test.ts",
@@ -3397,6 +3529,9 @@
         "document.updateDrawing [Mutation]",
         "document.updateMarkup [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/dwg/dwg-native.test.ts",
@@ -3532,6 +3667,9 @@
         "document.listDrawings [Query]",
         "document.updateDrawing [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/cad/__tests__/command-registry.test.ts",
@@ -3649,6 +3787,9 @@
         "document.listDrawings [Query]",
         "document.updateDrawing [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/cad/__tests__/plot-engine.test.ts",
@@ -3753,6 +3894,9 @@
         "document.listDrawings [Query]",
         "document.updateDrawing [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/document-engine/__tests__/measurement.test.ts",
@@ -3848,6 +3992,9 @@
         "boq.list [Query]",
         "boq.update [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/components/pdf-canvas/__tests__/storage-db.test.ts",
@@ -4014,6 +4161,9 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/gantt.test.ts",
@@ -4177,6 +4327,9 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/utils/__tests__/gantt-cpm.test.ts",
@@ -4340,6 +4493,9 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/lib/__tests__/nepal-calendar.test.ts",
@@ -4498,6 +4654,9 @@
         "gantt.update [Mutation]",
         "gantt.upsertException [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/utils/__tests__/xer-import.test.ts",
@@ -4610,6 +4769,17 @@
         "ipc.listItems [Query]",
         "ipc.syncQuantities [Mutation]",
         "ipc.update [Mutation]"
+      ],
+      "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewedActionIds": [
+        "ACTION-00E7966752C0",
+        "ACTION-03FF583E0081",
+        "ACTION-24682356A943",
+        "ACTION-589EE4DF16CF",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35"
       ],
       "sourceTestFiles": [
         {
@@ -4732,6 +4902,17 @@
         "ipc.syncQuantities [Mutation]",
         "ipc.update [Mutation]"
       ],
+      "sourceReviewReference": "docs/reports/M13/ipc-source-action-reconciliation.md",
+      "sourceReviewState": "IPC/worksheet procedure permissions and user-directed disposition reviewed; route trigger paths and GridCraft runtime remain unverified",
+      "sourceReviewedActionIds": [
+        "ACTION-00E7966752C0",
+        "ACTION-03FF583E0081",
+        "ACTION-24682356A943",
+        "ACTION-589EE4DF16CF",
+        "ACTION-DED449411FE4",
+        "ACTION-E6BCDEA706BB",
+        "ACTION-F617D101CF35"
+      ],
       "sourceTestFiles": [
         {
           "path": "src/lib/worksheet/__tests__/workbook-excel.test.ts",
@@ -4840,6 +5021,9 @@
         "jvPartner.recordPayout [Mutation]",
         "jvPartner.saveAgreement [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/jv-partner.test.ts",
@@ -4972,6 +5156,9 @@
         "workflow.rfi.update [Mutation]",
         "workflow.rfi.uploadAttachment [Mutation]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/rfi.test.ts",
@@ -5076,6 +5263,9 @@
         "project.getOrgProfile [Query]",
         "project.list [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/responsibility-handover.test.ts",
@@ -5191,6 +5381,9 @@
         "dashboard.weatherImpact [Query]",
         "finance.orgBankAccounts [Query]"
       ],
+      "sourceReviewReference": null,
+      "sourceReviewState": "candidate crosswalk only; source action semantics require review",
+      "sourceReviewedActionIds": [],
       "sourceTestFiles": [
         {
           "path": "src/server/routers/__tests__/dashboard.test.ts",
