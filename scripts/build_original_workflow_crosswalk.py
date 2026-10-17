@@ -880,6 +880,11 @@ RATE_LIBRARY_COPY_SYNC_REVIEWED_SOURCE_FILES = {
     "src/components/rate-catalog/copy-from-dialog.tsx",
     "src/app/(app)/admin/material-catalog/components/sync-catalog-dialog.tsx",
 }
+RATE_LIBRARY_MATERIAL_REGISTER_REVIEWED_SOURCE_FILES = {
+    "src/app/(app)/admin/material-catalog/admin-material-catalog.tsx",
+    "src/app/(app)/admin/material-catalog/components/catalog-toolbar.tsx",
+    "src/app/(app)/admin/material-catalog/components/catalog-tree.tsx",
+}
 REVIEWED_TRIGGERS_BY_WORKFLOW = {
     "WF-001": DAILY_REPORT_MOBILE_REVIEWED_TRIGGERS | DAILY_REPORT_REGISTER_REVIEWED_TRIGGERS | {
         "TRIGGER-7BDEED88E412", "TRIGGER-67DA9E9618FF", "TRIGGER-BE59F25879E8",
@@ -1173,6 +1178,14 @@ def main():
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_LIBRARY_COPY_SYNC_REVIEWED_SOURCE_FILES
             )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-111"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in RATE_LIBRARY_MATERIAL_REGISTER_REVIEWED_SOURCE_FILES
+            )
         if workflow_id == "WF-008":
             reviewed_ids.update(
                 action["actionId"]
@@ -1221,6 +1234,14 @@ def main():
                 and indexed_route["routeId"] == "ROUTE-111"
                 for action in triggers_by_route.get(indexed_route["routeId"], [])
                 if action["sourceFile"] in RATE_LIBRARY_COPY_SYNC_REVIEWED_SOURCE_FILES
+            )
+            reviewed_ids.update(
+                action["actionId"]
+                for route_path in path_list
+                if (indexed_route := routes_by_path.get(route_path))
+                and indexed_route["routeId"] == "ROUTE-111"
+                for action in triggers_by_route.get(indexed_route["routeId"], [])
+                if action["sourceFile"] in RATE_LIBRARY_MATERIAL_REGISTER_REVIEWED_SOURCE_FILES
             )
         reviewed_trigger_ids = sorted(reviewed_ids)
         missing_reviewed_triggers = sorted(set(reviewed_trigger_ids) - workflow_trigger_ids)
@@ -1309,9 +1330,9 @@ def main():
                 if workflow_id in FIELD_WORKFLOWS else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; all 223 BOQ register/header/create/table-row/rate-inspector/paste/resource-picker/action-bar/navigation/dialog/error-feedback triggers traced; full catalog lifecycle and runtime remain unverified"
                 if workflow_id == "WF-006" else
-                "ROUTE-012 rate-analysis inspector plus ROUTE-111 rate-library tab, catalog controller, toolbar, rate table, create, district/fiscal-year, copy and sync dialogs traced; remaining route candidates and runtime remain open"
+                "ROUTE-012 rate-analysis inspector plus ROUTE-111 rate-library tab/controller, material register/tree/toolbar, rate table, create, district/fiscal-year, copy and sync dialogs traced; remaining catalog dialogs, route candidates and runtime remain open"
                 if workflow_id == "WF-007" else
-                "rate-profile refresh controls plus ROUTE-111 rate-library tab, catalog controller, toolbar, rate table, create, district/fiscal-year, copy and sync dialogs traced; remaining route candidates and runtime remain open"
+                "rate-profile refresh controls plus ROUTE-111 rate-library tab/controller, material register/tree/toolbar, rate table, create, district/fiscal-year, copy and sync dialogs traced; remaining catalog dialogs, route candidates and runtime remain open"
                 if workflow_id == "WF-008" else
                 "core BOQ/rate/snapshot routes and permission contracts reviewed; detailed controls, full catalog lifecycle and runtime remain unverified"
                 if workflow_id in COMMERCIAL_WORKFLOWS - {"WF-006", "WF-007", "WF-008", "WF-009"} else
