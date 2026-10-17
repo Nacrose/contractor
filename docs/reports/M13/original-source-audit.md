@@ -37,6 +37,22 @@ The same scanner was run against the verified `7d06a8a` checkout. The current ca
 
 All 495 distinct reachable hook names now resolve to a source procedure file in the canonical index, including procedures assembled through material, equipment and schedule router modules. The index records the declared wrapper plus candidate permission guard calls/keys where they appear in the procedure body. These are review leads only; effective guards and per-operation offline eligibility remain unverified.
 
+## Offline policy evidence at the verified revision
+
+Offline behavior is deliberately split between office requests and the CM Field mobile outbox. `src/lib/offline-fetch.ts` delegates to native `fetch`; ordinary mutations remain online-only. The legacy `src/lib/offline-queue.ts` stores old writes for inspection and discard but never replays them. The canonical index marks only the exact query paths whitelisted in `src/lib/field-query-persist.ts` as durable offline reads: `project.list`, `notification.list`, `workflow.dailyReport.listReports`, `fieldSubmission.mySubmissions`, `punchList.list`, `chat.listChannels`, `chat.getMessages`, and `partner.subcontractorOptions`. Other reads are not durably persisted.
+
+The v3 outbox is used by these mobile write actions:
+
+| Action | Procedure | Source behavior |
+|---|---|---|
+| Material inward, material capture, labour log, site expense | `fieldSubmission.create` | Saved as editable IndexedDB drafts; explicit send queues a `clientUuid`-identified write for office review. |
+| Daily report | `workflow.dailyReport.createFieldReport` | Explicit send queues through the same field draft/outbox flow. |
+| Photo capture | `fieldPhotos.create` | Compressed photos are queued from `/m/photos`. |
+| Punch item creation | `punchList.create` | Queued from `/m/tasks/new`. |
+| Punch item status change | `punchList.updateStatus` | Queued from `/m/tasks`. |
+
+Network, server and authentication failures retry; validation/permission 4xx responses park as failed. One durability limitation is recorded in the source: `field-outbox.ts` swallows IndexedDB write errors, so local enqueue persistence is best-effort when storage fails. No other mutation receives an offline-replay guarantee from the inspected client paths. These source policies are indexed, but the full UI call graph and server-side compatibility still require review.
+
 ## Original sidebar destinations
 
 The archive sidebar has one organisation/top-level list, one project list, and a separately gated admin list. Contractor’s three-level shell is a proposed mapping, not an original navigation structure. Source: `src/components/app-sidebar.tsx`.

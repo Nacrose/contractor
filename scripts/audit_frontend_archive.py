@@ -146,6 +146,70 @@ def main():
                 }
                 for alias in aliases:
                     procedure_sources[f"{alias}.{match.group(1)}"] = source
+        query_persist_text = read_source(ROOT + "src/lib/field-query-persist.ts").decode(errors="ignore")
+        query_block = re.search(
+            r"PERSISTED_QUERY_PATHS[^=]*=\s*\[(.*?)\];", query_persist_text, re.S
+        )
+        persisted_query_paths = sorted(set(
+            re.findall(r"[\"']([^\"']+)[\"']", query_block.group(1))
+        )) if query_block else []
+        field_draft_text = read_source(ROOT + "src/lib/field-entry-builders.ts").decode(errors="ignore")
+        draft_type_match = re.search(r"export type FieldDraftType\s*=([\s\S]*?);", field_draft_text)
+        draft_types = set(re.findall(r"[\"']([^\"']+)[\"']", draft_type_match.group(1))) if draft_type_match else set()
+        send_builder = field_draft_text[field_draft_text.find("export function buildSendPayload("):]
+        type_branches = list(re.finditer(r'if\s*\(type\s*===\s*[\"\']([^\"\']+)[\"\']\)', send_builder))
+        field_draft_endpoints = []
+        for i, branch in enumerate(type_branches):
+            end = type_branches[i + 1].start() if i + 1 < len(type_branches) else len(send_builder)
+            endpoint_match = re.search(r'endpoint\s*:\s*[\"\']([^\"\']+)[\"\']', send_builder[branch.end():end])
+            if endpoint_match:
+                field_draft_endpoints.append({"procedure": endpoint_match.group(1), "draftType": branch.group(1)})
+        if type_branches:
+            builder_endpoints = re.findall(r'endpoint\s*:\s*[\"\']([^\"\']+)[\"\']', send_builder)
+            known_types = {entry["draftType"] for entry in field_draft_endpoints}
+            if builder_endpoints:
+                field_draft_endpoints.extend(
+                    {"procedure": builder_endpoints[-1], "draftType": draft_type}
+                    for draft_type in sorted(draft_types - known_types)
+                )
+        outbox_write_sources = {}
+        for source_name in sorted(files):
+            if not source_name.startswith(ROOT + "src/") or not source_name.endswith((".ts", ".tsx")):
+                continue
+            source_text = read_source(source_name).decode(errors="ignore")
+            for call in re.finditer(r"\benqueueFieldWrite\s*\(", source_text):
+                snippet = source_text[call.end():call.end() + 1000]
+                endpoint_match = re.search(r'\bendpoint\s*:\s*[\"\']([^\"\']+)[\"\']', snippet)
+                if endpoint_match:
+                    outbox_write_sources.setdefault(endpoint_match.group(1), set()).add(source_name.removeprefix(ROOT))
+        for entry in field_draft_endpoints:
+            outbox_write_sources.setdefault(entry["procedure"], set()).add("src/lib/field-drafts.ts")
+            outbox_write_sources[entry["procedure"]].add("src/lib/field-entry-builders.ts")
+        outbox_writes = [
+            {
+                "procedure": endpoint,
+                "sourceFiles": sorted(source_names),
+                "draftTypes": sorted({item["draftType"] for item in field_draft_endpoints if item["procedure"] == endpoint}),
+            }
+            for endpoint, source_names in sorted(outbox_write_sources.items())
+        ]
+        offline_model = {
+            "officeMutationPolicy": "online-only; shared offlineFetch delegates to native fetch",
+            "legacyOfflineQueuePolicy": "inspect-and-discard only; queued legacy mutations are never replayed",
+            "persistedReadQueryPaths": persisted_query_paths,
+            "fieldOutboxWrites": outbox_writes,
+            "fieldOutboxReplayPolicy": "clientUuid idempotency; network, server and auth faults retry; 4xx responses park as failed",
+            "fieldOutboxStoragePolicy": "best-effort IndexedDB write; storage errors are swallowed by dbPut",
+            "evidenceSourceFiles": [
+                "src/lib/offline-fetch.ts",
+                "src/lib/offline-queue.ts",
+                "src/lib/field-outbox.ts",
+                "src/lib/field-query-persist.ts",
+                "src/lib/field-drafts.ts",
+                "src/lib/field-entry-builders.ts",
+            ],
+            "reviewState": "source policy indexed; per-screen call behavior and compatibility require review",
+        }
         route_actions = []
         route_ids = {}
         next_route_id = 1
@@ -203,7 +267,19 @@ def main():
                 pieces = qualified.split(".")
                 service_key = f"{pieces[1]}.{pieces[-1]}" if pieces[0] == "workflow" and len(pieces) >= 3 else f"{pieces[0]}.{pieces[-1]}"
                 definition = procedure_sources.get(service_key)
-                mapped_hooks.append({"hook": hook, "candidateDefinition": service_key, "serverSource": definition})
+                kind = hook.rsplit(" [", 1)[1].removesuffix("]") if " [" in hook else "unclassified"
+                if kind == "Query":
+                    offline_policy = "durable-offline-read-whitelist" if qualified in persisted_query_paths else "not-durably-persisted-offline"
+                elif kind == "Mutation":
+                    offline_policy = "online-only-hook; durable field outbox actions are inventoried separately"
+                else:
+                    offline_policy = "unclassified"
+                mapped_hooks.append({
+                    "hook": hook,
+                    "candidateDefinition": service_key,
+                    "serverSource": definition,
+                    "offlinePolicy": offline_policy,
+                })
             route_actions.append({
                 "routeId": route_id,
                 "originalRoute": route_path,
@@ -239,6 +315,7 @@ def main():
                 "Button callbacks, runtime navigation, dynamic imports and generated code require review.",
             ],
             "procedureSources": procedure_sources,
+            "offlineModel": offline_model,
             "routes": route_actions,
         }
         output = json.dumps(result, indent=2, sort_keys=True) + "\n"
