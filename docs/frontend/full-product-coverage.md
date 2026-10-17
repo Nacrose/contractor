@@ -1,10 +1,10 @@
 # Original-product coverage seed — 2026-10-17
 
-Current source audit: [M13 source reconciliation](../reports/M13/original-source-audit.md), with a [64-route reachable-component/procedure index](original-action-component-index.json) for the supplied archive only. That archive is not a copy of canonical source commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`; its ZIP comment claims a nonexistent commit. The canonical commit contains 110 page routes, so these 64 route IDs are an incomplete seed and must be reconciled and extended before parity work is considered complete. All coverage statuses stay unverified.
+Current source audit: [M13 source reconciliation](../reports/M13/original-source-audit.md), with a [110-route canonical reachable-component/procedure index](original-action-component-index.json). The supplied archive has 64 route pages and is not a copy of canonical commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`; its ZIP comment claims a nonexistent commit. The route IDs include all canonical paths plus ten disputed archive-only candidates. All coverage statuses stay unverified.
 
 Companion to the [implementation plan](../plans/full-product-feature-navigation-plan.md) and [M13 register](../plans/milestones/M13-product-feature-navigation-closure.md).
 
-These are proposed target destinations and task ownership, not verified implementation. All rows start **unverified**. The archive index supplies 64 routes; the canonical checkout contains 55 additional routes and lacks 9 archive-only routes. M00 supplies 41 workflows. T01 must reconcile route identities, inspect nested actions and mobile paths, add omissions and replace guessed service/offline bindings. Existing source status refers to the original product, never to Contractor.
+These are proposed target destinations and task ownership, not verified implementation. All rows remain unverified; ten archive-only paths are explicitly retained as disputed candidates. The archive index supplies 64 route pages; after stripping Next.js route groups, the canonical checkout adds 56 URL paths. M00 supplies 41 workflows. T01 must reconcile route identities, inspect nested actions and mobile paths, add omissions and replace guessed service/offline bindings. Existing source status refers to the original product, never to Contractor.
 
 ## Route coverage
 
@@ -14,7 +14,7 @@ All rows also depend on T02–T05 routing/session/data/shell and T31–T32 accep
 |---|---|---|---|
 | `ROUTE-001` | `/activity` | Desk / Activity | T06 | Unverified |
 | `ROUTE-002` | `/admin/audit` | Privileged Admin / audit | T29 | Unverified |
-| `ROUTE-003` | `/admin/data` | Privileged Admin / data | T29 | Unverified |
+| `ROUTE-003` | `/admin/data` | Privileged Admin / data | T29 | Archive-only snapshot; unverified |
 | `ROUTE-004` | `/admin/database` | Privileged Admin / database | T29 | Unverified |
 | `ROUTE-005` | `/admin/organizations` | Privileged Admin / organizations | T29 | Unverified |
 | `ROUTE-006` | `/admin` | Privileged Admin / Overview | T29 | Unverified |
@@ -24,7 +24,7 @@ All rows also depend on T02–T05 routing/session/data/shell and T31–T32 accep
 | `ROUTE-010` | `/dashboard` | Desk / Existing dashboard | T30 | Unverified |
 | `ROUTE-011` | `/presets` | Materials / Presets and rate library | T09 | Unverified |
 | `ROUTE-012` | `/projects/[id]/boq` | BOQ, VO & IPC / BOQ | T10 | Unverified |
-| `ROUTE-013` | `/projects/[id]/boq/pdf-designer` | BOQ / PDF designer | T10 | Unverified |
+| `ROUTE-013` | `/projects/[id]/boq/pdf-designer` | BOQ / PDF designer | T10 | Archive-only snapshot; unverified |
 | `ROUTE-014` | `/projects/[id]/budget-variance` | Finance / Budget variance | T25 | Unverified |
 | `ROUTE-015` | `/projects/[id]/cash-flow` | Finance / Cash flow | T25 | Unverified |
 | `ROUTE-016` | `/projects/[id]/communication` | Workflow / Communication | T18 | Unverified |
@@ -38,11 +38,11 @@ All rows also depend on T02–T05 routing/session/data/shell and T31–T32 accep
 | `ROUTE-024` | `/projects/[id]/drawings` | Documents / Drawings | T27 | Unverified |
 | `ROUTE-025` | `/projects/[id]/equipment` | Equipment / Fleet and production | T21 | Unverified |
 | `ROUTE-026` | `/projects/[id]/forms` | Documents / Forms | T28 | Unverified |
-| `ROUTE-027` | `/projects/[id]/gantt/[versionId]/pdf-designer` | Planning / Schedule PDF designer | T17 | Unverified |
+| `ROUTE-027` | `/projects/[id]/gantt/[versionId]/pdf-designer` | Planning / Schedule PDF designer | T17 | Archive-only snapshot; unverified |
 | `ROUTE-028` | `/projects/[id]/gantt` | Planning / Schedule | T17 | Unverified |
 | `ROUTE-029` | `/projects/[id]/hr` | HR / Workforce | T08/T23 | Unverified |
 | `ROUTE-030` | `/projects/[id]/ipc/[ipcId]` | BOQ, VO & IPC / IPC detail, view only | T16 | Unverified |
-| `ROUTE-031` | `/projects/[id]/ipc/[ipcId]/pdf-designer` | IPC / Report layout/export, payment data read only | T16/T28 | Unverified |
+| `ROUTE-031` | `/projects/[id]/ipc/[ipcId]/pdf-designer` | IPC / Report layout/export, payment data read only | T16/T28 | Archive-only snapshot; unverified |
 | `ROUTE-032` | `/projects/[id]/ipc` | BOQ, VO & IPC / IPC register | T13/T16 | Unverified |
 | `ROUTE-033` | `/projects/[id]/look-ahead` | Planning / Look-ahead | T17 | Unverified |
 | `ROUTE-034` | `/projects/[id]/materials` | Materials / Procurement and stock | T19/T20 | Unverified |
@@ -63,21 +63,80 @@ All rows also depend on T02–T05 routing/session/data/shell and T31–T32 accep
 | `ROUTE-049` | `/projects/[id]/workflow/program` | Workflow / Daily program | T18 | Unverified |
 | `ROUTE-050` | `/projects/[id]/workflow/reports/[reportId]/edit` | Workflow / Report edit | T07 | Unverified |
 | `ROUTE-051` | `/projects/[id]/workflow/reports/[reportId]` | Workflow / Report detail | T07 | Unverified |
-| `ROUTE-052` | `/projects/[id]/workflow/reports/[reportId]/pdf-designer` | Workflow / Report PDF designer | T07/T28 | Unverified |
-| `ROUTE-053` | `/projects/[id]/workflow/reports/[reportId]/pdf-render` | Workflow / Report render | T07/T28 | Unverified |
-| `ROUTE-054` | `/projects/[id]/workflow/reports/[reportId]/print` | Workflow / Report print | T07/T28 | Unverified |
+| `ROUTE-052` | `/projects/[id]/workflow/reports/[reportId]/pdf-designer` | Workflow / Report PDF designer | T07/T28 | Archive-only snapshot; unverified |
+| `ROUTE-053` | `/projects/[id]/workflow/reports/[reportId]/pdf-render` | Workflow / Report render | T07/T28 | Archive-only snapshot; unverified |
+| `ROUTE-054` | `/projects/[id]/workflow/reports/[reportId]/print` | Workflow / Report print | T07/T28 | Archive-only snapshot; unverified |
 | `ROUTE-055` | `/projects/[id]/workflow/reports` | Workflow / Daily reports | T07 | Unverified |
-| `ROUTE-056` | `/projects/[id]/workflow/rfi/[rfiId]/pdf-designer` | Workflow / RFI PDF designer | T18/T28 | Unverified |
+| `ROUTE-056` | `/projects/[id]/workflow/rfi/[rfiId]/pdf-designer` | Workflow / RFI PDF designer | T18/T28 | Archive-only snapshot; unverified |
 | `ROUTE-057` | `/projects/[id]/workflow/rfi` | Workflow / RFIs | T18 | Unverified |
 | `ROUTE-058` | `/projects` | Projects / Portfolio | T06 | Unverified |
 | `ROUTE-059` | `/sync` | Utility / Sync Status | T04/T29 | Unverified |
-| `ROUTE-060` | `/team` | HR / Team | T08 | Unverified |
+| `ROUTE-060` | `/team` | HR / Team | T08 | Archive-only snapshot; unverified |
 | `ROUTE-061` | `/login` | Authentication / Login | T03/T29 | Unverified |
 | `ROUTE-062` | `/offline` | Utility / Offline | T04/T29 | Unverified |
 | `ROUTE-063` | `/` | Entry / Session-aware redirect | T03/T05 | Unverified |
 | `ROUTE-064` | `/signup` | Authentication / Signup | T29 | Unverified |
 
 The IPC PDF-designer route retains the original export/layout outcome without becoming an amount editor. If the full GridCraft print workflow replaces it, record that user-directed replacement and test its route/return/export behavior. Auth/admin/print aliases are retained even when not visible as ordinary L1 items.
+
+Canonical-commit routes missing from the supplied archive are added below for reconciliation; destination and task ownership remain unassigned pending T01 review.
+| `ROUTE-065` | `//` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-066` | `/activate-account` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-067` | `/admin/holidays` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-068` | `/admin/login` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-069` | `/admin/material-catalog` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-070` | `/admin/rate-catalogs` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-071` | `/correspondence` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-072` | `/drawings` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-073` | `/field-submissions` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-074` | `/finance` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-075` | `/hr-organization` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-076` | `/inventory` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-077` | `/m` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-078` | `/m/chat` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-079` | `/m/chat/[channelId]` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-080` | `/m/log` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-081` | `/m/log/expense` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-082` | `/m/log/material` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-083` | `/m/log/report` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-084` | `/m/more` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-085` | `/m/notifications` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-086` | `/m/photos` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-087` | `/m/simple/expense` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-088` | `/m/simple/labour` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-089` | `/m/simple/material` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-090` | `/m/sites` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-091` | `/m/sync` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-092` | `/m/tasks` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-093` | `/m/tasks/new` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-094` | `/materials` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-095` | `/my-access` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-096` | `/projects/[id]/accounting` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-097` | `/projects/[id]/drawings/progress` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-098` | `/projects/[id]/equipment/utilization` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-099` | `/projects/[id]/expenses` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-100` | `/projects/[id]/field-data` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-101` | `/projects/[id]/field-submissions` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-102` | `/projects/[id]/hr/hierarchy` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-103` | `/projects/[id]/hr/team` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-104` | `/projects/[id]/ipc/[ipcId]/worksheets` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-105` | `/projects/[id]/material-library` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-106` | `/projects/[id]/materials/stock-alerts` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-107` | `/projects/[id]/pdf-canvas` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-108` | `/projects/[id]/pdf-canvas/render` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-109` | `/projects/[id]/planning/roles` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-110` | `/projects/[id]/production` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-111` | `/projects/[id]/rate-library` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-112` | `/projects/[id]/subcontractors/billing` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-113` | `/projects/[id]/vendors` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-114` | `/projects/[id]/vendors/performance` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-115` | `/projects/[id]/workflow/program/my-tasks` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-116` | `/projects/new` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-117` | `/rate-catalogs` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-118` | `/settings` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-119` | `/vendors` | Needs T01 classification | T01 | Unverified |
+| `ROUTE-120` | `/worksheet-lab` | Needs T01 classification | T01 | Unverified |
+
 
 ## Workflow coverage
 

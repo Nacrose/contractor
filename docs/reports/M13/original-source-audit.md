@@ -7,7 +7,7 @@ Status: **In progress**. The available source bundle is pinned for audit. Action
 - Canonical source repository: private `Nacrose/Construction_Manager`; the earlier frontend artifacts reference commit `7d06a8a51826639b554e30d11a8b0b8f7d095259`, which exists and checks out as a merge commit.
 - Supplied bundle: `Construction-Manager-main.zip` (local path `/Users/aakashdhakal/Construction-Manager-main.zip`), SHA-256 `8b3cb347083cfe25d484724116f87d1ab3fec80d81a0206a73e4f9b55a2de23d`. Its ZIP comment claims revision `7a5cccfd01484cc17b01e7c840fc0f35e87c1e58`; GitHub reports that commit does not exist in the canonical repository.
 - The bundle is **not** a copy of commit `7d06a8a`. A file-content comparison against that checkout found 1,698 tracked files versus 351 bundle files: 1,419 tracked files absent from the bundle, 72 bundle-only paths, and 242 shared paths with different contents. Both ZIP files in Downloads have the same SHA-256. Treat the bundle as an independently pinned but incomplete/unidentified snapshot, not as the canonical source revision.
-- The verified commit has 110 App Router `page.tsx` files. The bundle has 64; 55 routes occur only in the verified commit and 9 only in the bundle. Seventeen of the canonical-only routes are under `/m`, while the bundle contains no mobile routes. This explains the apparent mobile-scope discrepancy: it is a bundle coverage gap, not evidence that the original app had no mobile surface. The M00 41-workflow matrix and current 64-route appendix therefore do not yet cover the canonical route surface. Regenerate/extend coverage from the verified commit before implementation scope is called complete.
+- The verified commit has 110 App Router page files and the bundle has 64. After removing Next.js route-group names, 56 URL paths occur only in the verified commit and 10 only in the bundle. Seventeen canonical-only paths are under `/m`, while the bundle contains no mobile routes. This explains the apparent mobile-scope discrepancy: it is a bundle coverage gap, not evidence that the original app had no mobile surface. The M00 41-workflow matrix and original 64-route seed therefore do not yet cover the canonical route surface.
 - The bundle declares Construction Manager 1.0.0, Next.js 16, React 19, tRPC v11 and Prisma 6. This establishes only a source backend contract; no deployed backend/API/schema compatibility has been verified.
 
 ## Supplied bundle counts (not canonical-revision counts)
@@ -21,6 +21,21 @@ Status: **In progress**. The available source bundle is pinned for audit. Action
 | Pages with direct tRPC calls | 51 of 64 | Other pages may use child components, page props or static/utility behavior |
 | Next.js API route handlers | 20 | Includes tRPC transport plus auth/admin/file/export routes |
 | Direct dialog references | 47 route occurrences | Does not inventory dialog inputs, actions or nested children |
+
+## Canonical checkout counts
+
+The same scanner was run against the verified `7d06a8a` checkout. The current canonical index contains all of its route pages and reachable component hooks; these figures are distinct from the incomplete ZIP counts above.
+
+| Surface | Observed | Meaning |
+|---|---:|---|
+| App Router pages | 110 | 59 project routes and 51 organisation/public/admin/mobile paths |
+| Root router registrations | 60 | Top-level server routers from `_app.ts` |
+| Router source files | 79 | Excludes `_app.ts` and router test files |
+| Procedure definitions | 702 candidates | Includes 645 historical wrapper matches, 22 `superAdminProcedure` definitions and 35 `proc.*` domain-wrapper definitions |
+| Direct/reachable procedure hooks | 219 page occurrences / 495 unique reachable hooks | Static TS/TSX component traversal; runtime actions remain to be reviewed |
+| Direct dialog references | 57 route occurrences | Dialog component names only; inputs and behavior remain to be reviewed |
+
+All 495 distinct reachable hook names now resolve to a source procedure file in the canonical index, including procedures assembled through material, equipment and schedule router modules. This is a source-location match only; effective guards and offline eligibility still require review.
 
 ## Original sidebar destinations
 
@@ -80,7 +95,7 @@ The archive sidebar has one organisation/top-level list, one project list, and a
 
 ## Route-by-route direct-source index
 
-The [route component index](../../frontend/original-action-component-index.json) traverses static local imports for all 64 pages and records 271 reachable procedure hooks plus reachable dialog components. It gives reviewers a component-level source index; it does not claim to capture all controls, permission checks, offline policy or lifecycle behavior. The table below shows direct page references only.
+The [route component index](../../frontend/original-action-component-index.json) now traverses static local imports for all 110 canonical pages and records 495 reachable procedure hooks plus reachable dialog components. It gives reviewers a component-level source index; it does not claim to capture all controls, effective permission checks, offline policy or lifecycle behavior. The table below is retained as a direct-page index for the supplied ZIP snapshot only.
 
 | Route | Source page | Direct procedure hooks | Dialog components |
 |---|---|---|---|
@@ -165,6 +180,7 @@ The coverage appendix assigns stable `ROUTE-001`–`ROUTE-064` and `WF-001`–`W
 - Bundle route/sidebar counts were inspected with Python `zipfile`; the hash and unverified ZIP comment are recorded above.
 - Checked both recorded revision identifiers against the canonical GitHub repository. `7d06a8a` exists; `7a5cccfd` does not.
 - Compared every regular bundle file with the checked-out `7d06a8a` tree by SHA-256. The comparison establishes that the bundle is not a complete or byte-identical export of that revision.
-- Canonical commit page count was computed from the checkout; bundle page count was independently computed from the archive. The route deltas are listed above.
+- Canonical and archive URL sets were compared after stripping Next.js route groups. The coverage appendix retains the archive-only paths as disputed candidates and adds stable IDs for canonical-only paths.
+- `python3 scripts/audit_frontend_archive.py CHECKOUT --coverage docs/frontend/full-product-coverage.md --output docs/frontend/original-action-component-index.json` reproduces the canonical index from the pinned checkout; it reports 110 route pages, 495 reachable hooks, and zero hook-to-source-file misses.
 - Compared the bundle with `docs/frontend/route-parity.json`, `service-bindings.json`, `manifest.md` and `docs/reports/M00/feature-matrix.json`. These artifacts do not represent a verified common source snapshot.
 - Deployed backend identity and compatibility remain unknown. Obtain deployment/schema evidence before a task claims production service compatibility.

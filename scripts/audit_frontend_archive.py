@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Audit a Construction Manager ZIP and the TS/TSX tree reachable from its pages.
+"""Audit a Construction Manager ZIP or checkout and source reachable from its pages.
 
-Usage: python3 scripts/audit_frontend_archive.py ARCHIVE.zip [--output FILE.json]
-This index does not prove ZIP-to-Git identity or infer effective guards/offline policy.
+Usage: python3 scripts/audit_frontend_archive.py SOURCE.zip-or-checkout [--coverage FILE.md] [--output FILE.json]
+This index does not infer effective guards/offline policy.
 """
 import argparse
 import hashlib
 import json
 import re
+import subprocess
 import zipfile
 from pathlib import Path, PurePosixPath
 
@@ -33,12 +34,49 @@ def resolve_local_import(source_name, import_name, existing):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("archive", type=Path)
+    parser.add_argument("source", type=Path, help="source ZIP archive or checked-out repository")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--coverage", type=Path, help="coverage markdown used to assign stable route IDs")
     args = parser.parse_args()
-    raw = args.archive.read_bytes()
-    with zipfile.ZipFile(args.archive) as archive:
+    is_archive = args.source.is_file()
+    archive = zipfile.ZipFile(args.source) if is_archive else None
+    if is_archive:
+        raw = args.source.read_bytes()
         files = set(archive.namelist())
+        read_source = archive.read
+        source_metadata = {
+            "kind": "zip-archive",
+            "archive": args.source.name,
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "zipCommentRevisionClaim": archive.comment.decode(errors="replace"),
+        }
+    else:
+        root = args.source.resolve()
+        files = {
+            ROOT + str(path.relative_to(root))
+            for path in root.rglob("*")
+            if path.is_file() and ".git" not in path.parts
+        }
+        read_source = lambda name: (root / name.removeprefix(ROOT)).read_bytes()
+        result = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        remote = subprocess.run(
+            ["git", "-C", str(root), "remote", "get-url", "origin"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        repository_name = remote.rstrip("/").removesuffix(".git").replace(":", "/").split("/")[-1]
+        source_metadata = {
+            "kind": "git-checkout",
+            "repository": repository_name,
+            "commit": result.stdout.strip(),
+        }
+    try:
         pages = sorted(
             name for name in files
             if name.startswith(ROOT + "src/app/") and name.endswith("/page.tsx")
@@ -47,39 +85,84 @@ def main():
             name for name in files
             if name.startswith(ROOT + "src/server/routers/")
             and name.endswith(".ts") and not name.endswith("/_app.ts")
+            and "/__tests__/" not in name
         )
-        app = archive.read(ROOT + "src/server/routers/_app.ts").decode()
+        app = read_source(ROOT + "src/server/routers/_app.ts").decode()
         root_routers = re.findall(r"^\s*(\w+):\s*\w+Router,", app, re.M)
         old_pattern = re.compile(
             r"^\s*([a-zA-Z0-9_]+):\s*(?:publicProcedure|protectedProcedure|"
             r"projectProcedure|adminProcedure|procedure|orgProcedure)", re.M
         )
+        procedure_binding = re.compile(
+            r"^\s*([A-Za-z0-9_]+):\s*((?:[A-Za-z0-9_]+Procedure|proc\.[A-Za-z0-9_]+))\b",
+            re.M,
+        )
         definitions = set()
+        procedure_candidates = set()
         for name in routers:
-            src = archive.read(name).decode(errors="ignore")
+            src = read_source(name).decode(errors="ignore")
             basename = name.rsplit("/", 1)[-1][:-3]
             router = basename.split("-")[0] + "".join(x.capitalize() for x in basename.split("-")[1:])
             definitions.update((router, proc) for proc in old_pattern.findall(src))
-        admin = archive.read(ROOT + "src/server/routers/admin.ts").decode()
+            procedure_candidates.update((router, match.group(1)) for match in procedure_binding.finditer(src))
+        admin = read_source(ROOT + "src/server/routers/admin.ts").decode()
         admin_omitted = re.findall(r"^\s*([\w]+):\s*superAdminProcedure\b", admin, re.M)
         procedure_sources = {}
+        top_level_router_names = set(root_routers)
         for name in routers:
-            src = archive.read(name).decode(errors="ignore")
+            src = read_source(name).decode(errors="ignore")
             base = name.rsplit("/", 1)[-1][:-3]
             router = base.split("-")[0] + "".join(x.capitalize() for x in base.split("-")[1:])
-            for match in re.finditer(r"^\s*([A-Za-z0-9_]+):\s*([A-Za-z0-9_]+Procedure)\b", src, re.M):
-                next_prop = re.search(r"^\s*[A-Za-z0-9_]+:\s*\w+Procedure\b", src[match.end():], re.M)
+            aliases = {router}
+            aliases.update(
+                root_name for root_name in top_level_router_names
+                if router.startswith(root_name) and router != root_name
+            )
+            if base.startswith("daily-report-"):
+                aliases.add("dailyReport")
+            if base.startswith("daily-program-"):
+                aliases.add("dailyProgram")
+            for match in procedure_binding.finditer(src):
+                next_prop = procedure_binding.search(src[match.end():])
                 end = match.end() + next_prop.start() if next_prop else min(len(src), match.end() + 1500)
                 body = src[match.end():end]
                 kind = "mutation" if re.search(r"\.mutation\s*\(", body) else "query" if re.search(r"\.query\s*\(", body) else "unclassified"
-                procedure_sources[f"{router}.{match.group(1)}"] = {
+                source = {
                     "sourceFile": name.removeprefix(ROOT),
                     "declaredProcedureWrapper": match.group(2),
                     "handlerKind": kind,
                 }
+                for alias in aliases:
+                    procedure_sources[f"{alias}.{match.group(1)}"] = source
         route_actions = []
+        route_ids = {}
+        next_route_id = 1
+        if args.coverage:
+            coverage_text = args.coverage.read_text()
+            route_ids = {
+                path: route_id
+                for route_id, path in re.findall(
+                    r"\|\s*`(ROUTE-\d+)`\s*\|\s*`([^`]+)`", coverage_text
+                )
+            }
+            next_route_id = max(
+                (int(route_id.removeprefix("ROUTE-")) for route_id in route_ids.values()),
+                default=0,
+            ) + 1
         all_hooks, total_hooks, direct_dialogs = set(), 0, 0
         for page in pages:
+            route_path = page.removeprefix(ROOT + "src/app/")
+            route_path = "/" if route_path == "page.tsx" else route_path.removesuffix("/page.tsx")
+            route_path = re.sub(r"/\([^)]*\)", "", "/" + route_path)
+            route_path = re.sub(r"^/\([^)]*\)/", "/", route_path)
+            if route_path == "/":
+                pass
+            elif route_path.endswith("/"):
+                route_path = route_path[:-1]
+            route_id = route_ids.get(route_path)
+            if route_id is None:
+                route_id = f"ROUTE-{next_route_id:03d}"
+                next_route_id += 1
             pending, visited, hooks, dialogs = [page], set(), set(), set()
             while pending:
                 current = pending.pop()
@@ -87,8 +170,8 @@ def main():
                     continue
                 visited.add(current)
                 try:
-                    src = archive.read(current).decode(errors="ignore")
-                except KeyError:
+                    src = read_source(current).decode(errors="ignore")
+                except (KeyError, FileNotFoundError):
                     continue
                 hooks.update(f"{path} [{method.removeprefix('use')}]" for path, method in HOOK.findall(src))
                 dialogs.update(DIALOG.findall(src))
@@ -96,7 +179,7 @@ def main():
                     target = resolve_local_import(current, imported, files)
                     if target:
                         pending.append(target)
-            direct = archive.read(page).decode(errors="ignore")
+            direct = read_source(page).decode(errors="ignore")
             direct_hooks = [f"{path} [{method.removeprefix('use')}]" for path, method in HOOK.findall(direct)]
             direct_dialog_names = sorted(set(DIALOG.findall(direct)))
             all_hooks.update(hooks)
@@ -110,6 +193,8 @@ def main():
                 definition = procedure_sources.get(service_key)
                 mapped_hooks.append({"hook": hook, "candidateDefinition": service_key, "serverSource": definition})
             route_actions.append({
+                "routeId": route_id,
+                "originalRoute": route_path,
                 "routeSource": page.removeprefix(ROOT),
                 "reachableSourceFileCount": len(visited),
                 "directPageProcedureHooks": sorted(set(direct_hooks)),
@@ -120,11 +205,7 @@ def main():
                 "reviewState": "component graph indexed; button semantics, effective guards and offline policy require review",
             })
         result = {
-            "source": {
-                "archive": args.archive.name,
-                "sha256": hashlib.sha256(raw).hexdigest(),
-                "zipCommentRevisionClaim": archive.comment.decode(errors="replace"),
-            },
+            "source": source_metadata,
             "counts": {
                 "appRouterRegistrations": len(root_routers),
                 "routerSourceFiles": len(routers),
@@ -134,6 +215,7 @@ def main():
                 "proceduresMatchedByHistoricalPattern": len(definitions),
                 "superAdminProceduresOmittedByHistoricalPattern": len(admin_omitted),
                 "procedureDefinitionsByThesePatterns": len(definitions) + len(admin_omitted),
+                "procedureDefinitionCandidatesIncludingDomainWrappers": len(procedure_candidates),
                 "directProcedureHooks": total_hooks,
                 "uniqueReachableProcedureHooks": len(all_hooks),
                 "directDialogComponentReferences": direct_dialogs,
@@ -152,6 +234,9 @@ def main():
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(output)
         print(json.dumps({"source": result["source"], "counts": result["counts"], "output": str(args.output) if args.output else None}, indent=2))
+    finally:
+        if archive is not None:
+            archive.close()
 
 
 if __name__ == "__main__":
